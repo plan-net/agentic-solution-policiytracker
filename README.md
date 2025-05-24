@@ -263,13 +263,15 @@ just dev-watch
 ```
 
 **Access the Kodosumi platform**:
-- **Admin Panel**: http://localhost:3370 (admin/admin)
+- **Admin Panel**: http://localhost:3370 (login: `admin` / `admin`)
 - **Ray Dashboard**: http://localhost:8265
 - **Your App**: http://localhost:8001/political-analysis
 - **Supporting Services**:
   - Azurite: http://localhost:10000 (Azure Storage Emulator)
   - PostgreSQL: localhost:5432 (used by Langfuse)
   - Langfuse: http://localhost:3001 (LLM Observability)
+
+📝 **New to the analysis form?** See the comprehensive [Form Guide in USER_GUIDE.md](USER_GUIDE.md#starting-your-first-analysis-form-guide) for detailed field explanations and examples.
 
 ### Development Commands
 
