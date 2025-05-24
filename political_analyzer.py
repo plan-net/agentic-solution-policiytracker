@@ -40,7 +40,11 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         
         # Initialize progress tracking
         start_time = time.time()
-        job_id = f"job_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        # Generate job ID matching pattern: job_YYYYMMDD_HHMMSS_XXXXXX
+        import random
+        import string
+        suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        job_id = f"job_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{suffix}"
         
         await tracer.markdown(f"""
 # Political Analysis: {job_name}
