@@ -141,11 +141,20 @@ This will:
 #### Step 4: Configure Langfuse (One-Time Only)
 
 When prompted, **open Langfuse** at http://localhost:3001:
-- **Login**: `admin@policiytracker.local`
-- **Password**: `admin123`
+
+**First-time setup**:
+1. If this is a fresh Langfuse installation, try these default credentials:
+   - **Email**: `admin@policiytracker.local`
+   - **Password**: `admin123`
+
+2. If the default credentials don't work, **create a new account**:
+   - Click **"Sign up"**
+   - Use any email (e.g., `admin@policiytracker.local`)
+   - Set your own password
+   - Complete the registration
 
 **Get your API keys**:
-1. Go to **Settings** → **API Keys**
+1. Once logged in, go to **Settings** → **API Keys**
 2. Click **"Create new API key"**
 3. Copy the **Public Key** (starts with `pk-lf-`)
 4. Copy the **Secret Key** (starts with `sk-lf-`)
@@ -295,15 +304,20 @@ just services-status    # Check service health
 
 **Langfuse Issues**:
 ```bash
-# If Langfuse won't start:
-just services-down
-docker volume rm policiytracker_postgres_data policiytracker_langfuse_data
-just services-up
+# If login credentials don't work:
+just reset-langfuse    # Resets to fresh installation
+just services-up       # Restart services
+# Then try login again or create new account
 
 # If API keys don't work:
 # 1. Check you copied the full keys (including pk-lf- and sk-lf- prefixes)
 # 2. Restart after updating .env: just kodosumi-restart
 # 3. Check Langfuse logs: just logs langfuse-server
+
+# If Langfuse won't start at all:
+just services-down
+docker volume rm policiytracker_postgres_data policiytracker_langfuse_data
+just services-up
 ```
 
 **Service Connection Issues**:

@@ -150,16 +150,18 @@ setup-langfuse:
     @just services-up
     @echo ""
     @echo "2. 🌐 Open Langfuse: http://localhost:3001"
-    @echo "   📧 Login: admin@policiytracker.local"
-    @echo "   🔑 Password: admin123"
     @echo ""
-    @echo "3. Get your API keys:"
+    @echo "3. 🔐 Login or Sign Up:"
+    @echo "   Try default: admin@policiytracker.local / admin123"
+    @echo "   Or create new account if defaults don't work"
+    @echo ""
+    @echo "4. Get your API keys:"
     @echo "   • Go to Settings → API Keys"
     @echo "   • Click 'Create new API key'"
     @echo "   • Copy both Public Key (pk-lf-...) and Secret Key (sk-lf-...)"
     @echo ""
-    @echo "4. Update your .env file with the real keys"
-    @echo "5. Run: just kodosumi-restart"
+    @echo "5. Update your .env file with the real keys"
+    @echo "6. Run: just kodosumi-restart"
     @echo ""
     @echo "💡 This setup is only needed once!"
 
@@ -167,6 +169,21 @@ setup-langfuse:
 upload-prompts:
     @echo "📤 Uploading prompts to Langfuse..."
     uv run python scripts/upload_prompts_to_langfuse.py
+
+# Reset Langfuse data (useful if login issues occur)
+reset-langfuse:
+    @echo "🔄 Resetting Langfuse data..."
+    @echo "⚠️  This will delete all Langfuse data and reset to fresh state"
+    @read -p "Continue? (y/N) " -n 1 -r; \
+    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+        echo ""; \
+        docker compose stop langfuse-server; \
+        docker volume rm policiytracker_langfuse_data policiytracker_postgres_data 2>/dev/null || true; \
+        echo "✅ Langfuse data reset. Run 'just services-up' to restart with fresh installation"; \
+    else \
+        echo ""; \
+        echo "❌ Reset cancelled"; \
+    fi
 
 # Start full development environment (Kodosumi-first)
 dev: services-up kodosumi-deploy
