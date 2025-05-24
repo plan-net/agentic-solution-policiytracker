@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class LLMProvider(str, Enum):
     """Supported LLM providers."""
+
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     LANGFUSE = "langfuse"  # For prompt management
@@ -16,6 +17,7 @@ class LLMProvider(str, Enum):
 
 class DocumentInsight(BaseModel):
     """LLM-generated insights about a document."""
+
     provider: LLMProvider = Field(default=LLMProvider.MOCK)
     key_topics: List[str] = Field(default_factory=list, description="Key topics identified")
     sentiment: str = Field(default="neutral", description="Document sentiment")
@@ -26,15 +28,19 @@ class DocumentInsight(BaseModel):
 
 class SemanticScore(BaseModel):
     """LLM-generated semantic scoring."""
+
     provider: LLMProvider = Field(default=LLMProvider.MOCK)
     semantic_score: float = Field(ge=0, le=100, description="LLM semantic score 0-100")
     confidence: float = Field(ge=0, le=1, description="LLM confidence in scoring")
     reasoning: str = Field(description="LLM explanation for the score")
-    key_factors: List[str] = Field(default_factory=list, description="Key factors influencing the score")
+    key_factors: List[str] = Field(
+        default_factory=list, description="Key factors influencing the score"
+    )
 
 
 class TopicAnalysis(BaseModel):
     """LLM-powered topic analysis."""
+
     topic_name: str
     topic_description: str
     relevance_score: float = Field(ge=0, le=100)
@@ -45,6 +51,7 @@ class TopicAnalysis(BaseModel):
 
 class LLMReportInsights(BaseModel):
     """LLM-generated insights for reports."""
+
     executive_summary: str = Field(description="LLM-generated executive summary")
     key_findings: List[str] = Field(description="Top insights from analysis")
     strategic_recommendations: List[str] = Field(description="Strategic action recommendations")
@@ -55,6 +62,7 @@ class LLMReportInsights(BaseModel):
 
 class LLMAnalysisRequest(BaseModel):
     """Request structure for LLM analysis."""
+
     document_text: str
     context: Dict[str, Any]
     analysis_type: str = Field(description="Type of analysis requested")
@@ -64,6 +72,7 @@ class LLMAnalysisRequest(BaseModel):
 
 class LLMResponse(BaseModel):
     """Generic LLM response wrapper."""
+
     content: str
     tokens_used: Optional[int] = None
     model_used: Optional[str] = None

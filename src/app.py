@@ -8,22 +8,20 @@ app = ServeAPI()
 
 # Define rich user interface form
 analysis_form = F.Model(
-    F.Markdown("""
+    F.Markdown(
+        """
     # Political Monitoring Agent
     
     Analyze political documents for relevance, priority, and topics using distributed AI processing.
     Upload documents and get comprehensive analysis reports with confidence scoring.
-    """),
+    """
+    ),
     F.Errors(),  # Display validation errors
-    F.Break(),   # Visual separator
-    
+    F.Break(),  # Visual separator
     # Job Configuration
     F.InputText(
-        label="Job Name", 
-        name="job_name",
-        placeholder="e.g., Weekly Policy Review, Brexit Analysis"
+        label="Job Name", name="job_name", placeholder="e.g., Weekly Policy Review, Brexit Analysis"
     ),
-    
     # Analysis Parameters
     F.InputNumber(
         label="Priority Threshold (%)",
@@ -32,24 +30,21 @@ analysis_form = F.Model(
         max_value=100,
         step=5,
         value=70,
-        placeholder="Minimum priority score for inclusion"
+        placeholder="Minimum priority score for inclusion",
     ),
-    
     # Processing Options
     F.Checkbox(
         label="Include Low Confidence Results",
-        name="include_low_confidence", 
+        name="include_low_confidence",
         value=False,
-        option="Include documents with confidence scores below 80%"
+        option="Include documents with confidence scores below 80%",
     ),
-    
     F.Checkbox(
         label="Enable Topic Clustering",
         name="clustering_enabled",
         value=True,
-        option="Group documents by semantic similarity into topic clusters"
+        option="Group documents by semantic similarity into topic clusters",
     ),
-    
     # Storage Configuration
     F.Select(
         label="Storage Mode",
@@ -58,9 +53,8 @@ analysis_form = F.Model(
             F.InputOption(label="Local Files", name="local"),
             F.InputOption(label="Azure Blob Storage", name="azure"),
         ],
-        value="local"
+        value="local",
     ),
-    
     # Advanced Options
     F.InputNumber(
         label="Batch Size",
@@ -68,30 +62,28 @@ analysis_form = F.Model(
         min_value=10,
         max_value=1000,
         value=50,
-        placeholder="Number of documents to process per batch"
+        placeholder="Number of documents to process per batch",
     ),
-    
     F.InputNumber(
         label="Processing Timeout (minutes)",
         name="timeout_minutes",
         min_value=5,
         max_value=120,
         value=30,
-        placeholder="Maximum time to wait for analysis completion"
+        placeholder="Maximum time to wait for analysis completion",
     ),
-    
     # Additional Instructions
     F.InputArea(
         label="Additional Instructions",
         name="instructions",
-        placeholder="Any specific requirements, focus areas, or custom analysis criteria..."
+        placeholder="Any specific requirements, focus areas, or custom analysis criteria...",
     ),
-    
     # Action Buttons
     F.Submit("Start Analysis"),
     F.Cancel("Cancel"),
     F.Action(text="Advanced Settings", value="advanced", name="action"),
 )
+
 
 @app.enter(
     path="/",
@@ -100,26 +92,26 @@ analysis_form = F.Model(
     description="Comprehensive political document monitoring and analysis using distributed AI",
     version="1.0.0",
     author="political-monitoring@example.com",
-    tags=["Politics", "Document Analysis", "AI", "Monitoring"]
+    tags=["Politics", "Document Analysis", "AI", "Monitoring"],
 )
 async def enter(request: fastapi.Request, inputs: dict):
     """Handle form submission and launch political analysis."""
-    
+
     # Validate inputs
     error = InputsError()
-    
+
     # Required fields validation
     if not inputs.get("job_name"):
         error.add(job_name="Please provide a job name for this analysis")
-    
+
     if len(inputs.get("job_name", "")) < 3:
         error.add(job_name="Job name must be at least 3 characters long")
-    
+
     # Storage mode validation
     storage_mode = inputs.get("storage_mode", "local")
     if storage_mode not in ["local", "azure"]:
         error.add(storage_mode="Please select a valid storage mode")
-    
+
     # Validate numeric ranges - convert strings to numbers
     try:
         priority_threshold = float(inputs.get("priority_threshold", 70))
@@ -127,25 +119,25 @@ async def enter(request: fastapi.Request, inputs: dict):
             error.add(priority_threshold="Priority threshold must be between 0 and 100")
     except (ValueError, TypeError):
         error.add(priority_threshold="Priority threshold must be a valid number")
-    
+
     try:
         batch_size = int(inputs.get("batch_size", 50))
         if batch_size < 10 or batch_size > 1000:
             error.add(batch_size="Batch size must be between 10 and 1000")
     except (ValueError, TypeError):
         error.add(batch_size="Batch size must be a valid integer")
-    
+
     try:
         timeout_minutes = int(inputs.get("timeout_minutes", 30))
         if timeout_minutes < 5 or timeout_minutes > 120:
             error.add(timeout_minutes="Timeout must be between 5 and 120 minutes")
     except (ValueError, TypeError):
         error.add(timeout_minutes="Timeout must be a valid integer")
-    
+
     # Check for validation errors
     if error.has_errors():
         raise error
-    
+
     # Launch the political analysis workflow
     return Launch(
         request,
@@ -158,31 +150,31 @@ async def enter(request: fastapi.Request, inputs: dict):
             "batch_size": batch_size,
             "timeout_minutes": timeout_minutes,
             "instructions": inputs.get("instructions", ""),
-            "storage_mode": inputs.get("storage_mode", "local")
-        }
+            "storage_mode": inputs.get("storage_mode", "local"),
+        },
     )
+
 
 # Health check endpoint for Kodosumi
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring."""
-    return {
-        "status": "healthy",
-        "service": "political-monitoring-agent",
-        "version": "1.0.0"
-    }
+    return {"status": "healthy", "service": "political-monitoring-agent", "version": "1.0.0"}
+
 
 # Ray deployment configuration
 @serve.deployment(
     ray_actor_options={
         "num_cpus": 2,
-        "memory": 4 * 1024 * 1024 * 1024  # 4GB
+        "memory": 4 * 1024 * 1024 * 1024,  # 4GB
     }
 )
 @serve.ingress(app)
 class PoliticalMonitoringAgent:
     """Kodosumi deployment class for Political Monitoring Agent."""
+
     pass
+
 
 # Required for Kodosumi deployment
 fast_app = PoliticalMonitoringAgent.bind()
@@ -190,4 +182,5 @@ fast_app = PoliticalMonitoringAgent.bind()
 # For local debugging without Kodosumi
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("app:app", host="0.0.0.0", port=8005, reload=True)

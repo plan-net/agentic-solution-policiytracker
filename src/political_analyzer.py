@@ -17,14 +17,15 @@ from src.config import settings
 # Setup logging
 logger = setup_logging()
 
+
 async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
     """
     Main entrypoint function for political document analysis.
-    
+
     Args:
         inputs: Dictionary containing analysis parameters from the form
         tracer: Kodosumi tracer for real-time progress updates
-        
+
     Returns:
         Dictionary containing analysis results and metadata
     """
@@ -38,10 +39,10 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         timeout_minutes = inputs.get("timeout_minutes", 30)
         instructions = inputs.get("instructions", "")
         storage_mode = inputs.get("storage_mode", "local")
-        
+
         # Determine use_azure based on storage_mode or config
         use_azure = (storage_mode == "azure") if storage_mode else settings.USE_AZURE_STORAGE
-        
+
         # Get paths from configuration based on runtime storage mode
         if use_azure:
             input_folder = settings.AZURE_INPUT_PATH
@@ -50,16 +51,18 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             # Use configuration system for local paths
             input_folder = settings.input_path
             context_file = settings.context_path
-        
+
         # Initialize progress tracking
         start_time = time.time()
         # Generate job ID matching pattern: job_YYYYMMDD_HHMMSS_XXXXXX
         import random
         import string
-        suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+
+        suffix = "".join(random.choices(string.ascii_letters + string.digits, k=6))
         job_id = f"job_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{suffix}"
-        
-        await tracer.markdown(f"""
+
+        await tracer.markdown(
+            f"""
 # Political Analysis: {job_name}
 
 ## Job Configuration
@@ -77,8 +80,9 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
 
 ### Step 1: Initialization
 ✅ Job configuration validated and initialized
-""")
-        
+"""
+        )
+
         # Create job request object
         job_request = JobRequest(
             job_name=job_name,
@@ -88,7 +92,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             include_low_confidence=include_low_confidence,
             clustering_enabled=clustering_enabled,
         )
-        
+
         # Create job object
         job = Job(
             id=job_id,
@@ -97,47 +101,72 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             created_at=datetime.now(),
             started_at=datetime.now(),
         )
-        
+
         await tracer.markdown("### Step 2: Workflow Execution")
-        
+
         # Import workflow functions
         from src.workflow.graph import create_workflow, execute_workflow
         from src.workflow.state import WorkflowState
-        
+
         # Initialize Ray if not already initialized
         if not ray.is_initialized():
             await tracer.markdown("🚀 Initializing distributed computing cluster...")
             ray.init(num_cpus=4)
             await tracer.markdown("✅ Ray cluster initialized")
-        
+
         # Create initial workflow state with runtime storage mode
-        initial_state = WorkflowState(
-            job_id=job_id,
-            job_request=job_request,
-            use_azure=use_azure  # ⭐ This is the key fix!
-        )
-        
-        await tracer.markdown(f"""
+        initial_state = WorkflowState(job_id=job_id, job_request=job_request, use_azure=use_azure)
+
+        await tracer.markdown(
+            f"""
 ### Step 3: Starting LangGraph Workflow
 - **Storage Mode**: {"Azure Blob Storage" if use_azure else "Local Filesystem"}
 - **Input Path**: {input_folder}
 - **Context Path**: {context_file}
-""")
-        
+"""
+        )
+
         # Create and execute workflow
         workflow = create_workflow()
-        
+
         try:
-            result = await execute_workflow(workflow, job, resume_from_checkpoint=None, initial_state=initial_state)
-            
+            result = await execute_workflow(
+                workflow, job, resume_from_checkpoint=None, initial_state=initial_state
+            )
+
             # Read the generated report file and return its content for Kodosumi display
-            report_file_path = result['report_file']
-            
-            if report_file_path and os.path.exists(report_file_path):
-                # Read the generated report content
-                with open(report_file_path, 'r', encoding='utf-8') as f:
-                    report_content = f.read()
-                
+            report_file_path = result["report_file"]
+            report_content = None
+
+            if report_file_path:
+                if report_file_path.startswith("azure://"):
+                    # Azure Storage: Download blob content
+                    try:
+                        from src.integrations.azure_storage import AzureStorageClient
+
+                        azure_client = AzureStorageClient()
+
+                        # Extract blob name from azure:// path
+                        blob_name = report_file_path.replace("azure://", "")
+
+                        # Download as text
+                        report_content = await azure_client.download_blob_text("reports", blob_name)
+
+                        if not report_content:
+                            logger.error(f"Failed to download report from Azure: {blob_name}")
+
+                    except Exception as e:
+                        logger.error(f"Failed to read Azure report: {e}")
+
+                elif os.path.exists(report_file_path):
+                    # Local file: Read directly
+                    try:
+                        with open(report_file_path, "r", encoding="utf-8") as f:
+                            report_content = f.read()
+                    except Exception as e:
+                        logger.error(f"Failed to read local report: {e}")
+
+            if report_content:
                 # Add execution summary at the top
                 execution_summary = f"""# Political Analysis Complete! 🎉
 
@@ -154,38 +183,43 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
 ---
 
 """
-                
+
                 # Return the complete report as a Kodosumi Markdown response for proper FINAL display
                 await tracer.markdown("### ✅ Analysis Complete! Report ready for viewing.")
-                
+
                 return core.response.Markdown(execution_summary + report_content)
-                
+
             else:
-                await tracer.markdown(f"""### ⚠️ Analysis completed but report file not found
+                await tracer.markdown(
+                    f"""### ⚠️ Analysis completed but report file not found
 
 **Job ID**: {job_id}
 **Status**: Analysis completed successfully but report file could not be read.
 **Report Path**: {report_file_path}
 
 Please check the output directory for the generated report.
-""")
-            
+"""
+                )
+
         except Exception as workflow_error:
             error_msg = f"Workflow execution failed: {str(workflow_error)}"
-            await tracer.markdown(f"""
+            await tracer.markdown(
+                f"""
 ### ❌ Workflow Failed
 
 **Error**: {error_msg}
 
 Please check the configuration and try again.
-""")
+"""
+            )
             logger.error(error_msg, exc_info=True)
-            
+
     except Exception as e:
         error_msg = f"Analysis failed: {str(e)}"
         logger.error("Political analysis failed", error=str(e))
-        
-        return core.response.Markdown(f"""# Analysis Failed ❌
+
+        return core.response.Markdown(
+            f"""# Analysis Failed ❌
 
 **Error**: {error_msg}
 
@@ -198,4 +232,5 @@ Please check the configuration and try again.
 4. Check logs for detailed error information
 
 Please review the configuration and try again.
-""")
+"""
+        )

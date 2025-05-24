@@ -6,10 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=True,
-        extra="ignore"
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
     )
 
     # Kodosumi Settings
@@ -53,26 +50,42 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API key")
     OPENAI_MODEL: str = Field(default="gpt-4", description="OpenAI model to use")
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, description="Anthropic API key")
-    ANTHROPIC_MODEL: str = Field(default="claude-3-haiku-20240307", description="Anthropic model to use")
+    ANTHROPIC_MODEL: str = Field(
+        default="claude-3-haiku-20240307", description="Anthropic model to use"
+    )
     LLM_MAX_CONCURRENT: int = Field(default=3, description="Max concurrent LLM requests")
     LLM_TIMEOUT_SECONDS: int = Field(default=30, description="LLM request timeout")
-    LLM_FALLBACK_ENABLED: bool = Field(default=True, description="Enable fallback to rule-based scoring")
+    LLM_FALLBACK_ENABLED: bool = Field(
+        default=True, description="Enable fallback to rule-based scoring"
+    )
 
     # Langfuse Observability
     LANGFUSE_SECRET_KEY: Optional[str] = Field(default=None, description="Langfuse secret key")
     LANGFUSE_PUBLIC_KEY: Optional[str] = Field(default=None, description="Langfuse public key")
-    LANGFUSE_HOST: str = Field(default="https://cloud.langfuse.com", description="Langfuse host URL")
+    LANGFUSE_HOST: str = Field(
+        default="https://cloud.langfuse.com", description="Langfuse host URL"
+    )
 
     # Azure Storage Configuration
-    USE_AZURE_STORAGE: bool = Field(default=False, description="Use Azure Blob Storage instead of local filesystem")
-    AZURE_STORAGE_CONNECTION_STRING: Optional[str] = Field(default=None, description="Azure Storage connection string")
-    AZURE_STORAGE_ACCOUNT_NAME: Optional[str] = Field(default=None, description="Azure Storage account name")
-    AZURE_STORAGE_CONTAINER_NAME: str = Field(default="politicalmonitoring", description="Default Azure container name")
-    
+    USE_AZURE_STORAGE: bool = Field(
+        default=False, description="Use Azure Blob Storage instead of local filesystem"
+    )
+    AZURE_STORAGE_CONNECTION_STRING: Optional[str] = Field(
+        default=None, description="Azure Storage connection string"
+    )
+    AZURE_STORAGE_ACCOUNT_NAME: Optional[str] = Field(
+        default=None, description="Azure Storage account name"
+    )
+    AZURE_STORAGE_CONTAINER_NAME: str = Field(
+        default="politicalmonitoring", description="Default Azure container name"
+    )
+
     # Azure Storage Paths (automatically managed by import script)
     AZURE_JOB_ID: Optional[str] = Field(default=None, description="Current Azure job ID")
     AZURE_INPUT_PATH: str = Field(default="input", description="Azure input blob path")
-    AZURE_CONTEXT_PATH: str = Field(default="context/client.yaml", description="Azure context file path")
+    AZURE_CONTEXT_PATH: str = Field(
+        default="context/client.yaml", description="Azure context file path"
+    )
     AZURE_OUTPUT_PATH: str = Field(default="output", description="Azure output blob path")
 
     @property
@@ -84,21 +97,21 @@ class Settings(BaseSettings):
             "temporal_urgency": self.TEMPORAL_URGENCY_WEIGHT,
             "strategic_alignment": self.STRATEGIC_ALIGNMENT_WEIGHT,
         }
-    
+
     @property
     def input_path(self) -> str:
         """Get the appropriate input path based on storage mode."""
         if self.USE_AZURE_STORAGE:
             return self.AZURE_INPUT_PATH
         return self.DEFAULT_INPUT_FOLDER
-    
+
     @property
     def context_path(self) -> str:
         """Get the appropriate context path based on storage mode."""
         if self.USE_AZURE_STORAGE:
             return self.AZURE_CONTEXT_PATH
         return f"{self.DEFAULT_CONTEXT_FOLDER}/client.yaml"
-    
+
     @property
     def output_path(self) -> str:
         """Get the appropriate output path based on storage mode."""

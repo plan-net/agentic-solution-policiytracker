@@ -35,10 +35,10 @@ applications:
       PROCESSING_TIMEOUT_SECONDS: '600'
       RAY_NUM_CPUS: '8'
       ENVIRONMENT: development
-      AZURE_JOB_ID: import_20250524_205722
-      AZURE_INPUT_PATH: jobs/import_20250524_205722/input
+      AZURE_JOB_ID: import_20250524_231831
+      AZURE_INPUT_PATH: jobs/import_20250524_231831/input
       AZURE_CONTEXT_PATH: test-client/context.yaml
-      AZURE_OUTPUT_PATH: jobs/import_20250524_205722/output
+      AZURE_OUTPUT_PATH: jobs/import_20250524_231831/output
       LLM_ENABLED: 'true'
       LLM_PROVIDER: anthropic
       OPENAI_MODEL: gpt-4
