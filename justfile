@@ -98,11 +98,11 @@ logs service="":
 # Start Ray and deploy to Kodosumi
 kodosumi-deploy:
     @echo "🚀 Starting Ray cluster..."
-    uv run ray start --head
+    uv run --active ray start --head
     @echo "📦 Deploying to Ray Serve..."
-    uv run serve deploy config.yaml
+    uv run --active serve deploy config.yaml
     @echo "🎯 Starting Kodosumi server..."
-    uv run koco start --register http://localhost:8001/-/routes
+    uv run --active koco start --register http://localhost:8001/-/routes
     @echo "✅ Kodosumi deployment complete!"
     @echo "🌐 Admin Panel: http://localhost:3370 (admin/admin)"
     @echo "📊 Ray Dashboard: http://localhost:8265"
@@ -111,14 +111,14 @@ kodosumi-deploy:
 kodosumi-stop:
     @echo "🛑 Stopping Kodosumi services..."
     -pkill -f "koco start"
-    -uv run serve shutdown --yes
-    -uv run ray stop
+    -uv run --active serve shutdown --yes
+    -uv run --active ray stop
     @echo "✅ All services stopped"
 
 # Check Kodosumi deployment status
 kodosumi-status:
     @echo "📊 Kodosumi Status:"
-    @uv run ray status || echo "❌ Ray not running"
+    @uv run --active ray status || echo "❌ Ray not running"
     @echo ""
     @echo "🌐 Service URLs:"
     @echo "  Kodosumi Admin: http://localhost:3370"
@@ -128,7 +128,7 @@ kodosumi-status:
 # View Kodosumi logs
 kodosumi-logs:
     @echo "📋 Recent Ray logs:"
-    uv run ray logs --follow
+    uv run --active ray logs --follow
 
 # Restart entire Kodosumi stack
 kodosumi-restart: kodosumi-stop kodosumi-deploy
@@ -136,8 +136,8 @@ kodosumi-restart: kodosumi-stop kodosumi-deploy
 # Quick Kodosumi development cycle (restart only app)
 dev-quick:
     @echo "🔄 Quick Kodosumi restart..."
-    -uv run serve shutdown --yes 2>/dev/null || true
-    uv run serve deploy config.yaml
+    -uv run --active serve shutdown --yes 2>/dev/null || true
+    uv run --active serve deploy config.yaml
     @echo "✅ App redeployed to Kodosumi"
 
 # === Development ===
