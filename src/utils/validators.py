@@ -10,21 +10,21 @@ def validate_path_security(path: str) -> bool:
     """Validate path to prevent traversal attacks."""
     if ".." in path or "~" in path:
         return False
-    
+
     # Additional security checks
     dangerous_patterns = [
         r"\.\.\/",  # Path traversal
         r"\/\.\.",  # Path traversal
-        r"^\.\.",   # Relative path up
+        r"^\.\.",  # Relative path up
         r"^\/etc",  # System directories
-        r"^\/proc", # System directories
+        r"^\/proc",  # System directories
         r"^\/sys",  # System directories
     ]
-    
+
     for pattern in dangerous_patterns:
         if re.search(pattern, path):
             return False
-    
+
     return True
 
 
@@ -55,10 +55,10 @@ def validate_context_file(context_path: str) -> None:
     """Validate context file exists and has required structure."""
     if not os.path.exists(context_path):
         raise ConfigurationError("context_file", f"Context file not found: {context_path}")
-    
+
     if not validate_path_security(context_path):
         raise ConfigurationError("context_file", "Invalid path in context file")
-    
+
     # Additional validation can be added here for YAML structure
 
 
@@ -70,11 +70,11 @@ def get_supported_extensions() -> List[str]:
 def sanitize_filename(filename: str) -> str:
     """Sanitize filename to prevent issues."""
     # Remove dangerous characters
-    sanitized = re.sub(r'[<>:"/\\|?*]', '_', filename)
-    
+    sanitized = re.sub(r'[<>:"/\\|?*]', "_", filename)
+
     # Limit length
     if len(sanitized) > 255:
         name, ext = os.path.splitext(sanitized)
-        sanitized = name[:255-len(ext)] + ext
-    
+        sanitized = name[: 255 - len(ext)] + ext
+
     return sanitized

@@ -27,43 +27,49 @@ async def load_documents(state: WorkflowState) -> WorkflowState:
     """Load and validate documents from input folder or Azure Storage."""
     try:
         logger.info("Starting document loading", job_id=state.job_id)
-        
+
         input_source = state.job_request.input_folder
-        
+
         # Use runtime storage mode from state
         use_azure = state.use_azure
-        
+
         if use_azure:
             logger.info("Using Azure Storage for document loading", job_id=state.job_id)
-            # For Azure Storage, input_source is treated as job_id or job_prefix
+            # For Azure Storage, input_source is the full path, don't pass job_id
             loader = BatchDocumentLoader(use_azure=True)
-            file_paths = await loader.discover_files(input_source, job_id=state.job_id)
+            file_paths = await loader.discover_files(input_source)
         else:
             # Validate local input folder
             if not validate_directory_exists(input_source):
-                raise WorkflowError(state.job_id, "load_documents", f"Input folder not accessible: {input_source}")
-            
+                raise WorkflowError(
+                    state.job_id, "load_documents", f"Input folder not accessible: {input_source}"
+                )
+
             loader = BatchDocumentLoader(use_azure=False)
             file_paths = await loader.discover_files(input_source)
-        
+
         if not file_paths:
             source_type = "Azure Storage" if use_azure else "input folder"
-            raise WorkflowError(state.job_id, "load_documents", f"No supported documents found in {source_type}")
-        
-        logger.info(f"Discovered {len(file_paths)} documents", 
-                   job_id=state.job_id, 
-                   source_type="Azure Storage" if use_azure else "local")
-        
+            raise WorkflowError(
+                state.job_id, "load_documents", f"No supported documents found in {source_type}"
+            )
+
+        logger.info(
+            f"Discovered {len(file_paths)} documents",
+            job_id=state.job_id,
+            source_type="Azure Storage" if use_azure else "local",
+        )
+
         state.file_paths = file_paths
         state.current_progress = {
             "stage": "documents_loaded",
             "documents_found": len(file_paths),
             "source_type": "azure_storage" if use_azure else "local_filesystem",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
-        
+
         return state
-        
+
     except Exception as e:
         error_msg = f"Failed to load documents: {str(e)}"
         state.errors.append(error_msg)
@@ -75,48 +81,61 @@ async def load_context(state: WorkflowState) -> WorkflowState:
     """Load client context from YAML file or Azure Storage."""
     try:
         logger.info("Loading context file", job_id=state.job_id)
-        
+
         context_file = state.job_request.context_file
         use_azure = state.use_azure
-        
+
         if use_azure:
-            logger.info("Loading context from Azure Storage", job_id=state.job_id, context_file=context_file)
-            
+            logger.info(
+                "Loading context from Azure Storage", job_id=state.job_id, context_file=context_file
+            )
+
             # Initialize Azure Storage client
             azure_client = AzureStorageClient()
-            
+
             # Download context file from Azure Storage
-            context_blob_data = await azure_client.download_blob('contexts', context_file)
+            context_blob_data = await azure_client.download_blob("contexts", context_file)
             if not context_blob_data:
-                raise WorkflowError(state.job_id, "load_context", f"Context file not found in Azure Storage: {context_file}")
-            
+                raise WorkflowError(
+                    state.job_id,
+                    "load_context",
+                    f"Context file not found in Azure Storage: {context_file}",
+                )
+
             # Parse YAML from blob data
-            context_data = yaml.safe_load(context_blob_data.decode('utf-8'))
+            context_data = yaml.safe_load(context_blob_data.decode("utf-8"))
         else:
             # Validate local context file
             validate_context_file(context_file)
-            
+
             # Load YAML context from local file
-            with open(context_file, 'r', encoding='utf-8') as f:
+            with open(context_file, "r", encoding="utf-8") as f:
                 context_data = yaml.safe_load(f)
-        
+
         # Validate required fields
-        required_fields = ['company_terms', 'core_industries', 'primary_markets', 'strategic_themes']
+        required_fields = [
+            "company_terms",
+            "core_industries",
+            "primary_markets",
+            "strategic_themes",
+        ]
         for field in required_fields:
             if field not in context_data:
-                raise WorkflowError(state.job_id, "load_context", f"Missing required field: {field}")
-        
+                raise WorkflowError(
+                    state.job_id, "load_context", f"Missing required field: {field}"
+                )
+
         state.context = context_data
         state.current_progress = {
             "stage": "context_loaded",
             "context_file": context_file,
             "source_type": "azure_storage" if use_azure else "local_filesystem",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
-        
+
         logger.info("Context loaded successfully", job_id=state.job_id)
         return state
-        
+
     except Exception as e:
         error_msg = f"Failed to load context: {str(e)}"
         state.errors.append(error_msg)
@@ -128,18 +147,20 @@ async def process_documents(state: WorkflowState) -> WorkflowState:
     """Process documents using Ray tasks with Azure Storage integration."""
     try:
         logger.info("Starting document processing", job_id=state.job_id)
-        
+
         use_azure = state.use_azure
         processor = ContentProcessor(use_azure=use_azure)
         processed_docs = []
         failed_docs = []
-        
+
         # Process documents (this will be enhanced with Ray tasks later)
         for i, file_path in enumerate(state.file_paths):
             try:
-                doc = await processor.process_document(file_path, f"doc_{i:03d}", job_id=state.job_id)
+                doc = await processor.process_document(
+                    file_path, f"doc_{i:03d}", job_id=state.job_id
+                )
                 processed_docs.append(doc)
-                
+
                 # Update progress
                 progress_pct = ((i + 1) / len(state.file_paths)) * 100
                 state.current_progress = {
@@ -148,35 +169,46 @@ async def process_documents(state: WorkflowState) -> WorkflowState:
                     "total": len(state.file_paths),
                     "progress_percent": round(progress_pct, 1),
                     "storage_type": "azure_storage" if use_azure else "local_filesystem",
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
-                
+
             except Exception as e:
-                failed_docs.append({
-                    "file_path": file_path,
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat()
-                })
-                logger.warning(f"Failed to process document", 
-                             job_id=state.job_id, file_path=file_path, error=str(e))
-        
+                failed_docs.append(
+                    {
+                        "file_path": file_path,
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                )
+                logger.warning(
+                    f"Failed to process document",
+                    job_id=state.job_id,
+                    file_path=file_path,
+                    error=str(e),
+                )
+
         # Check if we have enough successful documents
         success_rate = len(processed_docs) / len(state.file_paths)
         if success_rate < 0.5:
-            raise WorkflowError(state.job_id, "process_documents", 
-                              f"Too many failed documents: {success_rate:.1%} success rate")
-        
+            raise WorkflowError(
+                state.job_id,
+                "process_documents",
+                f"Too many failed documents: {success_rate:.1%} success rate",
+            )
+
         state.documents = processed_docs
         state.failed_documents = failed_docs
-        
-        logger.info(f"Document processing completed", 
-                   job_id=state.job_id, 
-                   processed=len(processed_docs), 
-                   failed=len(failed_docs),
-                   storage_type="Azure Storage" if use_azure else "local")
-        
+
+        logger.info(
+            f"Document processing completed",
+            job_id=state.job_id,
+            processed=len(processed_docs),
+            failed=len(failed_docs),
+            storage_type="Azure Storage" if use_azure else "local",
+        )
+
         return state
-        
+
     except Exception as e:
         error_msg = f"Document processing failed: {str(e)}"
         state.errors.append(error_msg)
@@ -188,20 +220,20 @@ async def score_documents(state: WorkflowState) -> WorkflowState:
     """Score documents using relevance engine."""
     try:
         logger.info("Starting document scoring", job_id=state.job_id)
-        
+
         scoring_engine = HybridScoringEngine(state.context)
         scoring_results = []
-        
+
         for i, document in enumerate(state.documents):
             try:
                 start_time = time.time()
                 result = await scoring_engine.score_document_hybrid(document)
                 processing_time = (time.time() - start_time) * 1000
-                
+
                 # Add processing time to result
                 result.processing_time_ms = processing_time
                 scoring_results.append(result)
-                
+
                 # Update progress
                 progress_pct = ((i + 1) / len(state.documents)) * 100
                 state.current_progress = {
@@ -209,22 +241,24 @@ async def score_documents(state: WorkflowState) -> WorkflowState:
                     "scored": i + 1,
                     "total": len(state.documents),
                     "progress_percent": round(progress_pct, 1),
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
-                
+
             except Exception as e:
-                logger.warning(f"Failed to score document", 
-                             job_id=state.job_id, document_id=document.id, error=str(e))
+                logger.warning(
+                    f"Failed to score document",
+                    job_id=state.job_id,
+                    document_id=document.id,
+                    error=str(e),
+                )
                 # Continue with other documents
-        
+
         state.scoring_results = scoring_results
-        
-        logger.info(f"Document scoring completed", 
-                   job_id=state.job_id, 
-                   scored=len(scoring_results))
-        
+
+        logger.info(f"Document scoring completed", job_id=state.job_id, scored=len(scoring_results))
+
         return state
-        
+
     except Exception as e:
         error_msg = f"Document scoring failed: {str(e)}"
         state.errors.append(error_msg)
@@ -236,37 +270,37 @@ async def cluster_results(state: WorkflowState) -> WorkflowState:
     """Cluster results by topic and priority."""
     try:
         logger.info("Starting result clustering", job_id=state.job_id)
-        
+
         if not state.job_request.clustering_enabled:
             logger.info("Clustering disabled, skipping", job_id=state.job_id)
             state.current_progress = {
                 "stage": "clustering_skipped",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
             return state
-        
+
         # Topic clustering
         clusterer = TopicClusterer()
         topic_clusters = await clusterer.cluster_by_topic(state.scoring_results)
-        
+
         # Result aggregation
         aggregator = ResultAggregator()
         priority_queues = aggregator.group_by_priority(state.scoring_results)
-        
+
         # Store clustering results in state for report generation
         state.current_progress = {
             "stage": "clustering_completed",
             "topic_clusters": len(topic_clusters),
             "priority_queues": len(priority_queues),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
-        
-        logger.info(f"Result clustering completed", 
-                   job_id=state.job_id, 
-                   clusters=len(topic_clusters))
-        
+
+        logger.info(
+            f"Result clustering completed", job_id=state.job_id, clusters=len(topic_clusters)
+        )
+
         return state
-        
+
     except Exception as e:
         error_msg = f"Result clustering failed: {str(e)}"
         state.errors.append(error_msg)
@@ -278,10 +312,10 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
     """Generate final markdown report and save to local or Azure Storage."""
     try:
         logger.info("Starting report generation", job_id=state.job_id)
-        
+
         generator = ReportGenerator()
         use_azure = state.use_azure
-        
+
         # Generate report data
         report_data = await generator.prepare_report_data(
             state.job_id,
@@ -289,62 +323,66 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
             state.scoring_results,
             state.failed_documents,
             state.context,
-            state.job_request.dict()
+            state.job_request.dict(),
         )
-        
+
         report_filename = f"{state.job_request.job_name}_{state.job_id}_report.md"
-        
+
         if use_azure:
             logger.info("Saving report to Azure Storage", job_id=state.job_id)
-            
+
             # Generate markdown content
             report_content = await generator.generate_markdown_content(report_data)
-            
+
             # Upload to Azure Storage
             azure_client = AzureStorageClient()
             blob_name = f"jobs/{state.job_id}/reports/{report_filename}"
-            
+
             upload_success = await azure_client.upload_blob(
-                'reports', 
-                blob_name, 
+                "reports",
+                blob_name,
                 report_content,
                 metadata={
-                    'job_id': state.job_id,
-                    'job_name': state.job_request.job_name,
-                    'generated_at': datetime.now().isoformat(),
-                    'document_count': str(len(state.scoring_results))
-                }
+                    "job_id": state.job_id,
+                    "job_name": state.job_request.job_name,
+                    "generated_at": datetime.now().isoformat(),
+                    "document_count": str(len(state.scoring_results)),
+                },
             )
-            
+
             if not upload_success:
-                raise WorkflowError(state.job_id, "generate_report", "Failed to upload report to Azure Storage")
-            
+                raise WorkflowError(
+                    state.job_id, "generate_report", "Failed to upload report to Azure Storage"
+                )
+
             report_path = f"azure://{blob_name}"
-            
+
         else:
             # Generate markdown file locally
             output_folder = settings.output_path
             os.makedirs(output_folder, exist_ok=True)
-            
+
             report_path = os.path.join(output_folder, report_filename)
             await generator.generate_markdown_report(report_data, report_path)
-        
+
         state.report_data = report_data
         state.report_file_path = report_path
         state.current_progress = {
             "stage": "report_generated",
             "report_file": report_path,
             "storage_type": "azure_storage" if use_azure else "local_filesystem",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
-        
-        logger.info("Report generation completed", 
-                   job_id=state.job_id, 
-                   report_path=report_path,
-                   storage_type="Azure Storage" if use_azure else "local")
-        
+
+        logger.info(
+            "Report generation completed",
+            job_id=state.job_id,
+            report_path=report_path,
+            storage_type="Azure Storage" if use_azure else "local",
+        )
+
         return state
-        
+
     except Exception as e:
         error_msg = f"Report generation failed: {str(e)}"
         state.errors.append(error_msg)

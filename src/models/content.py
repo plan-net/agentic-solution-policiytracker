@@ -37,7 +37,7 @@ class ProcessedContent(BaseModel):
     sections: List[Dict[str, str]] = Field(default_factory=list)
     extraction_errors: List[str] = Field(default_factory=list)
 
-    @field_validator('raw_text', mode='before')
+    @field_validator("raw_text", mode="before")
     @classmethod
     def strip_text(cls, v: str) -> str:
         return v.strip() if v else ""
