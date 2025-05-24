@@ -323,7 +323,7 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
             
         else:
             # Generate markdown file locally
-            output_folder = "./data/output"  # Hard-coded fix for local mode
+            output_folder = settings.output_path
             os.makedirs(output_folder, exist_ok=True)
             
             report_path = os.path.join(output_folder, report_filename)

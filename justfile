@@ -99,6 +99,8 @@ logs service="":
 kodosumi-deploy:
     @echo "🚀 Starting Ray cluster..."
     uv run --active ray start --head
+    @echo "📝 Syncing environment variables to config.yaml..."
+    uv run python scripts/sync_env_to_config.py
     @echo "📦 Deploying to Ray Serve..."
     uv run --active serve deploy config.yaml
     @echo "🎯 Starting Kodosumi server..."
@@ -136,6 +138,8 @@ kodosumi-restart: kodosumi-stop kodosumi-deploy
 # Quick Kodosumi development cycle (restart only app)
 dev-quick:
     @echo "🔄 Quick Kodosumi restart..."
+    @echo "📝 Syncing environment variables to config.yaml..."
+    uv run python scripts/sync_env_to_config.py
     -uv run --active serve shutdown --yes 2>/dev/null || true
     uv run --active serve deploy config.yaml
     @echo "✅ App redeployed to Kodosumi"
