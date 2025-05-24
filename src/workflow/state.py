@@ -13,6 +13,7 @@ class WorkflowState(BaseModel):
     
     job_id: str = Field(..., description="Unique job identifier")
     job_request: JobRequest = Field(..., description="Original job request")
+    use_azure: bool = Field(default=False, description="Runtime storage mode: True for Azure, False for local")
     documents: List[ProcessedContent] = Field(default_factory=list, description="Processed documents")
     scoring_results: List[ScoringResult] = Field(default_factory=list, description="Scoring results")
     report_data: Optional[ReportData] = Field(default=None, description="Report data")

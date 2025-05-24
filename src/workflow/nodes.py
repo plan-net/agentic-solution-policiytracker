@@ -30,8 +30,8 @@ async def load_documents(state: WorkflowState) -> WorkflowState:
         
         input_source = state.job_request.input_folder
         
-        # Determine if we should use Azure Storage based on configuration
-        use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
+        # Use runtime storage mode from state
+        use_azure = state.use_azure
         
         if use_azure:
             logger.info("Using Azure Storage for document loading", job_id=state.job_id)
@@ -77,7 +77,7 @@ async def load_context(state: WorkflowState) -> WorkflowState:
         logger.info("Loading context file", job_id=state.job_id)
         
         context_file = state.job_request.context_file
-        use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
+        use_azure = state.use_azure
         
         if use_azure:
             logger.info("Loading context from Azure Storage", job_id=state.job_id, context_file=context_file)
@@ -129,7 +129,7 @@ async def process_documents(state: WorkflowState) -> WorkflowState:
     try:
         logger.info("Starting document processing", job_id=state.job_id)
         
-        use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
+        use_azure = state.use_azure
         processor = ContentProcessor(use_azure=use_azure)
         processed_docs = []
         failed_docs = []
@@ -280,7 +280,7 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
         logger.info("Starting report generation", job_id=state.job_id)
         
         generator = ReportGenerator()
-        use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
+        use_azure = state.use_azure
         
         # Generate report data
         report_data = await generator.prepare_report_data(
@@ -323,7 +323,7 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
             
         else:
             # Generate markdown file locally
-            output_folder = settings.DEFAULT_OUTPUT_FOLDER
+            output_folder = "./data/output"  # Hard-coded fix for local mode
             os.makedirs(output_folder, exist_ok=True)
             
             report_path = os.path.join(output_folder, report_filename)

@@ -45,9 +45,10 @@ def create_workflow() -> StateGraph:
     
     return workflow
 
-def create_checkpointer() -> Optional[Any]:
-    """Create appropriate checkpointer based on configuration."""
-    use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
+def create_checkpointer(use_azure: bool = None) -> Optional[Any]:
+    """Create appropriate checkpointer based on runtime storage mode."""
+    if use_azure is None:
+        use_azure = getattr(settings, 'USE_AZURE_STORAGE', False)
     
     if use_azure:
         logger.info("Using Azure Storage checkpointer")
@@ -57,13 +58,14 @@ def create_checkpointer() -> Optional[Any]:
         return MemorySaver()
 
 
-async def execute_workflow(workflow: StateGraph, job: Job, resume_from_checkpoint: Optional[str] = None) -> Dict[str, Any]:
+async def execute_workflow(workflow: StateGraph, job: Job, resume_from_checkpoint: Optional[str] = None, initial_state: Optional[Any] = None) -> Dict[str, Any]:
     """Execute workflow for a job with checkpointing support."""
     try:
         logger.info("Starting workflow execution", job_id=job.id, resume_from_checkpoint=resume_from_checkpoint)
         
-        # Create checkpointer
-        checkpointer = create_checkpointer()
+        # Create checkpointer with runtime storage mode
+        use_azure = initial_state.use_azure if initial_state else getattr(settings, 'USE_AZURE_STORAGE', False)
+        checkpointer = create_checkpointer(use_azure)
         
         # Compile workflow with checkpointer
         compiled_workflow = workflow.compile(checkpointer=checkpointer)
@@ -81,11 +83,12 @@ async def execute_workflow(workflow: StateGraph, job: Job, resume_from_checkpoin
             logger.info("Resuming workflow from checkpoint", 
                        job_id=job.id, checkpoint_id=resume_from_checkpoint)
         
-        # Create initial state
-        initial_state = WorkflowState(
-            job_id=job.id,
-            job_request=job.request
-        )
+        # Use provided initial state or create a new one
+        if initial_state is None:
+            initial_state = WorkflowState(
+                job_id=job.id,
+                job_request=job.request
+            )
         
         # Execute workflow with checkpointing
         final_state = await compiled_workflow.ainvoke(initial_state, config=config)
@@ -100,22 +103,23 @@ async def execute_workflow(workflow: StateGraph, job: Job, resume_from_checkpoin
                 logger.warning("Failed to cleanup old checkpoints", 
                              job_id=job.id, error=str(e))
         
-        # Extract results
+        # Extract results from LangGraph state (AddableValuesDict)
+        # Access fields directly since LangGraph returns a dict-like object
         result = {
-            "report_file": final_state.report_file_path,
+            "report_file": final_state.get("report_file_path"),
             "checkpointing_enabled": checkpointer is not None,
             "checkpointer_type": "azure_storage" if isinstance(checkpointer, AzureCheckpointSaver) else "memory",
             "metrics": {
-                "total_documents": len(final_state.file_paths) if final_state.file_paths else 0,
-                "processed_documents": len(final_state.documents) if final_state.documents else 0,
-                "failed_documents": len(final_state.failed_documents) if final_state.failed_documents else 0,
-                "scored_documents": len(final_state.scoring_results) if final_state.scoring_results else 0,
-                "errors": final_state.errors,
-                "progress": final_state.current_progress,
+                "total_documents": len(final_state.get("file_paths", [])),
+                "processed_documents": len(final_state.get("documents", [])),
+                "failed_documents": len(final_state.get("failed_documents", [])),
+                "scored_documents": len(final_state.get("scoring_results", [])),
+                "errors": final_state.get("errors", []),
+                "progress": final_state.get("current_progress", {}),
                 "summary": {
-                    "total_documents_analyzed": len(final_state.documents) if final_state.documents else 0,
-                    "high_priority_count": len([r for r in final_state.scoring_results if r.master_score >= 75]) if final_state.scoring_results else 0,
-                    "average_score": sum(r.master_score for r in final_state.scoring_results) / len(final_state.scoring_results) if final_state.scoring_results else 0,
+                    "total_documents_analyzed": len(final_state.get("documents", [])),
+                    "high_priority_count": len([r for r in final_state.get("scoring_results", []) if r.master_score >= 75]),
+                    "average_score": sum(r.master_score for r in final_state.get("scoring_results", [])) / len(final_state.get("scoring_results", [])) if final_state.get("scoring_results") else 0,
                 }
             }
         }

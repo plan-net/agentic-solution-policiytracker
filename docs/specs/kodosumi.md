@@ -900,3 +900,103 @@ def task(item):
 ```
 
 Remember: Kodosumi = Endpoint (forms) → Launch → Entrypoint (logic) → Ray (distribution)
+
+## 🎯 Returning Final Results to Kodosumi UI
+
+### Critical Learning: Using core.response.Markdown() for Final Results
+
+**Problem**: When returning final analysis results from entrypoint functions, using `tracer.markdown()` or `tracer.result()` causes the results to display in the wrong section of the Kodosumi UI. Results appear under "STR" instead of "FINAL" and are not rendered as markdown.
+
+**Solution**: Use `core.response.Markdown()` to return final results properly:
+
+```python
+# WRONG: Results show under "STR" section, not rendered as markdown
+async def my_entrypoint(inputs: dict, tracer: Tracer):
+    # ... processing logic ...
+    await tracer.markdown("Processing complete!")
+    await tracer.result(final_report)  # ❌ Wrong section
+    return {"status": "complete"}
+
+# CORRECT: Results show under "FINAL" section with proper markdown rendering  
+import kodosumi.core as core
+
+async def my_entrypoint(inputs: dict, tracer: Tracer):
+    # ... processing logic ...
+    await tracer.markdown("Processing complete!")
+    
+    # Generate final report content
+    final_report = generate_markdown_report()
+    
+    # Return using core.response.Markdown for proper display
+    return core.response.Markdown(final_report)  # ✅ Correct section and rendering
+```
+
+### Key Differences
+
+| Method | Display Section | Markdown Rendering | Use Case |
+|--------|----------------|-------------------|----------|
+| `tracer.markdown()` | Progress updates | ✅ Yes | Real-time progress during execution |
+| `tracer.result()` | STR section | ❌ No | ⚠️ Avoid for final results |
+| `core.response.Markdown()` | FINAL section | ✅ Yes | ✅ Final results and reports |
+
+### Complete Example
+
+```python
+# political_analyzer.py - Proper final result handling
+import kodosumi.core as core
+from kodosumi.core import Tracer
+
+async def execute_analysis(inputs: dict, tracer: Tracer):
+    """Political analysis entrypoint with proper result display"""
+    
+    # Progress updates during processing
+    await tracer.markdown("## Starting Political Analysis")
+    await tracer.markdown("### Step 1: Loading documents...")
+    
+    # ... workflow execution logic ...
+    
+    await tracer.markdown("### Step 3: Analysis complete!")
+    
+    # Generate final report
+    execution_summary = f"""
+# Political Analysis Complete 🎉
+
+## Configuration
+- Documents Processed: {doc_count}
+- Storage Mode: {'Azure' if use_azure else 'Local'}
+- Processing Time: {processing_time:.1f}s
+
+## Status
+✅ Analysis completed successfully
+"""
+
+    # Read the generated report file
+    report_content = read_final_report()
+    
+    # Combine summary and detailed report
+    full_report = execution_summary + "\n\n" + report_content
+    
+    # CRITICAL: Use core.response.Markdown() for proper Kodosumi display
+    return core.response.Markdown(full_report)
+```
+
+### Import Requirements
+
+```python
+# Required import for proper result handling
+import kodosumi.core as core
+
+# Also ensure you have the Tracer import for progress updates
+from kodosumi.core import Tracer
+```
+
+### Troubleshooting Final Results
+
+If your final results are not displaying correctly:
+
+1. **Check import**: Ensure `import kodosumi.core as core` is present
+2. **Verify return statement**: Use `return core.response.Markdown(content)` not `return content`
+3. **Test markdown content**: Ensure your content is valid markdown
+4. **Remove conflicting returns**: Don't use both `tracer.result()` and `core.response.Markdown()`
+
+This pattern ensures that final analysis reports display in the correct "FINAL" section of the Kodosumi UI with proper markdown rendering, providing users with a clear, formatted view of results.

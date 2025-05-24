@@ -12,6 +12,6 @@
 ### Documents in this cluster:
 
 {% for doc in documents %}
-{{ loop.index }}. **{{ doc.metadata.source }}** ({{ "%.1f"|format(doc.master_score) }})
+{{ loop.index }}. **{{ doc.document_id }}** ({{ "%.1f"|format(doc.master_score) }})
    - {{ doc.overall_justification }}
 {% endfor %}

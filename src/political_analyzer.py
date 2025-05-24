@@ -7,6 +7,7 @@ from typing import Any, Dict
 
 import ray
 from kodosumi.core import Tracer
+import kodosumi.core as core
 import structlog
 
 from src.models.job import Job, JobRequest, JobStatus
@@ -41,9 +42,14 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         # Determine use_azure based on storage_mode or config
         use_azure = (storage_mode == "azure") if storage_mode else settings.USE_AZURE_STORAGE
         
-        # Get paths from configuration based on storage mode
-        input_folder = settings.input_path
-        context_file = settings.context_path
+        # Get paths from configuration based on runtime storage mode
+        if use_azure:
+            input_folder = settings.AZURE_INPUT_PATH
+            context_file = settings.AZURE_CONTEXT_PATH
+        else:
+            # Use hard-coded local paths for reliability
+            input_folder = "./data/input" 
+            context_file = "./data/context/client.yaml"
         
         # Initialize progress tracking
         start_time = time.time()
@@ -92,48 +98,11 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             started_at=datetime.now(),
         )
         
-        await tracer.markdown("### Step 2: Document Discovery")
+        await tracer.markdown("### Step 2: Workflow Execution")
         
-        # Resolve input folder path (handle both relative and absolute paths)
-        input_folder_resolved = os.path.abspath(input_folder)
-        logger.info(f"Resolving input folder: {input_folder} -> {input_folder_resolved}")
-        
-        if not os.path.exists(input_folder_resolved):
-            error_msg = f"Input folder not found: {input_folder} (resolved to: {input_folder_resolved})"
-            await tracer.markdown(f"❌ **Error**: {error_msg}")
-            logger.error(error_msg)
-            raise FileNotFoundError(error_msg)
-        
-        # Count documents
-        document_files = []
-        supported_extensions = ('.txt', '.md', '.pdf', '.docx', '.html', '.csv', '.json')
-        
-        logger.info(f"Scanning directory: {input_folder_resolved}")
-        for root, dirs, files in os.walk(input_folder_resolved):
-            logger.debug(f"Checking directory: {root} with {len(files)} files")
-            for file in files:
-                if file.lower().endswith(supported_extensions):
-                    full_path = os.path.join(root, file)
-                    document_files.append(full_path)
-                    logger.debug(f"Found document: {full_path}")
-                else:
-                    logger.debug(f"Skipping unsupported file: {file}")
-        
-        logger.info(f"Document discovery completed: found {len(document_files)} files")
-        
-        total_documents = len(document_files)
-        
-        if total_documents == 0:
-            error_msg = f"No supported documents found in {input_folder}"
-            await tracer.markdown(f"❌ **Error**: {error_msg}")
-            raise ValueError(error_msg)
-        
-        await tracer.markdown(f"""
-✅ Document discovery completed
-- **Total Documents Found**: {total_documents}
-- **Estimated Processing Time**: {max(5, total_documents // 10)} minutes
-- **Processing Batches**: {(total_documents + batch_size - 1) // batch_size}
-""")
+        # Import workflow functions
+        from src.workflow.graph import create_workflow, execute_workflow
+        from src.workflow.state import WorkflowState
         
         # Initialize Ray if not already initialized
         if not ray.is_initialized():
@@ -141,208 +110,86 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             ray.init(num_cpus=4)
             await tracer.markdown("✅ Ray cluster initialized")
         
-        await tracer.markdown("### Step 3: Loading Context and Configuration")
-        
-        # Load context (using Ray task)
-        context_task = load_context_task.remote(context_file)
-        context = await context_task
-        
-        # Check if context loading had errors
-        if context.get("error"):
-            error_msg = f"Context loading failed: {context['error']}"
-            await tracer.markdown(f"❌ **Error**: {error_msg}")
-            if context.get("error_detail"):
-                await tracer.markdown(f"**Details**: ```\n{context['error_detail']}\n```")
-            # Continue with default context but log the issue
-            logger.warning(f"Using default context due to error: {error_msg}")
+        # Create initial workflow state with runtime storage mode
+        initial_state = WorkflowState(
+            job_id=job_id,
+            job_request=job_request,
+            use_azure=use_azure  # ⭐ This is the key fix!
+        )
         
         await tracer.markdown(f"""
-✅ Context loaded successfully
-- **Context File**: {context_file}
-- **Analysis Framework**: Political relevance scoring
-- **Scoring Dimensions**: {len(context.get('scoring_dimensions', []))} dimensions
+### Step 3: Starting LangGraph Workflow
+- **Storage Mode**: {"Azure Blob Storage" if use_azure else "Local Filesystem"}
+- **Input Path**: {input_folder}
+- **Context Path**: {context_file}
 """)
         
-        await tracer.markdown("### Step 4: Document Processing Pipeline")
-        await tracer.markdown("🔄 **Phase 1**: Document parsing and content extraction...")
+        # Create and execute workflow
+        workflow = create_workflow()
         
-        # Create document processing batches
-        processing_batches = create_processing_batches(document_files, batch_size)
-        processed_documents = []
-        
-        # Process documents in parallel batches
-        processing_futures = []
-        for i, batch in enumerate(processing_batches):
-            future = process_batch_task.remote(batch, i * batch_size, job_id, use_azure)
-            processing_futures.append(future)
-        
-        # Monitor processing progress
-        completed_batches = 0
-        total_batches = len(processing_batches)
-        
-        while processing_futures:
-            done, processing_futures = ray.wait(processing_futures, num_returns=1, timeout=1.0)
+        try:
+            result = await execute_workflow(workflow, job, resume_from_checkpoint=None, initial_state=initial_state)
             
-            for completed_future in done:
-                try:
-                    batch_results = await completed_future
-                    processed_documents.extend(batch_results)
-                    completed_batches += 1
-                    
-                    progress_pct = (completed_batches / total_batches) * 100
-                    await tracer.markdown(f"""
-**Processing Progress**: {completed_batches}/{total_batches} batches ({progress_pct:.1f}%)
-- Documents processed: {len(processed_documents)}/{total_documents}
-""")
-                    
-                except Exception as e:
-                    logger.error(f"Batch processing failed: {e}")
-                    await tracer.markdown(f"⚠️ Warning: One batch failed - {str(e)}")
-        
-        await tracer.markdown(f"""
-✅ **Phase 1 Complete**: Document processing finished
-- **Successfully Processed**: {len(processed_documents)}/{total_documents} documents
-""")
-        
-        if not processed_documents:
-            error_msg = "No documents were successfully processed"
-            await tracer.markdown(f"❌ **Error**: {error_msg}")
-            raise ValueError(error_msg)
-        
-        await tracer.markdown("🔄 **Phase 2**: Political relevance scoring...")
-        
-        # Create scoring batches
-        scoring_batches = create_scoring_batches(processed_documents, batch_size // 2)
-        scoring_results = []
-        
-        # Score documents in parallel
-        scoring_futures = []
-        for batch in scoring_batches:
-            future = score_batch_task.remote(batch, context)
-            scoring_futures.append(future)
-        
-        # Monitor scoring progress
-        completed_scoring = 0
-        total_scoring_batches = len(scoring_batches)
-        
-        while scoring_futures:
-            done, scoring_futures = ray.wait(scoring_futures, num_returns=1, timeout=1.0)
+            # Read the generated report file and return its content for Kodosumi display
+            report_file_path = result['report_file']
             
-            for completed_future in done:
-                try:
-                    batch_scores = await completed_future
-                    scoring_results.extend(batch_scores)
-                    completed_scoring += 1
-                    
-                    progress_pct = (completed_scoring / total_scoring_batches) * 100
-                    await tracer.markdown(f"""
-**Scoring Progress**: {completed_scoring}/{total_scoring_batches} batches ({progress_pct:.1f}%)
-- Documents scored: {len(scoring_results)}/{len(processed_documents)}
+            if report_file_path and os.path.exists(report_file_path):
+                # Read the generated report content
+                with open(report_file_path, 'r', encoding='utf-8') as f:
+                    report_content = f.read()
+                
+                # Add execution summary at the top
+                execution_summary = f"""# Political Analysis Complete! 🎉
+
+## Execution Summary
+- **Job ID**: {job_id}
+- **Total Documents**: {result['metrics']['total_documents']}
+- **Processed Successfully**: {result['metrics']['processed_documents']}
+- **High Priority Items**: {result['metrics']['summary']['high_priority_count']}
+- **Average Score**: {result['metrics']['summary']['average_score']:.1f}%
+- **Processing Time**: {time.time() - start_time:.1f} seconds
+- **Storage Mode**: {"Azure Blob Storage" if use_azure else "Local Filesystem"}
+- **Report File**: `{report_file_path}`
+
+---
+
+"""
+                
+                # Return the complete report as a Kodosumi Markdown response for proper FINAL display
+                await tracer.markdown("### ✅ Analysis Complete! Report ready for viewing.")
+                
+                return core.response.Markdown(execution_summary + report_content)
+                
+            else:
+                await tracer.markdown(f"""### ⚠️ Analysis completed but report file not found
+
+**Job ID**: {job_id}
+**Status**: Analysis completed successfully but report file could not be read.
+**Report Path**: {report_file_path}
+
+Please check the output directory for the generated report.
 """)
-                    
-                except Exception as e:
-                    logger.error(f"Batch scoring failed: {e}")
-                    await tracer.markdown(f"⚠️ Warning: One scoring batch failed - {str(e)}")
-        
-        await tracer.markdown(f"""
-✅ **Phase 2 Complete**: Relevance scoring finished
-- **Successfully Scored**: {len(scoring_results)}/{len(processed_documents)} documents
-""")
-        
-        if clustering_enabled:
-            await tracer.markdown("🔄 **Phase 3**: Topic clustering and aggregation...")
             
-            # Perform clustering
-            clustering_future = cluster_and_aggregate_task.remote(scoring_results, context)
-            final_results = await clustering_future
-            
+        except Exception as workflow_error:
+            error_msg = f"Workflow execution failed: {str(workflow_error)}"
             await tracer.markdown(f"""
-✅ **Phase 3 Complete**: Clustering and aggregation finished
-- **Topic Clusters**: {len(final_results.get('topic_groups', {}))}
-- **Priority Groups**: {len(final_results.get('priority_groups', {}))}
+### ❌ Workflow Failed
+
+**Error**: {error_msg}
+
+Please check the configuration and try again.
 """)
-        else:
-            await tracer.markdown("⏭️ **Phase 3**: Skipping clustering (disabled)")
-            final_results = {"aggregated_results": scoring_results, "statistics": {}}
-        
-        await tracer.markdown("🔄 **Phase 4**: Report generation...")
-        
-        # Generate final report
-        report_future = generate_report_task.remote(final_results, job, context)
-        report_result = await report_future
-        
-        # Calculate final metrics
-        total_time = time.time() - start_time
-        
-        # Filter results by priority threshold
-        high_priority_results = [
-            r for r in scoring_results 
-            if r.master_score >= priority_threshold
-        ]
-        
-        if not include_low_confidence:
-            high_priority_results = [
-                r for r in high_priority_results 
-                if r.confidence_score >= 80.0
-            ]
-        
-        await tracer.markdown(f"""
-✅ **Phase 4 Complete**: Report generation finished
-
-## Analysis Summary
-
-### Processing Statistics
-- **Total Processing Time**: {total_time:.1f} seconds
-- **Documents Analyzed**: {total_documents}
-- **Successfully Processed**: {len(processed_documents)}
-- **Successfully Scored**: {len(scoring_results)}
-- **High Priority Results**: {len(high_priority_results)}
-
-### Quality Metrics
-- **Average Confidence Score**: {sum(r.confidence_score for r in scoring_results) / len(scoring_results):.1f}%
-- **Average Priority Score**: {sum(r.master_score for r in scoring_results) / len(scoring_results):.1f}%
-- **Processing Rate**: {len(processed_documents) / total_time:.1f} documents/second
-
-### Output
-- **Report File**: {report_result.get('report_file', 'Not generated')}
-- **Report Format**: Markdown with tables and visualizations
-- **Download Ready**: ✅
-
-## Analysis Complete! 🎉
-
-The political document analysis has been completed successfully. You can download the full report using the download link provided.
-""")
-        
-        return {
-            "success": True,
-            "job_id": job_id,
-            "report_file": report_result.get("report_file"),
-            "statistics": {
-                "total_documents": total_documents,
-                "processed_documents": len(processed_documents),
-                "scored_documents": len(scoring_results),
-                "high_priority_documents": len(high_priority_results),
-                "processing_time_seconds": total_time,
-                "average_confidence": sum(r.confidence_score for r in scoring_results) / len(scoring_results) if scoring_results else 0,
-                "average_priority": sum(r.master_score for r in scoring_results) / len(scoring_results) if scoring_results else 0,
-            },
-            "metadata": {
-                "job_name": job_name,
-                "priority_threshold": priority_threshold,
-                "clustering_enabled": clustering_enabled,
-                "include_low_confidence": include_low_confidence,
-                "instructions": instructions,
-            }
-        }
-        
+            logger.error(error_msg, exc_info=True)
+            
     except Exception as e:
         error_msg = f"Analysis failed: {str(e)}"
         logger.error("Political analysis failed", error=str(e))
         
-        await tracer.markdown(f"""
-## Analysis Failed ❌
+        return core.response.Markdown(f"""# Analysis Failed ❌
 
 **Error**: {error_msg}
+
+**Job ID**: {job_id if 'job_id' in locals() else "unknown"}
 
 **Troubleshooting Steps**:
 1. Check that input folder exists and contains supported documents
@@ -352,163 +199,3 @@ The political document analysis has been completed successfully. You can downloa
 
 Please review the configuration and try again.
 """)
-        
-        return {
-            "success": False,
-            "error": error_msg,
-            "job_id": job_id if 'job_id' in locals() else "unknown",
-        }
-
-# Ray remote functions for distributed processing
-
-@ray.remote
-def load_context_task(context_file: str) -> Dict[str, Any]:
-    """Load analysis context configuration."""
-    try:
-        import yaml
-        import traceback
-        
-        # Log the context file path for debugging
-        logger.info(f"Loading context from: {context_file}")
-        
-        # Check if file exists
-        if not os.path.exists(context_file):
-            error_msg = f"Context file not found: {context_file}"
-            logger.error(error_msg)
-            raise FileNotFoundError(error_msg)
-        
-        with open(context_file, 'r') as f:
-            context = yaml.safe_load(f)
-        
-        logger.info(f"Successfully loaded context with {len(context)} keys")
-        return context
-        
-    except Exception as e:
-        error_msg = f"Failed to load context from {context_file}: {str(e)}"
-        error_detail = traceback.format_exc()
-        logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
-        
-        # Return default context with error information
-        return {
-            "scoring_dimensions": ["relevance", "priority", "confidence"],
-            "default_config": True,
-            "error": error_msg,
-            "error_detail": error_detail
-        }
-
-@ray.remote
-def process_batch_task(file_paths: list, start_index: int, job_id: str, use_azure: bool = None) -> list:
-    """Process a batch of documents."""
-    import traceback
-    
-    try:
-        from src.processors.content_processor import ContentProcessor
-        from src.config import settings
-        
-        # Use passed parameter or fall back to settings
-        azure_mode = use_azure if use_azure is not None else settings.USE_AZURE_STORAGE
-        
-        logger.info(f"Processing batch of {len(file_paths)} files starting at index {start_index}")
-        logger.debug(f"Azure storage mode: {azure_mode} (passed={use_azure}, config={settings.USE_AZURE_STORAGE})")
-        
-        # Use determined Azure setting
-        processor = ContentProcessor(use_azure=azure_mode)
-        results = []
-        
-        for i, file_path in enumerate(file_paths):
-            try:
-                doc_id = f"doc_{start_index + i:03d}"
-                
-                # Check if file exists
-                if not os.path.exists(file_path):
-                    error_msg = f"File not found: {file_path}"
-                    logger.error(error_msg)
-                    continue
-                
-                # Process document
-                import asyncio
-                result = asyncio.run(processor.process_document(file_path, doc_id))
-                results.append(result)
-                logger.debug(f"Successfully processed {file_path}")
-                
-            except Exception as e:
-                error_msg = f"Failed to process {file_path}: {str(e)}"
-                error_detail = traceback.format_exc()
-                logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
-        
-        logger.info(f"Batch processing completed: {len(results)}/{len(file_paths)} files processed successfully")
-        return results
-        
-    except Exception as e:
-        error_msg = f"Batch processing failed: {str(e)}"
-        error_detail = traceback.format_exc()
-        logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
-        return []
-
-@ray.remote  
-def score_batch_task(documents: list, context: Dict[str, Any]) -> list:
-    """Score a batch of documents."""
-    try:
-        from src.scoring.relevance_engine import RelevanceEngine
-        
-        engine = RelevanceEngine(context)
-        results = []
-        
-        for document in documents:
-            try:
-                import asyncio
-                result = asyncio.run(engine.score_document(document))
-                results.append(result)
-            except Exception as e:
-                logger.warning(f"Failed to score document {document.id}: {e}")
-        
-        return results
-        
-    except Exception as e:
-        logger.error(f"Batch scoring failed: {e}")
-        return []
-
-@ray.remote
-def cluster_and_aggregate_task(scoring_results: list, context: Dict[str, Any]) -> Dict[str, Any]:
-    """Perform clustering and aggregation."""
-    try:
-        from src.analysis.aggregator import Aggregator
-        
-        aggregator = Aggregator()
-        return aggregator.aggregate_results(scoring_results)
-        
-    except Exception as e:
-        logger.error(f"Clustering failed: {e}")
-        return {"aggregated_results": scoring_results, "statistics": {}}
-
-@ray.remote
-def generate_report_task(results: Dict[str, Any], job: Any, context: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate final analysis report."""
-    try:
-        from src.output.report_generator import ReportGenerator
-        
-        generator = ReportGenerator()
-        import asyncio
-        return asyncio.run(generator.generate_report(results, job, context))
-        
-    except Exception as e:
-        logger.error(f"Report generation failed: {e}")
-        return {"report_file": None}
-
-# Utility functions
-
-def create_processing_batches(file_paths: list, batch_size: int) -> list:
-    """Create batches for document processing."""
-    batches = []
-    for i in range(0, len(file_paths), batch_size):
-        batch = file_paths[i:i + batch_size]
-        batches.append(batch)
-    return batches
-
-def create_scoring_batches(documents: list, batch_size: int) -> list:
-    """Create batches for document scoring."""
-    batches = []
-    for i in range(0, len(documents), batch_size):
-        batch = documents[i:i + batch_size]
-        batches.append(batch)
-    return batches

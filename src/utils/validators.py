@@ -46,7 +46,9 @@ def validate_file_size(file_path: str, max_size_mb: int) -> bool:
 
 def validate_directory_exists(path: str) -> bool:
     """Check if directory exists and is accessible."""
-    return os.path.isdir(path) and os.access(path, os.R_OK)
+    # Resolve relative paths to absolute paths
+    resolved_path = os.path.abspath(path)
+    return os.path.isdir(resolved_path) and os.access(resolved_path, os.R_OK)
 
 
 def validate_context_file(context_path: str) -> None:

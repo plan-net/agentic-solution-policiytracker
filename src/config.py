@@ -22,9 +22,9 @@ class Settings(BaseSettings):
     RAY_TASK_MAX_RETRIES: int = Field(default=3)
 
     # Path Settings
-    DEFAULT_INPUT_FOLDER: str = Field(default="/data/input")
-    DEFAULT_OUTPUT_FOLDER: str = Field(default="/data/output")
-    DEFAULT_CONTEXT_FOLDER: str = Field(default="/data/context")
+    DEFAULT_INPUT_FOLDER: str = Field(default="./data/input")
+    DEFAULT_OUTPUT_FOLDER: str = Field(default="./data/output")
+    DEFAULT_CONTEXT_FOLDER: str = Field(default="./data/context")
 
     # Processing Limits
     MAX_BATCH_SIZE: int = Field(default=1000)

@@ -92,8 +92,12 @@ class ReportGenerator:
                 performance_metrics={
                     "total_time_seconds": metrics.get("processing_statistics", {}).get("total_time_ms", 0) / 1000,
                     "avg_time_per_doc_ms": metrics.get("processing_statistics", {}).get("average_time_ms", 0),
-                    "score_statistics": metrics.get("score_statistics", {}),
-                    "confidence_statistics": metrics.get("confidence_statistics", {})
+                    "avg_score": metrics.get("score_statistics", {}).get("average", 0.0),
+                    "max_score": metrics.get("score_statistics", {}).get("maximum", 0.0),
+                    "min_score": metrics.get("score_statistics", {}).get("minimum", 0.0),
+                    "avg_confidence": metrics.get("confidence_statistics", {}).get("average", 0.0),
+                    "max_confidence": metrics.get("confidence_statistics", {}).get("high_confidence_count", 0.0),
+                    "min_confidence": metrics.get("confidence_statistics", {}).get("low_confidence_count", 0.0)
                 }
             )
             

@@ -47,7 +47,7 @@
 ### {{ queue.priority_level.title() }} Priority ({{ queue.document_count }} items)
 
 {% for doc in queue.documents[:10] %}
-#### {{ loop.index }}. {{ doc.metadata.source }}
+#### {{ loop.index }}. {{ doc.document_id }}
 
 - **Score:** {{ "%.1f"|format(doc.master_score) }}/100
 - **Confidence:** {{ doc.confidence_level.title() }}
@@ -100,7 +100,7 @@
 
 **Top Documents:**
 {% for doc in cluster.documents[:5] %}
-{{ loop.index }}. **{{ doc.metadata.source }}** - Score: {{ "%.1f"|format(doc.master_score) }} ({{ doc.confidence_level }})
+{{ loop.index }}. **{{ doc.document_id }}** - Score: {{ "%.1f"|format(doc.master_score) }} ({{ doc.confidence_level }})
    - {{ doc.overall_justification }}
 {% endfor %}
 
