@@ -307,7 +307,30 @@ just services-status    # Check service health
 - View Kodosumi admin panel for execution timeline and results
 - Check Langfuse at http://localhost:3001 for LLM operation traces
 
+### Alternative Development Mode
+
+If you encounter Kodosumi dependency issues, you can use the simple FastAPI version:
+
+```bash
+just dev-simple    # Start FastAPI version without Kodosumi
+```
+
+This provides:
+- **Same web interface** at http://localhost:8000  
+- **Form-based document analysis** with validation
+- **Health check endpoint** for testing
+- **Mock workflow responses** (full integration pending)
+
 ### Troubleshooting
+
+**Kodosumi Dependency Issues**:
+```bash
+# If Kodosumi has multipart/litestar conflicts:
+just dev-simple    # Use FastAPI version instead
+
+# Check what's conflicting:
+uv pip list | grep -E "(multipart|litestar|kodosumi)"
+```
 
 **Langfuse Issues**:
 ```bash

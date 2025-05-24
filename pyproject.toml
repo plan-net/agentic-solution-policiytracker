@@ -11,15 +11,17 @@ version = "1.0.0"
 description = "Political document monitoring agent for Kodosumi on Ray"
 authors = [{name = "Political Monitoring Team"}]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = "==3.12.6"
 dependencies = [
     # Kodosumi Framework
     "kodosumi==0.9.2",
+    "litestar==2.16.0",
     # Core Framework
     "ray[serve]==2.46.0",
-    "fastapi==0.104.1",
-    "uvicorn==0.24.0",
-    "python-multipart==0.0.6",
+    "fastapi==0.115.12",
+    "uvicorn==0.34.2",
+    "multipart==1.2.1",
+    "python-multipart==0.0.20",
     # Workflow & State Management
     "langgraph==0.2.3",
     "pydantic>=2.7.4,<3.0.0",
@@ -83,7 +85,7 @@ dev-dependencies = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "S", "T20"]
 ignore = ["E501", "S101"]  # Line too long, assert statements
 
@@ -92,7 +94,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
