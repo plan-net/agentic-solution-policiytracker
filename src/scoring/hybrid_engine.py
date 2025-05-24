@@ -2,7 +2,7 @@
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import structlog
 
@@ -24,7 +24,7 @@ class HybridScoringEngine:
         self.rule_based_engine = RelevanceEngine(context)
         self.llm_enabled = settings.LLM_ENABLED and settings.LLM_FALLBACK_ENABLED
 
-    async def score_document_hybrid(self, document: ProcessedContent) -> ScoringResult:
+    async def score_document_hybrid(self, document: ProcessedContent, job_id: Optional[str] = None) -> ScoringResult:
         """Score document using hybrid rule-based + LLM approach."""
         try:
             logger.debug(
@@ -40,7 +40,7 @@ class HybridScoringEngine:
 
             # Step 2: Get LLM document insights in parallel with semantic scoring
             insights_task = asyncio.create_task(
-                langchain_llm_service.analyze_document(document.raw_text, self.context)
+                langchain_llm_service.analyze_document(document.raw_text, self.context, session_id=job_id)
             )
 
             # Step 3: Get LLM semantic scores for each dimension in parallel
@@ -48,7 +48,7 @@ class HybridScoringEngine:
             for dim_name, dim_score in rule_based_result.dimension_scores.items():
                 task = asyncio.create_task(
                     langchain_llm_service.score_dimension_semantic(
-                        document.raw_text, dim_name, self.context, dim_score.score
+                        document.raw_text, dim_name, self.context, dim_score.score, session_id=job_id
                     )
                 )
                 semantic_scoring_tasks.append(task)
@@ -68,12 +68,11 @@ class HybridScoringEngine:
                     error=str(insights),
                 )
                 insights = DocumentInsight(
-                    key_themes=["LLM analysis unavailable"],
-                    regulatory_indicators=[],
-                    urgency_signals=[],
-                    business_impact="Analysis failed",
-                    confidence_score=0.1,
-                    reasoning="LLM insights failed",
+                    key_topics=["LLM analysis unavailable"],
+                    sentiment="unknown",
+                    urgency_level="low",
+                    confidence=0.1,
+                    summary="LLM insights failed",
                 )
 
             # Handle individual semantic score exceptions
@@ -192,7 +191,7 @@ class HybridScoringEngine:
         # Calculate enhanced confidence (consider LLM confidence)
         enhanced_confidence = self._calculate_enhanced_confidence(
             rule_based_result.confidence_score,
-            insights.confidence_score,
+            insights.confidence,
             len([s for s in semantic_scores if s.confidence > 0.7]),
         )
 
@@ -223,20 +222,18 @@ class HybridScoringEngine:
 
         base_justification = rule_justification
 
-        if insights.confidence_score > 0.5:
+        if insights.confidence > 0.5:
             # Add LLM insights to justification
             llm_additions = []
 
-            if insights.key_themes:
-                themes_str = ", ".join(insights.key_themes[:3])
+            if insights.key_topics:
+                themes_str = ", ".join(insights.key_topics[:3])
                 llm_additions.append(f"key themes: {themes_str}")
 
-            if insights.regulatory_indicators:
-                llm_additions.append(
-                    f"regulatory indicators identified: {len(insights.regulatory_indicators)}"
-                )
+            if insights.sentiment and insights.sentiment != "neutral":
+                llm_additions.append(f"sentiment analysis: {insights.sentiment}")
 
-            if insights.urgency_signals:
+            if insights.urgency_level and insights.urgency_level != "medium":
                 llm_additions.append("time-sensitive elements detected")
 
             if llm_additions:
@@ -252,15 +249,15 @@ class HybridScoringEngine:
         enhanced_factors = rule_factors.copy()
 
         # Add LLM-identified themes as factors
-        if insights.confidence_score > 0.6:
-            for theme in insights.key_themes[:2]:  # Add top 2 themes
+        if insights.confidence > 0.6:
+            for theme in insights.key_topics[:2]:  # Add top 2 themes
                 factor = f"LLM-identified theme: {theme}"
                 if factor not in enhanced_factors:
                     enhanced_factors.append(factor)
 
-            # Add regulatory indicators
-            if insights.regulatory_indicators:
-                factor = f"Regulatory compliance indicators: {len(insights.regulatory_indicators)}"
+            # Add urgency indicators
+            if insights.urgency_level == "high":
+                factor = "High urgency level identified by LLM analysis"
                 enhanced_factors.append(factor)
 
         return enhanced_factors[:5]  # Keep max 5 factors
@@ -286,7 +283,7 @@ class HybridScoringEngine:
         clusters = []
 
         # Use key themes as topic clusters
-        for theme in insights.key_themes[:3]:  # Max 3 clusters
+        for theme in insights.key_topics[:3]:  # Max 3 clusters
             # Clean and standardize theme names
             clean_theme = theme.lower().replace(" ", "_")
             clusters.append(clean_theme)

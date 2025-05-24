@@ -227,7 +227,7 @@ async def score_documents(state: WorkflowState) -> WorkflowState:
         for i, document in enumerate(state.documents):
             try:
                 start_time = time.time()
-                result = await scoring_engine.score_document_hybrid(document)
+                result = await scoring_engine.score_document_hybrid(document, job_id=state.job_id)
                 processing_time = (time.time() - start_time) * 1000
 
                 # Add processing time to result

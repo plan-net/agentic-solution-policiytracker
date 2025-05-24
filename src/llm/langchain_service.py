@@ -13,6 +13,7 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langfuse.decorators import observe, langfuse_context
 
 from src.config import settings
 from src.llm.models import (
@@ -22,7 +23,7 @@ from src.llm.models import (
     LLMReportInsights,
     LLMProvider,
 )
-from src.integrations.langfuse_client import langfuse_client
+# Using @observe decorators for automatic Langfuse integration
 from src.prompts.prompt_manager import prompt_manager
 
 logger = structlog.get_logger()
@@ -131,8 +132,21 @@ class LangChainLLMService:
         logger.info(f"Using mock response for {operation_name}")
         return mock_response
 
-    async def analyze_document(self, text: str, context: Dict[str, Any]) -> DocumentInsight:
+    @observe()
+    async def analyze_document(self, text: str, context: Dict[str, Any], session_id: Optional[str] = None) -> DocumentInsight:
         """Analyze document using LangChain with structured output."""
+        
+        # Update trace with session and meaningful tags
+        langfuse_context.update_current_trace(
+            name="Document Analysis Session",
+            session_id=session_id,
+            tags=["document-analysis"],
+            metadata={
+                "text_length": len(text),
+                "context_keys": list(context.keys()),
+                "provider": self.current_provider.value,
+            }
+        )
 
         async def execute_analysis(llm: BaseChatModel) -> DocumentInsight:
             # Load prompt from prompt manager
@@ -147,41 +161,51 @@ class LangChainLLMService:
                 },
             )
 
-            # Create simple prompt template
-            prompt = ChatPromptTemplate.from_messages([("human", prompt_text)])
+            # Update current observation with detailed context
+            langfuse_context.update_current_observation(
+                name=f"Document Analysis - {self.current_provider.value}",
+                input={
+                    "prompt_length": len(prompt_text),
+                    "text_snippet": text[:200] + "..." if len(text) > 200 else text,
+                    "context_summary": {
+                        "company_terms_count": len(context.get("company_terms", [])),
+                        "industries_count": len(context.get("core_industries", [])),
+                        "markets_count": len(context.get("primary_markets", [])),
+                    }
+                },
+                model=getattr(settings, "ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022") if self.current_provider.value == "anthropic" else getattr(settings, "OPENAI_MODEL", "gpt-4"),
+                metadata={
+                    "operation": "document_analysis",
+                    "provider": self.current_provider.value,
+                    "text_length": len(text),
+                }
+            )
 
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=DocumentInsight)
 
-            # Create chain
-            chain = prompt | llm | parser
-
-            # Execute with tracing
-            async with await langfuse_client.trace(
-                name="langchain_document_analysis",
-                input_data={"text_length": len(text), "context_keys": list(context.keys())},
-                metadata={
-                    "provider": self.current_provider.value,
-                    "operation": "document_analysis",
-                },
-            ) as trace:
-                try:
-                    result = await chain.ainvoke({})
-
-                    # Update trace with results
-                    trace.update_output(
-                        {
-                            "key_topics_count": len(result.key_topics),
-                            "sentiment": result.sentiment,
-                            "confidence": result.confidence,
-                        }
-                    )
-
-                    return result
-
-                except Exception as e:
-                    trace.update_output({"error": str(e)})
-                    raise
+            # Get Langfuse callback handler for proper cost tracking
+            langfuse_handler = langfuse_context.get_current_langchain_handler()
+            
+            # Execute LLM call with Langfuse handler for automatic cost tracking
+            llm_response = await llm.ainvoke(
+                [HumanMessage(content=prompt_text)], 
+                config={"callbacks": [langfuse_handler]}
+            )
+            result = parser.parse(llm_response.content)
+            
+            # Update observation with structured output
+            langfuse_context.update_current_observation(
+                output={
+                    "key_topics": result.key_topics,
+                    "sentiment": result.sentiment,
+                    "urgency_level": result.urgency_level,
+                    "confidence": result.confidence,
+                    "summary_length": len(result.summary),
+                }
+            )
+            
+            return result
 
         # Mock response for fallback
         mock_response = DocumentInsight(
@@ -197,10 +221,24 @@ class LangChainLLMService:
             "document_analysis", execute_analysis, mock_response
         )
 
+    @observe()
     async def score_dimension_semantic(
-        self, text: str, dimension: str, context: Dict[str, Any], rule_based_score: float
+        self, text: str, dimension: str, context: Dict[str, Any], rule_based_score: float, session_id: Optional[str] = None
     ) -> SemanticScore:
         """Generate semantic score using LangChain."""
+        
+        # Update trace with session and meaningful tags for semantic scoring
+        langfuse_context.update_current_trace(
+            name="Semantic Scoring Session",
+            session_id=session_id,
+            tags=["semantic-scoring", f"dimension-{dimension}"],
+            metadata={
+                "dimension": dimension,
+                "rule_based_score": rule_based_score,
+                "text_length": len(text),
+                "provider": self.current_provider.value,
+            }
+        )
 
         async def execute_scoring(llm: BaseChatModel) -> SemanticScore:
             # Load prompt from prompt manager
@@ -217,40 +255,53 @@ class LangChainLLMService:
                 },
             )
 
-            # Create prompt template
-            prompt = ChatPromptTemplate.from_messages([("human", prompt_text)])
+            # Update current observation with detailed context
+            langfuse_context.update_current_observation(
+                name=f"Semantic Scoring: {dimension} - {self.current_provider.value}",
+                input={
+                    "dimension": dimension,
+                    "rule_based_score": rule_based_score,
+                    "prompt_length": len(prompt_text),
+                    "text_snippet": text[:150] + "..." if len(text) > 150 else text,
+                    "context_summary": {
+                        "company_terms_count": len(context.get("company_terms", [])),
+                        "industries_count": len(context.get("core_industries", [])),
+                    }
+                },
+                model=getattr(settings, "ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022") if self.current_provider.value == "anthropic" else getattr(settings, "OPENAI_MODEL", "gpt-4"),
+                metadata={
+                    "operation": "semantic_scoring",
+                    "dimension": dimension,
+                    "provider": self.current_provider.value,
+                    "rule_based_score": rule_based_score,
+                }
+            )
 
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=SemanticScore)
 
-            # Create chain
-            chain = prompt | llm | parser
-
-            async with await langfuse_client.trace(
-                name="langchain_semantic_scoring",
-                input_data={
-                    "dimension": dimension,
-                    "rule_based_score": rule_based_score,
-                    "text_length": len(text),
-                },
-                metadata={"provider": self.current_provider.value, "operation": "semantic_scoring"},
-            ) as trace:
-                try:
-                    result = await chain.ainvoke({})
-
-                    trace.update_output(
-                        {
-                            "semantic_score": result.semantic_score,
-                            "confidence": result.confidence,
-                            "reasoning_length": len(result.reasoning),
-                        }
-                    )
-
-                    return result
-
-                except Exception as e:
-                    trace.update_output({"error": str(e)})
-                    raise
+            # Get Langfuse callback handler for proper cost tracking
+            langfuse_handler = langfuse_context.get_current_langchain_handler()
+            
+            # Execute LLM call with Langfuse handler for automatic cost tracking
+            llm_response = await llm.ainvoke(
+                [HumanMessage(content=prompt_text)], 
+                config={"callbacks": [langfuse_handler]}
+            )
+            result = parser.parse(llm_response.content)
+            
+            # Update observation with structured output
+            langfuse_context.update_current_observation(
+                output={
+                    "semantic_score": result.semantic_score,
+                    "confidence": result.confidence,
+                    "reasoning_length": len(result.reasoning),
+                    "key_factors_count": len(result.key_factors),
+                    "score_improvement": result.semantic_score - rule_based_score,
+                }
+            )
+            
+            return result
 
         # Mock response
         mock_response = SemanticScore(
