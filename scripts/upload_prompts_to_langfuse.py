@@ -28,6 +28,9 @@ async def upload_prompts_to_langfuse():
     langfuse_client = LangfuseClient()
     prompt_manager = PromptManager()
     
+    # Initialize Langfuse client
+    await langfuse_client._initialize()
+    
     # Check if Langfuse is available
     if not langfuse_client.available:
         print("❌ Langfuse is not available. Please ensure:")
@@ -80,10 +83,14 @@ async def upload_prompts_to_langfuse():
             description = frontmatter.get('description', f'Prompt from {prompt_file.name}')
             
             # Check if prompt already exists
-            existing = await langfuse_client.get_prompt(prompt_name, version)
-            if existing:
-                print(f"   ⚠️  Prompt '{prompt_name}' version {version} already exists, skipping...")
-                continue
+            try:
+                existing = await langfuse_client.get_prompt(prompt_name, version)
+                if existing:
+                    print(f"   ⚠️  Prompt '{prompt_name}' version {version} already exists, skipping...")
+                    continue
+            except Exception:
+                # Prompt doesn't exist, which is expected for new uploads
+                pass
             
             # Upload to Langfuse
             success = await langfuse_client.create_prompt(
@@ -129,10 +136,10 @@ async def verify_prompt_access():
     
     # Test each prompt
     prompt_names = [
-        "document_analysis_prompt",
-        "semantic_scoring_prompt", 
-        "topic_clustering_prompt",
-        "report_insights_prompt"
+        "document_analysis",
+        "semantic_scoring", 
+        "topic_clustering",
+        "report_insights"
     ]
     
     for prompt_name in prompt_names:

@@ -1,5 +1,5 @@
 ---
-name: report_insights_prompt
+name: report_insights
 version: 1
 description: Generate executive insights for political monitoring reports
 ---

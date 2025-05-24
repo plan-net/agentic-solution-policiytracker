@@ -1,5 +1,5 @@
 ---
-name: semantic_scoring_prompt
+name: semantic_scoring
 version: 1
 description: Generate semantic relevance scores for document dimensions
 ---

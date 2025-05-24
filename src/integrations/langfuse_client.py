@@ -142,6 +142,35 @@ class LangfuseClient:
                 return fallback_prompt
             raise
 
+    async def create_prompt(
+        self,
+        name: str,
+        prompt: str,
+        version: Optional[int] = None,
+        labels: Optional[list[str]] = None,
+        tags: Optional[list[str]] = None,
+    ) -> bool:
+        """Create a new prompt in Langfuse."""
+        await self._initialize()
+
+        if not self._available:
+            logger.warning(f"Cannot create prompt '{name}' - Langfuse not available")
+            return False
+
+        try:
+            # Create prompt in Langfuse (version is auto-incremented)
+            await asyncio.to_thread(
+                self._client.create_prompt,
+                name=name,
+                prompt=prompt,
+                labels=labels or [],
+                tags=tags or []
+            )
+            return True
+        except Exception as e:
+            logger.error(f"Failed to create prompt '{name}' in Langfuse: {e}")
+            return False
+
     async def score(
         self,
         trace_id: str,
