@@ -124,7 +124,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         
         # Load context (using Ray task)
         context_task = load_context_task.remote(context_file)
-        context = ray.get(context_task)
+        context = await context_task
         
         await tracer.markdown(f"""
 ✅ Context loaded successfully
@@ -155,7 +155,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             
             for completed_future in done:
                 try:
-                    batch_results = ray.get(completed_future)
+                    batch_results = await completed_future
                     processed_documents.extend(batch_results)
                     completed_batches += 1
                     
@@ -200,7 +200,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             
             for completed_future in done:
                 try:
-                    batch_scores = ray.get(completed_future)
+                    batch_scores = await completed_future
                     scoring_results.extend(batch_scores)
                     completed_scoring += 1
                     
@@ -224,7 +224,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             
             # Perform clustering
             clustering_future = cluster_and_aggregate_task.remote(scoring_results, context)
-            final_results = ray.get(clustering_future)
+            final_results = await clustering_future
             
             await tracer.markdown(f"""
 ✅ **Phase 3 Complete**: Clustering and aggregation finished
@@ -239,7 +239,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         
         # Generate final report
         report_future = generate_report_task.remote(final_results, job, context)
-        report_result = ray.get(report_future)
+        report_result = await report_future
         
         # Calculate final metrics
         total_time = time.time() - start_time

@@ -170,8 +170,8 @@ class TestRayFutureHandlingBugs:
         
         assert result == "processed_test_data"
     
-    def test_ray_wait_and_get_pattern(self, ray_context):
-        """Test the ray.wait() and ray.get() pattern used in the analyzer."""
+    def test_ray_wait_and_get_pattern_sync(self, ray_context):
+        """Test the ray.wait() and ray.get() pattern in sync context."""
         @ray.remote 
         def batch_task(batch_id):
             return f"batch_{batch_id}_result"
@@ -180,12 +180,35 @@ class TestRayFutureHandlingBugs:
         futures = [batch_task.remote(i) for i in range(3)]
         results = []
         
-        # Test the wait and get pattern
+        # Test the wait and get pattern in sync context
         while futures:
             done, futures = ray.wait(futures, num_returns=1, timeout=1.0)
             
             for completed_future in done:
-                result = ray.get(completed_future)  # Not await!
+                result = ray.get(completed_future)  # Correct for sync context
+                results.append(result)
+        
+        assert len(results) == 3
+        assert "batch_0_result" in results
+        assert "batch_1_result" in results  
+        assert "batch_2_result" in results
+    
+    async def test_ray_wait_and_await_pattern_async(self, ray_context):
+        """Test the ray.wait() and await pattern in async context (like Kodosumi)."""
+        @ray.remote 
+        def batch_task(batch_id):
+            return f"batch_{batch_id}_result"
+        
+        # Create multiple futures like in the analyzer
+        futures = [batch_task.remote(i) for i in range(3)]
+        results = []
+        
+        # Test the wait and await pattern in async context
+        while futures:
+            done, futures = ray.wait(futures, num_returns=1, timeout=1.0)
+            
+            for completed_future in done:
+                result = await completed_future  # Correct for async context!
                 results.append(result)
         
         assert len(results) == 3
