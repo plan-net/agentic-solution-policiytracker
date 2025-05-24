@@ -38,10 +38,6 @@ services:
       
       # Feature flags
       LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
-      
-      # Optional: Set admin credentials
-      LANGFUSE_INIT_USER_EMAIL: admin@policiytracker.local
-      LANGFUSE_INIT_USER_PASSWORD: admin123
     volumes:
       - langfuse_data:/app/.next
     healthcheck:

@@ -142,22 +142,28 @@ This will:
 
 When prompted, **open Langfuse** at http://localhost:3001:
 
-**First-time setup**:
-1. If this is a fresh Langfuse installation, try these default credentials:
-   - **Email**: `admin@policiytracker.local`
-   - **Password**: `admin123`
-
-2. If the default credentials don't work, **create a new account**:
+**Complete Langfuse Setup**:
+1. **Create a new account**:
    - Click **"Sign up"**
    - Use any email (e.g., `admin@policiytracker.local`)
    - Set your own password
    - Complete the registration
 
-**Get your API keys**:
-1. Once logged in, go to **Settings** → **API Keys**
-2. Click **"Create new API key"**
-3. Copy the **Public Key** (starts with `pk-lf-`)
-4. Copy the **Secret Key** (starts with `sk-lf-`)
+2. **Create an organization**:
+   - After login, you'll be prompted to create an organization
+   - Name: `Political Monitoring` (or any name you prefer)
+   - Complete organization setup
+
+3. **Create a project**:
+   - You'll be prompted to create your first project
+   - Name: `political-monitoring-agent` (or any name you prefer)
+   - Complete project creation
+
+4. **Get your API keys**:
+   - Once in the project, go to **Settings** → **API Keys**
+   - Click **"Create new API key"**
+   - Copy the **Public Key** (starts with `pk-lf-`)
+   - Copy the **Secret Key** (starts with `sk-lf-`)
 
 **Update your `.env` file** with the real keys:
 ```bash
@@ -224,7 +230,8 @@ If you prefer manual control over each step:
 ```bash
 just setup                    # Basic project setup
 just services-up             # Start services
-# → Manually configure Langfuse at http://localhost:3001
+# → Go to http://localhost:3001
+# → Sign up → Create organization → Create project → Get API keys
 # → Update .env with API keys
 just upload-prompts          # Upload prompts to Langfuse
 just azure-import            # Import sample data to Azurite
@@ -304,15 +311,16 @@ just services-status    # Check service health
 
 **Langfuse Issues**:
 ```bash
-# If login credentials don't work:
+# If you need to start over with Langfuse setup:
 just reset-langfuse    # Resets to fresh installation
 just services-up       # Restart services
-# Then try login again or create new account
+# Then go through signup → organization → project → API keys
 
 # If API keys don't work:
 # 1. Check you copied the full keys (including pk-lf- and sk-lf- prefixes)
-# 2. Restart after updating .env: just kodosumi-restart
-# 3. Check Langfuse logs: just logs langfuse-server
+# 2. Ensure you created the keys within a PROJECT (not organization level)
+# 3. Restart after updating .env: just kodosumi-restart
+# 4. Check Langfuse logs: just logs langfuse-server
 
 # If Langfuse won't start at all:
 just services-down
