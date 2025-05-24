@@ -125,18 +125,27 @@ async def enter(request: fastapi.Request, inputs: dict):
     if not inputs.get("context_file"):
         error.add(context_file="Please specify the context file path")
     
-    # Validate numeric ranges
-    priority_threshold = inputs.get("priority_threshold", 0)
-    if priority_threshold < 0 or priority_threshold > 100:
-        error.add(priority_threshold="Priority threshold must be between 0 and 100")
+    # Validate numeric ranges - convert strings to numbers
+    try:
+        priority_threshold = float(inputs.get("priority_threshold", 70))
+        if priority_threshold < 0 or priority_threshold > 100:
+            error.add(priority_threshold="Priority threshold must be between 0 and 100")
+    except (ValueError, TypeError):
+        error.add(priority_threshold="Priority threshold must be a valid number")
     
-    batch_size = inputs.get("batch_size", 0)
-    if batch_size < 10 or batch_size > 1000:
-        error.add(batch_size="Batch size must be between 10 and 1000")
+    try:
+        batch_size = int(inputs.get("batch_size", 50))
+        if batch_size < 10 or batch_size > 1000:
+            error.add(batch_size="Batch size must be between 10 and 1000")
+    except (ValueError, TypeError):
+        error.add(batch_size="Batch size must be a valid integer")
     
-    timeout_minutes = inputs.get("timeout_minutes", 0)
-    if timeout_minutes < 5 or timeout_minutes > 120:
-        error.add(timeout_minutes="Timeout must be between 5 and 120 minutes")
+    try:
+        timeout_minutes = int(inputs.get("timeout_minutes", 30))
+        if timeout_minutes < 5 or timeout_minutes > 120:
+            error.add(timeout_minutes="Timeout must be between 5 and 120 minutes")
+    except (ValueError, TypeError):
+        error.add(timeout_minutes="Timeout must be a valid integer")
     
     # Check for validation errors
     if error.has_errors():
@@ -150,11 +159,11 @@ async def enter(request: fastapi.Request, inputs: dict):
             "job_name": inputs["job_name"],
             "input_folder": inputs["input_folder"],
             "context_file": inputs["context_file"],
-            "priority_threshold": float(inputs.get("priority_threshold", 70.0)),
+            "priority_threshold": priority_threshold,
             "include_low_confidence": bool(inputs.get("include_low_confidence", False)),
             "clustering_enabled": bool(inputs.get("clustering_enabled", True)),
-            "batch_size": int(inputs.get("batch_size", 50)),
-            "timeout_minutes": int(inputs.get("timeout_minutes", 30)),
+            "batch_size": batch_size,
+            "timeout_minutes": timeout_minutes,
             "instructions": inputs.get("instructions", "")
         }
     )
