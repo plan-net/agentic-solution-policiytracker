@@ -59,11 +59,13 @@ This guide walks you through setting up the Political Monitoring Agent from a fr
 
 ### Prerequisites
 
-- **Python 3.11+** and **UV package manager**
-- **Kodosumi v0.9.2** runtime environment
-- **Docker** and **Docker Compose** for supporting services
-- **Just** task runner for automation
+- **Python 3.11+** (system installation)
+- **UV package manager** (for dependency management)
+- **Docker** and **Docker Compose** (for supporting services)
+- **Just** task runner (for automation)
 - **Optional**: OpenAI/Anthropic API keys for LLM features
+
+> **💡 Note**: Kodosumi and all Python dependencies are installed automatically during setup.
 
 ### Install Required Tools
 
@@ -72,12 +74,7 @@ This guide walks you through setting up the Political Monitoring Agent from a fr
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-2. **Install Kodosumi runtime**:
-```bash
-pip install kodosumi==0.9.2
-```
-
-3. **Install Just task runner**:
+2. **Install Just task runner**:
 ```bash
 # macOS with Homebrew
 brew install just
@@ -85,6 +82,8 @@ brew install just
 # Or with Cargo
 cargo install just
 ```
+
+> **💡 Note**: Kodosumi and all Python dependencies are automatically installed during project setup via UV.
 
 ### Step-by-Step First-Time Setup
 
@@ -95,7 +94,7 @@ cd policiytracker
 just setup
 ```
 
-This installs dependencies, creates `.env` file, and sets up directories.
+This installs all dependencies (including Kodosumi), creates `.env` file, and sets up directories.
 
 #### Step 2: Configure Your Organization Context
 ```bash
