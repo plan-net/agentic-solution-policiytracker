@@ -26,11 +26,18 @@ class AzureStorageClient:
     
     def __init__(self):
         """Initialize Azure Storage client."""
-        self.connection_string = settings.AZURE_STORAGE_CONNECTION_STRING
-        self.container_name = settings.AZURE_STORAGE_CONTAINER_NAME
+        self.connection_string = getattr(settings, 'AZURE_STORAGE_CONNECTION_STRING', None)
+        self.container_name = getattr(settings, 'AZURE_STORAGE_CONTAINER_NAME', 'default-container')
         
-        # Initialize both sync and async clients
-        self.blob_service = BlobServiceClient.from_connection_string(self.connection_string)
+        # Initialize both sync and async clients if connection string is available
+        if self.connection_string:
+            try:
+                self.blob_service = BlobServiceClient.from_connection_string(self.connection_string)
+            except Exception as e:
+                logger.warning(f"Failed to initialize Azure Storage client: {e}")
+                self.blob_service = None
+        else:
+            self.blob_service = None
         self.async_blob_service = None  # Will be initialized when needed
         
         # Container mappings for different data types
@@ -323,37 +330,44 @@ class AzureStorageClient:
             return 0
 
 
-# Global client instance
-azure_storage_client = AzureStorageClient()
+# Global client instance - lazily initialized
+_azure_storage_client = None
+
+def get_azure_storage_client() -> AzureStorageClient:
+    """Get or create global Azure storage client instance."""
+    global _azure_storage_client
+    if _azure_storage_client is None:
+        _azure_storage_client = AzureStorageClient()
+    return _azure_storage_client
 
 
 # Convenience functions for common operations
 async def upload_document(job_id: str, filename: str, content: Union[str, bytes]) -> bool:
     """Upload document for processing."""
     blob_name = f"jobs/{job_id}/input/{filename}"
-    return await azure_storage_client.upload_blob('input-documents', blob_name, content)
+    return await get_azure_storage_client().upload_blob('input-documents', blob_name, content)
 
 
 async def save_report(job_id: str, report_name: str, content: str, format_type: str = 'markdown') -> bool:
     """Save generated report."""
     blob_name = f"jobs/{job_id}/{report_name}.{format_type}"
     metadata = {'job_id': job_id, 'format': format_type}
-    return await azure_storage_client.upload_blob('reports', blob_name, content.encode('utf-8'), metadata)
+    return await get_azure_storage_client().upload_blob('reports', blob_name, content.encode('utf-8'), metadata)
 
 
 async def load_context(context_id: str) -> Optional[Dict]:
     """Load client context configuration."""
     blob_name = f"{context_id}/context.yaml"
-    return await azure_storage_client.download_json('contexts', blob_name)
+    return await get_azure_storage_client().download_json('contexts', blob_name)
 
 
 async def cache_processed_content(doc_hash: str, content: Dict) -> bool:
     """Cache processed document content."""
     blob_name = f"processed/{doc_hash}.json"
-    return await azure_storage_client.upload_json('cache', blob_name, content)
+    return await get_azure_storage_client().upload_json('cache', blob_name, content)
 
 
 async def get_cached_content(doc_hash: str) -> Optional[Dict]:
     """Retrieve cached processed content."""
     blob_name = f"processed/{doc_hash}.json"
-    return await azure_storage_client.download_json('cache', blob_name)
+    return await get_azure_storage_client().download_json('cache', blob_name)
