@@ -1,0 +1,111 @@
+# Sample client context for Political Monitoring Agent
+# Replace with your organization's specific terms and themes
+
+company_terms:
+  - zalando
+  - zln
+  - zalando se
+
+core_industries:
+  - e-commerce
+  - online retail
+  - fashion
+  - apparel
+  - marketplace
+  - digital commerce
+
+primary_markets:
+  - european union
+  - eu
+  - germany
+  - poland
+  - france
+  - italy
+  - spain
+  - belgium
+  - netherlands
+  - austria
+  - czech republic
+
+secondary_markets:
+  - uk
+  - switzerland
+  - sweden
+  - denmark
+  - finland
+  - norway
+
+strategic_themes:
+  - digital transformation
+  - sustainability
+  - customer experience
+  - data privacy
+  - supply chain
+  - logistics
+  - payment systems
+  - mobile commerce
+  - artificial intelligence
+  - automation
+
+topic_patterns:
+  data-protection:
+    - gdpr
+    - data privacy
+    - personal information
+    - data protection
+    - privacy policy
+    - data processing
+    - consent management
+    
+  compliance:
+    - regulatory compliance
+    - legal requirement
+    - enforcement action
+    - compliance obligation
+    - regulatory framework
+    - legal framework
+    
+  ecommerce-regulation:
+    - digital services act
+    - dsa
+    - digital markets act
+    - dma
+    - online platform
+    - marketplace regulation
+    - consumer protection
+    
+  sustainability:
+    - esg
+    - environmental
+    - carbon footprint
+    - circular economy
+    - sustainable fashion
+    - green logistics
+    - climate change
+    
+  competition:
+    - antitrust
+    - competition law
+    - market dominance
+    - monopoly
+    - merger control
+
+direct_impact_keywords:
+  - must comply
+  - required to
+  - obligation
+  - penalty
+  - enforcement
+  - violation
+  - breach
+  - non-compliance
+  - legal action
+  - investigation
+
+exclusion_terms:
+  - sports
+  - automotive
+  - real estate
+  - agriculture
+  - mining
+  - oil and gas

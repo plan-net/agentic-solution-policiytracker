@@ -1,0 +1,473 @@
+# Political Monitoring Agent - Git Ignore
+
+# =============================================================================
+# Python
+# =============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# =============================================================================
+# UV Package Manager
+# =============================================================================
+
+# UV virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# UV lock file (keep this if you want reproducible builds)
+# uv.lock
+
+# UV cache
+.uv/
+
+# =============================================================================
+# Environment & Configuration
+# =============================================================================
+
+# Environment variables (keep template)
+.env
+.env.local
+.env.*.local
+
+# Keep template files
+!.env.template
+
+# Local configuration overrides
+config.local.yaml
+config.development.yaml
+config.production.yaml
+
+# =============================================================================
+# Ray & Distributed Computing
+# =============================================================================
+
+# Ray temporary files
+/tmp/ray/
+ray_results/
+ray_logs/
+~/ray_results/
+~/ray_logs/
+
+# Ray session files
+.ray_session_*
+
+# Ray worker logs
+worker-*.out
+worker-*.err
+
+# Ray temp directories
+/tmp/ray_*
+
+# =============================================================================
+# Kodosumi
+# =============================================================================
+
+# Kodosumi runtime files
+.kodosumi/
+kodosumi_temp/
+
+# Serve deployment files (if any)
+serve_deployments/
+
+# =============================================================================
+# LangGraph & AI/ML
+# =============================================================================
+
+# LangGraph checkpoints (local development)
+checkpoints/
+.langchain/
+.langgraph/
+
+# Model files and caches
+models/
+.transformers_cache/
+.cache/huggingface/
+
+# =============================================================================
+# Data & Documents
+# =============================================================================
+
+# Sensitive data directories
+data/input/real/
+data/input/sensitive/
+data/input/production/
+
+# Keep example data
+!data/input/examples/
+
+# Output reports (can contain sensitive info)
+data/output/
+output/
+reports/
+
+# Backup and temp data
+data/backup/
+data/temp/
+*.backup
+
+# Large data files
+*.csv
+*.json
+*.jsonl
+*.parquet
+
+# Document files (except examples)
+data/**/*.pdf
+data/**/*.docx
+data/**/*.doc
+!data/input/examples/**
+
+# =============================================================================
+# Langfuse & Observability
+# =============================================================================
+
+# Langfuse local data
+langfuse_data/
+.langfuse/
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# =============================================================================
+# Docker & Containers
+# =============================================================================
+
+# Docker volumes
+postgres_data/
+langfuse_data/
+azurite_data/
+
+# Docker override files
+docker-compose.override.yml
+docker-compose.local.yml
+
+# =============================================================================
+# Cloud & Azure
+# =============================================================================
+
+# Azure Storage Emulator
+azurite/
+.azurite/
+
+# Azure credentials
+.azure/
+azure.json
+
+# AWS credentials (if used)
+.aws/
+
+# =============================================================================
+# Development & IDE
+# =============================================================================
+
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# Operating System
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Logs & Monitoring
+# =============================================================================
+
+# Application logs
+logs/
+*.log
+*.log.*
+
+# Performance monitoring
+performance_logs/
+metrics/
+
+# =============================================================================
+# Security & Secrets
+# =============================================================================
+
+# API keys and secrets
+secrets/
+.secrets
+api_keys.txt
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Private configuration
+private/
+confidential/
+
+# =============================================================================
+# Temporary & Build Files
+# =============================================================================
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+# Build artifacts
+build/
+dist/
+*.tar.gz
+*.zip
+
+# =============================================================================
+# Testing & QA
+# =============================================================================
+
+# Test outputs
+test_output/
+test_reports/
+.tox/
+
+# Performance test results
+benchmark_results/
+
+# =============================================================================
+# Documentation Build
+# =============================================================================
+
+# Sphinx build
+docs/_build/
+docs/build/
+
+# MkDocs
+site/
+
+# =============================================================================
+# Project Specific
+# =============================================================================
+
+# Failed document processing
+failed_documents/
+
+# Large context files (keep examples)
+data/context/large/
+data/context/production/
+!data/context/client.yaml
+
+# Local development overrides
+justfile.local
+Makefile.local
+
+# Performance and profiling
+*.prof
+profile_results/
+
+# Experimental features
+experimental/
+sandbox/
+
+# Local testing data
+test_documents/
+sample_large_dataset/
+
+# =============================================================================
+# Keep Important Files
+# =============================================================================
+
+# Explicitly keep these important files
+!README.md
+!USER_GUIDE.md
+!TODO.md
+!CLAUDE.md
+!.env.template
+!.gitignore
+!justfile
+!pyproject.toml
+!config.yaml
+!docker-compose.yml
+
+# Keep all source code
+!src/
+!tests/
+!scripts/
+
+# Keep project documentation
+!specs/
+!docs/
+
+# Keep example data and configurations
+!data/context/client.yaml
+!data/input/examples/
