@@ -86,15 +86,16 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         
         await tracer.markdown("### Step 2: Document Discovery")
         
-        # Check if input folder exists
-        if not os.path.exists(input_folder):
-            error_msg = f"Input folder not found: {input_folder}"
+        # Resolve input folder path (handle both relative and absolute paths)
+        input_folder_resolved = os.path.abspath(input_folder)
+        if not os.path.exists(input_folder_resolved):
+            error_msg = f"Input folder not found: {input_folder} (resolved to: {input_folder_resolved})"
             await tracer.markdown(f"❌ **Error**: {error_msg}")
             raise FileNotFoundError(error_msg)
         
         # Count documents
         document_files = []
-        for root, dirs, files in os.walk(input_folder):
+        for root, dirs, files in os.walk(input_folder_resolved):
             for file in files:
                 if file.lower().endswith(('.txt', '.md', '.pdf', '.docx', '.html', '.csv', '.json')):
                     document_files.append(os.path.join(root, file))

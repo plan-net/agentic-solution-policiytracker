@@ -28,14 +28,14 @@ analysis_form = F.Model(
     F.InputText(
         label="Input Folder Path",
         name="input_folder", 
-        value="/data/input",
+        value="./data/input",
         placeholder="Path to documents folder"
     ),
     
     F.InputText(
         label="Context File Path",
         name="context_file",
-        value="/data/context/client.yaml", 
+        value="./data/context/client.yaml", 
         placeholder="Path to analysis context configuration"
     ),
     
