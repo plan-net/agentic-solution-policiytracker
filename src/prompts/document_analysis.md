@@ -1,5 +1,5 @@
 ---
-name: document_analysis_prompt
+name: document_analysis
 version: 1
 description: Analyze political documents for key insights and themes
 ---

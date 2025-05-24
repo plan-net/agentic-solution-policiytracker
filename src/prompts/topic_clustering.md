@@ -1,5 +1,5 @@
 ---
-name: topic_clustering_prompt
+name: topic_clustering
 version: 1
 description: Cluster documents by political and business themes
 ---
