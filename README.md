@@ -21,10 +21,10 @@ A sophisticated AI-powered document analysis system for political and regulatory
 - **Admin Dashboard**: Comprehensive monitoring at http://localhost:3370
 
 ### Cloud-Native Architecture
-- **Azure Storage Integration**: Seamless local development with Azurite, production-ready Azure Blob Storage
+- **Simplified Azure Storage**: Automatic path management with environment-based configuration
 - **LangGraph Workflows**: State-persistent workflows with checkpoint recovery
-- **Hybrid Storage**: Automatic switching between local filesystem and Azure Storage
-- **Intelligent Caching**: Azure-based caching for processed content
+- **Smart Storage Switching**: Seamless local development with Azurite, production-ready Azure Blob Storage
+- **Zero-Configuration Paths**: Import script automatically updates configuration paths
 
 ### AI & LLM Integration
 - **LangChain Integration**: Standardized LLM interfaces with provider flexibility
@@ -239,6 +239,20 @@ just dev                     # Start development environment
 ```
 
 ### Development Workflow
+
+**🎯 Simplified Storage Configuration**
+
+The system now automatically manages storage paths! No manual path configuration needed:
+
+```bash
+# For Local Development (default)
+just dev                    # Uses ./data/input automatically
+
+# For Azure Development  
+just azure-import          # Auto-updates .env with Azure paths
+echo "USE_AZURE_STORAGE=true" >> .env
+just dev                   # Uses Azure Storage automatically
+```
 
 **Primary Development** (Kodosumi-First):
 ```bash

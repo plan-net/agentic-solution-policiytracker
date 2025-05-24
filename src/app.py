@@ -24,21 +24,6 @@ analysis_form = F.Model(
         placeholder="e.g., Weekly Policy Review, Brexit Analysis"
     ),
     
-    # Input Sources
-    F.InputText(
-        label="Input Folder Path",
-        name="input_folder", 
-        value="./data/input",
-        placeholder="Path to documents folder"
-    ),
-    
-    F.InputText(
-        label="Context File Path",
-        name="context_file",
-        value="./data/context/client.yaml", 
-        placeholder="Path to analysis context configuration"
-    ),
-    
     # Analysis Parameters
     F.InputNumber(
         label="Priority Threshold (%)",
@@ -63,6 +48,17 @@ analysis_form = F.Model(
         name="clustering_enabled",
         value=True,
         option="Group documents by semantic similarity into topic clusters"
+    ),
+    
+    # Storage Configuration
+    F.Select(
+        label="Storage Mode",
+        name="storage_mode",
+        option=[
+            F.InputOption(label="Local Files", name="local"),
+            F.InputOption(label="Azure Blob Storage", name="azure"),
+        ],
+        value="local"
     ),
     
     # Advanced Options
@@ -119,11 +115,10 @@ async def enter(request: fastapi.Request, inputs: dict):
     if len(inputs.get("job_name", "")) < 3:
         error.add(job_name="Job name must be at least 3 characters long")
     
-    if not inputs.get("input_folder"):
-        error.add(input_folder="Please specify the input folder path")
-        
-    if not inputs.get("context_file"):
-        error.add(context_file="Please specify the context file path")
+    # Storage mode validation
+    storage_mode = inputs.get("storage_mode", "local")
+    if storage_mode not in ["local", "azure"]:
+        error.add(storage_mode="Please select a valid storage mode")
     
     # Validate numeric ranges - convert strings to numbers
     try:
@@ -154,17 +149,16 @@ async def enter(request: fastapi.Request, inputs: dict):
     # Launch the political analysis workflow
     return Launch(
         request,
-        "political_analyzer:execute_analysis",  # Path to entrypoint function
+        "src.political_analyzer:execute_analysis",  # Path to entrypoint function
         inputs={
             "job_name": inputs["job_name"],
-            "input_folder": inputs["input_folder"],
-            "context_file": inputs["context_file"],
             "priority_threshold": priority_threshold,
             "include_low_confidence": bool(inputs.get("include_low_confidence", False)),
             "clustering_enabled": bool(inputs.get("clustering_enabled", True)),
             "batch_size": batch_size,
             "timeout_minutes": timeout_minutes,
-            "instructions": inputs.get("instructions", "")
+            "instructions": inputs.get("instructions", ""),
+            "storage_mode": inputs.get("storage_mode", "local")
         }
     )
 

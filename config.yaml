@@ -19,7 +19,7 @@ logging_config:
 applications:
   - name: political-monitoring-agent
     route_prefix: /political-analysis
-    import_path: app:fast_app
+    import_path: src.app:fast_app
     runtime_env:
       env_vars:
         PYTHONPATH: .

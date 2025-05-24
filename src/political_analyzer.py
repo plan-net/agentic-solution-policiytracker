@@ -11,6 +11,7 @@ import structlog
 
 from src.models.job import Job, JobRequest, JobStatus
 from src.utils.logging import setup_logging
+from src.config import settings
 
 # Setup logging
 logger = setup_logging()
@@ -29,14 +30,20 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
     try:
         # Extract inputs
         job_name = inputs["job_name"]
-        input_folder = inputs["input_folder"]
-        context_file = inputs["context_file"]
         priority_threshold = inputs.get("priority_threshold", 70.0)
         include_low_confidence = inputs.get("include_low_confidence", False)
         clustering_enabled = inputs.get("clustering_enabled", True)
         batch_size = inputs.get("batch_size", 50)
         timeout_minutes = inputs.get("timeout_minutes", 30)
         instructions = inputs.get("instructions", "")
+        storage_mode = inputs.get("storage_mode", "local")
+        
+        # Determine use_azure based on storage_mode or config
+        use_azure = (storage_mode == "azure") if storage_mode else settings.USE_AZURE_STORAGE
+        
+        # Get paths from configuration based on storage mode
+        input_folder = settings.input_path
+        context_file = settings.context_path
         
         # Initialize progress tracking
         start_time = time.time()
@@ -53,6 +60,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
 - **Job ID**: {job_id}
 - **Input Folder**: {input_folder}
 - **Context File**: {context_file}
+- **Storage Mode**: {"Azure Blob Storage" if use_azure else "Local Filesystem"}
 - **Priority Threshold**: {priority_threshold}%
 - **Include Low Confidence**: {include_low_confidence}
 - **Clustering Enabled**: {clustering_enabled}
@@ -88,17 +96,30 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         
         # Resolve input folder path (handle both relative and absolute paths)
         input_folder_resolved = os.path.abspath(input_folder)
+        logger.info(f"Resolving input folder: {input_folder} -> {input_folder_resolved}")
+        
         if not os.path.exists(input_folder_resolved):
             error_msg = f"Input folder not found: {input_folder} (resolved to: {input_folder_resolved})"
             await tracer.markdown(f"❌ **Error**: {error_msg}")
+            logger.error(error_msg)
             raise FileNotFoundError(error_msg)
         
         # Count documents
         document_files = []
+        supported_extensions = ('.txt', '.md', '.pdf', '.docx', '.html', '.csv', '.json')
+        
+        logger.info(f"Scanning directory: {input_folder_resolved}")
         for root, dirs, files in os.walk(input_folder_resolved):
+            logger.debug(f"Checking directory: {root} with {len(files)} files")
             for file in files:
-                if file.lower().endswith(('.txt', '.md', '.pdf', '.docx', '.html', '.csv', '.json')):
-                    document_files.append(os.path.join(root, file))
+                if file.lower().endswith(supported_extensions):
+                    full_path = os.path.join(root, file)
+                    document_files.append(full_path)
+                    logger.debug(f"Found document: {full_path}")
+                else:
+                    logger.debug(f"Skipping unsupported file: {file}")
+        
+        logger.info(f"Document discovery completed: found {len(document_files)} files")
         
         total_documents = len(document_files)
         
@@ -126,6 +147,15 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         context_task = load_context_task.remote(context_file)
         context = await context_task
         
+        # Check if context loading had errors
+        if context.get("error"):
+            error_msg = f"Context loading failed: {context['error']}"
+            await tracer.markdown(f"❌ **Error**: {error_msg}")
+            if context.get("error_detail"):
+                await tracer.markdown(f"**Details**: ```\n{context['error_detail']}\n```")
+            # Continue with default context but log the issue
+            logger.warning(f"Using default context due to error: {error_msg}")
+        
         await tracer.markdown(f"""
 ✅ Context loaded successfully
 - **Context File**: {context_file}
@@ -143,7 +173,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         # Process documents in parallel batches
         processing_futures = []
         for i, batch in enumerate(processing_batches):
-            future = process_batch_task.remote(batch, i * batch_size, job_id)
+            future = process_batch_task.remote(batch, i * batch_size, job_id, use_azure)
             processing_futures.append(future)
         
         # Monitor processing progress
@@ -336,42 +366,83 @@ def load_context_task(context_file: str) -> Dict[str, Any]:
     """Load analysis context configuration."""
     try:
         import yaml
+        import traceback
+        
+        # Log the context file path for debugging
+        logger.info(f"Loading context from: {context_file}")
+        
+        # Check if file exists
+        if not os.path.exists(context_file):
+            error_msg = f"Context file not found: {context_file}"
+            logger.error(error_msg)
+            raise FileNotFoundError(error_msg)
+        
         with open(context_file, 'r') as f:
             context = yaml.safe_load(f)
+        
+        logger.info(f"Successfully loaded context with {len(context)} keys")
         return context
+        
     except Exception as e:
-        logger.error(f"Failed to load context: {e}")
-        # Return default context
+        error_msg = f"Failed to load context from {context_file}: {str(e)}"
+        error_detail = traceback.format_exc()
+        logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
+        
+        # Return default context with error information
         return {
             "scoring_dimensions": ["relevance", "priority", "confidence"],
-            "default_config": True
+            "default_config": True,
+            "error": error_msg,
+            "error_detail": error_detail
         }
 
 @ray.remote
-def process_batch_task(file_paths: list, start_index: int, job_id: str) -> list:
+def process_batch_task(file_paths: list, start_index: int, job_id: str, use_azure: bool = None) -> list:
     """Process a batch of documents."""
+    import traceback
+    
     try:
         from src.processors.content_processor import ContentProcessor
+        from src.config import settings
         
-        processor = ContentProcessor()
+        # Use passed parameter or fall back to settings
+        azure_mode = use_azure if use_azure is not None else settings.USE_AZURE_STORAGE
+        
+        logger.info(f"Processing batch of {len(file_paths)} files starting at index {start_index}")
+        logger.debug(f"Azure storage mode: {azure_mode} (passed={use_azure}, config={settings.USE_AZURE_STORAGE})")
+        
+        # Use determined Azure setting
+        processor = ContentProcessor(use_azure=azure_mode)
         results = []
         
         for i, file_path in enumerate(file_paths):
             try:
                 doc_id = f"doc_{start_index + i:03d}"
                 
+                # Check if file exists
+                if not os.path.exists(file_path):
+                    error_msg = f"File not found: {file_path}"
+                    logger.error(error_msg)
+                    continue
+                
                 # Process document
                 import asyncio
                 result = asyncio.run(processor.process_document(file_path, doc_id))
                 results.append(result)
+                logger.debug(f"Successfully processed {file_path}")
                 
             except Exception as e:
-                logger.warning(f"Failed to process {file_path}: {e}")
+                error_msg = f"Failed to process {file_path}: {str(e)}"
+                error_detail = traceback.format_exc()
+                logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
         
+        logger.info(f"Batch processing completed: {len(results)}/{len(file_paths)} files processed successfully")
         return results
         
     except Exception as e:
-        logger.error(f"Batch processing failed: {e}")
+        error_msg = f"Batch processing failed: {str(e)}"
+        error_detail = traceback.format_exc()
+        logger.error(f"{error_msg}\nTraceback:\n{error_detail}")
         return []
 
 @ray.remote  

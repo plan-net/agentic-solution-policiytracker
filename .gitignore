@@ -184,8 +184,11 @@ checkpoints/
 .langchain/
 .langgraph/
 
-# Model files and caches
-models/
+# AI/ML Model files and caches (not source code)
+/models/
+*.model
+*.pkl
+*.joblib
 .transformers_cache/
 .cache/huggingface/
 
@@ -201,10 +204,10 @@ data/input/production/
 # Keep example data
 !data/input/examples/
 
-# Output reports (can contain sensitive info)
+# Output reports and data (can contain sensitive info)
 data/output/
-output/
-reports/
+/output/
+/reports/
 
 # Backup and temp data
 data/backup/
@@ -459,8 +462,10 @@ sample_large_dataset/
 !config.yaml
 !docker-compose.yml
 
-# Keep all source code
+# Keep all source code (including models and output modules)
 !src/
+!src/models/
+!src/output/
 !tests/
 !scripts/
 

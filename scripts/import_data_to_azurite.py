@@ -27,6 +27,7 @@ import asyncio
 import argparse
 import os
 import sys
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -37,7 +38,7 @@ import structlog
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.integrations.azure_storage import azure_storage_client
+from src.integrations.azure_storage import get_azure_storage_client
 from src.config import settings
 
 logger = structlog.get_logger()
@@ -82,7 +83,7 @@ class DataImporter:
         
         # Print summary
         self._print_summary(job_id)
-        return self.stats
+        return self.stats, job_id
     
     async def _import_input_documents(self, job_id: str):
         """Import documents from data/input folder."""
@@ -191,9 +192,10 @@ class DataImporter:
             }
         ]
         
+        azure_client = get_azure_storage_client()
         for cache_entry in sample_cache_data:
             if not self.dry_run:
-                await azure_storage_client.upload_json(
+                await azure_client.upload_json(
                     'cache',
                     f"processed/{cache_entry['doc_hash']}.json",
                     cache_entry['content']
@@ -215,8 +217,9 @@ class DataImporter:
                 return True
             
             # Read and upload file
+            azure_client = get_azure_storage_client()
             with open(file_path, 'rb') as f:
-                success = await azure_storage_client.upload_blob(
+                success = await azure_client.upload_blob(
                     container_type,
                     blob_name, 
                     f,
@@ -283,7 +286,8 @@ async def verify_azurite_connection():
     """Verify that Azurite is running and accessible."""
     try:
         # Try to list containers
-        await azure_storage_client.ensure_container_exists('input-documents')
+        azure_client = get_azure_storage_client()
+        await azure_client.ensure_container_exists('input-documents')
         logger.info("✅ Azurite connection verified")
         return True
     except Exception as e:
@@ -335,10 +339,11 @@ Impact: All user-facing applications must comply by Q2 2025.
     ]
     
     job_id = f"test_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    azure_client = get_azure_storage_client()
     
     for doc in sample_docs:
         blob_name = f"jobs/{job_id}/input/{doc['name']}"
-        await azure_storage_client.upload_blob(
+        await azure_client.upload_blob(
             'input-documents',
             blob_name,
             doc['content'].encode('utf-8'),
@@ -353,7 +358,7 @@ Impact: All user-facing applications must comply by Q2 2025.
         'strategic_themes': ['ai-regulation', 'data-privacy', 'compliance']
     }
     
-    await azure_storage_client.upload_json(
+    await azure_client.upload_json(
         'contexts',
         'test-client/context.yaml',
         sample_context
@@ -361,6 +366,64 @@ Impact: All user-facing applications must comply by Q2 2025.
     
     logger.info("Created test data", job_id=job_id)
     return job_id
+
+
+def update_env_file_with_azure_paths(job_id: str, env_file_path: str = ".env"):
+    """Update .env file with Azure paths after successful import."""
+    try:
+        env_path = Path(env_file_path)
+        if not env_path.exists():
+            logger.warning("No .env file found", path=str(env_path))
+            return False
+        
+        # Read current .env content
+        content = env_path.read_text(encoding='utf-8')
+        
+        # Update Azure configuration values
+        azure_updates = {
+            'AZURE_JOB_ID': job_id,
+            'AZURE_INPUT_PATH': f'jobs/{job_id}/input',
+            'AZURE_CONTEXT_PATH': 'test-client/context.yaml',
+            'AZURE_OUTPUT_PATH': f'jobs/{job_id}/output'
+        }
+        
+        # Apply updates
+        for key, value in azure_updates.items():
+            # Pattern to match the existing line
+            pattern = rf'^{key}=.*$'
+            replacement = f'{key}={value}'
+            
+            if re.search(pattern, content, re.MULTILINE):
+                # Update existing line
+                content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+            else:
+                # Add new line if it doesn't exist
+                azure_section = "# Azure Storage paths (used when USE_AZURE_STORAGE=true)"
+                if azure_section in content:
+                    content = content.replace(
+                        azure_section,
+                        f"{azure_section}\n{replacement}"
+                    )
+        
+        # Write updated content back to file
+        env_path.write_text(content, encoding='utf-8')
+        
+        logger.info("Updated .env file with Azure paths", 
+                   job_id=job_id, 
+                   env_file=str(env_path))
+        
+        print(f"\n✅ Updated .env file with Azure paths:")
+        print(f"   AZURE_JOB_ID={job_id}")
+        print(f"   AZURE_INPUT_PATH=jobs/{job_id}/input")
+        print(f"   AZURE_CONTEXT_PATH=test-client/context.yaml")
+        print(f"   AZURE_OUTPUT_PATH=jobs/{job_id}/output")
+        
+        return True
+        
+    except Exception as e:
+        logger.error("Failed to update .env file", error=str(e))
+        print(f"\n❌ Failed to update .env file: {e}")
+        return False
 
 
 async def main():
@@ -445,8 +508,16 @@ async def main():
         job_id = args.job_id or f"input_only_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         await importer._import_input_documents(job_id)
         importer._print_summary(job_id)
+        
+        # Update .env file if not dry run
+        if not args.dry_run:
+            update_env_file_with_azure_paths(job_id)
     else:
-        await importer.import_all(args.job_id)
+        stats, job_id = await importer.import_all(args.job_id)
+        
+        # Update .env file if not dry run
+        if not args.dry_run:
+            update_env_file_with_azure_paths(job_id)
     
     return 0
 

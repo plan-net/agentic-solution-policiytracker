@@ -5,7 +5,7 @@ import tempfile
 import os
 
 # Import Kodosumi app
-from app import app as kodosumi_app
+from src.app import app as kodosumi_app
 from kodosumi.core import InputsError
 
 
@@ -88,18 +88,17 @@ class TestKodosumiHealthEndpoint:
 class TestKodosumiFormValidation:
     """Test Kodosumi form validation and InputsError handling."""
     
-    @patch('app.Launch')
-    async def test_valid_form_submission(self, mock_launch, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_valid_form_submission(self, mock_launch, mock_request):
         """Test valid form submission creates Launch object."""
-        from app import enter
+        from src.app import enter
         
         # Mock Launch to return success
         mock_launch.return_value = {"success": True}
         
         valid_inputs = {
             "job_name": "Test Analysis",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"],
+            "storage_mode": "local",
             "priority_threshold": 70.0,
             "include_low_confidence": False,
             "clustering_enabled": True,
@@ -114,22 +113,21 @@ class TestKodosumiFormValidation:
         mock_launch.assert_called_once()
         call_args = mock_launch.call_args
         assert call_args[0][0] == mock_request  # request object
-        assert call_args[0][1] == "political_analyzer:execute_analysis"  # entrypoint
+        assert call_args[0][1] == "src.political_analyzer:execute_analysis"  # entrypoint
         
         # Verify inputs were passed correctly
         passed_inputs = call_args[1]["inputs"]
         assert passed_inputs["job_name"] == "Test Analysis"
-        assert passed_inputs["input_folder"] == temp_dirs["input"]
+        assert passed_inputs["storage_mode"] == "local"
         assert passed_inputs["priority_threshold"] == 70.0
     
     async def test_missing_job_name_validation(self, mock_request):
         """Test validation error for missing job name."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "",  # Empty job name
-            "input_folder": "/some/path",
-            "context_file": "/some/context.yaml"
+            "storage_mode": "local"
         }
         
         with pytest.raises(InputsError) as exc_info:
@@ -141,12 +139,11 @@ class TestKodosumiFormValidation:
     
     async def test_short_job_name_validation(self, mock_request):
         """Test validation error for short job name."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "ab",  # Too short (< 3 chars)
-            "input_folder": "/some/path",
-            "context_file": "/some/context.yaml"
+            "storage_mode": "local"
         }
         
         with pytest.raises(InputsError):
@@ -154,12 +151,11 @@ class TestKodosumiFormValidation:
     
     async def test_invalid_priority_threshold(self, mock_request):
         """Test validation error for invalid priority threshold."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "Valid Job Name",
-            "input_folder": "/some/path",
-            "context_file": "/some/context.yaml",
+            "storage_mode": "local",
             "priority_threshold": 150.0  # > 100
         }
         
@@ -168,12 +164,11 @@ class TestKodosumiFormValidation:
     
     async def test_invalid_batch_size(self, mock_request):
         """Test validation error for invalid batch size."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "Valid Job Name",
-            "input_folder": "/some/path",
-            "context_file": "/some/context.yaml",
+            "storage_mode": "local",
             "batch_size": 5  # < 10
         }
         
@@ -182,13 +177,24 @@ class TestKodosumiFormValidation:
     
     async def test_invalid_timeout(self, mock_request):
         """Test validation error for invalid timeout."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "Valid Job Name",
-            "input_folder": "/some/path",
-            "context_file": "/some/context.yaml",
+            "storage_mode": "local",
             "timeout_minutes": 200  # > 120
+        }
+        
+        with pytest.raises(InputsError):
+            await enter(mock_request, invalid_inputs)
+    
+    async def test_invalid_storage_mode(self, mock_request):
+        """Test validation error for invalid storage mode."""
+        from src.app import enter
+        
+        invalid_inputs = {
+            "job_name": "Valid Job Name",
+            "storage_mode": "invalid_mode"
         }
         
         with pytest.raises(InputsError):
@@ -198,17 +204,16 @@ class TestKodosumiFormValidation:
 class TestKodosumiInputProcessing:
     """Test input processing and data transformation."""
     
-    @patch('app.Launch')
-    async def test_boolean_input_processing(self, mock_launch, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_boolean_input_processing(self, mock_launch, mock_request):
         """Test boolean inputs are properly converted."""
-        from app import enter
+        from src.app import enter
         
         mock_launch.return_value = {"success": True}
         
         inputs = {
             "job_name": "Test Job",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"],
+            "storage_mode": "local",
             "include_low_confidence": "true",  # String that should become boolean
             "clustering_enabled": "false"     # String that should become boolean
         }
@@ -221,18 +226,17 @@ class TestKodosumiInputProcessing:
         assert passed_inputs["include_low_confidence"] is True
         assert passed_inputs["clustering_enabled"] is False
     
-    @patch('app.Launch')
-    async def test_numeric_input_processing(self, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_numeric_input_processing(self, mock_request):
         """Test numeric inputs are properly converted."""
-        from app import enter
+        from src.app import enter
         
-        with patch('app.Launch') as mock_launch:
+        with patch('src.app.Launch') as mock_launch:
             mock_launch.return_value = {"success": True}
             
             inputs = {
                 "job_name": "Test Job",
-                "input_folder": temp_dirs["input"],
-                "context_file": temp_dirs["context_file"],
+                "storage_mode": "local",
                 "priority_threshold": "85.5",  # String that should become float
                 "batch_size": "100",           # String that should become int
                 "timeout_minutes": "45"       # String that should become int
@@ -247,18 +251,17 @@ class TestKodosumiInputProcessing:
             assert passed_inputs["batch_size"] == 100
             assert passed_inputs["timeout_minutes"] == 45
     
-    @patch('app.Launch')
-    async def test_default_values(self, mock_launch, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_default_values(self, mock_launch, mock_request):
         """Test default values are applied correctly."""
-        from app import enter
+        from src.app import enter
         
         mock_launch.return_value = {"success": True}
         
         # Minimal inputs - should get defaults
         inputs = {
             "job_name": "Test Job",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"]
+            "storage_mode": "local"
         }
         
         await enter(mock_request, inputs)
@@ -272,41 +275,40 @@ class TestKodosumiInputProcessing:
         assert passed_inputs["batch_size"] == 50
         assert passed_inputs["timeout_minutes"] == 30
         assert passed_inputs["instructions"] == ""
+        assert passed_inputs["storage_mode"] == "local"
 
 
 class TestKodosumiEntrypointIntegration:
     """Test integration with political_analyzer entrypoint."""
     
-    @patch('app.Launch')
-    async def test_launch_path_configuration(self, mock_launch, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_launch_path_configuration(self, mock_launch, mock_request):
         """Test Launch is configured with correct entrypoint path."""
-        from app import enter
+        from src.app import enter
         
         mock_launch.return_value = {"success": True}
         
         inputs = {
             "job_name": "Test Job",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"]
+            "storage_mode": "local"
         }
         
         await enter(mock_request, inputs)
         
         # Verify Launch was called with correct entrypoint path
         call_args = mock_launch.call_args
-        assert call_args[0][1] == "political_analyzer:execute_analysis"
+        assert call_args[0][1] == "src.political_analyzer:execute_analysis"
     
-    @patch('app.Launch')
-    async def test_input_data_structure(self, mock_launch, mock_request, temp_dirs):
+    @patch('src.app.Launch')
+    async def test_input_data_structure(self, mock_launch, mock_request):
         """Test that inputs are structured correctly for entrypoint."""
-        from app import enter
+        from src.app import enter
         
         mock_launch.return_value = {"success": True}
         
         inputs = {
             "job_name": "Integration Test",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"],
+            "storage_mode": "azure",
             "priority_threshold": 80.0,
             "include_low_confidence": True,
             "clustering_enabled": False,
@@ -323,7 +325,7 @@ class TestKodosumiEntrypointIntegration:
         
         # Check all expected keys are present
         expected_keys = {
-            "job_name", "input_folder", "context_file", "priority_threshold",
+            "job_name", "storage_mode", "priority_threshold",
             "include_low_confidence", "clustering_enabled", "batch_size", 
             "timeout_minutes", "instructions"
         }
@@ -331,8 +333,7 @@ class TestKodosumiEntrypointIntegration:
         
         # Check values match inputs
         assert passed_inputs["job_name"] == "Integration Test"
-        assert passed_inputs["input_folder"] == temp_dirs["input"]
-        assert passed_inputs["context_file"] == temp_dirs["context_file"]
+        assert passed_inputs["storage_mode"] == "azure"
         assert passed_inputs["priority_threshold"] == 80.0
         assert passed_inputs["include_low_confidence"] is True
         assert passed_inputs["clustering_enabled"] is False
@@ -346,12 +347,11 @@ class TestKodosumiErrorHandling:
     
     async def test_multiple_validation_errors(self, mock_request):
         """Test handling multiple validation errors at once."""
-        from app import enter
+        from src.app import enter
         
         invalid_inputs = {
             "job_name": "",                    # Empty job name
-            "input_folder": "",                # Empty input folder
-            "context_file": "",                # Empty context file
+            "storage_mode": "invalid_mode",    # Invalid storage mode
             "priority_threshold": 150.0,       # Invalid threshold
             "batch_size": 5,                   # Invalid batch size
             "timeout_minutes": 200             # Invalid timeout
@@ -364,22 +364,21 @@ class TestKodosumiErrorHandling:
         assert error.has_errors()
         # Should have multiple field errors
     
-    async def test_edge_case_values(self, mock_request, temp_dirs):
+    async def test_edge_case_values(self, mock_request):
         """Test edge case values for numeric inputs."""
-        from app import enter
+        from src.app import enter
         
         # Test boundary values
         boundary_inputs = {
             "job_name": "abc",  # Minimum length (3 chars)
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"],
+            "storage_mode": "local",
             "priority_threshold": 0.0,    # Minimum value
             "batch_size": 10,             # Minimum value
             "timeout_minutes": 5          # Minimum value
         }
         
         # Should not raise validation error
-        with patch('app.Launch') as mock_launch:
+        with patch('src.app.Launch') as mock_launch:
             mock_launch.return_value = {"success": True}
             await enter(mock_request, boundary_inputs)
             assert mock_launch.called
@@ -387,14 +386,103 @@ class TestKodosumiErrorHandling:
         # Test maximum boundary values
         max_boundary_inputs = {
             "job_name": "Maximum boundary test",
-            "input_folder": temp_dirs["input"],
-            "context_file": temp_dirs["context_file"],
+            "storage_mode": "azure",
             "priority_threshold": 100.0,  # Maximum value
             "batch_size": 1000,           # Maximum value
             "timeout_minutes": 120        # Maximum value
         }
         
-        with patch('app.Launch') as mock_launch:
+        with patch('src.app.Launch') as mock_launch:
             mock_launch.return_value = {"success": True}
             await enter(mock_request, max_boundary_inputs)
             assert mock_launch.called
+
+
+class TestConfigurationIntegration:
+    """Test integration with simplified configuration system."""
+    
+    @patch('src.config.settings')
+    @patch('src.app.Launch')
+    async def test_azure_mode_configuration(self, mock_launch, mock_settings, mock_request):
+        """Test Azure mode uses correct configuration."""
+        from src.app import enter
+        
+        # Setup mock settings for Azure mode
+        mock_settings.USE_AZURE_STORAGE = True
+        mock_settings.input_path = "jobs/test_job_123/input"
+        mock_settings.context_path = "client/context.yaml"
+        mock_settings.output_path = "jobs/test_job_123/output"
+        
+        mock_launch.return_value = {"success": True}
+        
+        inputs = {
+            "job_name": "Azure Test",
+            "storage_mode": "azure"
+        }
+        
+        await enter(mock_request, inputs)
+        
+        # Verify Launch was called with Azure storage mode
+        call_args = mock_launch.call_args
+        passed_inputs = call_args[1]["inputs"]
+        assert passed_inputs["storage_mode"] == "azure"
+    
+    @patch('src.config.settings')
+    @patch('src.app.Launch')
+    async def test_local_mode_configuration(self, mock_launch, mock_settings, mock_request):
+        """Test local mode uses correct configuration."""
+        from src.app import enter
+        
+        # Setup mock settings for local mode
+        mock_settings.USE_AZURE_STORAGE = False
+        mock_settings.input_path = "./data/input"
+        mock_settings.context_path = "./data/context/client.yaml"
+        mock_settings.output_path = "./data/output"
+        
+        mock_launch.return_value = {"success": True}
+        
+        inputs = {
+            "job_name": "Local Test",
+            "storage_mode": "local"
+        }
+        
+        await enter(mock_request, inputs)
+        
+        # Verify Launch was called with local storage mode
+        call_args = mock_launch.call_args
+        passed_inputs = call_args[1]["inputs"]
+        assert passed_inputs["storage_mode"] == "local"
+    
+    async def test_storage_mode_azure_validation(self, mock_request):
+        """Test Azure storage mode validation."""
+        from src.app import enter
+        
+        inputs = {
+            "job_name": "Azure Test",
+            "storage_mode": "azure"
+        }
+        
+        with patch('src.app.Launch') as mock_launch:
+            mock_launch.return_value = {"success": True}
+            await enter(mock_request, inputs)
+            
+            call_args = mock_launch.call_args
+            passed_inputs = call_args[1]["inputs"]
+            assert passed_inputs["storage_mode"] == "azure"
+    
+    async def test_storage_mode_local_validation(self, mock_request):
+        """Test local storage mode validation."""
+        from src.app import enter
+        
+        inputs = {
+            "job_name": "Local Test",
+            "storage_mode": "local"
+        }
+        
+        with patch('src.app.Launch') as mock_launch:
+            mock_launch.return_value = {"success": True}
+            await enter(mock_request, inputs)
+            
+            call_args = mock_launch.call_args
+            passed_inputs = call_args[1]["inputs"]
+            assert passed_inputs["storage_mode"] == "local"
