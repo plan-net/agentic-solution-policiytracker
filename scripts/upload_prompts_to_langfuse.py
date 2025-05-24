@@ -29,7 +29,7 @@ async def upload_prompts_to_langfuse():
     prompt_manager = PromptManager()
     
     # Check if Langfuse is available
-    if not await langfuse_client.is_available():
+    if not langfuse_client.available:
         print("❌ Langfuse is not available. Please ensure:")
         print("   1. Services are running: just services-up")
         print("   2. API keys are configured in .env")
