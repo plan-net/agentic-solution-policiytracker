@@ -47,9 +47,9 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
             input_folder = settings.AZURE_INPUT_PATH
             context_file = settings.AZURE_CONTEXT_PATH
         else:
-            # Use hard-coded local paths for reliability
-            input_folder = "./data/input" 
-            context_file = "./data/context/client.yaml"
+            # Use configuration system for local paths
+            input_folder = settings.input_path
+            context_file = settings.context_path
         
         # Initialize progress tracking
         start_time = time.time()

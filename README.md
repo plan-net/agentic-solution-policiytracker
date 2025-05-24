@@ -434,6 +434,36 @@ just clean-all               # Full cleanup + stop services
 
 ## 🔧 Configuration
 
+### ⚠️ Critical: Environment Variable Synchronization
+
+**Important**: Ray workers in Kodosumi deployment don't automatically inherit your local `.env` file. Environment variables must be explicitly passed through `config.yaml`.
+
+Our system **automatically synchronizes** your `.env` variables to `config.yaml` when you run:
+
+```bash
+just dev              # Full deployment (includes sync)
+just dev-quick        # Quick redeploy (includes sync)
+```
+
+**What this fixes**:
+- ✅ **"No LLM Provider configured"** errors
+- ✅ **Configuration not found** in Ray workers  
+- ✅ **Path resolution** issues in distributed tasks
+- ✅ **Azure Storage** configuration in workers
+
+**How it works**:
+1. Script reads your `.env` file
+2. Extracts relevant variables (LLM keys, paths, storage config, etc.)
+3. Updates `config.yaml` runtime_env automatically
+4. Ray workers now have access to all configuration
+
+**Manual sync** (if needed):
+```bash
+uv run python scripts/sync_env_to_config.py
+```
+
+**Pro tip**: Always use `just dev-quick` after changing `.env` variables to ensure workers get updated configuration.
+
 ### Environment Setup
 
 1. **Copy environment template**:
