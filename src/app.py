@@ -10,7 +10,7 @@ app = ServeAPI()
 analysis_form = F.Model(
     F.Markdown(
         """
-    # Political Monitoring Agent
+    # Political Monitoring Agent v0.1.0
     
     Analyze political documents for relevance, priority, and topics using distributed AI processing.
     Upload documents and get comprehensive analysis reports with confidence scoring.
@@ -66,7 +66,7 @@ analysis_form = F.Model(
     model=analysis_form,
     summary="Political Document Analysis",
     description="Comprehensive political document monitoring and analysis using distributed AI",
-    version="1.0.0",
+    version="0.1.0",
     author="political-monitoring@example.com",
     tags=["Politics", "Document Analysis", "AI", "Monitoring"],
 )
@@ -119,7 +119,7 @@ async def enter(request: fastapi.Request, inputs: dict):
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring."""
-    return {"status": "healthy", "service": "political-monitoring-agent", "version": "1.0.0"}
+    return {"status": "healthy", "service": "political-monitoring-agent", "version": "0.1.0"}
 
 
 # Ray deployment configuration
