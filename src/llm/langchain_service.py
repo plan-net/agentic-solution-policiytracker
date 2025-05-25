@@ -3,6 +3,8 @@ LangChain-based LLM service with standardized interfaces and observability.
 """
 
 import asyncio
+import json
+import re
 from typing import Dict, List, Optional, Any, Union
 import structlog
 
@@ -250,12 +252,10 @@ class LangChainLLMService:
             else:
                 configured_llm = llm
             
-            # Get Langfuse callback handler from current context for proper cost tracking
-            langfuse_handler = langfuse_context.get_current_langchain_handler()
-            
+            # Use the LLM without conflicting callback handlers
+            # The @observe decorator handles Langfuse tracking
             llm_response = await configured_llm.ainvoke(
-                [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+                [HumanMessage(content=prompt_text)]
             )
             result = parser.parse(llm_response.content)
             
@@ -381,12 +381,10 @@ class LangChainLLMService:
             else:
                 configured_llm = llm
             
-            # Get Langfuse callback handler from current context for proper cost tracking
-            langfuse_handler = langfuse_context.get_current_langchain_handler()
-            
+            # Use the LLM without conflicting callback handlers
+            # The @observe decorator handles Langfuse tracking
             llm_response = await configured_llm.ainvoke(
-                [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+                [HumanMessage(content=prompt_text)]
             )
             result = parser.parse(llm_response.content)
             
@@ -496,8 +494,30 @@ class LangChainLLMService:
                 }
             )
 
-            # Setup output parser
-            parser = PydanticOutputParser(pydantic_object=List[TopicAnalysis])
+            # Setup output parser for list of topic analyses
+            # Note: We'll parse as a list manually since PydanticOutputParser expects a single class
+            
+            class TopicAnalysisListParser:
+                def parse(self, text: str) -> List[TopicAnalysis]:
+                    try:
+                        # Try to parse as JSON first
+                        if text.strip().startswith('['):
+                            data = json.loads(text)
+                        else:
+                            # Extract JSON from markdown code blocks
+                            json_match = re.search(r'```(?:json)?\s*(\[.*?\])\s*```', text, re.DOTALL)
+                            if json_match:
+                                data = json.loads(json_match.group(1))
+                            else:
+                                raise ValueError("No valid JSON array found")
+                        
+                        return [TopicAnalysis(**item) for item in data]
+                    except Exception as e:
+                        logger.warning(f"Failed to parse topic analysis: {e}")
+                        # Return empty list on parse error
+                        return []
+            
+            parser = TopicAnalysisListParser()
             
             # Create a new LLM instance with config from Langfuse if needed
             if llm_kwargs:
@@ -509,12 +529,10 @@ class LangChainLLMService:
             else:
                 configured_llm = llm
             
-            # Get Langfuse callback handler from current context for proper cost tracking
-            langfuse_handler = langfuse_context.get_current_langchain_handler()
-            
+            # Use the LLM without conflicting callback handlers
+            # The @observe decorator handles Langfuse tracking
             llm_response = await configured_llm.ainvoke(
-                [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+                [HumanMessage(content=prompt_text)]
             )
             result = parser.parse(llm_response.content)
             
@@ -640,8 +658,8 @@ Top 5 Findings:
                 input={
                     "results_count": len(scoring_results),
                     "prompt_length": len(prompt_text),
-                    "high_priority_count": results_summary["high_priority_count"],
-                    "avg_relevance_score": results_summary["avg_relevance_score"],
+                    "high_priority_count": high_priority,
+                    "avg_relevance_score": avg_score,
                 },
                 model=getattr(settings, "ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022") if self.current_provider.value == "anthropic" else getattr(settings, "OPENAI_MODEL", "gpt-4"),
                 metadata={
@@ -651,8 +669,42 @@ Top 5 Findings:
                 }
             )
 
-            # Setup output parser
-            parser = PydanticOutputParser(pydantic_object=LLMReportInsights)
+            # Setup custom output parser for report insights
+            class ReportInsightsParser:
+                def parse(self, text: str) -> LLMReportInsights:
+                    try:
+                        # Try to parse as JSON first
+                        if text.strip().startswith('{'):
+                            data = json.loads(text)
+                        else:
+                            # Extract JSON from markdown code blocks
+                            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
+                            if json_match:
+                                data = json.loads(json_match.group(1))
+                            else:
+                                raise ValueError("No valid JSON object found")
+                        
+                        # Handle risk_assessment if it's an object
+                        if isinstance(data.get('risk_assessment'), dict):
+                            risk_data = data['risk_assessment']
+                            if 'level' in risk_data and 'primary_concerns' in risk_data:
+                                data['risk_assessment'] = f"{risk_data['level']}: {'; '.join(risk_data['primary_concerns'])}"
+                            else:
+                                data['risk_assessment'] = str(risk_data)
+                        
+                        return LLMReportInsights(**data)
+                    except Exception as e:
+                        logger.warning(f"Failed to parse report insights: {e}")
+                        # Return mock response on parse error
+                        return LLMReportInsights(
+                            executive_summary="Analysis completed with mixed results",
+                            key_findings=["Default finding"],
+                            recommendations=["Review analysis"],
+                            risk_assessment="Medium",
+                            confidence=0.6
+                        )
+            
+            parser = ReportInsightsParser()
             
             # Create a new LLM instance with config from Langfuse if needed
             if llm_kwargs:
@@ -664,12 +716,10 @@ Top 5 Findings:
             else:
                 configured_llm = llm
             
-            # Get Langfuse callback handler from current context for proper cost tracking
-            langfuse_handler = langfuse_context.get_current_langchain_handler()
-            
+            # Use the LLM without conflicting callback handlers
+            # The @observe decorator handles Langfuse tracking
             llm_response = await configured_llm.ainvoke(
-                [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+                [HumanMessage(content=prompt_text)]
             )
             result = parser.parse(llm_response.content)
             
@@ -694,7 +744,32 @@ Top 5 Findings:
             confidence=0.6,
         )
 
-        return await self._execute_with_fallback("report_insights", execute_insights, mock_response)
+        # Execute directly without fallback wrapper to maintain Langfuse context
+        if not self.enabled:
+            logger.debug("LLM disabled, returning mock response for report_insights")
+            return mock_response
+
+        try:
+            # Try primary LLM
+            if self.primary_llm:
+                result = await execute_insights(self.primary_llm)
+                logger.debug(f"Successfully executed report_insights with {self.current_provider.value}")
+                return result
+        except Exception as e:
+            logger.warning("Primary LLM failed for report_insights", error=str(e))
+            
+            # Try fallback LLM
+            if self.fallback_llm:
+                try:
+                    result = await execute_insights(self.fallback_llm)
+                    logger.info("Fallback LLM succeeded for report_insights")
+                    return result
+                except Exception as e2:
+                    logger.warning("Fallback LLM also failed for report_insights", error=str(e2))
+
+        # Return mock response as final fallback
+        logger.info("Using mock response for report_insights")
+        return mock_response
 
     def _extract_mock_topics(self, text: str, context: Dict[str, Any]) -> List[str]:
         """Extract mock topics based on context and text."""
