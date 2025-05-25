@@ -84,7 +84,7 @@ This guide walks you through setting up the Political Monitoring Agent from a fr
 
 ### Prerequisites
 
-- **Python 3.11+** (system installation)
+- **Python 3.12.6** (system installation)
 - **UV package manager** (for dependency management)
 - **Docker** and **Docker Compose** (for supporting services)
 - **Just** task runner (for automation)
@@ -414,7 +414,7 @@ just setup && just services-up && just dev
 just test
 
 # Code quality checks
-just check
+just format && just typecheck
 
 # View all available commands
 just
@@ -429,7 +429,8 @@ just dev                     # Start development server
 just services-up             # Start PostgreSQL, Redis, Azurite
 just services-down           # Stop all services
 just test                    # Run all tests
-just check                   # Format code + type check
+just format                  # Format code with ruff
+just typecheck               # Type check with mypy
 ```
 
 ### Testing
@@ -729,7 +730,7 @@ The system combines **rule-based analysis** with **LLM semantic understanding**:
 ```
 political-monitoring-agent/
 ├── src/
-│   ├── serve.py                 # FastAPI Kodosumi entry point
+│   ├── app.py                   # Kodosumi FastAPI entry point
 │   ├── config.py                # Pydantic configuration
 │   ├── models/                  # Data models and validation
 │   ├── workflow/                # LangGraph workflows
@@ -770,7 +771,7 @@ just services-up && just dev
 
 # Make changes and test
 just test
-just check
+just format && just typecheck
 
 # Work with Azure Storage
 just azure-import  # Import test data
@@ -990,7 +991,7 @@ If these solutions don't work:
    ```bash
    # Test your changes
    just test
-   just check
+   just format && just typecheck
    ```
 
 4. **Submit pull request** with clear description
