@@ -2,12 +2,15 @@
 """
 Sync environment variables from .env file to config.yaml for Kodosumi deployment.
 
-This script ensures that Ray workers have access to all environment variables
-by explicitly adding them to the runtime_env section of config.yaml.
+This script:
+1. Creates config.yaml from config.yaml.template if it doesn't exist
+2. Syncs environment variables from .env to config.yaml
+3. Ensures Ray workers have access to all environment variables
 """
 
 import os
 import sys
+import shutil
 from pathlib import Path
 import yaml
 from dotenv import load_dotenv
@@ -100,13 +103,62 @@ def get_relevant_env_vars():
     
     return env_vars
 
+def validate_config_values(config):
+    """Check for placeholder values that need to be replaced."""
+    warnings = []
+    
+    if 'applications' in config and config['applications']:
+        app = config['applications'][0]
+        if 'runtime_env' in app and 'env_vars' in app['runtime_env']:
+            env_vars = app['runtime_env']['env_vars']
+            
+            # Check for placeholder API keys
+            placeholder_patterns = [
+                "your-api-key-here",
+                "your-openai-api-key-here", 
+                "your-anthropic-api-key-here",
+                "your-langfuse-public-key-here",
+                "your-langfuse-secret-key-here",
+                "placeholder-"
+            ]
+            
+            for key, value in env_vars.items():
+                if any(pattern in str(value) for pattern in placeholder_patterns):
+                    warnings.append(f"⚠️  {key} contains placeholder value: {value}")
+    
+    if warnings:
+        print("\n🔧 Configuration warnings:")
+        for warning in warnings[:5]:  # Show first 5 warnings
+            print(f"   {warning}")
+        if len(warnings) > 5:
+            print(f"   ... and {len(warnings) - 5} more placeholder values")
+        print("\n💡 Update these values in your .env file or config.yaml for full functionality")
+    
+    return warnings
+
+def ensure_config_yaml_exists():
+    """Create config.yaml from template if it doesn't exist."""
+    config_path = Path("config.yaml")
+    template_path = Path("config.yaml.template")
+    
+    if config_path.exists():
+        print(f"✅ config.yaml already exists")
+        return config_path
+    
+    if not template_path.exists():
+        print("❌ config.yaml.template not found")
+        sys.exit(1)
+    
+    # Copy template to config.yaml
+    shutil.copy2(template_path, config_path)
+    print(f"✅ Created config.yaml from template")
+    print(f"⚠️  Remember to update API keys and other secrets in config.yaml")
+    
+    return config_path
+
 def update_config_yaml(env_vars):
     """Update config.yaml with environment variables."""
-    config_path = Path("config.yaml")
-    
-    if not config_path.exists():
-        print("❌ config.yaml not found")
-        sys.exit(1)
+    config_path = ensure_config_yaml_exists()
     
     # Load existing config
     with open(config_path, 'r') as f:
@@ -142,6 +194,10 @@ def update_config_yaml(env_vars):
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
     
     print(f"✅ Updated config.yaml with {len(all_vars)} environment variables")
+    
+    # Validate configuration values
+    validate_config_values(config)
+    
     return config_path
 
 def main():
