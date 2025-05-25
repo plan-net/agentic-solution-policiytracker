@@ -125,12 +125,12 @@ class MockLLMClient(BaseLLMClient):
         confidence = min(0.9, max(0.3, word_count / 1000 + len(key_themes) * 0.1))
 
         return DocumentInsight(
-            key_themes=key_themes,
-            regulatory_indicators=regulatory_indicators,
-            urgency_signals=urgency_signals,
-            business_impact=f"Moderate impact detected based on {len(key_themes)} themes",
-            confidence_score=confidence,
-            reasoning=f"Analysis based on {word_count} words with {len(key_themes)} key themes identified",
+            provider=self.provider,
+            key_topics=key_themes,
+            sentiment="neutral" if len(urgency_signals) == 0 else "negative",
+            urgency_level="high" if len(urgency_signals) > 0 else "medium",
+            confidence=confidence,
+            summary=f"Analysis based on {word_count} words with {len(key_themes)} key themes identified",
         )
 
     async def score_dimension(
@@ -172,13 +172,11 @@ class MockLLMClient(BaseLLMClient):
         confidence = 0.7 if semantic_adjustment > 0 else 0.5
 
         return SemanticScore(
-            dimension_name=dimension,
+            provider=self.provider,
             semantic_score=semantic_score,
-            rule_based_score=rule_based_score,
-            hybrid_score=hybrid_score,
-            llm_reasoning=f"Semantic analysis detected {semantic_adjustment} point adjustment for {dimension}",
-            key_evidence=[f"Evidence found for {dimension} dimension"],
             confidence=confidence,
+            reasoning=f"Semantic analysis detected {semantic_adjustment} point adjustment for {dimension}",
+            key_factors=[f"Evidence found for {dimension} dimension"],
         )
 
     async def analyze_topics(self, documents: List[str]) -> List[TopicAnalysis]:

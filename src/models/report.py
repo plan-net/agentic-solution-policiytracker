@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Dict, List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from .scoring import PriorityLevel, ScoringResult
 
@@ -20,8 +20,7 @@ class PriorityQueue(BaseModel):
     document_count: int = Field(..., ge=0)
     documents: List[ScoringResult]
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class ReportSummary(BaseModel):

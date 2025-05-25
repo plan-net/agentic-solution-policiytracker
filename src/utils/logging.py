@@ -11,10 +11,11 @@ def setup_logging() -> structlog.stdlib.BoundLogger:
     """Setup structured logging configuration."""
 
     # Configure standard library logging
+    log_level = getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO)
     logging.basicConfig(
         format="%(message)s",
         stream=sys.stdout,
-        level=getattr(logging, settings.LOG_LEVEL.upper()),
+        level=log_level,
     )
 
     # Configure structlog processors
@@ -24,7 +25,7 @@ def setup_logging() -> structlog.stdlib.BoundLogger:
         structlog.processors.TimeStamper(fmt="iso"),
     ]
 
-    if settings.LOG_FORMAT.lower() == "json":
+    if settings.LOG_FORMAT and settings.LOG_FORMAT.lower() == "json":
         processors.append(structlog.processors.JSONRenderer())
     else:
         processors.extend(

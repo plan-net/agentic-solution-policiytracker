@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 from io import BytesIO
 
-import PyPDF2
+import pypdf
 import markdown
 from bs4 import BeautifulSoup
 from docx import Document
@@ -191,13 +191,13 @@ class DocumentReader:
         )
 
     async def _read_pdf(self, file_path: str) -> Tuple[str, Dict]:
-        """Read PDF file using PyPDF2."""
+        """Read PDF file using pypdf."""
         try:
             extraction_meta = {"pages_extracted": 0, "pages_failed": 0}
             text_parts = []
 
             with open(file_path, "rb") as file:
-                reader = PyPDF2.PdfReader(file)
+                reader = pypdf.PdfReader(file)
 
                 # Check if encrypted
                 if reader.is_encrypted:

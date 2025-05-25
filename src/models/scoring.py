@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List
 
-from pydantic import BaseModel, Field, field_validator, computed_field
+from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
 
 
 class ConfidenceLevel(str, Enum):
@@ -24,7 +24,7 @@ class DimensionScore(BaseModel):
     score: float = Field(..., ge=0, le=100, description="Score between 0-100")
     weight: float = Field(..., ge=0, le=1, description="Weight between 0-1")
     justification: str
-    evidence_snippets: List[str] = Field(default_factory=list, max_items=3)
+    evidence_snippets: List[str] = Field(default_factory=list, max_length=3)
 
 
 class ScoringResult(BaseModel):
@@ -32,7 +32,7 @@ class ScoringResult(BaseModel):
     master_score: float = Field(..., ge=0, le=100, description="Overall score 0-100")
     dimension_scores: Dict[str, DimensionScore]
     confidence_score: float = Field(..., ge=0, le=1, description="Confidence 0-1")
-    topic_clusters: List[str] = Field(default_factory=list, max_items=5)
+    topic_clusters: List[str] = Field(default_factory=list, max_length=5)
     scoring_timestamp: datetime
     processing_time_ms: float = Field(..., ge=0)
     overall_justification: str
@@ -64,8 +64,7 @@ class ScoringResult(BaseModel):
         else:
             return PriorityLevel.INFORMATIONAL
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class BatchScoringResults(BaseModel):
