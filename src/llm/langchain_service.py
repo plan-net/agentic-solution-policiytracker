@@ -416,45 +416,116 @@ class LangChainLLMService:
 
         return await self._execute_with_fallback("semantic_scoring", execute_scoring, mock_response)
 
+    @observe()
     async def analyze_topics_batch(
-        self, documents: List[str], context: Dict[str, Any]
+        self, documents: List[str], context: Dict[str, Any], session_id: Optional[str] = None
     ) -> List[TopicAnalysis]:
-        """Analyze topics across multiple documents using LangChain."""
+        """Analyze topics across multiple documents using LangChain with Langfuse integration."""
+        
+        # Update trace with session and meaningful tags
+        langfuse_context.update_current_trace(
+            name="Topic Clustering Session",
+            session_id=session_id,
+            tags=["topic-clustering"],
+            metadata={
+                "document_count": len(documents),
+                "context_keys": list(context.keys()),
+                "provider": self.current_provider.value,
+            }
+        )
 
-        parser = PydanticOutputParser(pydantic_object=List[TopicAnalysis])
-
+        @observe(as_type="generation")
         async def execute_topic_analysis(llm: BaseChatModel) -> List[TopicAnalysis]:
-            chain = self.topic_analysis_prompt | llm | parser
+            # Get Langfuse prompt object for generation tracking
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(name="topic_clustering", label="production")
+                    # Update current observation with the prompt object for generation tracking
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info("Updated observation with Langfuse prompt for topic_clustering")
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
 
-            async with await langfuse_client.trace(
-                name="langchain_topic_analysis",
-                input_data={"document_count": len(documents), "context_keys": list(context.keys())},
-                metadata={"provider": self.current_provider.value, "operation": "topic_analysis"},
-            ) as trace:
-                try:
-                    # Truncate documents for analysis to avoid token limits
-                    truncated_docs = [
-                        doc[:500] + "..." if len(doc) > 500 else doc for doc in documents
-                    ]
+            # Load prompt and config from prompt manager
+            # Truncate documents for analysis to avoid token limits
+            truncated_docs = [
+                doc[:500] + "..." if len(doc) > 500 else doc for doc in documents
+            ]
+            
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "topic_clustering",
+                variables={
+                    "documents": str(truncated_docs),
+                    "context": str(context),
+                    "document_count": len(documents),
+                },
+            )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+            
+            # Log config for debugging
+            logger.info(f"Topic clustering Langfuse config: {prompt_config}")
+            
+            # Use temperature from Langfuse config if available
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(f"Using temperature {prompt_config['temperature']} from Langfuse prompt config for topic clustering")
+            if prompt_config.get("max_tokens"):
+                llm_kwargs["max_tokens"] = prompt_config["max_tokens"]
 
-                    result = await chain.ainvoke(
-                        {"documents": str(truncated_docs), "context": str(context)}
-                    )
+            # Update current observation with detailed context
+            langfuse_context.update_current_observation(
+                name=f"Topic Clustering - {self.current_provider.value}",
+                input={
+                    "document_count": len(documents),
+                    "prompt_length": len(prompt_text),
+                    "total_text_length": sum(len(doc) for doc in documents),
+                    "context_summary": {
+                        "company_terms_count": len(context.get("company_terms", [])),
+                        "industries_count": len(context.get("core_industries", [])),
+                    }
+                },
+                model=getattr(settings, "ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022") if self.current_provider.value == "anthropic" else getattr(settings, "OPENAI_MODEL", "gpt-4"),
+                metadata={
+                    "operation": "topic_clustering",
+                    "provider": self.current_provider.value,
+                    "document_count": len(documents),
+                }
+            )
 
-                    trace.update_output(
-                        {
-                            "topics_found": len(result),
-                            "avg_confidence": sum(t.confidence for t in result) / len(result)
-                            if result
-                            else 0,
-                        }
-                    )
-
-                    return result
-
-                except Exception as e:
-                    trace.update_output({"error": str(e)})
-                    raise
+            # Setup output parser
+            parser = PydanticOutputParser(pydantic_object=List[TopicAnalysis])
+            
+            # Create a new LLM instance with config from Langfuse if needed
+            if llm_kwargs:
+                if hasattr(llm, 'bind'):
+                    configured_llm = llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = llm
+            
+            # Get Langfuse callback handler from current context for proper cost tracking
+            langfuse_handler = langfuse_context.get_current_langchain_handler()
+            
+            llm_response = await configured_llm.ainvoke(
+                [HumanMessage(content=prompt_text)], 
+                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+            )
+            result = parser.parse(llm_response.content)
+            
+            # Update observation with structured output
+            langfuse_context.update_current_observation(
+                output={
+                    "topics_found": len(result),
+                    "avg_confidence": sum(t.confidence for t in result) / len(result) if result else 0,
+                    "topic_names": [t.topic_name for t in result],
+                }
+            )
+            
+            return result
 
         # Mock response
         mock_topics = [
@@ -470,49 +541,117 @@ class LangChainLLMService:
             "topic_analysis", execute_topic_analysis, mock_topics
         )
 
+    @observe()
     async def generate_report_insights(
-        self, scoring_results: List[Dict[str, Any]], context: Dict[str, Any]
+        self, scoring_results: List[Dict[str, Any]], context: Dict[str, Any], session_id: Optional[str] = None
     ) -> LLMReportInsights:
-        """Generate report insights using LangChain."""
-
-        # Simple prompt for report insights
-        report_prompt = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    """Generate executive insights for this political monitoring report.
-            
-Context: {context}
-Results: {results_summary}
-
-Provide:
-1. Executive summary (2-3 sentences)
-2. Key findings (3-5 bullet points)
-3. Recommendations (2-3 actionable items)
-4. Risk assessment
-
-Respond in JSON format.""",
-                ),
-                ("human", "Generate insights for the analysis results."),
-            ]
+        """Generate report insights using LangChain with Langfuse integration."""
+        
+        # Update trace with session and meaningful tags
+        langfuse_context.update_current_trace(
+            name="Report Insights Generation Session",
+            session_id=session_id,
+            tags=["report-insights"],
+            metadata={
+                "results_count": len(scoring_results),
+                "context_keys": list(context.keys()),
+                "provider": self.current_provider.value,
+            }
         )
 
+        @observe(as_type="generation")
         async def execute_insights(llm: BaseChatModel) -> LLMReportInsights:
-            # For now, return mock insights
-            return LLMReportInsights(
-                provider=self.current_provider,
-                executive_summary="LangChain-generated executive summary of political monitoring results.",
-                key_findings=[
-                    "Key finding 1 from LangChain analysis",
-                    "Key finding 2 from LangChain analysis",
-                ],
-                recommendations=[
-                    "Recommendation 1 based on analysis",
-                    "Recommendation 2 for next steps",
-                ],
-                risk_assessment="Medium risk profile identified",
-                confidence=0.75,
+            # Get Langfuse prompt object for generation tracking
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(name="report_insights", label="production")
+                    # Update current observation with the prompt object for generation tracking
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info("Updated observation with Langfuse prompt for report_insights")
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+
+            # Prepare results summary for the prompt
+            results_summary = {
+                "total_documents": len(scoring_results),
+                "high_priority_count": sum(1 for r in scoring_results if r.get("priority", "").lower() == "high"),
+                "avg_relevance_score": sum(r.get("relevance_score", 0) for r in scoring_results) / len(scoring_results) if scoring_results else 0,
+                "key_dimensions": list(set().union(*[r.get("dimension_scores", {}).keys() for r in scoring_results])),
+            }
+            
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "report_insights",
+                variables={
+                    "context": str(context),
+                    "results_summary": str(results_summary),
+                    "scoring_results": str(scoring_results[:3]),  # Include sample results
+                    "total_documents": len(scoring_results),
+                },
             )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+            
+            # Log config for debugging
+            logger.info(f"Report insights Langfuse config: {prompt_config}")
+            
+            # Use temperature from Langfuse config if available
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(f"Using temperature {prompt_config['temperature']} from Langfuse prompt config for report insights")
+            if prompt_config.get("max_tokens"):
+                llm_kwargs["max_tokens"] = prompt_config["max_tokens"]
+
+            # Update current observation with detailed context
+            langfuse_context.update_current_observation(
+                name=f"Report Insights - {self.current_provider.value}",
+                input={
+                    "results_count": len(scoring_results),
+                    "prompt_length": len(prompt_text),
+                    "high_priority_count": results_summary["high_priority_count"],
+                    "avg_relevance_score": results_summary["avg_relevance_score"],
+                },
+                model=getattr(settings, "ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022") if self.current_provider.value == "anthropic" else getattr(settings, "OPENAI_MODEL", "gpt-4"),
+                metadata={
+                    "operation": "report_insights",
+                    "provider": self.current_provider.value,
+                    "results_count": len(scoring_results),
+                }
+            )
+
+            # Setup output parser
+            parser = PydanticOutputParser(pydantic_object=LLMReportInsights)
+            
+            # Create a new LLM instance with config from Langfuse if needed
+            if llm_kwargs:
+                if hasattr(llm, 'bind'):
+                    configured_llm = llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = llm
+            
+            # Get Langfuse callback handler from current context for proper cost tracking
+            langfuse_handler = langfuse_context.get_current_langchain_handler()
+            
+            llm_response = await configured_llm.ainvoke(
+                [HumanMessage(content=prompt_text)], 
+                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+            )
+            result = parser.parse(llm_response.content)
+            
+            # Update observation with structured output
+            langfuse_context.update_current_observation(
+                output={
+                    "executive_summary_length": len(result.executive_summary),
+                    "key_findings_count": len(result.key_findings),
+                    "recommendations_count": len(result.recommendations),
+                    "confidence": result.confidence,
+                }
+            )
+            
+            return result
 
         mock_response = LLMReportInsights(
             provider=LLMProvider.MOCK,

@@ -279,9 +279,9 @@ async def cluster_results(state: WorkflowState) -> WorkflowState:
             }
             return state
 
-        # Topic clustering
+        # Topic clustering with context
         clusterer = TopicClusterer()
-        topic_clusters = await clusterer.cluster_by_topic(state.scoring_results)
+        topic_clusters = await clusterer.cluster_by_topic(state.scoring_results, state.context)
 
         # Result aggregation
         aggregator = ResultAggregator()

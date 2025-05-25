@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from jinja2 import Environment, FileSystemLoader, Template
 import structlog
@@ -11,6 +11,7 @@ from src.analysis.topic_clusterer import TopicClusterer
 from src.analysis.aggregator import ResultAggregator
 from src.output.formatter import MarkdownFormatter
 from src.config import settings
+from src.llm.langchain_service import langchain_llm_service
 
 logger = structlog.get_logger()
 
@@ -55,9 +56,15 @@ class ReportGenerator:
             # Calculate aggregate metrics
             metrics = self.aggregator.calculate_aggregate_metrics(scoring_results)
 
-            # Generate insights and recommendations
+            # Generate insights and recommendations (enhanced with LLM)
+            llm_insights = await self._generate_llm_insights(scoring_results, context)
             insights = self.aggregator.generate_insights(scoring_results)
             recommendations = self.aggregator.generate_recommendations(scoring_results)
+            
+            # Combine traditional and LLM insights
+            if llm_insights:
+                insights = llm_insights.key_findings + insights[:2]  # LLM insights first, then top 2 traditional
+                recommendations = llm_insights.recommendations + recommendations[:2]
 
             # Create summary
             summary = ReportSummary(
@@ -265,6 +272,74 @@ class ReportGenerator:
             issues.append("Missing generation timestamp")
 
         return issues
+
+    async def _generate_llm_insights(
+        self, scoring_results: List[ScoringResult], context: Dict[str, Any]
+    ) -> Optional[Any]:
+        """Generate LLM-powered insights for the report."""
+        try:
+            if not langchain_llm_service.enabled:
+                logger.debug("LLM service not enabled, skipping insights generation")
+                return None
+
+            # Prepare results summary for LLM
+            results_summary = self._prepare_results_summary(scoring_results)
+            
+            # langchain_service handles prompts internally
+
+            # Generate insights using LLM
+            llm_insights = await langchain_llm_service.generate_report_insights(
+                [result.dict() for result in scoring_results], context
+            )
+
+            logger.info("Generated LLM insights for report", confidence=getattr(llm_insights, 'confidence', 'unknown'))
+            return llm_insights
+
+        except Exception as e:
+            logger.warning("Failed to generate LLM insights", error=str(e))
+            return None
+
+    def _prepare_results_summary(self, scoring_results: List[ScoringResult]) -> str:
+        """Prepare a summary of scoring results for LLM processing."""
+        if not scoring_results:
+            return "No results to summarize"
+
+        # High-level statistics
+        total_docs = len(scoring_results)
+        high_priority = len([r for r in scoring_results if r.master_score >= 75])
+        medium_priority = len([r for r in scoring_results if 50 <= r.master_score < 75])
+        low_priority = len([r for r in scoring_results if r.master_score < 50])
+        
+        avg_score = sum(r.master_score for r in scoring_results) / total_docs
+        avg_confidence = sum(r.confidence_score for r in scoring_results) / total_docs
+
+        # Top findings
+        top_results = sorted(scoring_results, key=lambda x: x.master_score, reverse=True)[:5]
+        top_findings = []
+        for result in top_results:
+            top_dim = max(result.dimension_scores.items(), key=lambda x: x[1].score) if result.dimension_scores else ("unknown", None)
+            top_findings.append({
+                "score": result.master_score,
+                "top_dimension": top_dim[0],
+                "justification": result.overall_justification[:200] + "..." if len(result.overall_justification) > 200 else result.overall_justification
+            })
+
+        summary = f"""
+Analysis Summary:
+- Total Documents: {total_docs}
+- High Priority (75+): {high_priority} ({high_priority/total_docs*100:.1f}%)
+- Medium Priority (50-74): {medium_priority} ({medium_priority/total_docs*100:.1f}%)
+- Low Priority (<50): {low_priority} ({low_priority/total_docs*100:.1f}%)
+- Average Score: {avg_score:.1f}
+- Average Confidence: {avg_confidence:.2f}
+
+Top 5 Findings:
+"""
+        
+        for i, finding in enumerate(top_findings, 1):
+            summary += f"{i}. Score {finding['score']}: {finding['top_dimension']} - {finding['justification']}\n"
+
+        return summary
 
     def estimate_report_size(self, report_data: ReportData) -> Dict[str, int]:
         """Estimate the size of the generated report."""
