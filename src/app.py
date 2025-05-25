@@ -55,33 +55,9 @@ analysis_form = F.Model(
         ],
         value="local",
     ),
-    # Advanced Options
-    F.InputNumber(
-        label="Batch Size",
-        name="batch_size",
-        min_value=10,
-        max_value=1000,
-        value=50,
-        placeholder="Number of documents to process per batch",
-    ),
-    F.InputNumber(
-        label="Processing Timeout (minutes)",
-        name="timeout_minutes",
-        min_value=5,
-        max_value=120,
-        value=30,
-        placeholder="Maximum time to wait for analysis completion",
-    ),
-    # Additional Instructions
-    F.InputArea(
-        label="Additional Instructions",
-        name="instructions",
-        placeholder="Any specific requirements, focus areas, or custom analysis criteria...",
-    ),
     # Action Buttons
     F.Submit("Start Analysis"),
     F.Cancel("Cancel"),
-    F.Action(text="Advanced Settings", value="advanced", name="action"),
 )
 
 
@@ -120,19 +96,6 @@ async def enter(request: fastapi.Request, inputs: dict):
     except (ValueError, TypeError):
         error.add(priority_threshold="Priority threshold must be a valid number")
 
-    try:
-        batch_size = int(inputs.get("batch_size", 50))
-        if batch_size < 10 or batch_size > 1000:
-            error.add(batch_size="Batch size must be between 10 and 1000")
-    except (ValueError, TypeError):
-        error.add(batch_size="Batch size must be a valid integer")
-
-    try:
-        timeout_minutes = int(inputs.get("timeout_minutes", 30))
-        if timeout_minutes < 5 or timeout_minutes > 120:
-            error.add(timeout_minutes="Timeout must be between 5 and 120 minutes")
-    except (ValueError, TypeError):
-        error.add(timeout_minutes="Timeout must be a valid integer")
 
     # Check for validation errors
     if error.has_errors():
@@ -147,9 +110,6 @@ async def enter(request: fastapi.Request, inputs: dict):
             "priority_threshold": priority_threshold,
             "include_low_confidence": bool(inputs.get("include_low_confidence", False)),
             "clustering_enabled": bool(inputs.get("clustering_enabled", True)),
-            "batch_size": batch_size,
-            "timeout_minutes": timeout_minutes,
-            "instructions": inputs.get("instructions", ""),
             "storage_mode": inputs.get("storage_mode", "local"),
         },
     )

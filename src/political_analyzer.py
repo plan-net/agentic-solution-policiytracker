@@ -35,9 +35,6 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
         priority_threshold = inputs.get("priority_threshold", 70.0)
         include_low_confidence = inputs.get("include_low_confidence", False)
         clustering_enabled = inputs.get("clustering_enabled", True)
-        batch_size = inputs.get("batch_size", 50)
-        timeout_minutes = inputs.get("timeout_minutes", 30)
-        instructions = inputs.get("instructions", "")
         storage_mode = inputs.get("storage_mode", "local")
 
         # Determine use_azure based on storage_mode or config
@@ -73,8 +70,6 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
 - **Priority Threshold**: {priority_threshold}%
 - **Include Low Confidence**: {include_low_confidence}
 - **Clustering Enabled**: {clustering_enabled}
-- **Batch Size**: {batch_size}
-- **Timeout**: {timeout_minutes} minutes
 
 ## Analysis Progress
 

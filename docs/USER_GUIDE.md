@@ -130,7 +130,7 @@ The system produces comprehensive outputs:
 
 ## Starting Your First Analysis: Form Guide
 
-When you access the Political Monitoring Agent at **http://localhost:8001/political-analysis**, you'll see a comprehensive form to configure your analysis. Here's how to fill it out:
+When you access the Political Monitoring Agent at **http://localhost:8001/political-analysis**, you'll see a streamlined form to configure your analysis. Here's how to fill it out:
 
 ### 🏷️ Job Configuration
 
@@ -143,30 +143,11 @@ When you access the Political Monitoring Agent at **http://localhost:8001/politi
 - **Purpose**: Helps you track and identify analysis jobs in the system
 - **Best practice**: Include date/timeframe and focus area
 
-### 📁 Input Sources
-
-**Input Folder Path** *(Required)*
-- **Default**: `/data/input`
-- **What to enter**: Path to the folder containing documents to analyze
-- **Supported formats**: PDF, DOCX, TXT, MD, HTML, CSV, JSON
-- **Examples**:
-  - `/data/input` (default location)
-  - `/data/input/weekly-batch`
-  - `/data/input/regulatory-updates`
-- **Tip**: Organize documents in subfolders by topic or date
-
-**Context File Path** *(Required)*
-- **Default**: `/data/context/client.yaml`
-- **What to enter**: Path to your organization's context configuration
-- **Purpose**: Defines your company details, priorities, and scoring criteria
-- **Example**: `/data/context/my-company.yaml`
-- **Note**: See [Required Inputs](#required-inputs) section for context file format
-
 ### ⚙️ Analysis Parameters
 
 **Priority Threshold (%)** *(Default: 70)*
 - **What it controls**: Minimum relevance score for documents to be included in results
-- **Range**: 0-100
+- **Range**: 0-100 (adjustable in steps of 5)
 - **Recommendations**:
   - **50-60%**: Broad monitoring (includes many documents)
   - **70-80%**: Standard filtering (balanced approach)
@@ -177,68 +158,51 @@ When you access the Political Monitoring Agent at **http://localhost:8001/politi
 
 **Include Low Confidence Results**
 - **Default**: Unchecked (disabled)
-- **When to enable**: If you want to see documents where the AI was uncertain
-- **Use case**: Quality control and training the system
+- **When to enable**: If you want to see documents where the system was uncertain
+- **Use case**: Quality control and comprehensive review
 - **Trade-off**: More comprehensive but may include false positives
 
 **Enable Topic Clustering**
 - **Default**: Checked (enabled)
-- **What it does**: Groups related documents by semantic similarity
-- **Benefits**: Easier to review documents by theme
+- **What it does**: Groups related documents by semantic similarity using AI
+- **Benefits**: Easier to review documents by theme and identify trends
 - **When to disable**: For simple, small batches where grouping isn't needed
 
-### 🚀 Advanced Options
+### 💾 Storage Configuration
 
-**Batch Size** *(Default: 50)*
-- **Range**: 10-1000 documents per batch
-- **Performance impact**: 
-  - **Smaller batches (10-30)**: Faster individual processing, more frequent updates
-  - **Larger batches (100-500)**: More efficient overall, fewer progress updates
-- **Recommendation**: Keep default unless processing very large volumes
-
-**Processing Timeout (minutes)** *(Default: 30)*
-- **Range**: 5-120 minutes
-- **What it controls**: Maximum time to wait for analysis completion
-- **Factors affecting time**:
-  - Number of documents
-  - Document complexity and length
-  - System load
-- **Recommendation**: Increase for large batches (100+ documents)
-
-**Additional Instructions** *(Optional)*
-- **Purpose**: Provide specific requirements or focus areas
-- **Examples**:
-  - "Focus specifically on data protection requirements"
-  - "Prioritize documents mentioning pharmaceutical regulations"
-  - "Look for compliance deadlines within next 6 months"
-- **Impact**: Influences AI analysis and prioritization
+**Storage Mode**
+- **Local Files** (default): Documents stored on local filesystem
+- **Azure Blob Storage**: Documents stored in cloud storage for enterprise deployments
+- **When to use Azure**: For production environments, team collaboration, or large-scale processing
+- **When to use Local**: For development, testing, or single-user scenarios
 
 ### 🎯 Quick Start Examples
 
 **Standard Weekly Review**:
 - Job Name: "Weekly Policy Monitor - [Current Date]"
-- Input Folder: `/data/input`
 - Priority Threshold: 70%
-- All defaults for other settings
+- Storage Mode: Local Files
+- Keep other defaults
 
 **Executive Briefing Preparation**:
 - Job Name: "Executive Brief - Q3 Regulatory Updates"
 - Priority Threshold: 85%
-- Additional Instructions: "Focus on high-impact regulations affecting operations"
+- Include Low Confidence: Disabled
+- Topic Clustering: Enabled
 
 **Comprehensive Research**:
 - Job Name: "Digital Privacy Laws - Complete Review"
 - Priority Threshold: 55%
-- Include Low Confidence: ✓
-- Additional Instructions: "Include all privacy, data protection, and digital rights legislation"
+- Include Low Confidence: ✓ Enabled
+- Topic Clustering: ✓ Enabled
 
 ### 💡 Pro Tips
 
 1. **Start with defaults** for your first analysis to understand the system
 2. **Experiment with thresholds** based on your needs - lower for research, higher for executive summaries
 3. **Use descriptive job names** to easily find analyses later
-4. **Monitor processing time** and adjust timeout for similar future batches
-5. **Review low-confidence results** occasionally to improve context configuration
+4. **Enable topic clustering** for most analyses to identify related themes
+5. **Use Azure storage** for production environments with multiple users
 
 ---
 
