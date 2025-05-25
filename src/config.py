@@ -55,6 +55,8 @@ class Settings(BaseSettings):
     )
     LLM_MAX_CONCURRENT: int = Field(default=3, description="Max concurrent LLM requests")
     LLM_TIMEOUT_SECONDS: int = Field(default=30, description="LLM request timeout")
+    LLM_TEMPERATURE: float = Field(default=0.3, description="LLM temperature for creativity")
+    LLM_MAX_TOKENS: int = Field(default=2000, description="Maximum tokens for LLM responses")
     LLM_FALLBACK_ENABLED: bool = Field(
         default=True, description="Enable fallback to rule-based scoring"
     )

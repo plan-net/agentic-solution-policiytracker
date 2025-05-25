@@ -13,9 +13,21 @@ from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langfuse import Langfuse
 from langfuse.decorators import observe, langfuse_context
+from langfuse.callback import CallbackHandler
+import os
 
 from src.config import settings
+
+# Ensure Langfuse environment variables are set for decorators
+if settings.LANGFUSE_PUBLIC_KEY and not os.getenv("LANGFUSE_PUBLIC_KEY"):
+    os.environ["LANGFUSE_PUBLIC_KEY"] = settings.LANGFUSE_PUBLIC_KEY
+if settings.LANGFUSE_SECRET_KEY and not os.getenv("LANGFUSE_SECRET_KEY"):
+    os.environ["LANGFUSE_SECRET_KEY"] = settings.LANGFUSE_SECRET_KEY
+if settings.LANGFUSE_HOST and not os.getenv("LANGFUSE_HOST"):
+    os.environ["LANGFUSE_HOST"] = settings.LANGFUSE_HOST
+
 from src.llm.models import (
     DocumentInsight,
     SemanticScore,
@@ -27,6 +39,24 @@ from src.llm.models import (
 from src.prompts.prompt_manager import prompt_manager
 
 logger = structlog.get_logger()
+
+# Initialize global Langfuse client and callback handler
+try:
+    # Initialize Langfuse client (prompt management)
+    langfuse = Langfuse()
+    
+    # Initialize Langfuse CallbackHandler for Langchain (tracing)
+    langfuse_callback_handler = CallbackHandler()
+    
+    # Verify that Langfuse is configured correctly
+    assert langfuse.auth_check()
+    assert langfuse_callback_handler.auth_check()
+    
+    logger.info("Langfuse client and CallbackHandler initialized and authenticated successfully")
+except Exception as e:
+    langfuse = None
+    langfuse_callback_handler = None
+    logger.warning(f"Failed to initialize Langfuse: {e}")
 
 
 class LangChainLLMService:
@@ -149,8 +179,8 @@ class LangChainLLMService:
         )
 
         async def execute_analysis(llm: BaseChatModel) -> DocumentInsight:
-            # Load prompt from prompt manager
-            prompt_text = await prompt_manager.get_prompt(
+            # Load prompt and config from prompt manager
+            prompt_data = await prompt_manager.get_prompt_with_config(
                 "document_analysis",
                 variables={
                     "company_terms": context.get("company_terms", []),
@@ -160,6 +190,24 @@ class LangChainLLMService:
                     "document_text": text,
                 },
             )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+            
+            # Log full config for debugging
+            logger.info(f"Langfuse prompt config: {prompt_config}")
+            
+            # Use model from Langfuse config if available, otherwise use current LLM
+            if prompt_config.get("model") and prompt_config["model"] != getattr(llm, "model_name", ""):
+                logger.info(f"Prompt requests model '{prompt_config['model']}', but using current LLM '{getattr(llm, 'model_name', 'unknown')}'")
+                # Note: We could potentially switch LLM here based on prompt config
+            
+            # Use temperature from Langfuse config if available
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(f"Using temperature {prompt_config['temperature']} from Langfuse prompt config")
+            if prompt_config.get("max_tokens"):
+                llm_kwargs["max_tokens"] = prompt_config["max_tokens"]
 
             # Update current observation with detailed context
             langfuse_context.update_current_observation(
@@ -183,14 +231,25 @@ class LangChainLLMService:
 
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=DocumentInsight)
-
-            # Get Langfuse callback handler for proper cost tracking
+            
+            # Execute LLM call with Langfuse callback and config from prompt
+            # Create a new LLM instance with config from Langfuse if needed
+            if llm_kwargs:
+                # Create a new LLM instance with updated parameters
+                if hasattr(llm, 'bind'):
+                    configured_llm = llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = llm
+            
+            # Get Langfuse callback handler from current context for proper cost tracking
             langfuse_handler = langfuse_context.get_current_langchain_handler()
             
-            # Execute LLM call with Langfuse handler for automatic cost tracking
-            llm_response = await llm.ainvoke(
+            llm_response = await configured_llm.ainvoke(
                 [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]}
+                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
             )
             result = parser.parse(llm_response.content)
             
@@ -241,8 +300,8 @@ class LangChainLLMService:
         )
 
         async def execute_scoring(llm: BaseChatModel) -> SemanticScore:
-            # Load prompt from prompt manager
-            prompt_text = await prompt_manager.get_prompt(
+            # Load prompt and config from prompt manager
+            prompt_data = await prompt_manager.get_prompt_with_config(
                 "semantic_scoring",
                 variables={
                     "company_terms": context.get("company_terms", []),
@@ -254,6 +313,19 @@ class LangChainLLMService:
                     "document_text": text,
                 },
             )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+            
+            # Log full config for debugging  
+            logger.info(f"Semantic scoring Langfuse config: {prompt_config}")
+            
+            # Use temperature from Langfuse config if available
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(f"Using temperature {prompt_config['temperature']} from Langfuse prompt config for semantic scoring")
+            if prompt_config.get("max_tokens"):
+                llm_kwargs["max_tokens"] = prompt_config["max_tokens"]
 
             # Update current observation with detailed context
             langfuse_context.update_current_observation(
@@ -279,14 +351,25 @@ class LangChainLLMService:
 
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=SemanticScore)
-
-            # Get Langfuse callback handler for proper cost tracking
+            
+            # Execute LLM call with Langfuse callback and config from prompt
+            # Create a new LLM instance with config from Langfuse if needed
+            if llm_kwargs:
+                # Create a new LLM instance with updated parameters
+                if hasattr(llm, 'bind'):
+                    configured_llm = llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = llm
+            
+            # Get Langfuse callback handler from current context for proper cost tracking
             langfuse_handler = langfuse_context.get_current_langchain_handler()
             
-            # Execute LLM call with Langfuse handler for automatic cost tracking
-            llm_response = await llm.ainvoke(
+            llm_response = await configured_llm.ainvoke(
                 [HumanMessage(content=prompt_text)], 
-                config={"callbacks": [langfuse_handler]}
+                config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
             )
             result = parser.parse(llm_response.content)
             

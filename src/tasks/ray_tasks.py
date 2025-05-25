@@ -44,6 +44,7 @@ def score_document_task(content: ProcessedContent, context: Dict[str, Any]) -> S
     try:
         logger.debug("Scoring document task", document_id=content.id)
 
+
         start_time = time.time()
 
         engine = RelevanceEngine(context)
@@ -116,6 +117,7 @@ def batch_scoring_task(
     """Score a batch of documents."""
     try:
         logger.info("Starting batch scoring task", batch_size=len(documents))
+
 
         engine = RelevanceEngine(context)
         results = []

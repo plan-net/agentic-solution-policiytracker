@@ -10,7 +10,9 @@ from typing import Dict, Any, Optional
 import structlog
 import aiofiles
 
-from src.integrations.langfuse_client import langfuse_client
+# Use official Langfuse client directly
+from langfuse import Langfuse
+from src.config import settings
 
 logger = structlog.get_logger()
 
@@ -31,12 +33,21 @@ class PromptManager:
         self.cache: Dict[str, str] = {}
         self.prompts_dir = Path(__file__).parent
         self.fallback_count = 0
+        self._langfuse: Optional[Langfuse] = None
+        self._initialized = False
 
     async def get_prompt(
         self, name: str, variables: Optional[Dict[str, Any]] = None, version: Optional[int] = None
     ) -> str:
+        """Get prompt text with variable substitution."""
+        prompt_data = await self.get_prompt_with_config(name, variables, version)
+        return prompt_data["prompt"]
+    
+    async def get_prompt_with_config(
+        self, name: str, variables: Optional[Dict[str, Any]] = None, version: Optional[int] = None
+    ) -> Dict[str, Any]:
         """
-        Get prompt with Langfuse integration and local fallback.
+        Get prompt with config from Langfuse integration and local fallback.
 
         Args:
             name: Prompt name (matches filename without .md)
@@ -44,22 +55,29 @@ class PromptManager:
             version: Specific prompt version (optional)
 
         Returns:
-            Rendered prompt text with variables substituted
+            Dict with 'prompt' (rendered text) and 'config' (model settings from Langfuse)
         """
         cache_key = f"{name}:v{version}" if version else name
 
         # Check memory cache first
         if cache_key in self.cache:
             logger.debug("Prompt cache hit", prompt_name=name, version=version)
-            return self._substitute_variables(self.cache[cache_key], variables or {})
+            cached_data = self.cache[cache_key]
+            return {
+                "prompt": self._substitute_variables(cached_data["prompt"], variables or {}),
+                "config": cached_data.get("config", {})
+            }
 
         # Try Langfuse first
         try:
-            prompt_text = await self._get_from_langfuse(name, version)
-            if prompt_text:
-                self.cache[cache_key] = prompt_text
-                logger.debug("Prompt loaded from Langfuse", prompt_name=name, version=version)
-                return self._substitute_variables(prompt_text, variables or {})
+            prompt_data = await self._get_from_langfuse_with_config(name, version)
+            if prompt_data:
+                self.cache[cache_key] = prompt_data
+                logger.info("Prompt loaded from Langfuse", prompt_name=name, version=version)
+                return {
+                    "prompt": self._substitute_variables(prompt_data["prompt"], variables or {}),
+                    "config": prompt_data.get("config", {})
+                }
 
         except Exception as e:
             logger.warning("Failed to load prompt from Langfuse", prompt_name=name, error=str(e))
@@ -67,24 +85,78 @@ class PromptManager:
         # Fall back to local file
         try:
             prompt_text = await self._get_from_local_file(name)
-            self.cache[cache_key] = prompt_text
+            fallback_data = {"prompt": prompt_text, "config": {}}
+            self.cache[cache_key] = fallback_data
             self.fallback_count += 1
             logger.info(
                 "Prompt loaded from local file (fallback)",
                 prompt_name=name,
                 total_fallbacks=self.fallback_count,
             )
-            return self._substitute_variables(prompt_text, variables or {})
+            return {
+                "prompt": self._substitute_variables(prompt_text, variables or {}),
+                "config": {}  # No config from local files
+            }
 
         except Exception as e:
             logger.error("Failed to load prompt from local file", prompt_name=name, error=str(e))
             raise ValueError(f"Unable to load prompt '{name}' from any source")
 
-    async def _get_from_langfuse(self, name: str, version: Optional[int]) -> Optional[str]:
-        """Try to get prompt from Langfuse."""
+    def _initialize_langfuse(self) -> None:
+        """Initialize official Langfuse client."""
+        if self._initialized:
+            return
+            
         try:
-            return await langfuse_client.get_prompt(name, version=version)
-        except Exception:
+            if not all([settings.LANGFUSE_SECRET_KEY, settings.LANGFUSE_PUBLIC_KEY, settings.LANGFUSE_HOST]):
+                logger.info("Langfuse not configured, will use local prompts only")
+                self._initialized = True
+                return
+                
+            self._langfuse = Langfuse(
+                secret_key=settings.LANGFUSE_SECRET_KEY,
+                public_key=settings.LANGFUSE_PUBLIC_KEY,
+                host=settings.LANGFUSE_HOST,
+            )
+            
+            # Test connection
+            self._langfuse.auth_check()
+            logger.info("Official Langfuse client initialized successfully")
+            self._initialized = True
+            
+        except Exception as e:
+            logger.warning(f"Failed to initialize Langfuse: {e}, using local prompts only")
+            self._langfuse = None
+            self._initialized = True
+
+    async def _get_from_langfuse(self, name: str, version: Optional[int]) -> Optional[str]:
+        """Try to get prompt text from Langfuse using official client."""
+        data = await self._get_from_langfuse_with_config(name, version)
+        return data["prompt"] if data else None
+
+    async def _get_from_langfuse_with_config(self, name: str, version: Optional[int]) -> Optional[Dict[str, Any]]:
+        """Try to get prompt with config from Langfuse using official client."""
+        try:
+            self._initialize_langfuse()
+            
+            if not self._langfuse:
+                logger.debug(f"Langfuse not available for prompt '{name}'")
+                return None
+            
+            if version is not None:
+                # Specific version requested
+                prompt = self._langfuse.get_prompt(name=name, version=version)
+            else:
+                # Default to production label for current active version
+                prompt = self._langfuse.get_prompt(name=name, label="production")
+            
+            return {
+                "prompt": prompt.prompt,
+                "config": getattr(prompt, 'config', {}) or {}  # Handle case where config might be None
+            }
+            
+        except Exception as e:
+            logger.warning(f"Langfuse prompt retrieval failed for '{name}': {e}")
             return None
 
     async def _get_from_local_file(self, name: str) -> str:
