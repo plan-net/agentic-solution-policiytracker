@@ -11,6 +11,7 @@ setup:
     @echo "🚀 Setting up development environment..."
     uv sync
     @if [ ! -f .env ]; then cp .env.template .env; echo "📝 Created .env from template"; fi
+    @if [ ! -f config.yaml ]; then just sync-config; fi
     @mkdir -p data/input
     @mkdir -p data/output
     @echo "✅ Setup complete. Next: 'just setup-context' then 'just first-run'"
@@ -28,6 +29,27 @@ setup-context:
     @echo ""
     @echo "💡 The example context is already configured for an e-commerce company"
     @echo "   You can test with it as-is, or customize for your organization"
+
+# === Configuration Management ===
+
+# Create or update config.yaml from template and .env variables
+sync-config:
+    @echo "🔧 Syncing configuration..."
+    uv run python scripts/sync_env_to_config.py
+
+# Validate config.yaml for placeholder values
+validate-config:
+    @echo "🔍 Validating configuration..."
+    @if [ ! -f config.yaml ]; then echo "❌ config.yaml not found. Run 'just sync-config' first"; exit 1; fi
+    @echo "✅ config.yaml exists"
+    @if grep -q "your-.*-key-here" config.yaml; then echo "⚠️  Found placeholder API keys in config.yaml"; echo "💡 Update your .env file with real API keys"; else echo "✅ No placeholder values detected"; fi
+
+# Reset config.yaml from template (for troubleshooting)
+reset-config:
+    @echo "🔄 Resetting config.yaml from template..."
+    @if [ -f config.yaml ]; then cp config.yaml config.yaml.backup; echo "📦 Backed up existing config.yaml"; fi
+    just sync-config
+    @echo "✅ config.yaml reset complete"
     @echo ""
     @echo "Next step: 'just first-run' to complete setup"
 

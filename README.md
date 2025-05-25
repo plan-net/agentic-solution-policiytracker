@@ -459,35 +459,46 @@ just clean-all               # Full cleanup + stop services
 
 ## 🔧 Configuration
 
-### ⚠️ Critical: Environment Variable Synchronization
+### ⚠️ Critical: Configuration Management System
 
-**Important**: Ray workers in Kodosumi deployment don't automatically inherit your local `.env` file. Environment variables must be explicitly passed through `config.yaml`.
+**Important**: This project uses a two-tier configuration system for security and Ray worker compatibility:
 
-Our system **automatically synchronizes** your `.env` variables to `config.yaml` when you run:
+#### 🎯 Configuration Files
+- **`.env`** - Your personal secrets (gitignored)
+- **`config.yaml.template`** - Safe template (committed to git)  
+- **`config.yaml`** - Runtime config with secrets (gitignored)
+
+#### 🔄 Automatic Configuration Sync
+
+Our system **automatically manages** config.yaml creation and synchronization:
 
 ```bash
-just dev              # Full deployment (includes sync)
-just dev-quick        # Quick redeploy (includes sync)
+just setup            # Creates config.yaml from template (first time)
+just dev              # Auto-syncs .env variables to config.yaml
+just dev-quick        # Auto-syncs on quick redeploy
+just sync-config      # Manual sync when needed
 ```
 
-**What this fixes**:
-- ✅ **"No LLM Provider configured"** errors
-- ✅ **Configuration not found** in Ray workers  
-- ✅ **Path resolution** issues in distributed tasks
-- ✅ **Azure Storage** configuration in workers
+**What this solves**:
+- ✅ **Security**: Secrets never committed to git
+- ✅ **Ray Workers**: Environment variables available to distributed tasks
+- ✅ **Team Setup**: Consistent config across developers
+- ✅ **Production**: Easy deployment with different secrets
 
-**How it works**:
-1. Script reads your `.env` file
-2. Extracts relevant variables (LLM keys, paths, storage config, etc.)
-3. Updates `config.yaml` runtime_env automatically
-4. Ray workers now have access to all configuration
+#### 📋 How It Works
+1. **First Run**: `config.yaml` created from `config.yaml.template`
+2. **Sync Process**: Script reads `.env` and updates `config.yaml` runtime_env
+3. **Ray Deployment**: Workers get all environment variables via `config.yaml`
+4. **Security**: `config.yaml` with secrets stays local (gitignored)
 
-**Manual sync** (if needed):
+#### 🔧 Configuration Commands
 ```bash
-uv run python scripts/sync_env_to_config.py
+just sync-config      # Create/update config.yaml from .env
+just validate-config  # Check for placeholder values  
+just reset-config     # Reset config.yaml from template
 ```
 
-**Pro tip**: Always use `just dev-quick` after changing `.env` variables to ensure workers get updated configuration.
+**Pro tip**: After updating `.env` with new API keys, run `just dev-quick` to sync and redeploy.
 
 ### Environment Setup
 
