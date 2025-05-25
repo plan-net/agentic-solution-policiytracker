@@ -7,7 +7,7 @@ packages = ["src"]
 
 [project]
 name = "political-monitoring-agent"
-version = "1.0.0"
+version = "0.1.0"
 description = "Political document monitoring agent for Kodosumi on Ray"
 authors = [{name = "Political Monitoring Team"}]
 readme = "README.md"

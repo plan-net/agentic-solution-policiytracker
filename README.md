@@ -1,4 +1,4 @@
-# Political Monitoring Agent
+# Political Monitoring Agent v0.1.0
 
 A sophisticated AI-powered document analysis system for political and regulatory monitoring. Built on **Kodosumi v0.9.2** with Ray distributed processing, LangGraph workflows, and Azure Storage integration.
 
