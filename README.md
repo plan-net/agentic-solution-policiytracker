@@ -2,7 +2,32 @@
 
 A sophisticated AI-powered document analysis system for political and regulatory monitoring. Built on **Kodosumi v0.9.2** with Ray distributed processing, LangGraph workflows, and Azure Storage integration.
 
-> **📖 For Business Users**: See the [User Guide](USER_GUIDE.md) for a comprehensive explanation of how the system works, what inputs are needed, and how to interpret results.
+## 🚀 Quick Start
+
+**Get up and running in 5 minutes:**
+
+```bash
+# 1. Clone and setup dependencies
+git clone <repository-url>
+cd policiytracker
+just setup
+
+# 2. Start services (Docker required)
+just services-up
+
+# 3. Start the application
+just dev
+
+# 4. Access the application
+# → Kodosumi Admin: http://localhost:3370 (admin/admin)
+# → Your App: http://localhost:8001/political-analysis
+```
+
+**Test with sample data**: Sample documents are included in `data/input/examples/` - upload these via the web interface to see the system in action.
+
+**Next steps**: Configure [Langfuse observability](#step-4-configure-langfuse-one-time-only) and customize the [context file](#client-context-configuration) for your organization.
+
+> **📖 For Business Users**: See the [User Guide](docs/USER_GUIDE.md) for a comprehensive explanation of how the system works, what inputs are needed, and how to interpret results.
 
 ## 🚀 Features
 

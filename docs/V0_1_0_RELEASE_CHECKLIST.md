@@ -50,58 +50,54 @@ Version 0.1.0 represents a **working proof-of-concept** with core functionality 
 
 ## 🟡 HIGH PRIORITY (Should Fix Before Release)
 
-### 4. Error Handling & Robustness
-- [ ] Add comprehensive error handling for file processing failures
-- [ ] Implement graceful degradation when LLM services are unavailable
-- [ ] Add validation for malformed context files
-- [ ] Test behavior with empty or corrupted documents
-- [ ] Implement proper timeout handling for Ray tasks
-- [ ] Add retry logic for failed document processing
+### 4. Documentation & Setup (Zero Risk) 
+- [ ] **README Update**: Add clear "Quick Start" section with step-by-step setup
+- [ ] **Environment Variables**: Document all required variables in `.env.template`
+- [ ] **Troubleshooting Guide**: Add section for common setup issues
+- [ ] **API Documentation**: Document all endpoints and their responses
 
-### 5. User Experience
-- [ ] **Form Validation**: Test all form field combinations and edge cases
-- [ ] **Progress Tracking**: Verify real-time progress updates work correctly
-- [ ] **Error Messages**: Ensure user-friendly error messages for common failures
-- [ ] **Results Display**: Test report rendering with various document types
-- [ ] **Performance**: Verify acceptable response times (< 2 minutes for 10 documents)
+### 5. User Experience (Low Risk Polish)
+- [ ] **Form Improvements**: Better field labels and help text
+- [ ] **Input Validation**: Add validation messages on web forms  
+- [ ] **Storage Mode Display**: Show Azure/Local mode in UI
+- [ ] **Progress Clarity**: Display clearer progress stages to users
+- [ ] **Error Messages**: Make error messages more user-friendly
 
-### 6. Configuration & Setup
-- [ ] **Environment Setup**: Test complete setup process on fresh system
-- [ ] **Docker Services**: Verify all services start correctly and stay healthy
-- [ ] **Sample Data**: Ensure included sample documents produce expected results
-- [ ] **Default Configuration**: Verify system works with default settings
-- [ ] **Azure Integration**: Test both local (Azurite) and production Azure Storage
+### 6. Technical Polish (Low Risk)
+- [ ] **Code Cleanup**: Remove unused imports and debug statements
+- [ ] **Logging Consistency**: Ensure structured logging format throughout
+- [ ] **Configuration Validation**: Validate required env vars on startup
+- [ ] **Health Check**: Add `/health` endpoint for monitoring
+- [ ] **Type Hints**: Add missing type annotations
 
-### 7. Security & Data Safety
-- [ ] **Input Validation**: Sanitize all file uploads and form inputs
-- [ ] **File Type Security**: Prevent upload of potentially dangerous file types
-- [ ] **Path Traversal**: Ensure file access is restricted to configured directories
-- [ ] **API Security**: Add basic rate limiting and input validation
-- [ ] **Data Privacy**: Verify temporary files are cleaned up properly
+### 7. Quality Assurance (Testing & Verification)
+- [ ] **Test Suite**: Run full test suite to ensure no regressions
+- [ ] **Storage Modes**: Test both Azure and Local storage end-to-end
+- [ ] **Langfuse Integration**: Verify observability features work
+- [ ] **Sample Documents**: Test with included example documents
+- [ ] **Clean Installation**: Test setup on fresh environment
 
 ---
 
-## 🟢 MEDIUM PRIORITY (Nice to Have for Release)
+## 🟢 MEDIUM PRIORITY (Post-Release Polish)
 
-### 8. Documentation Quality
-- [ ] **Installation Guide**: Test setup instructions on fresh environment
-- [ ] **User Guide**: Review and update with latest form changes
-- [ ] **API Documentation**: Add OpenAPI/Swagger documentation
-- [ ] **Examples**: Verify all code examples in documentation work
-- [ ] **Troubleshooting**: Add common issues and solutions
+### 8. Release Preparation
+- [ ] **Version Consistency**: Update version numbers across all files
+- [ ] **Changelog**: Create comprehensive release notes
+- [ ] **Git Tagging**: Proper release tagging strategy
+- [ ] **Release Artifacts**: Clean source code and documentation
 
-### 9. Performance & Scalability
+### 9. Advanced Testing (Optional)
 - [ ] **Load Testing**: Test with 100+ documents
-- [ ] **Memory Usage**: Monitor memory consumption during processing
-- [ ] **Concurrent Processing**: Test multiple simultaneous jobs
-- [ ] **Resource Cleanup**: Verify Ray workers are properly cleaned up
-- [ ] **Storage Efficiency**: Optimize temporary file usage
+- [ ] **Memory Monitoring**: Track resource usage during processing
+- [ ] **Concurrent Jobs**: Test multiple simultaneous analyses
+- [ ] **Edge Cases**: Empty files, non-English text, large files
 
-### 10. Development Experience
-- [ ] **Local Development**: Verify `just dev` workflow works smoothly
-- [ ] **Code Quality**: Run linting and type checking on all files
-- [ ] **Test Suite**: Ensure tests can be run without external dependencies
-- [ ] **CI/CD Ready**: Prepare for automated testing and deployment
+### 10. Future Improvements (Do Later)
+- [ ] **Advanced Error Handling**: Retry logic and timeout handling
+- [ ] **Performance Optimization**: Memory and speed improvements
+- [ ] **Security Hardening**: Advanced input validation and rate limiting
+- [ ] **CI/CD Pipeline**: Automated testing and deployment
 
 ---
 
