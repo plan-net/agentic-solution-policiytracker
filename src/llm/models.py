@@ -42,11 +42,9 @@ class TopicAnalysis(BaseModel):
     """LLM-powered topic analysis."""
 
     topic_name: str
-    topic_description: str
-    relevance_score: float = Field(ge=0, le=100)
-    key_concepts: List[str] = Field(description="Main concepts in this topic")
-    related_regulations: List[str] = Field(description="Related regulatory frameworks")
-    business_implications: str = Field(description="Business implications of this topic")
+    document_indices: List[int] = Field(description="Document indices in this cluster")
+    confidence: float = Field(ge=0, le=1, description="Clustering confidence")
+    description: str = Field(description="Description of the topic cluster")
 
 
 class LLMReportInsights(BaseModel):
@@ -54,10 +52,16 @@ class LLMReportInsights(BaseModel):
 
     executive_summary: str = Field(description="LLM-generated executive summary")
     key_findings: List[str] = Field(description="Top insights from analysis")
-    strategic_recommendations: List[str] = Field(description="Strategic action recommendations")
+    recommendations: List[str] = Field(description="Strategic action recommendations")
     risk_assessment: str = Field(description="Overall risk assessment")
-    priority_rationale: str = Field(description="Explanation of prioritization")
-    market_context: str = Field(description="Relevant market context")
+    confidence: float = Field(ge=0, le=1, description="Analysis confidence")
+    
+    # Optional fields that the LLM might include
+    strategic_implications: Optional[Dict[str, str]] = Field(default=None, description="Strategic implications breakdown")
+    
+    class Config:
+        # Allow extra fields that the LLM might return
+        extra = "ignore"
 
 
 class LLMAnalysisRequest(BaseModel):

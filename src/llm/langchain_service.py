@@ -436,17 +436,7 @@ class LangChainLLMService:
 
         @observe(as_type="generation")
         async def execute_topic_analysis(llm: BaseChatModel) -> List[TopicAnalysis]:
-            # Get Langfuse prompt object for generation tracking
-            try:
-                if langfuse:
-                    langfuse_prompt = langfuse.get_prompt(name="topic_clustering", label="production")
-                    # Update current observation with the prompt object for generation tracking
-                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
-                    logger.info("Updated observation with Langfuse prompt for topic_clustering")
-            except Exception as e:
-                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
-
-            # Load prompt and config from prompt manager
+            # Load prompt and config from prompt manager (FIRST - correct order!)
             # Truncate documents for analysis to avoid token limits
             truncated_docs = [
                 doc[:500] + "..." if len(doc) > 500 else doc for doc in documents
@@ -455,13 +445,25 @@ class LangChainLLMService:
             prompt_data = await prompt_manager.get_prompt_with_config(
                 "topic_clustering",
                 variables={
+                    "company_terms": context.get("company_terms", []),
+                    "core_industries": context.get("core_industries", []),
+                    "primary_markets": context.get("primary_markets", []),
+                    "strategic_themes": context.get("strategic_themes", []),
                     "documents": str(truncated_docs),
-                    "context": str(context),
-                    "document_count": len(documents),
                 },
             )
             prompt_text = prompt_data["prompt"]
             prompt_config = prompt_data["config"]
+            
+            # Get Langfuse prompt object for generation tracking (AFTER prompt_manager!)
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(name="topic_clustering", label="production")
+                    # Update current observation with the prompt object for generation tracking
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info("Updated observation with Langfuse prompt for topic_clustering")
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
             
             # Log config for debugging
             logger.info(f"Topic clustering Langfuse config: {prompt_config}")
@@ -561,7 +563,57 @@ class LangChainLLMService:
 
         @observe(as_type="generation")
         async def execute_insights(llm: BaseChatModel) -> LLMReportInsights:
-            # Get Langfuse prompt object for generation tracking
+            # Prepare results summary for the prompt
+            total_docs = len(scoring_results)
+            high_priority = sum(1 for r in scoring_results if r.get("master_score", 0) >= 75)
+            medium_priority = sum(1 for r in scoring_results if 50 <= r.get("master_score", 0) < 75)
+            low_priority = sum(1 for r in scoring_results if r.get("master_score", 0) < 50)
+            
+            avg_score = sum(r.get("master_score", 0) for r in scoring_results) / total_docs if total_docs > 0 else 0
+            avg_confidence = sum(r.get("confidence_score", 0) for r in scoring_results) / total_docs if total_docs > 0 else 0
+            
+            # Top findings
+            top_results = sorted(scoring_results, key=lambda x: x.get("master_score", 0), reverse=True)[:5]
+            top_findings = []
+            for result in top_results:
+                top_findings.append({
+                    "score": result.get("master_score", 0),
+                    "justification": result.get("overall_justification", "")[:200] + "..." if len(result.get("overall_justification", "")) > 200 else result.get("overall_justification", "")
+                })
+
+            high_pct = (high_priority/total_docs*100) if total_docs > 0 else 0
+            medium_pct = (medium_priority/total_docs*100) if total_docs > 0 else 0
+            low_pct = (low_priority/total_docs*100) if total_docs > 0 else 0
+            
+            findings_text = "\n".join([f"{i+1}. Score {finding['score']}: {finding['justification']}" for i, finding in enumerate(top_findings)])
+            
+            results_summary = f"""
+Analysis Summary:
+- Total Documents: {total_docs}
+- High Priority (75+): {high_priority} ({high_pct:.1f}%)
+- Medium Priority (50-74): {medium_priority} ({medium_pct:.1f}%)
+- Low Priority (<50): {low_priority} ({low_pct:.1f}%)
+- Average Score: {avg_score:.1f}
+- Average Confidence: {avg_confidence:.2f}
+
+Top 5 Findings:
+{findings_text}"""
+            
+            # Load prompt and config from prompt manager (FIRST - correct order!)
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "report_insights",
+                variables={
+                    "company_terms": context.get("company_terms", []),
+                    "core_industries": context.get("core_industries", []),
+                    "primary_markets": context.get("primary_markets", []),
+                    "strategic_themes": context.get("strategic_themes", []),
+                    "results_summary": results_summary,
+                },
+            )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+            
+            # Get Langfuse prompt object for generation tracking (AFTER prompt_manager!)
             try:
                 if langfuse:
                     langfuse_prompt = langfuse.get_prompt(name="report_insights", label="production")
@@ -570,26 +622,6 @@ class LangChainLLMService:
                     logger.info("Updated observation with Langfuse prompt for report_insights")
             except Exception as e:
                 logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
-
-            # Prepare results summary for the prompt
-            results_summary = {
-                "total_documents": len(scoring_results),
-                "high_priority_count": sum(1 for r in scoring_results if r.get("priority", "").lower() == "high"),
-                "avg_relevance_score": sum(r.get("relevance_score", 0) for r in scoring_results) / len(scoring_results) if scoring_results else 0,
-                "key_dimensions": list(set().union(*[r.get("dimension_scores", {}).keys() for r in scoring_results])),
-            }
-            
-            prompt_data = await prompt_manager.get_prompt_with_config(
-                "report_insights",
-                variables={
-                    "context": str(context),
-                    "results_summary": str(results_summary),
-                    "scoring_results": str(scoring_results[:3]),  # Include sample results
-                    "total_documents": len(scoring_results),
-                },
-            )
-            prompt_text = prompt_data["prompt"]
-            prompt_config = prompt_data["config"]
             
             # Log config for debugging
             logger.info(f"Report insights Langfuse config: {prompt_config}")
