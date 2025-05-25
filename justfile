@@ -215,12 +215,6 @@ reset-langfuse:
 # Start full development environment (Kodosumi-first)
 dev: services-up kodosumi-deploy
 
-# Start simple FastAPI version (without Kodosumi)
-dev-simple: services-up
-    @echo "🚀 Starting simple FastAPI version..."
-    @echo "🌐 Access at: http://localhost:8000"
-    @echo "💡 This bypasses Kodosumi dependency issues"
-    uv run --active python simple_app.py
 
 # Watch for changes and auto-redeploy (development workflow)
 dev-watch:
