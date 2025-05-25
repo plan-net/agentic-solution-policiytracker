@@ -1,593 +1,319 @@
-# Political Monitoring Agent - High-Level Architecture
+# Political Monitoring Agent - Architecture Specification
 
 ## Document Metadata
 
 | Field | Value |
 |-------|-------|
 | **Project Name** | Political Monitoring Agent |
-| **Document Type** | High-Level Architecture |
-| **Version** | 4.0 |
-| **Date** | 23.05.2025 |
-| **Status** | Final |
-| **Target Runtime** | Kodosumi on Ray |
+| **Document Type** | Architecture Specification |
+| **Version** | 5.0 |
+| **Date** | 25.05.2025 |
+| **Status** | Current Implementation |
+| **Target Runtime** | Kodosumi v0.9.2 on Ray |
 
 ---
 
-## 1. System Overview & Boundaries
+## 1. System Overview
 
-### System Purpose
-The Political Monitoring Agent must process batches of political documents and generate relevance-scored markdown reports for Public Affairs analysts.
+### Architecture Pattern: Kodosumi Two-Part Design
 
-### System Boundaries
+The Political Monitoring Agent follows the Kodosumi framework pattern with clear separation between web interface and business logic:
+
 ```
-Inside System Boundary:
-- Document batch processing from filesystem
-- Multi-dimensional relevance scoring
-- Topic clustering and prioritization
-- Markdown report generation
-- Feedback incorporation
-
-Outside System Boundary:
-- Document collection and placement
-- Manual trigger via Kodosumi UI
-- Human review of output reports
-- Strategic decision making
-```
-
-### Execution Model
-```
-Trigger: Manual via Kodosumi web form
-Processing: Single batch per job submission
-Input: Pre-staged documents in filesystem folder
-Output: Comprehensive markdown report
-Feedback: Optional scoring adjustments
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Kodosumi      │    │   Political      │    │   LangGraph     │
+│   Web Interface │───▶│   Analyzer       │───▶│   Workflows     │
+│   (src/app.py)  │    │ (src/political_  │    │   + Ray Tasks   │
+│                 │    │   analyzer.py)   │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Ray Serve     │    │   Azure Storage  │    │   Langfuse      │
+│   (HTTP/gRPC)   │    │   (Azurite)      │    │   (Observability)│
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
----
+### Core Components
 
-## 2. Component Architecture
+1. **Endpoint** (`src/app.py`): Rich web forms, validation, and HTTP interface
+2. **Entrypoint** (`src/political_analyzer.py`): Core business logic with distributed Ray processing
+3. **LangGraph Workflows** (`src/workflow/`): State management and distributed processing pipeline
+4. **Azure Storage Integration** (`src/integrations/`): Document storage and checkpoint persistence
+5. **Langfuse Observability** (`src/prompts/`): LLM monitoring and prompt management
 
-### Component Structure
-```
-Political Monitoring Service
-├── API Layer
-│   ├── Job Submission Handler      # Receives form submissions
-│   ├── Status Tracker              # Provides job progress
-│   └── Result Delivery             # Serves completed reports
-│
-├── Processing Pipeline
-│   ├── Document Processor          # Extracts content from files
-│   ├── Relevance Analyzer          # Multi-dimensional scoring
-│   ├── Topic Organizer             # Clusters related content
-│   └── Report Compiler             # Generates markdown output
-│
-├── Core Services
-│   ├── Context Manager             # Maintains client profile
-│   ├── Scoring Engine              # Implements scoring logic
-│   ├── Confidence Calculator       # Assesses result reliability
-│   └── Justification Generator     # Explains scoring decisions
-│
-└── Infrastructure
-    ├── Task Distributor            # Ray task management
-    ├── State Manager               # Job and workflow state
-    └── File Handler                # Filesystem operations
-```
+## 2. Technology Stack
 
-### Component Responsibilities
+### Runtime Environment
+- **Kodosumi v0.9.2**: Web framework with Ray Serve deployment
+- **Ray Serve**: Distributed HTTP serving and scaling
+- **Python 3.12.6**: Runtime environment
+- **UV Package Manager**: Dependency management
 
-**API Layer Components:**
-```
-Job Submission Handler:
-  Purpose: Accept and validate job requests from Kodosumi form
-  Responsibilities:
-    - Validate input parameters
-    - Create job records
-    - Queue jobs for processing
-    - Return job identifiers
+### Core Frameworks
+- **LangGraph**: Workflow orchestration and state management
+- **FastAPI**: HTTP API framework (via Kodosumi)
+- **Pydantic v2**: Data validation and configuration
+- **Structlog**: Structured logging
 
-Status Tracker:
-  Purpose: Provide real-time job progress information
-  Responsibilities:
-    - Track processing stages
-    - Calculate completion percentage
-    - Report errors and warnings
-    - Provide time estimates
+### Storage & Data
+- **Azure Blob Storage**: Document storage with container organization
+- **Azurite**: Local development storage emulator
+- **LangGraph Checkpoints**: Workflow state persistence
+- **PostgreSQL**: Langfuse observability data (Docker)
 
-Result Delivery:
-  Purpose: Serve completed analysis reports
-  Responsibilities:
-    - Validate job completion
-    - Retrieve report files
-    - Handle download requests
-    - Manage result retention
-```
-
-**Processing Pipeline Components:**
-```
-Document Processor:
-  Purpose: Extract structured content from various file formats
-  Capabilities:
-    - Parse markdown, PDF, DOCX, TXT, HTML files
-    - Extract metadata (author, date, source)
-    - Handle corrupted files gracefully
-    - Enforce size limits (50MB max)
-
-Relevance Analyzer:
-  Purpose: Score documents across multiple dimensions
-  Capabilities:
-    - Apply 5-dimensional scoring model
-    - Generate evidence snippets
-    - Calculate confidence scores
-    - Produce scoring justifications
-
-Topic Organizer:
-  Purpose: Group documents by thematic relevance
-  Capabilities:
-    - Identify topic patterns
-    - Cluster related documents
-    - Extract key themes
-    - Calculate cluster statistics
-
-Report Compiler:
-  Purpose: Generate comprehensive markdown reports
-  Capabilities:
-    - Apply report templates
-    - Structure content by priority
-    - Include visual formatting
-    - Generate executive summary
-```
-
----
+### AI & LLM Integration
+- **LangChain**: LLM abstraction and integration
+- **Anthropic Claude**: Primary LLM provider
+- **OpenAI GPT**: Secondary LLM provider
+- **Langfuse**: LLM operation monitoring and prompt management
 
 ## 3. Data Flow Architecture
 
-### Primary Data Flow
+### Document Processing Pipeline
+
 ```
-1. Job Submission
-   Input: Form parameters (job_name, folders, thresholds)
-   Process: Validation and job creation
-   Output: Job ID and status URL
-
-2. Document Loading
-   Input: Folder path from job request
-   Process: File discovery and validation
-   Output: List of processable documents
-
-3. Content Extraction
-   Input: Document file paths
-   Process: Format-specific parsing
-   Output: Structured content objects
-
-4. Relevance Scoring
-   Input: Content + client context
-   Process: Multi-dimensional analysis
-   Output: Scored document set
-
-5. Result Organization
-   Input: Scored documents
-   Process: Clustering and prioritization
-   Output: Organized result structure
-
-6. Report Generation
-   Input: Organized results
-   Process: Template rendering
-   Output: Markdown report file
+📄 Documents → 📦 Azure Storage → 🔄 LangGraph → 📊 Analysis → 📋 Report
 ```
 
-### Data Transformations
-```
-Raw Files → Parsed Content → Scored Content → Clustered Results → Markdown Report
+### Detailed Flow
 
-Each transformation must:
-- Preserve data lineage
-- Handle errors gracefully
-- Log processing metrics
-- Update job progress
+1. **Document Ingestion**
+   ```
+   Input Documents (PDF, DOCX, TXT, MD, HTML)
+   ↓
+   Azure Blob Storage (containers: input-documents, reports, checkpoints)
+   ↓
+   Batch Document Loader (src/processors/batch_loader.py)
+   ```
+
+2. **Workflow Execution**
+   ```
+   LangGraph Workflow (src/workflow/graph.py)
+   ├── load_documents() → Document discovery and validation
+   ├── load_context() → Organizational context loading
+   ├── process_documents() → Content extraction and processing
+   ├── score_documents() → Multi-dimensional relevance scoring
+   ├── cluster_results() → Topic clustering and priority classification
+   └── generate_report() → Markdown report generation
+   ```
+
+3. **Distributed Processing**
+   ```
+   Ray Remote Tasks
+   ├── Document processing (parallel)
+   ├── LLM scoring (concurrent with limits)
+   ├── Topic clustering (AI-enhanced)
+   └── Report generation (with Azure upload)
+   ```
+
+## 4. Storage Architecture
+
+### Azure Blob Storage Organization
+
 ```
+Storage Account
+├── input-documents/        # Source documents
+│   ├── jobs/{job_id}/input/
+│   └── examples/
+├── reports/                # Generated reports
+│   ├── jobs/{job_id}/reports/
+│   └── markdown/
+├── checkpoints/           # LangGraph state persistence
+│   ├── threads/{thread_id}/checkpoints/
+│   └── metadata/
+├── contexts/              # Organizational context files
+│   ├── {client}/context.yaml
+│   └── templates/
+└── cache/                 # Processed content cache
+    ├── documents/
+    └── embeddings/
+```
+
+### Local Development Storage
+
+```
+data/
+├── input/
+│   ├── examples/          # Sample documents
+│   └── real/             # (gitignored)
+├── output/               # Local reports (gitignored)
+├── context/
+│   └── client.yaml       # Organizational context
+└── temp/                 # Temporary processing files
+```
+
+## 5. Configuration Management
+
+### Two-Tier Configuration System
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   .env          │    │ config.yaml     │    │ Ray Workers     │
+│   (secrets)     │───▶│ (runtime)       │───▶│ (environment)   │
+│   (gitignored)  │    │ (gitignored)    │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │
+         ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐
+│ .env.template   │    │config.yaml.     │
+│ (safe)          │    │template (safe)  │
+│ (committed)     │    │ (committed)     │
+└─────────────────┘    └─────────────────┘
+```
+
+### Configuration Flow
+1. **Development Setup**: `just setup` creates config.yaml from template
+2. **Environment Sync**: `scripts/sync_env_to_config.py` syncs .env to config.yaml
+3. **Ray Deployment**: Ray workers receive environment via config.yaml runtime_env
+4. **Security**: Secrets stay local, templates are safe for git
+
+## 6. Web Interface Architecture
+
+### Kodosumi Form System
+
+```python
+# src/app.py - Rich Forms with Validation
+analysis_form = F.Model(
+    F.Markdown("# Political Document Analysis"),
+    F.InputText(label="📋 Job Name", ...),
+    F.InputNumber(label="🎯 Priority Threshold", ...),
+    F.Checkbox(label="🔍 Include Low Confidence", ...),
+    F.Checkbox(label="🗂️ Enable Topic Clustering", ...),
+    F.Select(label="💾 Storage Mode", ...),
+    F.Submit("Start Analysis")
+)
+```
+
+### Request Flow
+```
+User Form Submission
+↓
+Input Validation (InputsError)
+↓
+Launch() → src.political_analyzer:execute_analysis
+↓
+Ray Serve Deployment
+↓
+Real-time Progress Updates (Kodosumi Tracer)
+```
+
+## 7. AI/LLM Integration
+
+### Hybrid Analysis Architecture
+
+```
+Document Input
+↓
+Rule-Based Scoring (Fast, Consistent)
+↓
+LLM Semantic Analysis (AI-Enhanced)
+↓
+Hybrid Score Combination
+↓
+Confidence Assessment
+```
+
+### LLM Provider Management
+- **Primary**: Anthropic Claude (document analysis, topic clustering)
+- **Fallback**: OpenAI GPT (when Claude unavailable)
+- **Monitoring**: Langfuse observability for all LLM operations
+- **Prompts**: Centralized prompt management with local fallback
+
+### Graceful Degradation
+```
+LLM Available → Hybrid Analysis (Rule-based + AI)
+LLM Unavailable → Rule-based Only (System continues functioning)
+```
+
+## 8. Security Architecture
+
+### Data Protection
+- **Secrets Management**: Environment-based with gitignore protection
+- **Document Security**: Secure processing without permanent storage
+- **Access Control**: Kodosumi-based authentication and authorization
+- **Audit Logging**: Structured logging for all operations
+
+### Network Security
+```
+External Access → Kodosumi (Port 8001) → Ray Serve → Workers
+Internal Services → Docker Compose Network (Isolated)
+```
+
+## 9. Observability & Monitoring
+
+### Logging Stack
+- **Application Logs**: Structlog with JSON formatting
+- **LLM Operations**: Langfuse tracking and monitoring
+- **Ray Operations**: Ray Dashboard (Port 8265)
+- **System Health**: Health check endpoints
+
+### Monitoring Points
+- **Form Submissions**: User interaction tracking
+- **Document Processing**: Success/failure rates
+- **LLM Usage**: API calls, costs, latency
+- **Storage Operations**: Azure Blob operations
+- **Workflow Progress**: Real-time state updates
+
+## 10. Deployment Architecture
+
+### Development Environment
+```
+Docker Compose Services:
+├── PostgreSQL (Langfuse data)
+├── Langfuse Server (Port 3001)
+└── Azurite (Azure Storage emulator, Port 10000)
+
+Ray Local Cluster:
+├── Ray Head Node
+├── Ray Serve (Kodosumi app)
+└── Ray Dashboard (Port 8265)
+
+Kodosumi Admin:
+└── Admin Panel (Port 3370)
+```
+
+### Production Considerations
+```
+Azure Resources:
+├── Azure Blob Storage (Production)
+├── Azure Database for PostgreSQL (Langfuse)
+└── Azure Container Instances (Ray cluster)
+
+Kodosumi Deployment:
+├── Auto-scaling (1-10 replicas)
+├── Load Balancing
+└── Health Monitoring
+```
+
+## 11. Scalability Design
+
+### Horizontal Scaling
+- **Ray Serve**: Auto-scaling based on request load
+- **Storage**: Azure Blob Storage scales automatically
+- **LLM Processing**: Concurrent request limiting and queuing
+
+### Performance Targets
+- **Form Response**: <200ms (p95)
+- **Document Processing**: <30s per document average
+- **Batch Processing**: 1000+ documents per hour
+- **Concurrent Users**: 10-100 supported
+
+## 12. Future Architecture Evolution
+
+### Planned Enhancements
+- **Real-time Processing**: Document monitoring and alerts
+- **Advanced Analytics**: Trend analysis and forecasting
+- **Enterprise Integration**: SSO, Teams/Slack notifications
+- **Multi-language Support**: International document processing
+- **Advanced Export**: Multiple report formats (Excel, PDF, JSON)
+
+### Scalability Roadmap
+- **Database Migration**: From PostgreSQL to enterprise database
+- **Microservices**: Component separation for independent scaling
+- **Edge Processing**: Regional deployment for global users
+- **Advanced AI**: Multi-modal analysis (images, videos, audio)
 
 ---
 
-## 4. Integration Architecture
-
-### Integration Points
-```
-Kodosumi Platform:
-  Type: Native integration
-  Interface: FastAPI service registration
-  Requirements:
-    - Expose form-compatible endpoints
-    - Provide health checks
-    - Support async job execution
-
-Ray Cluster:
-  Type: Runtime dependency
-  Interface: Ray serve and tasks
-  Requirements:
-    - Distribute processing tasks
-    - Manage resource allocation
-    - Handle task failures
-
-Filesystem:
-  Type: I/O interface
-  Interface: Standard file operations
-  Requirements:
-    - Read from input folders
-    - Write to output folders
-    - Handle permissions properly
-```
-
-### External Dependencies
-```
-Required Services:
-- Ray cluster (computation)
-- Filesystem (storage)
-- Kodosumi runtime (execution)
-
-Optional Services:
-- Feedback store (improvement)
-- Metrics collector (monitoring)
-```
-
----
-
-## 5. Technology Stack
-
-### Core Technologies
-```
-Runtime Platform:
-  Technology: Kodosumi on Ray
-  Justification: Provides distributed processing and service management
-  Constraints: Must use Ray 2.46.0+
-
-Programming Language:
-  Technology: Python 3.11+
-  Justification: Ray/Kodosumi requirement, AI/ML ecosystem
-  Constraints: Async support required
-
-Workflow Orchestration:
-  Technology: LangGraph
-  Justification: Native AI workflow support with state management
-  Constraints: Version 0.2.3+ for stability
-
-Document Processing:
-  Technology: Python libraries (PyPDF2, python-docx, etc.)
-  Justification: Comprehensive format support
-  Constraints: Must handle corrupted files
-```
-
-### Architectural Patterns
-```
-Batch Processing Pattern:
-  When: All document processing
-  Why: Optimize resource utilization
-  How: Group documents into Ray task batches
-
-Pipeline Pattern:
-  When: End-to-end processing flow
-  Why: Clear stage separation
-  How: Sequential stages with error boundaries
-
-Strategy Pattern:
-  When: Document parsing by type
-  Why: Extensible format support
-  How: Parser selection based on file extension
-
-Observer Pattern:
-  When: Progress tracking
-  Why: Real-time status updates
-  How: Progress callbacks from Ray tasks
-```
-
----
-
-## 6. Non-Functional Requirements Implementation
-
-### Performance Architecture
-```
-Requirement: <10 minute processing for 1000 documents
-
-Architectural Decisions:
-- Parallel document processing via Ray
-- Batch sizes optimized for memory usage
-- Lazy loading for large documents
-- Progress streaming for user feedback
-
-Implementation Strategy:
-- Maximum 20 concurrent Ray tasks
-- 50-document processing batches
-- Streaming report generation
-- Resource pooling for parsers
-```
-
-### Scalability Architecture
-```
-Requirement: Handle 1-1000 documents per job
-
-Architectural Decisions:
-- Dynamic batch sizing
-- Elastic Ray worker allocation
-- Memory-aware task distribution
-- Graceful degradation for overload
-
-Implementation Strategy:
-- Batch size = min(50, total_docs/num_workers)
-- Worker count based on document count
-- Memory limits per worker (2GB)
-- Queue overflow to sequential processing
-```
-
-### Reliability Architecture
-```
-Requirement: >70% relevance accuracy
-
-Architectural Decisions:
-- Multi-dimensional scoring model
-- Confidence-based filtering
-- Evidence-based justifications
-- Feedback-driven improvements
-
-Implementation Strategy:
-- 5 independent scoring dimensions
-- Weighted score aggregation
-- Confidence thresholds for filtering
-- Feedback storage for model updates
-```
-
----
-
-## 7. State Management Architecture
-
-### State Hierarchy
-```
-Application State
-├── Job State (persistent)
-│   ├── Job metadata
-│   ├── Processing status
-│   └── Result location
-│
-├── Workflow State (transient)
-│   ├── Current stage
-│   ├── Document queue
-│   └── Progress metrics
-│
-└── Context State (cached)
-    ├── Client profile
-    ├── Scoring parameters
-    └── Topic patterns
-```
-
-### State Storage Strategy
-```
-Job State:
-  Storage: In-memory with periodic persistence
-  Scope: Job lifetime + retention period
-  Recovery: Restore from persistence on restart
-
-Workflow State:
-  Storage: LangGraph checkpoints
-  Scope: Job execution duration
-  Recovery: Resume from last checkpoint
-
-Context State:
-  Storage: Memory cache with file backing
-  Scope: Service lifetime
-  Recovery: Reload from context files
-```
-
----
-
-## 8. Error Handling Architecture
-
-### Error Categories & Strategies
-```
-Document Errors:
-  Examples: Corrupt file, unsupported format
-  Strategy: Log and skip, continue processing
-  User Impact: Listed in report as failed
-
-Processing Errors:
-  Examples: Parsing failure, scoring error
-  Strategy: Retry with fallback, mark low confidence
-  User Impact: Included with warning
-
-System Errors:
-  Examples: Ray failure, filesystem error
-  Strategy: Job-level retry, then fail
-  User Impact: Job marked as failed
-
-Configuration Errors:
-  Examples: Missing context, invalid settings
-  Strategy: Fail fast with clear message
-  User Impact: Job rejected at submission
-```
-
-### Error Propagation Rules
-```
-Document Level: Isolated, no propagation
-Batch Level: Affect batch only, warn user
-Job Level: Fail job, provide detailed error
-System Level: Reject new jobs, alert operators
-```
-
----
-
-## 9. Security Architecture
-
-### Security Layers
-```
-Access Control:
-  - Kodosumi authentication for UI
-  - Role-based job submission
-  - Secure result retrieval
-
-Data Protection:
-  - Input validation on all paths
-  - Sandboxed file operations
-  - No external network calls
-
-Audit Trail:
-  - Job submission logging
-  - Access attempt tracking
-  - Result retrieval records
-```
-
-### Security Constraints
-```
-Path Traversal: Blocked via validation
-File Types: Whitelist enforcement
-Size Limits: Strict enforcement
-Execution: No arbitrary code execution
-```
-
----
-
-## 10. Monitoring & Observability Architecture
-
-### Monitoring Layers
-```
-Service Monitoring:
-  - Health endpoint status
-  - Job queue depth
-  - Error rates
-
-Performance Monitoring:
-  - Document processing time
-  - Memory usage per job
-  - Ray task distribution
-
-Business Monitoring:
-  - Documents processed
-  - Score distributions
-  - Topic frequencies
-```
-
-### Observability Strategy
-```
-Logging:
-  - Structured JSON logs
-  - Request correlation IDs
-  - Error stack traces
-
-Metrics:
-  - Prometheus-compatible
-  - Real-time dashboards
-  - Alert thresholds
-
-Tracing:
-  - Job execution timeline
-  - Stage duration tracking
-  - Bottleneck identification
-```
-
----
-
-## 11. Deployment Architecture
-
-### Deployment Structure
-```
-Kodosumi Service:
-  - Single service deployment
-  - Ray cluster integration
-  - Environment-based config
-
-Resource Allocation:
-  - Service: 1 CPU, 2GB RAM
-  - Workers: 1 CPU, 2GB RAM each
-  - Scaling: 1-10 workers
-
-Configuration:
-  - YAML-based deployment
-  - Environment variables
-  - Secret management
-```
-
-### Deployment Constraints
-```
-Must Have:
-- Ray cluster access
-- Filesystem permissions
-- Kodosumi registration
-
-Should Have:
-- Persistent storage
-- Monitoring endpoint
-- Backup capability
-```
-
----
-
-## 12. Architecture Decisions Record
-
-### Key Decisions
-
-```
-Decision: Use filesystem instead of API for input
-Rationale: Simplifies integration, handles large files better
-Trade-offs: Less real-time, requires file management
-Alternatives: S3 bucket, REST upload, streaming
-
-Decision: Single markdown report output
-Rationale: Human-readable, version-controllable, portable
-Trade-offs: No structured query, larger files
-Alternatives: JSON output, database storage, multiple files
-
-Decision: Manual trigger only
-Rationale: Predictable resource usage, clear job boundaries
-Trade-offs: No continuous monitoring, manual overhead
-Alternatives: Scheduled runs, folder watching, event-driven
-
-Decision: Ray for distribution
-Rationale: Proven scale, Kodosumi integration, Python native
-Trade-offs: Cluster dependency, resource overhead
-Alternatives: Multiprocessing, Celery, custom threading
-```
-
----
-
-## 13. Architecture Validation Checklist
-
-### Completeness
-- [x] All components have clear responsibilities
-- [x] Data flow is fully specified
-- [x] Integration points are defined
-- [x] Error handling is comprehensive
-
-### Feasibility
-- [x] Technology choices are compatible
-- [x] Performance targets are achievable
-- [x] Resource requirements are reasonable
-- [x] Security requirements are met
-
-### Quality Attributes
-- [x] Scalability path is clear
-- [x] Reliability mechanisms in place
-- [x] Monitoring strategy defined
-- [x] Deployment model specified
-
-### Risks
-- [x] Technical risks identified
-- [x] Mitigation strategies defined
-- [x] Decision rationale documented
-- [x] Trade-offs acknowledged
-
----
-
-## Implementation Notes
-
-### Critical Success Factors
-1. Ray task distribution efficiency
-2. Document parsing reliability
-3. Scoring algorithm accuracy
-4. Report generation performance
-
-### Recommended Proof of Concepts
-1. Ray task scaling with 1000 documents
-2. Multi-format document parsing
-3. Scoring algorithm validation
-4. Report template rendering
-
-### Architecture Constraints for Implementation
-- Must maintain job isolation
-- Cannot modify input documents
-- Must handle partial failures
-- Should minimize memory footprint
+This architecture specification reflects the current implementation and provides a roadmap for future development while maintaining the proven Kodosumi + Ray + Azure Storage foundation.

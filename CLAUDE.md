@@ -6,7 +6,7 @@ Based on successful implementation of Political Monitoring Agent - a complete do
 
 ## 📋 Input Requirements
 
-Repository must contain in `/specs/` folder:
+Repository must contain in `/docs/specs/` folder:
 - **briefing.md** - Business context and requirements
 - **architecture.md** - System design and technology choices  
 - **specification.md** - Detailed implementation requirements
@@ -42,14 +42,14 @@ app.py (Endpoint)           political_analyzer.py (Entrypoint)
 
 ```
 project-name/
-├── app.py                    # Kodosumi endpoint (forms + HTTP)
-├── political_analyzer.py     # Kodosumi entrypoint (logic + Ray)
+├── src/app.py                # Kodosumi endpoint (forms + HTTP)
+├── src/political_analyzer.py # Kodosumi entrypoint (logic + Ray)
 ├── config.yaml              # Kodosumi deployment config
 ├── docker-compose.yml       # Local services (minimal)
 ├── justfile                 # Developer commands
 ├── .env.template            # Environment template
 ├── pyproject.toml           # UV dependencies
-├── specs/                   # Moved specifications here
+├── docs/specs/              # Project specifications  
 │   ├── briefing.md
 │   ├── architecture.md  
 │   ├── specification.md
@@ -134,7 +134,7 @@ async def enter(request: fastapi.Request, inputs: dict):
     # Launch entrypoint with validated inputs
     return Launch(
         request,
-        "your_analyzer:execute_analysis",  # entrypoint function
+        "src.political_analyzer:execute_analysis",  # entrypoint function
         inputs=inputs
     )
 
@@ -151,7 +151,7 @@ class YourAgent:
 fast_app = YourAgent.bind()
 ```
 
-### 2. Entrypoint Pattern (your_analyzer.py)
+### 2. Entrypoint Pattern (src/political_analyzer.py)
 
 ```python
 # your_analyzer.py - Business logic with Ray distribution
@@ -263,7 +263,7 @@ logging_config:
 applications:
   - name: your-agent-name
     route_prefix: /your-route
-    import_path: app:fast_app
+    import_path: src.app:fast_app
     runtime_env:
       working_dir: .
       pip:
@@ -706,7 +706,7 @@ volumes:
 name = "your-agent-name"
 version = "1.0.0"
 description = "Your agent description"
-requires-python = ">=3.11"
+requires-python = "==3.12.6"
 dependencies = [
     # Kodosumi Framework
     "kodosumi==0.9.2",

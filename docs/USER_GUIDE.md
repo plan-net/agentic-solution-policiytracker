@@ -130,7 +130,7 @@ The system produces comprehensive outputs:
 
 ## Starting Your First Analysis: Form Guide
 
-When you access the Political Monitoring Agent at **http://localhost:8001/political-analysis**, you'll see a streamlined form to configure your analysis. Here's how to fill it out:
+When you access the Political Monitoring Agent at **http://localhost:3370** (Kodosumi admin panel) or **http://localhost:8001/political-analysis** (direct form), you'll see a streamlined form to configure your analysis. Here's how to fill it out:
 
 ### 🏷️ Job Configuration
 
@@ -787,7 +787,7 @@ A: Yes, the system provides APIs for integration with common document management
 A: Yes, you can set up automated workflows to process documents from specific sources or folders on a regular schedule.
 
 **Q: Can I export results to other systems?**
-A: Results are available in multiple formats including Excel, PDF reports, and structured data formats (JSON, CSV) for integration with other business systems.
+A: Results are currently available in markdown format with detailed analysis reports. Additional export formats (Excel, PDF, JSON, CSV) are planned for future versions.
 
 **Q: What happens to my documents and data?**
 A: Documents are processed securely and not stored permanently. Your organizational context and analysis results are retained according to your data retention preferences. All processing complies with applicable privacy regulations.

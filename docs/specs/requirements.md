@@ -79,7 +79,7 @@ def process_document_batch(documents):
 
 ### 1. **Ray Distributed Computing**
 
-**Requirement**: Ray 2.8+ with Ray Serve
+**Requirement**: Ray 2.46.0 with Ray Serve
 **Why**:
 - **Horizontal Scaling**: Distribute work across multiple machines
 - **Resource Management**: Automatic CPU/memory allocation
@@ -103,7 +103,7 @@ autoscaling_config:
 
 ### 2. **FastAPI Web Framework**
 
-**Requirement**: FastAPI 0.104+ with async support
+**Requirement**: FastAPI 0.115.12 with async support
 **Why**:
 - **Performance**: One of the fastest Python web frameworks
 - **Type Safety**: Built-in Pydantic integration for request/response validation
@@ -120,7 +120,7 @@ autoscaling_config:
 
 ### 1. **LangGraph Workflow Engine**
 
-**Requirement**: LangGraph 0.0.40+ with checkpointing
+**Requirement**: LangGraph 0.2.3 with checkpointing
 **Why**:
 - **State Management**: Persistent workflow state across restarts
 - **Error Recovery**: Resume from any point in the workflow
@@ -507,8 +507,8 @@ LLM_MAX_CONCURRENT: int = 3
 
 | Component | Technology | Version | Purpose |
 |-----------|------------|---------|---------|
-| Runtime | Kodosumi (Ray + FastAPI) | Ray 2.8+, FastAPI 0.104+ | Distributed compute platform |
-| Workflow | LangGraph | 0.0.40+ | Workflow orchestration |
+| Runtime | Kodosumi (Ray + FastAPI) | Ray 2.46.0, FastAPI 0.115.12 | Distributed compute platform |
+| Workflow | LangGraph | 0.2.3 | Workflow orchestration |
 | Storage | Azure Blob Storage | Latest | Cloud-native storage |
 | Cache | Azure Storage + Redis | Latest | Multi-level caching |
 | Observability | Langfuse | Latest | LLM monitoring |
