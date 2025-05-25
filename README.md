@@ -818,64 +818,151 @@ autoscaling_config:
 
 ## 🔍 Troubleshooting
 
-### Common Issues
+### Quick Diagnostics
 
-**1. Services won't start**:
 ```bash
-# Check Docker status
-docker ps
+# Check system health
+just health
 
-# Restart services
-just services-down && just services-up
+# Verify all services are running  
+just services-status
 
-# Check logs
-just logs [service-name]
+# Test core functionality
+just test
 ```
 
-**2. Azure Storage issues**:
-```bash
-# Verify Azurite connection
-just azure-verify
+### Common Setup Issues
 
-# Check Azurite logs
-just logs azurite
+**1. "Command not found: just"**
+```bash
+# Install Just task runner
+brew install just  # macOS
+# or
+cargo install just
+```
+
+**2. "Permission denied" during setup**
+```bash
+# Fix Docker permissions (Linux)
+sudo usermod -aG docker $USER
+# Then logout and login again
+
+# Alternative: run with sudo (not recommended)
+sudo just services-up
+```
+
+**3. "Port already in use" errors**
+```bash
+# Check what's using the ports
+lsof -i :3370  # Kodosumi admin
+lsof -i :8001  # Your app
+lsof -i :5432  # PostgreSQL
+lsof -i :3001  # Langfuse
+
+# Stop conflicting services
+just services-down
+# Kill any remaining processes if needed
+```
+
+### Application Issues
+
+**4. "Module not found" errors**
+```bash
+# Reinstall dependencies
+just setup
+
+# Check Python version (needs 3.11+)
+python --version
+
+# Check UV installation
+uv --version
+```
+
+**5. Langfuse setup issues**
+```bash
+# Reset Langfuse completely
+just services-down
+docker volume rm policiytracker_postgres_data
+just services-up
+
+# Then redo setup at http://localhost:3001
+```
+
+**6. Azure Storage connection failed**
+```bash
+# Check Azurite is running
+docker ps | grep azurite
+
+# Test connection
+just azure-verify
 
 # Reset and reimport data
 just azure-import
 ```
 
-**3. Ray/workflow issues**:
+**7. Analysis jobs fail with errors**
 ```bash
-# Start Ray manually
-just ray-start
+# Check Ray status
+just kodosumi-status
 
-# Check Ray dashboard
-open http://localhost:8265
+# View application logs
+just kodosumi-logs
 
-# Test without Ray
-RAY_LOCAL_MODE=1 just test
+# Check for configuration issues
+grep -E "(ERROR|CRITICAL)" .env
 ```
 
-### Debug Mode
+### Performance Issues
 
+**8. Slow document processing**
 ```bash
-# Enable debug logging
+# Check available resources
+docker stats
+
+# Increase Ray CPU allocation
+# Edit .env: RAY_NUM_CPUS=8
+
+# Monitor processing in Ray dashboard
+open http://localhost:8265
+```
+
+### Advanced Troubleshooting
+
+**9. Complete reset (last resort)**
+```bash
+# Stop everything
+just kodosumi-stop
+just services-down
+
+# Remove all Docker volumes
+docker volume prune -f
+
+# Clean and restart
+just clean-all
+just setup
+just services-up
+just dev
+```
+
+**10. Debug mode**
+```bash
+# Enable detailed logging
 export LOG_LEVEL=DEBUG
 just dev
+
+# Check logs
+just kodosumi-logs
 ```
 
 ### Getting Help
 
-```bash
-# Show all commands
-just
+If these solutions don't work:
 
-# Check system health
-just health
-
-# Run diagnostics
-just test && just check
-```
+1. **Check logs**: `just kodosumi-logs` and `just logs [service-name]`
+2. **Search issues**: Look for similar problems in the repository issues  
+3. **System info**: Include output of `just health` when reporting issues
+4. **Configuration**: Share your `.env` file (remove sensitive keys)
+5. **Available commands**: Run `just` to see all available commands
 
 ## 🤝 Contributing
 
