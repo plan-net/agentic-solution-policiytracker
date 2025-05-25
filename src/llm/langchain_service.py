@@ -178,6 +178,7 @@ class LangChainLLMService:
             }
         )
 
+        @observe(as_type="generation")
         async def execute_analysis(llm: BaseChatModel) -> DocumentInsight:
             # Load prompt and config from prompt manager
             prompt_data = await prompt_manager.get_prompt_with_config(
@@ -193,13 +194,20 @@ class LangChainLLMService:
             prompt_text = prompt_data["prompt"]
             prompt_config = prompt_data["config"]
             
-            # Log full config for debugging
-            logger.info(f"Langfuse prompt config: {prompt_config}")
+            # Get Langfuse prompt object for generation tracking
+            langfuse_prompt = None
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(name="document_analysis", label="production")
+                    # Update current observation with the prompt object for generation tracking
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info(f"Updated observation with Langfuse prompt for document_analysis")
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+                langfuse_prompt = None
             
-            # Use model from Langfuse config if available, otherwise use current LLM
-            if prompt_config.get("model") and prompt_config["model"] != getattr(llm, "model_name", ""):
-                logger.info(f"Prompt requests model '{prompt_config['model']}', but using current LLM '{getattr(llm, 'model_name', 'unknown')}'")
-                # Note: We could potentially switch LLM here based on prompt config
+            # Log full config for debugging
+            logger.info(f"Document analysis Langfuse config: {prompt_config}")
             
             # Use temperature from Langfuse config if available
             llm_kwargs = {}
@@ -232,10 +240,8 @@ class LangChainLLMService:
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=DocumentInsight)
             
-            # Execute LLM call with Langfuse callback and config from prompt
             # Create a new LLM instance with config from Langfuse if needed
             if llm_kwargs:
-                # Create a new LLM instance with updated parameters
                 if hasattr(llm, 'bind'):
                     configured_llm = llm.bind(**llm_kwargs)
                 else:
@@ -299,6 +305,7 @@ class LangChainLLMService:
             }
         )
 
+        @observe(as_type="generation")
         async def execute_scoring(llm: BaseChatModel) -> SemanticScore:
             # Load prompt and config from prompt manager
             prompt_data = await prompt_manager.get_prompt_with_config(
@@ -315,6 +322,18 @@ class LangChainLLMService:
             )
             prompt_text = prompt_data["prompt"]
             prompt_config = prompt_data["config"]
+            
+            # Get Langfuse prompt object for generation tracking
+            langfuse_prompt = None
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(name="semantic_scoring", label="production")
+                    # Update current observation with the prompt object for generation tracking
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info(f"Updated observation with Langfuse prompt for semantic_scoring")
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+                langfuse_prompt = None
             
             # Log full config for debugging  
             logger.info(f"Semantic scoring Langfuse config: {prompt_config}")
@@ -352,10 +371,8 @@ class LangChainLLMService:
             # Setup output parser
             parser = PydanticOutputParser(pydantic_object=SemanticScore)
             
-            # Execute LLM call with Langfuse callback and config from prompt
             # Create a new LLM instance with config from Langfuse if needed
             if llm_kwargs:
-                # Create a new LLM instance with updated parameters
                 if hasattr(llm, 'bind'):
                     configured_llm = llm.bind(**llm_kwargs)
                 else:
