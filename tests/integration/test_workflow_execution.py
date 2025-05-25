@@ -264,47 +264,8 @@ class TestWorkflowExecution:
         
         assert len(history) > 0, "Checkpoint history should be available"
 
-    @pytest.mark.asyncio
-    async def test_workflow_with_ray_tasks(self, test_config, test_documents_dir, checkpoint_db):
-        """Test workflow execution with Ray distributed tasks."""
-        # Verify Ray is running in local mode
-        assert ray.is_initialized(), "Ray should be initialized"
-        
-        # Mock Ray remote functions
-        with patch('src.tasks.ray_tasks.process_document_task') as mock_process:
-            mock_process.remote.return_value = AsyncMock(return_value=[])
-            
-            with patch('src.tasks.ray_tasks.score_document_task') as mock_score:
-                mock_score.remote.return_value = AsyncMock(return_value=[])
-                
-                graph = create_workflow()
-                compiled_graph = graph.compile(checkpointer=checkpoint_db)
-                
-                initial_state = WorkflowState(
-                    job_id="test_job_ray",
-                    job_request=test_config,
-                    documents=[],
-                    scoring_results=[],
-                    report_data=None,
-                    context={},
-                    errors=[],
-                    current_progress={},
-                    file_paths=[],
-                    failed_documents=[],
-                    report_file_path=None
-                )
-                
-                config = {"configurable": {"thread_id": "test-ray-thread"}}
-                
-                # Execute workflow
-                final_state = None
-                async for state in compiled_graph.astream(initial_state, config=config):
-                    final_state = state
-                
-                # Verify Ray tasks were called (mocked)
-                # Note: In actual implementation, Ray tasks would be called
-                # This test verifies the integration pattern works
-                assert final_state is not None
+    # Note: Ray tasks test removed as Ray task infrastructure was removed from codebase
+    # The current implementation uses LangGraph sequential processing instead
 
     @pytest.mark.asyncio
     async def test_workflow_error_handling_and_recovery(self, test_config, checkpoint_db):

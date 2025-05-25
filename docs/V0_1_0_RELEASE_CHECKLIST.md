@@ -29,11 +29,11 @@ Version 0.1.0 represents a **working proof-of-concept** with core functionality 
 - [ ] **CRITICAL**: Increase test coverage from 20% to at least 60% for core components
 - [ ] **HIGH**: Fix zero-coverage modules:
   - [x] `src/political_analyzer.py` (86% coverage - main entrypoint!) ✅
-  - [ ] `src/tasks/ray_tasks.py` (0% coverage - distributed processing)
-  - [ ] `src/tasks/task_manager.py` (0% coverage)
+  - [x] ~~`src/tasks/ray_tasks.py`~~ (REMOVED: Unused Ray infrastructure) ✅
+  - [x] ~~`src/tasks/task_manager.py`~~ (REMOVED: Unused Ray infrastructure) ✅
   - [ ] `src/llm/base_client.py` (0% coverage)
-  - [ ] `src/llm/providers/` (0% coverage - LLM integration)
-  - [ ] `src/processors/context_manager.py` (0% coverage)
+  - [x] ~~`src/llm/providers/`~~ (REMOVED: Unused LLM providers) ✅
+  - [x] ~~`src/processors/context_manager.py`~~ (REMOVED: Unused context manager) ✅
   - [ ] `src/utils/logging.py` (0% coverage)
 
 ### 2. Dependency Issues

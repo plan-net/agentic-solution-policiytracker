@@ -502,35 +502,5 @@ company_terms: [test]
             await load_context(state)
 
 
-@pytest.mark.integration
-class TestRayTaskMocking:
-    """Test Ray task mocking patterns as required by CLAUDE.md."""
-    
-    @pytest.mark.asyncio
-    @patch('src.tasks.ray_tasks.ray')
-    async def test_ray_task_mocking_pattern(self, mock_ray):
-        """Test that Ray tasks can be properly mocked for testing."""
-        # Setup mock Ray environment
-        mock_ray.is_initialized.return_value = True
-        mock_ray.remote.return_value = lambda func: func  # Mock decorator
-        
-        # Test that we can import and interact with Ray tasks when mocked
-        from src.tasks import ray_tasks
-        assert mock_ray.is_initialized()
-        
-        # This demonstrates the CLAUDE.md pattern for mocking Ray tasks
-        # In actual workflow tests, we would mock the specific Ray tasks used
-    
-    def test_ray_local_mode_configuration(self):
-        """Test Ray local mode can be configured for testing."""
-        import os
-        
-        # This is the pattern CLAUDE.md specifies for testing
-        # RAY_LOCAL_MODE=1 uv run pytest
-        
-        # In actual tests, we would check this environment variable
-        ray_local_mode = os.environ.get('RAY_LOCAL_MODE', '0') == '1'
-        
-        # When RAY_LOCAL_MODE=1, Ray should run in local mode for testing
-        # This ensures tests don't require a Ray cluster
-        assert isinstance(ray_local_mode, bool)
+# Note: Ray task testing class removed as Ray task infrastructure was removed from codebase
+# The current implementation uses LangGraph sequential processing instead of Ray tasks

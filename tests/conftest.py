@@ -209,28 +209,8 @@ def mock_kodosumi_tracer():
     return tracer
 
 
-@pytest.fixture
-def mock_ray_tasks():
-    """Mock Ray remote tasks for testing."""
-    mocks = {}
-    
-    # Mock common Ray tasks
-    mocks['process_document_task'] = MagicMock()
-    mocks['process_document_task'].remote = AsyncMock()
-    
-    mocks['score_document_task'] = MagicMock() 
-    mocks['score_document_task'].remote = AsyncMock()
-    
-    mocks['batch_processing_task'] = MagicMock()
-    mocks['batch_processing_task'].remote = AsyncMock()
-    
-    mocks['batch_scoring_task'] = MagicMock()
-    mocks['batch_scoring_task'].remote = AsyncMock()
-    
-    mocks['batch_aggregation_task'] = MagicMock()
-    mocks['batch_aggregation_task'].remote = AsyncMock()
-    
-    return mocks
+# Note: Ray tasks fixture removed as Ray task infrastructure was removed from codebase
+# The current implementation uses LangGraph sequential processing instead
 
 
 @pytest.fixture
