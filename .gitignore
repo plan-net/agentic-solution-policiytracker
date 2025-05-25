@@ -138,7 +138,8 @@ env/
 # Keep template files
 !.env.template
 
-# Local configuration overrides
+# Local configuration overrides (including config.yaml with secrets)
+config.yaml
 config.local.yaml
 config.development.yaml
 config.production.yaml
@@ -459,7 +460,6 @@ sample_large_dataset/
 !.gitignore
 !justfile
 !pyproject.toml
-!config.yaml
 !docker-compose.yml
 
 # Keep all source code (including models and output modules)
