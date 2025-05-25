@@ -35,15 +35,23 @@ This guide documents the complete Langfuse integration journey, including all th
 4. **Global CallbackHandler** - Conflicts with @observe decorators
 5. **Chain metadata approach** - Complex and error-prone
 6. **Prompt metadata in config** - Doesn't link generations properly
+7. **Conflicting handler patterns** - Using both @observe and callback handlers
+8. **Mismatched Pydantic models** - LLM output structure vs model expectations
+9. **Execution wrapper methods** - Breaking context chain between decorators
+10. **Missing session ID propagation** - Some methods not receiving session context
 
 ### ✅ What WORKS
 
 1. **Official Langfuse client** - Direct usage without wrappers
 2. **Production labels** - `langfuse.get_prompt(name="...", label="production")`
 3. **@observe decorators** - Proper context management
-4. **Context-based handlers** - `langfuse_context.get_current_langchain_handler()`
+4. **Direct execution pattern** - Avoiding wrapper methods that break context
 5. **Nested generation pattern** - `@observe(as_type="generation")`
 6. **Direct prompt linking** - `langfuse_context.update_current_observation(prompt=prompt)`
+7. **Session ID propagation** - Passing job_id to all LLM methods
+8. **Custom output parsers** - Handling complex LLM response structures
+9. **Matched Pydantic models** - Aligning models with actual LLM output format
+10. **Consistent error handling** - Graceful fallbacks without breaking traces
 
 ## Architecture Pattern
 
@@ -210,6 +218,131 @@ def upload_prompts_to_langfuse():
         )
 ```
 
+## Recent Issues Solved
+
+### 🔧 Session ID Propagation Issue
+
+**Problem**: Some LLM methods (`topic_clustering`, `report_insights`) weren't receiving session IDs, causing:
+- Traces appearing without session grouping
+- Missing cost attribution
+- Incomplete workflow visibility
+
+**Root Cause**: Methods weren't passing `job_id` as `session_id` parameter to langchain service calls.
+
+**Solution**: Update all LLM method calls to include session ID:
+```python
+# ❌ Before
+topic_analyses = await langchain_llm_service.analyze_topics_batch(documents_text, context or {})
+
+# ✅ After  
+topic_analyses = await langchain_llm_service.analyze_topics_batch(documents_text, context or {}, session_id=job_id)
+```
+
+**Files Updated**:
+- `src/analysis/topic_clusterer.py` - Added job_id parameter propagation
+- `src/output/report_generator.py` - Added job_id parameter propagation  
+- `src/workflow/nodes.py` - Updated calls to pass job_id
+
+### 🔧 Langfuse Handler Conflict Issue
+
+**Problem**: Error "Current observation is of type GENERATION, Langchain handler is not supported for this type of observation"
+
+**Root Cause**: Conflicting integration patterns - using both `@observe(as_type="generation")` decorators AND `langfuse_context.get_current_langchain_handler()` callbacks.
+
+**Solution**: Remove conflicting callback handler approach:
+```python
+# ❌ Before - Conflicting patterns
+langfuse_handler = langfuse_context.get_current_langchain_handler()
+llm_response = await configured_llm.ainvoke(
+    [HumanMessage(content=prompt_text)], 
+    config={"callbacks": [langfuse_handler]} if langfuse_handler else {}
+)
+
+# ✅ After - Pure @observe pattern
+llm_response = await configured_llm.ainvoke(
+    [HumanMessage(content=prompt_text)]
+)
+```
+
+### 🔧 Pydantic Model Mismatch Issue
+
+**Problem**: LLM methods failing with validation errors like:
+- `topic_description` field required (but prompt returns `description`)
+- `strategic_recommendations` field required (but prompt returns `recommendations`)
+- `risk_assessment` returned as object but model expects string
+
+**Root Cause**: Pydantic models didn't match actual LLM prompt output structure.
+
+**Solution**: Update models to match prompt specifications:
+```python
+# ❌ Before
+class TopicAnalysis(BaseModel):
+    topic_name: str
+    topic_description: str  # Mismatch!
+    relevance_score: float
+    # ... more mismatched fields
+
+# ✅ After - Matches prompt exactly
+class TopicAnalysis(BaseModel):
+    topic_name: str
+    document_indices: List[int]
+    confidence: float
+    description: str  # Matches prompt output
+```
+
+### 🔧 Context Propagation Issue
+
+**Problem**: `report_insights` method showed successful execution but null results in Langfuse with no session ID or cost data.
+
+**Root Cause**: The `_execute_with_fallback` wrapper method was breaking Langfuse context propagation between outer `@observe()` and inner `@observe(as_type="generation")` decorators.
+
+**Solution**: Execute inner functions directly within the observer context:
+```python
+# ❌ Before - Wrapper breaks context
+return await self._execute_with_fallback("report_insights", execute_insights, mock_response)
+
+# ✅ After - Direct execution maintains context
+if not self.enabled:
+    return mock_response
+
+try:
+    result = await execute_insights(self.primary_llm)
+    return result
+except Exception as e:
+    # Handle fallback directly
+    if self.fallback_llm:
+        return await execute_insights(self.fallback_llm)
+    return mock_response
+```
+
+### 🔧 Custom Parser Requirements
+
+**Problem**: Standard `PydanticOutputParser` couldn't handle:
+- `List[TopicAnalysis]` type (expects single class)
+- Complex nested objects in responses
+- Markdown code block extraction
+
+**Solution**: Implement custom parsers with robust handling:
+```python
+class TopicAnalysisListParser:
+    def parse(self, text: str) -> List[TopicAnalysis]:
+        try:
+            # Handle both raw JSON and markdown code blocks
+            if text.strip().startswith('['):
+                data = json.loads(text)
+            else:
+                json_match = re.search(r'```(?:json)?\s*(\[.*?\])\s*```', text, re.DOTALL)
+                if json_match:
+                    data = json.loads(json_match.group(1))
+                else:
+                    raise ValueError("No valid JSON array found")
+            
+            return [TopicAnalysis(**item) for item in data]
+        except Exception as e:
+            logger.warning(f"Failed to parse: {e}")
+            return []  # Graceful fallback
+```
+
 ## Common Pitfalls
 
 ### ❌ Pitfall 1: Using Custom Wrappers
@@ -291,6 +424,33 @@ config = {"callbacks": [langfuse_handler]} if langfuse_handler else {}
 **Root Cause**: Manual trace creation doesn't propagate context
 
 **Solution**: Always use `@observe` decorators, never manual trace creation.
+
+### Session ID Missing from Some Methods
+
+**Symptoms**: Some traces show up without session grouping
+
+**Diagnostic**: Check logs for methods that don't show session_id in trace updates
+
+**Solution**: Verify all LLM service calls include `session_id=job_id` parameter
+
+### LLM Response Parsing Failures
+
+**Symptoms**: Methods fall back to mock responses with validation errors
+
+**Diagnostic**: Look for Pydantic validation errors in logs like "field required"
+
+**Solution**: 
+1. Compare prompt output format with Pydantic model fields
+2. Update models to match actual LLM responses
+3. Implement custom parsers for complex structures
+
+### Context Propagation Breaks
+
+**Symptoms**: Execution succeeds but Langfuse shows null results
+
+**Diagnostic**: Method logs show success but Langfuse trace is incomplete
+
+**Solution**: Remove wrapper methods that break `@observe` context chain
 
 ### Environment Variable Issues
 

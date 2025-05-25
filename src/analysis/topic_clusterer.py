@@ -21,7 +21,7 @@ class TopicClusterer:
         self.max_clusters = max_clusters
         self.min_cluster_size = min_cluster_size
 
-    async def cluster_by_topic(self, scoring_results: List[ScoringResult], context: Optional[Dict] = None) -> List[TopicCluster]:
+    async def cluster_by_topic(self, scoring_results: List[ScoringResult], context: Optional[Dict] = None, job_id: Optional[str] = None) -> List[TopicCluster]:
         """Cluster documents by identified topics using ML and LLM insights."""
         try:
             logger.info("Starting topic clustering", document_count=len(scoring_results))
@@ -48,7 +48,7 @@ class TopicClusterer:
                 documents_text.append(combined_text)
 
             # Try LLM-based clustering first
-            llm_clusters = await self._perform_llm_clustering(documents_text, scoring_results, context)
+            llm_clusters = await self._perform_llm_clustering(documents_text, scoring_results, context, job_id)
             
             if llm_clusters:
                 logger.info(f"Using LLM-based clustering with {len(llm_clusters)} clusters")
@@ -124,7 +124,7 @@ class TopicClusterer:
         return dict(clusters)
 
     async def _perform_llm_clustering(
-        self, documents_text: List[str], scoring_results: List[ScoringResult], context: Optional[Dict] = None
+        self, documents_text: List[str], scoring_results: List[ScoringResult], context: Optional[Dict] = None, job_id: Optional[str] = None
     ) -> Optional[Dict[int, List[ScoringResult]]]:
         """Perform LLM-based topic clustering."""
         try:
@@ -145,7 +145,7 @@ class TopicClusterer:
             # langchain_service handles prompts internally
 
             # Call LLM service for topic analysis
-            topic_analyses = await langchain_llm_service.analyze_topics_batch(documents_text, context or {})
+            topic_analyses = await langchain_llm_service.analyze_topics_batch(documents_text, context or {}, session_id=job_id)
             
             if not topic_analyses:
                 return None

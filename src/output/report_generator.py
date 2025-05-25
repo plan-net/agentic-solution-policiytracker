@@ -57,7 +57,7 @@ class ReportGenerator:
             metrics = self.aggregator.calculate_aggregate_metrics(scoring_results)
 
             # Generate insights and recommendations (enhanced with LLM)
-            llm_insights = await self._generate_llm_insights(scoring_results, context)
+            llm_insights = await self._generate_llm_insights(scoring_results, context, job_id)
             insights = self.aggregator.generate_insights(scoring_results)
             recommendations = self.aggregator.generate_recommendations(scoring_results)
             
@@ -274,7 +274,7 @@ class ReportGenerator:
         return issues
 
     async def _generate_llm_insights(
-        self, scoring_results: List[ScoringResult], context: Dict[str, Any]
+        self, scoring_results: List[ScoringResult], context: Dict[str, Any], job_id: Optional[str] = None
     ) -> Optional[Any]:
         """Generate LLM-powered insights for the report."""
         try:
@@ -289,7 +289,7 @@ class ReportGenerator:
 
             # Generate insights using LLM
             llm_insights = await langchain_llm_service.generate_report_insights(
-                [result.dict() for result in scoring_results], context
+                [result.dict() for result in scoring_results], context, session_id=job_id
             )
 
             logger.info("Generated LLM insights for report", confidence=getattr(llm_insights, 'confidence', 'unknown'))
