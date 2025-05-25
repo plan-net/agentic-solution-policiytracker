@@ -2,7 +2,7 @@
 
 from enum import Enum
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class LLMProvider(str, Enum):
@@ -59,9 +59,7 @@ class LLMReportInsights(BaseModel):
     # Optional fields that the LLM might include
     strategic_implications: Optional[Dict[str, str]] = Field(default=None, description="Strategic implications breakdown")
     
-    class Config:
-        # Allow extra fields that the LLM might return
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore")
 
 
 class LLMAnalysisRequest(BaseModel):

@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator, computed_field
+from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
 
 
 class DocumentType(str, Enum):
@@ -24,8 +24,7 @@ class DocumentMetadata(BaseModel):
     tags: List[str] = Field(default_factory=list)
     extraction_metadata: Dict[str, Any] = Field(default_factory=dict)
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class ProcessedContent(BaseModel):

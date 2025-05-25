@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class JobStatus(str, Enum):
@@ -48,8 +48,7 @@ class Job(BaseModel):
     result_file: Optional[str] = None
     metrics: Dict[str, Any] = Field(default_factory=dict)
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class JobInfo(BaseModel):
@@ -59,5 +58,4 @@ class JobInfo(BaseModel):
     created_at: datetime
     completed_at: Optional[datetime] = None
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)

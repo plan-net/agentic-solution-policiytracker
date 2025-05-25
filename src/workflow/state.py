@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from src.models.content import ProcessedContent
 from src.models.job import JobRequest
@@ -34,5 +34,4 @@ class WorkflowState(BaseModel):
     )
     report_file_path: Optional[str] = Field(default=None, description="Generated report file path")
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
