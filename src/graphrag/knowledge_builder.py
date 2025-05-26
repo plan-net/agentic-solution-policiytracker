@@ -239,20 +239,27 @@ class PoliticalKnowledgeBuilder:
     async def get_graph_stats(self) -> Dict[str, Any]:
         """Get statistics about the knowledge graph."""
         query = """
-        MATCH (d:Document)
-        WITH count(d) as document_count
-        MATCH (c:Chunk)
-        WITH document_count, count(c) as chunk_count
-        MATCH (e:Entity)
-        WITH document_count, chunk_count, count(e) as entity_count
-        MATCH (r:Regulation)
-        WITH document_count, chunk_count, entity_count, count(r) as regulation_count
-        MATCH (t:Topic)
-        RETURN document_count,
-               chunk_count,
-               entity_count,
-               regulation_count,
-               count(t) as topic_count
+        CALL {
+            MATCH (d:Document)
+            RETURN count(d) as document_count
+        }
+        CALL {
+            MATCH (c:Chunk)
+            RETURN count(c) as chunk_count
+        }
+        CALL {
+            MATCH (e:Entity)
+            RETURN count(e) as entity_count
+        }
+        CALL {
+            MATCH (r:Regulation)
+            RETURN count(r) as regulation_count
+        }
+        CALL {
+            MATCH (t:Topic)
+            RETURN count(t) as topic_count
+        }
+        RETURN document_count, chunk_count, entity_count, regulation_count, topic_count
         """
         
         async with self.driver.session(database=self.database) as session:

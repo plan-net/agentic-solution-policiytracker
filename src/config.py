@@ -132,7 +132,7 @@ class GraphRAGSettings(BaseSettings):
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j connection URI")
     NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")
     NEO4J_PASSWORD: str = Field(default="password123", description="Neo4j password")
-    NEO4J_DATABASE: str = Field(default="political_monitoring", description="Neo4j database name")
+    NEO4J_DATABASE: str = Field(default="politicalmonitoring", description="Neo4j database name")
     
     # Embedding Configuration
     GRAPHRAG_EMBEDDING_PROVIDER: str = Field(default="openai", description="Embedding provider: openai or local")

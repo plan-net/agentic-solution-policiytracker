@@ -82,7 +82,7 @@ services:
       # Plugins
       NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
       # Database
-      NEO4J_dbms_default__database: political_monitoring
+      NEO4J_dbms_default__database: politicalmonitoring
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
