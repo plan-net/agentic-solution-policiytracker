@@ -2,18 +2,17 @@
 
 import time
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any
+from typing import Any
 
 import structlog
 
 from src.llm.models import (
-    LLMProvider,
-    LLMResponse,
     DocumentInsight,
+    LLMProvider,
+    LLMReportInsights,
+    LLMResponse,
     SemanticScore,
     TopicAnalysis,
-    LLMReportInsights,
-    LLMAnalysisRequest,
 )
 
 logger = structlog.get_logger()
@@ -22,35 +21,35 @@ logger = structlog.get_logger()
 class BaseLLMClient(ABC):
     """Abstract base class for LLM clients."""
 
-    def __init__(self, provider: LLMProvider, **kwargs):
+    def __init__(self, provider: LLMProvider, **kwargs: Any) -> None:
         self.provider = provider
         self.config = kwargs
 
     @abstractmethod
-    async def complete(self, prompt: str, **kwargs) -> LLMResponse:
+    async def complete(self, prompt: str, **kwargs: Any) -> LLMResponse:
         """Generate completion from prompt."""
         pass
 
     @abstractmethod
-    async def analyze_document(self, text: str, context: Dict[str, Any]) -> DocumentInsight:
+    async def analyze_document(self, text: str, context: dict[str, Any]) -> DocumentInsight:
         """Analyze document for insights."""
         pass
 
     @abstractmethod
     async def score_dimension(
-        self, text: str, dimension: str, context: Dict[str, Any], rule_based_score: float
+        self, text: str, dimension: str, context: dict[str, Any], rule_based_score: float
     ) -> SemanticScore:
         """Generate semantic score for a dimension."""
         pass
 
     @abstractmethod
-    async def analyze_topics(self, documents: List[str]) -> List[TopicAnalysis]:
+    async def analyze_topics(self, documents: list[str]) -> list[TopicAnalysis]:
         """Analyze topics across multiple documents."""
         pass
 
     @abstractmethod
     async def generate_report_insights(
-        self, scoring_results: List[Dict[str, Any]], context: Dict[str, Any]
+        self, scoring_results: list[dict[str, Any]], context: dict[str, Any]
     ) -> LLMReportInsights:
         """Generate insights for report."""
         pass
@@ -59,11 +58,11 @@ class BaseLLMClient(ABC):
 class MockLLMClient(BaseLLMClient):
     """Mock LLM client for testing and fallback."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(LLMProvider.LOCAL)
         self.call_count = 0
 
-    async def complete(self, prompt: str, **kwargs) -> LLMResponse:
+    async def complete(self, prompt: str, **kwargs: Any) -> LLMResponse:
         """Mock completion that returns a simple response."""
         self.call_count += 1
         start_time = time.time()
@@ -89,7 +88,7 @@ class MockLLMClient(BaseLLMClient):
             success=True,
         )
 
-    async def analyze_document(self, text: str, context: Dict[str, Any]) -> DocumentInsight:
+    async def analyze_document(self, text: str, context: dict[str, Any]) -> DocumentInsight:
         """Mock document analysis."""
         self.call_count += 1
 
@@ -134,7 +133,7 @@ class MockLLMClient(BaseLLMClient):
         )
 
     async def score_dimension(
-        self, text: str, dimension: str, context: Dict[str, Any], rule_based_score: float
+        self, text: str, dimension: str, context: dict[str, Any], rule_based_score: float
     ) -> SemanticScore:
         """Mock semantic scoring."""
         self.call_count += 1
@@ -166,9 +165,6 @@ class MockLLMClient(BaseLLMClient):
         # Calculate semantic score
         semantic_score = min(100, max(0, rule_based_score + semantic_adjustment))
 
-        # Hybrid score (weighted combination)
-        hybrid_score = (rule_based_score * 0.6) + (semantic_score * 0.4)
-
         confidence = 0.7 if semantic_adjustment > 0 else 0.5
 
         return SemanticScore(
@@ -179,7 +175,7 @@ class MockLLMClient(BaseLLMClient):
             key_factors=[f"Evidence found for {dimension} dimension"],
         )
 
-    async def analyze_topics(self, documents: List[str]) -> List[TopicAnalysis]:
+    async def analyze_topics(self, documents: list[str]) -> list[TopicAnalysis]:
         """Mock topic analysis."""
         self.call_count += 1
 
@@ -192,7 +188,7 @@ class MockLLMClient(BaseLLMClient):
             topics.append(
                 TopicAnalysis(
                     topic_name="Regulatory Compliance",
-                    topic_description="Documents related to regulatory requirements and compliance",
+                    description="Documents related to regulatory requirements and compliance",
                     relevance_score=85.0,
                     key_concepts=["compliance", "regulation", "requirements"],
                     related_regulations=["GDPR", "Data Protection Laws"],
@@ -204,7 +200,7 @@ class MockLLMClient(BaseLLMClient):
             topics.append(
                 TopicAnalysis(
                     topic_name="Data Privacy",
-                    topic_description="Documents focusing on data protection and privacy",
+                    description="Documents focusing on data protection and privacy",
                     relevance_score=75.0,
                     key_concepts=["data protection", "privacy", "personal information"],
                     related_regulations=["GDPR", "Data Protection Act"],
@@ -216,7 +212,7 @@ class MockLLMClient(BaseLLMClient):
             topics.append(
                 TopicAnalysis(
                     topic_name="Market Analysis",
-                    topic_description="Business and market-related documents",
+                    description="Business and market-related documents",
                     relevance_score=65.0,
                     key_concepts=["market", "business", "strategy"],
                     related_regulations=["Competition Law", "Market Regulations"],
@@ -228,7 +224,7 @@ class MockLLMClient(BaseLLMClient):
             topics.append(
                 TopicAnalysis(
                     topic_name="General Content",
-                    topic_description="General business content",
+                    description="General business content",
                     relevance_score=50.0,
                     key_concepts=["general", "business"],
                     related_regulations=["General Business Law"],
@@ -239,7 +235,7 @@ class MockLLMClient(BaseLLMClient):
         return topics
 
     async def generate_report_insights(
-        self, scoring_results: List[Dict[str, Any]], context: Dict[str, Any]
+        self, scoring_results: list[dict[str, Any]], context: dict[str, Any]
     ) -> LLMReportInsights:
         """Mock report insights generation."""
         self.call_count += 1
