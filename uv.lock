@@ -138,7 +138,7 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.34.2"
+version = "0.36.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -150,9 +150,9 @@ dependencies = [
     { name = "tokenizers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d6/a6/10efc0ca36712673a11ac90095bdb84a299cd6f591d5111bfa9acbb2e76e/anthropic-0.34.2.tar.gz", hash = "sha256:808ea19276f26646bfde9ee535669735519376e4eeb301a2974fc69892be1d6e", size = 902318, upload-time = "2024-09-04T17:55:42.788Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/ee/53cadd3262cbd3f1e6feee9640bd74e59bc33a053f214631eb2fe85eac2e/anthropic-0.36.2.tar.gz", hash = "sha256:d5a3fa56d1c82a51944f9dc7b0dc72048deb89f8df5ebfd09e2d1b59c62eb8eb", size = 928435, upload-time = "2024-10-17T18:43:44.514Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/6d/c739c11fb3838cda8d4052d0ab3462b2b7d2499a726a7869e5d3e228cb74/anthropic-0.34.2-py3-none-any.whl", hash = "sha256:f50a628eb71e2c76858b106c8cbea278c45c6bd2077cb3aff716a112abddc9fc", size = 891945, upload-time = "2024-09-04T17:55:40.669Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/46/e564db65755947c66b5c23fae53886db41aea28b4132a50311c92c739f5f/anthropic-0.36.2-py3-none-any.whl", hash = "sha256:308ddc6c538de03c081552e456bc0b387b6f7c7d1dea0c20122cc11c7cdbaf6a", size = 939627, upload-time = "2024-10-17T18:43:42.873Z" },
 ]
 
 [[package]]
@@ -1513,6 +1513,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f2/92/66aaef9a0dec3647552d077bc4f5c90735ed589f84c689c257dce502e08a/neo4j_graphrag-1.4.0-py3-none-any.whl", hash = "sha256:3b9008ff8ae2e64993bc2cc1b64aee149a48679d1350a27ccb26bf68ff268e70", size = 147288, upload-time = "2025-01-13T10:18:55.614Z" },
 ]
 
+[package.optional-dependencies]
+anthropic = [
+    { name = "anthropic" },
+]
+
 [[package]]
 name = "networkx"
 version = "3.4.2"
@@ -1815,7 +1820,7 @@ dependencies = [
     { name = "markdown" },
     { name = "multipart" },
     { name = "neo4j" },
-    { name = "neo4j-graphrag" },
+    { name = "neo4j-graphrag", extra = ["anthropic"] },
     { name = "numpy" },
     { name = "prometheus-client" },
     { name = "pydantic" },
@@ -1884,7 +1889,7 @@ requires-dist = [
     { name = "multipart", specifier = "==1.2.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.7.0" },
     { name = "neo4j", specifier = ">=5.20.0" },
-    { name = "neo4j-graphrag", specifier = ">=0.3.0" },
+    { name = "neo4j-graphrag", extras = ["anthropic"], specifier = ">=0.3.0" },
     { name = "numpy", specifier = "==1.26.2" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==3.5.0" },
     { name = "prometheus-client", specifier = "==0.19.0" },
