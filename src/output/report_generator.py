@@ -1,17 +1,16 @@
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from jinja2 import Environment, FileSystemLoader, Template
 import structlog
+from jinja2 import Environment, FileSystemLoader
 
-from src.models.scoring import ScoringResult
-from src.models.report import ReportData, ReportSummary, TopicCluster, PriorityQueue
-from src.analysis.topic_clusterer import TopicClusterer
 from src.analysis.aggregator import ResultAggregator
-from src.output.formatter import MarkdownFormatter
-from src.config import settings
+from src.analysis.topic_clusterer import TopicClusterer
 from src.llm.langchain_service import langchain_llm_service
+from src.models.report import ReportData, ReportSummary, TopicCluster
+from src.models.scoring import ScoringResult
+from src.output.formatter import MarkdownFormatter
 
 logger = structlog.get_logger()
 
@@ -38,10 +37,10 @@ class ReportGenerator:
         self,
         job_id: str,
         job_name: str,
-        scoring_results: List[ScoringResult],
-        failed_documents: List[Dict[str, str]],
-        context: Dict[str, Any],
-        parameters: Dict[str, Any],
+        scoring_results: list[ScoringResult],
+        failed_documents: list[dict[str, str]],
+        context: dict[str, Any],
+        parameters: dict[str, Any],
     ) -> ReportData:
         """Prepare comprehensive report data."""
         try:
@@ -60,10 +59,12 @@ class ReportGenerator:
             llm_insights = await self._generate_llm_insights(scoring_results, context, job_id)
             insights = self.aggregator.generate_insights(scoring_results)
             recommendations = self.aggregator.generate_recommendations(scoring_results)
-            
+
             # Combine traditional and LLM insights
             if llm_insights:
-                insights = llm_insights.key_findings + insights[:2]  # LLM insights first, then top 2 traditional
+                insights = (
+                    llm_insights.key_findings + insights[:2]
+                )  # LLM insights first, then top 2 traditional
                 recommendations = llm_insights.recommendations + recommendations[:2]
 
             # Create summary
@@ -245,7 +246,7 @@ class ReportGenerator:
             logger.error("Failed to create cluster report", error=str(e))
             return f"Error generating cluster report: {str(e)}"
 
-    def validate_report_data(self, report_data: ReportData) -> List[str]:
+    def validate_report_data(self, report_data: ReportData) -> list[str]:
         """Validate report data and return list of issues."""
         issues = []
 
@@ -274,7 +275,10 @@ class ReportGenerator:
         return issues
 
     async def _generate_llm_insights(
-        self, scoring_results: List[ScoringResult], context: Dict[str, Any], job_id: Optional[str] = None
+        self,
+        scoring_results: list[ScoringResult],
+        context: dict[str, Any],
+        job_id: Optional[str] = None,
     ) -> Optional[Any]:
         """Generate LLM-powered insights for the report."""
         try:
@@ -284,7 +288,7 @@ class ReportGenerator:
 
             # Prepare results summary for LLM
             results_summary = self._prepare_results_summary(scoring_results)
-            
+
             # langchain_service handles prompts internally
 
             # Generate insights using LLM
@@ -292,14 +296,17 @@ class ReportGenerator:
                 [result.dict() for result in scoring_results], context, session_id=job_id
             )
 
-            logger.info("Generated LLM insights for report", confidence=getattr(llm_insights, 'confidence', 'unknown'))
+            logger.info(
+                "Generated LLM insights for report",
+                confidence=getattr(llm_insights, "confidence", "unknown"),
+            )
             return llm_insights
 
         except Exception as e:
             logger.warning("Failed to generate LLM insights", error=str(e))
             return None
 
-    def _prepare_results_summary(self, scoring_results: List[ScoringResult]) -> str:
+    def _prepare_results_summary(self, scoring_results: list[ScoringResult]) -> str:
         """Prepare a summary of scoring results for LLM processing."""
         if not scoring_results:
             return "No results to summarize"
@@ -309,7 +316,7 @@ class ReportGenerator:
         high_priority = len([r for r in scoring_results if r.master_score >= 75])
         medium_priority = len([r for r in scoring_results if 50 <= r.master_score < 75])
         low_priority = len([r for r in scoring_results if r.master_score < 50])
-        
+
         avg_score = sum(r.master_score for r in scoring_results) / total_docs
         avg_confidence = sum(r.confidence_score for r in scoring_results) / total_docs
 
@@ -317,12 +324,20 @@ class ReportGenerator:
         top_results = sorted(scoring_results, key=lambda x: x.master_score, reverse=True)[:5]
         top_findings = []
         for result in top_results:
-            top_dim = max(result.dimension_scores.items(), key=lambda x: x[1].score) if result.dimension_scores else ("unknown", None)
-            top_findings.append({
-                "score": result.master_score,
-                "top_dimension": top_dim[0],
-                "justification": result.overall_justification[:200] + "..." if len(result.overall_justification) > 200 else result.overall_justification
-            })
+            top_dim = (
+                max(result.dimension_scores.items(), key=lambda x: x[1].score)
+                if result.dimension_scores
+                else ("unknown", None)
+            )
+            top_findings.append(
+                {
+                    "score": result.master_score,
+                    "top_dimension": top_dim[0],
+                    "justification": result.overall_justification[:200] + "..."
+                    if len(result.overall_justification) > 200
+                    else result.overall_justification,
+                }
+            )
 
         summary = f"""
 Analysis Summary:
@@ -335,13 +350,13 @@ Analysis Summary:
 
 Top 5 Findings:
 """
-        
+
         for i, finding in enumerate(top_findings, 1):
             summary += f"{i}. Score {finding['score']}: {finding['top_dimension']} - {finding['justification']}\n"
 
         return summary
 
-    def estimate_report_size(self, report_data: ReportData) -> Dict[str, int]:
+    def estimate_report_size(self, report_data: ReportData) -> dict[str, int]:
         """Estimate the size of the generated report."""
         # Rough estimation based on content
         base_size = 5000  # Base template size

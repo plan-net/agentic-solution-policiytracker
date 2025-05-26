@@ -1,15 +1,15 @@
 import os
 import tempfile
-from typing import Dict, Any, Optional
+from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 import ray
-from datetime import datetime
 
-from src.models.job import JobRequest, Job, JobStatus
-from src.models.content import DocumentMetadata, ProcessedContent, DocumentType
-from src.models.scoring import ScoringResult, DimensionScore
 from src.config import Settings
+from src.models.content import DocumentMetadata, DocumentType, ProcessedContent
+from src.models.job import Job, JobRequest, JobStatus
+from src.models.scoring import DimensionScore, ScoringResult
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def sample_job_request():
         context_file="/tmp/test_context.yaml",
         priority_threshold=70.0,
         include_low_confidence=False,
-        clustering_enabled=True
+        clustering_enabled=True,
     )
 
 
@@ -32,7 +32,7 @@ def sample_job(sample_job_request):
         id="job_20250523_120000_TEST01",
         request=sample_job_request,
         status=JobStatus.PENDING,
-        created_at=datetime.now()
+        created_at=datetime.now(),
     )
 
 
@@ -46,7 +46,7 @@ def sample_document_metadata():
         file_size_bytes=1024,
         created_at=datetime.now(),
         modified_at=datetime.now(),
-        extraction_metadata={"pages": 5}
+        extraction_metadata={"pages": 5},
     )
 
 
@@ -61,7 +61,7 @@ def sample_processed_content(sample_document_metadata):
         word_count=20,
         language="en",
         sections=[{"title": "Introduction", "content": "Test content"}],
-        extraction_errors=[]
+        extraction_errors=[],
     )
 
 
@@ -74,15 +74,15 @@ def sample_dimension_scores():
             score=85.0,
             weight=0.40,
             justification="High regulatory impact detected",
-            evidence_snippets=["must comply with GDPR"]
+            evidence_snippets=["must comply with GDPR"],
         ),
         "industry_relevance": DimensionScore(
             dimension_name="industry_relevance",
             score=60.0,
             weight=0.25,
             justification="General business relevance",
-            evidence_snippets=["company regulations"]
-        )
+            evidence_snippets=["company regulations"],
+        ),
     }
 
 
@@ -100,7 +100,7 @@ def sample_scoring_result(sample_dimension_scores):
         scoring_timestamp=datetime.now(),
         processing_time_ms=150.0,
         overall_justification="High regulatory compliance document",
-        key_factors=["Direct regulatory requirements", "Company obligations"]
+        key_factors=["Direct regulatory requirements", "Company obligations"],
     )
 
 
@@ -111,7 +111,7 @@ def sample_context():
         "company_terms": ["testcorp", "test company"],
         "core_industries": ["technology", "software"],
         "primary_markets": ["eu", "germany", "france"],
-        "strategic_themes": ["digital transformation", "compliance"]
+        "strategic_themes": ["digital transformation", "compliance"],
     }
 
 
@@ -126,23 +126,24 @@ def temp_directory():
 def sample_files(temp_directory):
     """Create sample files for testing."""
     files = {}
-    
+
     # Create sample text file
     txt_path = os.path.join(temp_directory, "sample.txt")
     with open(txt_path, "w") as f:
         f.write("This is a sample text document for testing.")
     files["txt"] = txt_path
-    
+
     # Create sample markdown file
     md_path = os.path.join(temp_directory, "sample.md")
     with open(md_path, "w") as f:
         f.write("# Sample Document\n\nThis is a sample markdown document.")
     files["md"] = md_path
-    
+
     return files
 
 
 # Kodosumi-specific fixtures
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_ray_for_tests():
@@ -165,7 +166,7 @@ def local_settings():
         LLM_ENABLED=False,  # Disable for testing
         DEFAULT_INPUT_FOLDER="/tmp/test_input",
         DEFAULT_OUTPUT_FOLDER="/tmp/test_output",
-        DEFAULT_CONTEXT_FOLDER="/tmp/test_context"
+        DEFAULT_CONTEXT_FOLDER="/tmp/test_context",
     )
 
 
@@ -179,8 +180,8 @@ def mock_azure_settings():
         RAY_NUM_CPUS=2,
         LLM_ENABLED=False,
         DEFAULT_INPUT_FOLDER="/data/input",
-        DEFAULT_OUTPUT_FOLDER="/data/output", 
-        DEFAULT_CONTEXT_FOLDER="/data/context"
+        DEFAULT_OUTPUT_FOLDER="/data/output",
+        DEFAULT_CONTEXT_FOLDER="/data/context",
     )
 
 
@@ -188,7 +189,7 @@ def mock_azure_settings():
 def mock_azure_storage_client():
     """Mock Azure Storage client for testing."""
     client = MagicMock()
-    
+
     # Mock common methods
     client.blob_exists = AsyncMock(return_value=True)
     client.upload_blob = AsyncMock(return_value=True)
@@ -197,7 +198,7 @@ def mock_azure_storage_client():
     client.delete_blob = AsyncMock(return_value=True)
     client.upload_json = AsyncMock(return_value=True)
     client.download_json = AsyncMock(return_value={"test": "data"})
-    
+
     return client
 
 
@@ -217,31 +218,33 @@ def mock_kodosumi_tracer():
 def mock_political_analyzer_dependencies():
     """Mock all dependencies for political_analyzer module."""
     from unittest.mock import patch
-    with patch('political_analyzer.ContentProcessor') as mock_processor:
-        with patch('political_analyzer.RelevanceEngine') as mock_engine:
-            with patch('political_analyzer.Aggregator') as mock_aggregator:
-                with patch('political_analyzer.ReportGenerator') as mock_generator:
+
+    with patch("political_analyzer.ContentProcessor") as mock_processor:
+        with patch("political_analyzer.RelevanceEngine") as mock_engine:
+            with patch("political_analyzer.Aggregator") as mock_aggregator:
+                with patch("political_analyzer.ReportGenerator") as mock_generator:
                     yield {
-                        'processor': mock_processor,
-                        'engine': mock_engine,
-                        'aggregator': mock_aggregator,
-                        'generator': mock_generator
+                        "processor": mock_processor,
+                        "engine": mock_engine,
+                        "aggregator": mock_aggregator,
+                        "generator": mock_generator,
                     }
 
 
 @pytest.fixture
 def mock_ray():
     """Mock Ray functionality for testing."""
+
     class MockRayTask:
         def __init__(self, result):
             self._result = result
-        
+
         def remote(self, *args, **kwargs):
             return self
-        
+
         async def get(self):
             return self._result
-    
+
     return MockRayTask
 
 
@@ -249,7 +252,7 @@ def mock_ray():
 def mock_azure_storage_client():
     """Mock Azure Storage client for testing."""
     mock_client = AsyncMock()
-    
+
     # Mock blob data for testing
     mock_blob_data = {
         "test-blob.txt": b"This is test blob content",
@@ -266,41 +269,43 @@ strategic_themes:
   - innovation
 """,
         "cache/processed/test_cache.json": b'{"id": "doc_001", "content": "cached"}',
-        "reports/jobs/test_job/reports/test_report.md": b"# Test Report\nReport content"
+        "reports/jobs/test_job/reports/test_report.md": b"# Test Report\nReport content",
     }
-    
+
     # Mock download_blob
     async def mock_download_blob(container_type, blob_name):
         return mock_blob_data.get(blob_name)
-    
+
     mock_client.download_blob = mock_download_blob
-    
+
     # Mock upload_blob
     async def mock_upload_blob(container_type, blob_name, data, metadata=None, overwrite=True):
         mock_blob_data[blob_name] = data if isinstance(data, bytes) else data.encode()
         return True
-    
+
     mock_client.upload_blob = mock_upload_blob
-    
+
     # Mock upload_json
     async def mock_upload_json(container_type, blob_name, data, metadata=None):
         import json
+
         json_data = json.dumps(data).encode()
         mock_blob_data[blob_name] = json_data
         return True
-    
+
     mock_client.upload_json = mock_upload_json
-    
+
     # Mock download_json
     async def mock_download_json(container_type, blob_name):
         import json
+
         blob_data = mock_blob_data.get(blob_name)
         if blob_data:
             return json.loads(blob_data.decode())
         return None
-    
+
     mock_client.download_json = mock_download_json
-    
+
     # Mock list_blobs
     async def mock_list_blobs(container_type, prefix=""):
         mock_blob = MagicMock()
@@ -312,9 +317,9 @@ strategic_themes:
                 mock_blob.last_modified = datetime.now()
                 blobs.append(mock_blob)
         return blobs
-    
+
     mock_client.list_blobs = mock_list_blobs
-    
+
     # Mock get_blob_properties
     async def mock_get_blob_properties(container_type, blob_name):
         blob_data = mock_blob_data.get(blob_name)
@@ -322,21 +327,21 @@ strategic_themes:
             return {
                 "size": len(blob_data),
                 "last_modified": datetime.now(),
-                "content_type": "application/octet-stream"
+                "content_type": "application/octet-stream",
             }
         return None
-    
+
     mock_client.get_blob_properties = mock_get_blob_properties
-    
+
     # Mock delete_blob
     async def mock_delete_blob(container_type, blob_name):
         if blob_name in mock_blob_data:
             del mock_blob_data[blob_name]
             return True
         return False
-    
+
     mock_client.delete_blob = mock_delete_blob
-    
+
     return mock_client
 
 
@@ -344,8 +349,8 @@ strategic_themes:
 def mock_azure_settings():
     """Mock Azure Storage settings for testing."""
     from unittest.mock import patch
-    
-    with patch('src.config.settings') as mock_settings:
+
+    with patch("src.config.settings") as mock_settings:
         mock_settings.USE_AZURE_STORAGE = True
         mock_settings.AZURE_STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1"
         mock_settings.AZURE_STORAGE_ACCOUNT_NAME = "devstoreaccount1"
@@ -357,8 +362,8 @@ def mock_azure_settings():
 def local_settings():
     """Mock local storage settings for testing."""
     from unittest.mock import patch
-    
-    with patch('src.config.settings') as mock_settings:
+
+    with patch("src.config.settings") as mock_settings:
         mock_settings.USE_AZURE_STORAGE = False
         mock_settings.AZURE_STORAGE_CONNECTION_STRING = None
         mock_settings.DEFAULT_INPUT_FOLDER = "/tmp/test_input"
@@ -374,7 +379,7 @@ def azure_blob_metadata():
         "document_type": "txt",
         "uploaded_at": datetime.now().isoformat(),
         "file_size": "1024",
-        "processing_status": "pending"
+        "processing_status": "pending",
     }
 
 
@@ -385,5 +390,5 @@ def sample_azure_context_file():
         "company_terms": ["azure-test-corp", "test company"],
         "core_industries": ["cloud", "technology"],
         "primary_markets": ["global", "azure"],
-        "strategic_themes": ["cloud transformation", "digital services"]
+        "strategic_themes": ["cloud transformation", "digital services"],
     }

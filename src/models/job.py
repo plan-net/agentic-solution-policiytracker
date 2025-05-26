@@ -1,8 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class JobStatus(str, Enum):
@@ -46,7 +46,7 @@ class Job(BaseModel):
     completed_at: Optional[datetime] = None
     error_message: Optional[str] = None
     result_file: Optional[str] = None
-    metrics: Dict[str, Any] = Field(default_factory=dict)
+    metrics: dict[str, Any] = Field(default_factory=dict)
 
     model_config = ConfigDict(use_enum_values=True)
 

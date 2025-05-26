@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.models.content import ProcessedContent
 from src.models.job import JobRequest
@@ -16,20 +16,20 @@ class WorkflowState(BaseModel):
     use_azure: bool = Field(
         default=False, description="Runtime storage mode: True for Azure, False for local"
     )
-    documents: List[ProcessedContent] = Field(
+    documents: list[ProcessedContent] = Field(
         default_factory=list, description="Processed documents"
     )
-    scoring_results: List[ScoringResult] = Field(
+    scoring_results: list[ScoringResult] = Field(
         default_factory=list, description="Scoring results"
     )
     report_data: Optional[ReportData] = Field(default=None, description="Report data")
-    context: Dict[str, Any] = Field(default_factory=dict, description="Client context data")
-    errors: List[str] = Field(default_factory=list, description="Processing errors")
-    current_progress: Dict[str, Any] = Field(default_factory=dict, description="Progress tracking")
+    context: dict[str, Any] = Field(default_factory=dict, description="Client context data")
+    errors: list[str] = Field(default_factory=list, description="Processing errors")
+    current_progress: dict[str, Any] = Field(default_factory=dict, description="Progress tracking")
 
     # Additional workflow state
-    file_paths: List[str] = Field(default_factory=list, description="Discovered file paths")
-    failed_documents: List[Dict[str, str]] = Field(
+    file_paths: list[str] = Field(default_factory=list, description="Discovered file paths")
+    failed_documents: list[dict[str, str]] = Field(
         default_factory=list, description="Failed processing"
     )
     report_file_path: Optional[str] = Field(default=None, description="Generated report file path")

@@ -1,24 +1,22 @@
 # political_analyzer.py - Kodosumi Entrypoint for Political Analysis
-import asyncio
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
+import kodosumi.core as core
 import ray
 from kodosumi.core import Tracer
-import kodosumi.core as core
-import structlog
 
+from src.config import settings
 from src.models.job import Job, JobRequest, JobStatus
 from src.utils.logging import setup_logging
-from src.config import settings
 
 # Setup logging
 logger = setup_logging()
 
 
-async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
+async def execute_analysis(inputs: dict, tracer: Tracer) -> dict[str, Any]:
     """
     Main entrypoint function for political document analysis.
 
@@ -156,7 +154,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> Dict[str, Any]:
                 elif os.path.exists(report_file_path):
                     # Local file: Read directly
                     try:
-                        with open(report_file_path, "r", encoding="utf-8") as f:
+                        with open(report_file_path, encoding="utf-8") as f:
                             report_content = f.read()
                     except Exception as e:
                         logger.error(f"Failed to read local report: {e}")

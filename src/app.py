@@ -1,6 +1,6 @@
 # app.py - Kodosumi Endpoint for Political Monitoring Agent
 import fastapi
-from kodosumi.core import ServeAPI, Launch, InputsError
+from kodosumi.core import InputsError, Launch, ServeAPI
 from kodosumi.core import forms as F
 from ray import serve
 
@@ -11,7 +11,7 @@ analysis_form = F.Model(
     F.Markdown(
         """
     # Political Monitoring Agent v0.1.0
-    
+
     Analyze political documents for relevance, priority, and topics using distributed AI processing.
     Upload documents and get comprehensive analysis reports with confidence scoring.
     """
@@ -95,7 +95,6 @@ async def enter(request: fastapi.Request, inputs: dict):
             error.add(priority_threshold="Priority threshold must be between 0 and 100")
     except (ValueError, TypeError):
         error.add(priority_threshold="Priority threshold must be a valid number")
-
 
     # Check for validation errors
     if error.has_errors():

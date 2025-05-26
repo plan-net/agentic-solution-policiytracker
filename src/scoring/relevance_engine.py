@@ -1,20 +1,20 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import structlog
 
+from src.config import settings
 from src.models.content import ProcessedContent
 from src.models.scoring import ScoringResult
+from src.scoring.confidence import ConfidenceCalculator
 from src.scoring.dimensions import (
     DirectImpactScorer,
-    IndustryRelevanceScorer,
     GeographicRelevanceScorer,
-    TemporalUrgencyScorer,
+    IndustryRelevanceScorer,
     StrategicAlignmentScorer,
+    TemporalUrgencyScorer,
 )
-from src.scoring.confidence import ConfidenceCalculator
 from src.scoring.justification import JustificationGenerator
-from src.config import settings
 
 logger = structlog.get_logger()
 
@@ -22,7 +22,7 @@ logger = structlog.get_logger()
 class RelevanceEngine:
     """Main scoring orchestration engine."""
 
-    def __init__(self, context: Dict[str, Any]):
+    def __init__(self, context: dict[str, Any]):
         self.context = context
         self.scorers = {
             "direct_impact": DirectImpactScorer(context),
@@ -88,7 +88,7 @@ class RelevanceEngine:
             logger.error("Failed to score document", document_id=document.id, error=str(e))
             raise
 
-    def get_scoring_summary(self) -> Dict[str, Any]:
+    def get_scoring_summary(self) -> dict[str, Any]:
         """Get summary of scoring configuration."""
         return {
             "dimensions": list(self.scorers.keys()),

@@ -2,16 +2,16 @@
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import structlog
 
+from src.config import settings
+from src.llm.langchain_service import langchain_llm_service
+from src.llm.models import DocumentInsight, SemanticScore
 from src.models.content import ProcessedContent
 from src.models.scoring import ScoringResult
 from src.scoring.relevance_engine import RelevanceEngine
-from src.llm.langchain_service import langchain_llm_service
-from src.llm.models import SemanticScore, DocumentInsight
-from src.config import settings
 
 logger = structlog.get_logger()
 
@@ -19,12 +19,14 @@ logger = structlog.get_logger()
 class HybridScoringEngine:
     """Enhanced scoring engine with LLM semantic analysis."""
 
-    def __init__(self, context: Dict[str, Any]):
+    def __init__(self, context: dict[str, Any]):
         self.context = context
         self.rule_based_engine = RelevanceEngine(context)
         self.llm_enabled = settings.LLM_ENABLED and settings.LLM_FALLBACK_ENABLED
 
-    async def score_document_hybrid(self, document: ProcessedContent, job_id: Optional[str] = None) -> ScoringResult:
+    async def score_document_hybrid(
+        self, document: ProcessedContent, job_id: Optional[str] = None
+    ) -> ScoringResult:
         """Score document using hybrid rule-based + LLM approach."""
         try:
             logger.debug(
@@ -40,7 +42,9 @@ class HybridScoringEngine:
 
             # Step 2: Get LLM document insights in parallel with semantic scoring
             insights_task = asyncio.create_task(
-                langchain_llm_service.analyze_document(document.raw_text, self.context, session_id=job_id)
+                langchain_llm_service.analyze_document(
+                    document.raw_text, self.context, session_id=job_id
+                )
             )
 
             # Step 3: Get LLM semantic scores for each dimension in parallel
@@ -48,7 +52,11 @@ class HybridScoringEngine:
             for dim_name, dim_score in rule_based_result.dimension_scores.items():
                 task = asyncio.create_task(
                     langchain_llm_service.score_dimension_semantic(
-                        document.raw_text, dim_name, self.context, dim_score.score, session_id=job_id
+                        document.raw_text,
+                        dim_name,
+                        self.context,
+                        dim_score.score,
+                        session_id=job_id,
                     )
                 )
                 semantic_scoring_tasks.append(task)

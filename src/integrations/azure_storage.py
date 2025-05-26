@@ -3,17 +3,14 @@ Azure Storage Client for Political Monitoring Agent.
 Provides unified interface for Azure Blob Storage operations.
 """
 
-import asyncio
 import json
 import os
 from datetime import datetime
-from io import BytesIO
-from pathlib import Path
-from typing import Dict, List, Optional, Union, BinaryIO
+from typing import BinaryIO, Optional, Union
 
 import structlog
-from azure.core.exceptions import ResourceNotFoundError, ResourceExistsError
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.core.exceptions import ResourceExistsError, ResourceNotFoundError
+from azure.storage.blob import BlobServiceClient
 from azure.storage.blob.aio import BlobServiceClient as AsyncBlobServiceClient
 
 from src.config import settings
@@ -105,7 +102,7 @@ class AzureStorageClient:
         container_type: str,
         blob_name: str,
         data: Union[str, bytes, BinaryIO],
-        metadata: Optional[Dict[str, str]] = None,
+        metadata: Optional[dict[str, str]] = None,
         overwrite: bool = True,
     ) -> bool:
         """Upload data to Azure Blob Storage."""
@@ -179,12 +176,12 @@ class AzureStorageClient:
             return data.decode(encoding)
         return None
 
-    async def upload_json(self, container_type: str, blob_name: str, data: Dict, **kwargs) -> bool:
+    async def upload_json(self, container_type: str, blob_name: str, data: dict, **kwargs) -> bool:
         """Upload JSON data to blob storage."""
         json_str = json.dumps(data, indent=2, default=str)
         return await self.upload_blob(container_type, blob_name, json_str.encode("utf-8"), **kwargs)
 
-    async def download_json(self, container_type: str, blob_name: str) -> Optional[Dict]:
+    async def download_json(self, container_type: str, blob_name: str) -> Optional[dict]:
         """Download and parse JSON from blob storage."""
         text = await self.download_blob_text(container_type, blob_name)
         if text:
@@ -194,7 +191,7 @@ class AzureStorageClient:
                 logger.error("Failed to parse JSON", blob_name=blob_name, error=str(e))
         return None
 
-    async def list_blobs(self, container_type: str, prefix: str = "") -> List[str]:
+    async def list_blobs(self, container_type: str, prefix: str = "") -> list[str]:
         """List blobs in container with optional prefix filter."""
         try:
             container_name = self._get_container_name(container_type)
@@ -215,7 +212,7 @@ class AzureStorageClient:
             )
             return []
 
-    async def get_blob_properties(self, container_type: str, blob_name: str) -> Optional[Dict]:
+    async def get_blob_properties(self, container_type: str, blob_name: str) -> Optional[dict]:
         """Get blob properties and metadata."""
         try:
             container_name = self._get_container_name(container_type)
@@ -404,19 +401,19 @@ async def save_report(
     )
 
 
-async def load_context(context_id: str) -> Optional[Dict]:
+async def load_context(context_id: str) -> Optional[dict]:
     """Load client context configuration."""
     blob_name = f"{context_id}/context.yaml"
     return await get_azure_storage_client().download_json("contexts", blob_name)
 
 
-async def cache_processed_content(doc_hash: str, content: Dict) -> bool:
+async def cache_processed_content(doc_hash: str, content: dict) -> bool:
     """Cache processed document content."""
     blob_name = f"processed/{doc_hash}.json"
     return await get_azure_storage_client().upload_json("cache", blob_name, content)
 
 
-async def get_cached_content(doc_hash: str) -> Optional[Dict]:
+async def get_cached_content(doc_hash: str) -> Optional[dict]:
     """Retrieve cached processed content."""
     blob_name = f"processed/{doc_hash}.json"
     return await get_azure_storage_client().download_json("cache", blob_name)
