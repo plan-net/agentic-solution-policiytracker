@@ -43,15 +43,23 @@ class TopicAnalysis(BaseModel):
     """LLM-powered topic analysis."""
 
     topic_name: str
-    document_indices: list[int] = Field(default_factory=list, description="Document indices in this cluster")
+    document_indices: list[int] = Field(
+        default_factory=list, description="Document indices in this cluster"
+    )
     confidence: float = Field(default=0.8, ge=0, le=1, description="Clustering confidence")
     description: str = Field(description="Description of the topic cluster")
-    
+
     # Additional fields used in base_client.py
     topic_description: Optional[str] = Field(default=None, description="Detailed topic description")
-    relevance_score: Optional[float] = Field(default=None, description="Relevance score for this topic")
-    key_concepts: Optional[list[str]] = Field(default_factory=list, description="Key concepts in this topic")
-    related_regulations: Optional[list[str]] = Field(default_factory=list, description="Related regulations")
+    relevance_score: Optional[float] = Field(
+        default=None, description="Relevance score for this topic"
+    )
+    key_concepts: Optional[list[str]] = Field(
+        default_factory=list, description="Key concepts in this topic"
+    )
+    related_regulations: Optional[list[str]] = Field(
+        default_factory=list, description="Related regulations"
+    )
     business_implications: Optional[str] = Field(default=None, description="Business implications")
 
 
@@ -60,15 +68,19 @@ class LLMReportInsights(BaseModel):
 
     executive_summary: str = Field(description="LLM-generated executive summary")
     key_findings: list[str] = Field(description="Top insights from analysis")
-    recommendations: list[str] = Field(default_factory=list, description="Strategic action recommendations")
+    recommendations: list[str] = Field(
+        default_factory=list, description="Strategic action recommendations"
+    )
     risk_assessment: str = Field(description="Overall risk assessment")
     confidence: float = Field(default=0.8, ge=0, le=1, description="Analysis confidence")
 
     # Additional fields used in base_client.py
-    strategic_recommendations: Optional[list[str]] = Field(default_factory=list, description="Strategic recommendations")
+    strategic_recommendations: Optional[list[str]] = Field(
+        default_factory=list, description="Strategic recommendations"
+    )
     priority_rationale: Optional[str] = Field(default=None, description="Priority rationale")
     market_context: Optional[str] = Field(default=None, description="Market context")
-    
+
     # Optional fields that the LLM might include
     strategic_implications: Optional[dict[str, str]] = Field(
         default=None, description="Strategic implications breakdown"

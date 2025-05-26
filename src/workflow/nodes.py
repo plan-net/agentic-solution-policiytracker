@@ -8,6 +8,7 @@ import yaml
 from src.analysis.aggregator import ResultAggregator
 from src.analysis.topic_clusterer import TopicClusterer
 from src.config import settings
+from src.graphrag.knowledge_builder import PoliticalKnowledgeBuilder
 from src.integrations.azure_storage import AzureStorageClient
 from src.output.report_generator import ReportGenerator
 from src.processors.batch_loader import BatchDocumentLoader
@@ -387,3 +388,157 @@ async def generate_report(state: WorkflowState) -> WorkflowState:
         state.errors.append(error_msg)
         logger.error(error_msg, job_id=state.job_id)
         raise WorkflowError(state.job_id, "generate_report", error_msg)
+
+
+async def process_graphrag_analysis(state: WorkflowState) -> WorkflowState:
+    """Process documents using GraphRAG for enhanced political intelligence insights.
+
+    This node performs:
+    1. GraphRAG search on processed documents
+    2. Entity analysis using Langfuse prompts
+    3. Relationship insights generation
+    4. Comparative analysis with traditional results
+    """
+    try:
+        # Skip GraphRAG processing if not enabled
+        if not state.graphrag_enabled:
+            logger.info("GraphRAG processing disabled, skipping", job_id=state.job_id)
+            return state
+
+        logger.info("Starting GraphRAG analysis", job_id=state.job_id)
+
+        # Prepare company context from job request and client context
+        company_context = {
+            "terms": state.context.get("company_terms", []),
+            "industries": state.context.get("core_industries", []),
+            "markets": state.context.get("primary_markets", []),
+            "themes": state.context.get("strategic_themes", []),
+            "strategic_focus": state.job_request.job_name,
+        }
+
+        # Initialize GraphRAG knowledge builder
+        builder = PoliticalKnowledgeBuilder(
+            uri=settings.NEO4J_URI,
+            username=settings.NEO4J_USERNAME,
+            password=settings.NEO4J_PASSWORD,
+            database=settings.NEO4J_DATABASE,
+            openai_api_key=settings.OPENAI_API_KEY,
+        )
+
+        async with builder:
+            # Perform GraphRAG search based on job name/topic
+            search_query = state.job_request.job_name
+            logger.info("Performing GraphRAG search", job_id=state.job_id, query=search_query)
+
+            # Basic vector + fulltext search
+            basic_search_results = await builder.search_documents(search_query, top_k=10)
+
+            # Enhanced graph traversal search
+            graph_traversal_results = await builder.search_with_graph_traversal(
+                search_query, top_k=10
+            )
+
+            state.graphrag_search_results = basic_search_results
+            logger.info(
+                "GraphRAG search completed",
+                job_id=state.job_id,
+                basic_results=len(basic_search_results),
+                graph_results=graph_traversal_results.get("total_results", 0),
+            )
+
+            # Entity analysis using Langfuse prompts
+            logger.info("Performing GraphRAG entity analysis", job_id=state.job_id)
+            entity_analysis = await builder.analyze_entities_with_langfuse(
+                query_results=basic_search_results,
+                company_context=company_context,
+                query_topic=search_query,
+            )
+            state.graphrag_entity_analysis = entity_analysis
+
+            entities_analyzed = entity_analysis.get("entities_analyzed", 0)
+            relationships_analyzed = entity_analysis.get("relationships_analyzed", 0)
+            logger.info(
+                "Entity analysis completed",
+                job_id=state.job_id,
+                entities=entities_analyzed,
+                relationships=relationships_analyzed,
+            )
+
+            # Relationship insights generation
+            logger.info("Generating GraphRAG relationship insights", job_id=state.job_id)
+            relationship_insights = await builder.generate_relationship_insights(
+                graph_traversal_results=graph_traversal_results,
+                company_context=company_context,
+                time_horizon="6-12 months",
+            )
+            state.graphrag_relationship_insights = relationship_insights
+
+            network_metrics = relationship_insights.get("network_metrics", {})
+            logger.info(
+                "Relationship insights completed",
+                job_id=state.job_id,
+                total_relationships=network_metrics.get("total_relationships", 0),
+                entity_types=network_metrics.get("entity_types", 0),
+            )
+
+            # Comparative analysis with traditional results
+            if state.scoring_results:
+                logger.info("Performing comparative analysis", job_id=state.job_id)
+
+                # Prepare traditional results summary
+                traditional_results = {
+                    "method": "hybrid_scoring_engine",
+                    "total_documents": len(state.scoring_results),
+                    "average_relevance": sum(r.relevance_score for r in state.scoring_results)
+                    / len(state.scoring_results),
+                    "average_confidence": sum(r.confidence for r in state.scoring_results)
+                    / len(state.scoring_results),
+                    "key_findings": [r.document.title for r in state.scoring_results[:5]],
+                    "scoring_dimensions": ["relevance", "priority", "sentiment", "urgency"],
+                }
+
+                comparative_analysis = await builder.compare_with_traditional_analysis(
+                    traditional_results=traditional_results,
+                    graphrag_entity_analysis=entity_analysis,
+                    graphrag_relationship_insights=relationship_insights,
+                    analysis_topic=search_query,
+                    company_context=company_context,
+                )
+                state.graphrag_comparative_analysis = comparative_analysis
+
+                logger.info(
+                    "Comparative analysis completed",
+                    job_id=state.job_id,
+                    traditional_confidence=traditional_results.get("average_confidence", 0),
+                    graphrag_confidence=comparative_analysis.get("confidence", 0),
+                )
+
+            # Update progress
+            state.current_progress = {
+                "stage": "graphrag_analysis_completed",
+                "basic_search_results": len(basic_search_results),
+                "graph_traversal_results": graph_traversal_results.get("total_results", 0),
+                "entities_analyzed": entities_analyzed,
+                "relationships_analyzed": relationships_analyzed,
+                "timestamp": datetime.now().isoformat(),
+            }
+
+            logger.info(
+                "GraphRAG analysis completed successfully",
+                job_id=state.job_id,
+                basic_results=len(basic_search_results),
+                entities=entities_analyzed,
+                relationships=relationships_analyzed,
+            )
+
+        return state
+
+    except Exception as e:
+        error_msg = f"GraphRAG analysis failed: {str(e)}"
+        state.errors.append(error_msg)
+        logger.error(error_msg, job_id=state.job_id, exc_info=True)
+
+        # Don't raise WorkflowError - make GraphRAG optional
+        # Just log the error and continue with traditional workflow
+        logger.warning("Continuing workflow without GraphRAG analysis", job_id=state.job_id)
+        return state

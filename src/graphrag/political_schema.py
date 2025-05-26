@@ -1,23 +1,22 @@
 """Political domain schema for Neo4j GraphRAG."""
 
-from typing import Dict, List
 
 # Political monitoring domain schema for SimpleKGPipeline
 POLITICAL_SCHEMA = {
     "node_types": [
         "Policy",
-        "Politician", 
+        "Politician",
         "Organization",
         "Regulation",
         "Event",
         "Topic",
         "Jurisdiction",
         "Amendment",
-        "Compliance"
+        "Compliance",
     ],
     "relationship_types": [
         "AUTHORED_BY",
-        "AFFECTS", 
+        "AFFECTS",
         "OPPOSES",
         "SUPPORTS",
         "RELATES_TO",
@@ -27,7 +26,7 @@ POLITICAL_SCHEMA = {
         "AMENDS",
         "REQUIRES_COMPLIANCE",
         "GOVERNS",
-        "APPLIES_TO"
+        "APPLIES_TO",
     ],
     "patterns": [
         # Policy relationships
@@ -36,31 +35,28 @@ POLITICAL_SCHEMA = {
         ("Policy", "AFFECTS", "Organization"),
         ("Policy", "RELATES_TO", "Topic"),
         ("Policy", "APPLIES_TO", "Jurisdiction"),
-        
         # Political relationships
         ("Politician", "SUPPORTS", "Policy"),
         ("Politician", "OPPOSES", "Policy"),
         ("Organization", "SUPPORTS", "Policy"),
         ("Organization", "OPPOSES", "Policy"),
-        
         # Regulatory relationships
         ("Regulation", "IMPLEMENTS", "Policy"),
         ("Regulation", "GOVERNS", "Organization"),
         ("Regulation", "APPLIES_TO", "Jurisdiction"),
         ("Regulation", "REFERENCES", "Regulation"),
-        
         # Amendment and compliance
         ("Amendment", "AMENDS", "Regulation"),
         ("Amendment", "AMENDS", "Policy"),
         ("Organization", "REQUIRES_COMPLIANCE", "Regulation"),
         ("Policy", "SUPERSEDES", "Policy"),
-        
         # Event connections
         ("Event", "RELATES_TO", "Policy"),
         ("Event", "RELATES_TO", "Regulation"),
-        ("Event", "AFFECTS", "Organization")
-    ]
+        ("Event", "AFFECTS", "Organization"),
+    ],
 }
+
 
 def get_political_extraction_prompt() -> str:
     """Get the LLM prompt for political entity and relationship extraction."""
@@ -100,7 +96,8 @@ Focus on:
 Be precise and only extract entities/relationships that are explicitly mentioned or clearly implied in the text.
 """
 
-def get_node_properties() -> Dict[str, List[str]]:
+
+def get_node_properties() -> dict[str, list[str]]:
     """Define properties for each node type."""
     return {
         "Policy": ["name", "description", "status", "date_introduced", "jurisdiction"],
@@ -111,10 +108,11 @@ def get_node_properties() -> Dict[str, List[str]]:
         "Topic": ["name", "description", "domain", "keywords"],
         "Jurisdiction": ["name", "type", "level", "parent_jurisdiction"],
         "Amendment": ["name", "date", "type", "status", "summary"],
-        "Compliance": ["requirement", "deadline", "penalty", "status", "authority"]
+        "Compliance": ["requirement", "deadline", "penalty", "status", "authority"],
     }
 
-def get_relationship_properties() -> Dict[str, List[str]]:
+
+def get_relationship_properties() -> dict[str, list[str]]:
     """Define properties for each relationship type."""
     return {
         "AUTHORED_BY": ["date", "role", "primary_author"],
@@ -128,5 +126,5 @@ def get_relationship_properties() -> Dict[str, List[str]]:
         "AMENDS": ["amendment_date", "change_type", "section_modified"],
         "REQUIRES_COMPLIANCE": ["deadline", "penalty", "monitoring_authority"],
         "GOVERNS": ["authority_type", "start_date", "scope"],
-        "APPLIES_TO": ["application_date", "scope", "exceptions"]
+        "APPLIES_TO": ["application_date", "scope", "exceptions"],
     }

@@ -45,6 +45,12 @@ analysis_form = F.Model(
         value=True,
         option="Group documents by semantic similarity into topic clusters",
     ),
+    F.Checkbox(
+        label="Enable GraphRAG Analysis (Experimental)",
+        name="graphrag_enabled",
+        value=False,
+        option="Use knowledge graph analysis for enhanced political intelligence insights",
+    ),
     # Storage Configuration
     F.Select(
         label="Storage Mode",
@@ -109,6 +115,7 @@ async def enter(request: fastapi.Request, inputs: dict):
             "priority_threshold": priority_threshold,
             "include_low_confidence": bool(inputs.get("include_low_confidence", False)),
             "clustering_enabled": bool(inputs.get("clustering_enabled", True)),
+            "graphrag_enabled": bool(inputs.get("graphrag_enabled", False)),
             "storage_mode": inputs.get("storage_mode", "local"),
         },
     )

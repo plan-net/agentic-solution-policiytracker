@@ -34,4 +34,19 @@ class WorkflowState(BaseModel):
     )
     report_file_path: Optional[str] = Field(default=None, description="Generated report file path")
 
+    # GraphRAG-specific state
+    graphrag_enabled: bool = Field(default=False, description="Enable GraphRAG processing")
+    graphrag_search_results: list[dict[str, Any]] = Field(
+        default_factory=list, description="GraphRAG search results"
+    )
+    graphrag_entity_analysis: Optional[dict[str, Any]] = Field(
+        default=None, description="GraphRAG entity analysis results"
+    )
+    graphrag_relationship_insights: Optional[dict[str, Any]] = Field(
+        default=None, description="GraphRAG relationship insights"
+    )
+    graphrag_comparative_analysis: Optional[dict[str, Any]] = Field(
+        default=None, description="GraphRAG vs traditional comparison"
+    )
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
