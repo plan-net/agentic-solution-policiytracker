@@ -10,7 +10,7 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings, SentenceTransformerEmbed
 from neo4j_graphrag.experimental.components.schema import SchemaBuilder
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 from neo4j_graphrag.llm import OpenAILLM
-from neo4j_graphrag.retrievers import VectorCypherRetriever
+from neo4j_graphrag.retrievers import HybridRetriever
 
 from .political_schema import (
     POLITICAL_SCHEMA,
@@ -151,7 +151,7 @@ class PoliticalKnowledgeBuilder:
             def _create_vector_index():
                 with self.driver.session(database=self.database) as session:
                     # Create vector index for chunk embeddings (1536 dimensions for OpenAI)
-                    create_index_query = """
+                    vector_index_query = """
                     CREATE VECTOR INDEX chunk_embeddings IF NOT EXISTS
                     FOR (c:Chunk) ON (c.embedding)
                     OPTIONS {indexConfig: {
@@ -159,8 +159,16 @@ class PoliticalKnowledgeBuilder:
                         `vector.similarity_function`: 'cosine'
                     }}
                     """
-                    session.run(create_index_query)
+                    session.run(vector_index_query)
                     logger.info("Vector index created for chunk embeddings")
+                    
+                    # Create fulltext index for chunk text (required for HybridRetriever)
+                    fulltext_index_query = """
+                    CREATE FULLTEXT INDEX chunk_fulltext IF NOT EXISTS
+                    FOR (c:Chunk) ON EACH [c.text]
+                    """
+                    session.run(fulltext_index_query)
+                    logger.info("Fulltext index created for chunk text")
 
             # Execute in thread pool to avoid blocking async context
             loop = asyncio.get_event_loop()
@@ -224,101 +232,44 @@ class PoliticalKnowledgeBuilder:
             logger.error("Failed to process documents", error=str(e))
             raise
 
-    async def create_retriever(self, retrieval_query: Optional[str] = None) -> VectorCypherRetriever:
-        """Create a retriever for querying the knowledge graph.
+    async def create_retriever(self) -> HybridRetriever:
+        """Create a HybridRetriever for querying the knowledge graph.
         
-        Args:
-            retrieval_query: Optional custom Cypher query for retrieval
-            
         Returns:
-            Configured VectorCypherRetriever
+            Configured HybridRetriever with vector and fulltext search
         """
-        # Default query for political document retrieval
-        default_query = """
-        MATCH (node)-[:HAS_CHUNK]->(chunk:Chunk)
-        WHERE chunk.embedding IS NOT NULL
-        WITH node, chunk, vector.similarity.cosine(chunk.embedding, $embedding) AS score
-        WHERE score > 0.7
-        
-        // Get political context
-        OPTIONAL MATCH (node)-[:MENTIONS]->(entity:Entity)
-        OPTIONAL MATCH (node)-[:COVERS]->(topic:Topic)
-        OPTIONAL MATCH (node)-[:REFERENCES]->(regulation:Regulation)
-        
-        RETURN 
-            chunk.text AS text,
-            score,
-            {
-                document_id: node.id,
-                document_title: node.title,
-                document_type: node.type,
-                entities: collect(DISTINCT entity.name),
-                topics: collect(DISTINCT topic.name),
-                regulations: collect(DISTINCT regulation.name),
-                chunk_position: chunk.position
-            } AS metadata
-        ORDER BY score DESC
-        LIMIT 5
-        """
-        
-        query = retrieval_query or default_query
-        
-        return VectorCypherRetriever(
+        return HybridRetriever(
             driver=self.driver,
-            database=self.database,
-            index_name="chunk_embeddings",
+            vector_index_name="chunk_embeddings",
+            fulltext_index_name="chunk_fulltext", 
             embedder=self.embedder,
-            retrieval_query=query,
         )
 
     async def search_documents(
         self, 
         query: str, 
-        top_k: int = 5,
-        include_entities: bool = True
+        top_k: int = 5
     ) -> List[Dict[str, Any]]:
-        """Search documents using vector similarity and graph context.
+        """Search documents using HybridRetriever (vector + fulltext).
         
         Args:
             query: Search query text
             top_k: Number of results to return
-            include_entities: Whether to include entity context
             
         Returns:
-            Search results with context
+            Search results with metadata
         """
         try:
             def _search():
-                retriever = VectorCypherRetriever(
+                # Create HybridRetriever using the official package
+                retriever = HybridRetriever(
                     driver=self.driver,
-                    database=self.database,
-                    index_name="chunk_embeddings", 
+                    vector_index_name="chunk_embeddings",
+                    fulltext_index_name="chunk_fulltext", 
                     embedder=self.embedder,
-                    retrieval_query=f"""
-                    MATCH (doc:Document)-[:HAS_CHUNK]->(chunk:Chunk)
-                    WHERE chunk.embedding IS NOT NULL
-                    WITH doc, chunk, vector.similarity.cosine(chunk.embedding, $embedding) AS score
-                    WHERE score > 0.7
-                    
-                    {"OPTIONAL MATCH (doc)-[:MENTIONS]->(entity:Entity)" if include_entities else ""}
-                    {"OPTIONAL MATCH (doc)-[:COVERS]->(topic:Topic)" if include_entities else ""}
-                    
-                    RETURN 
-                        chunk.text AS text,
-                        score,
-                        {{
-                            document_id: doc.id,
-                            document_title: doc.title,
-                            document_type: doc.type,
-                            chunk_position: chunk.position
-                            {", entities: collect(DISTINCT entity.name)" if include_entities else ""}
-                            {", topics: collect(DISTINCT topic.name)" if include_entities else ""}
-                        }} AS metadata
-                    ORDER BY score DESC
-                    LIMIT {top_k}
-                    """,
                 )
                 
+                # Use the official search method
                 return retriever.search(query_text=query, top_k=top_k)
 
             # Run search in thread pool

@@ -65,7 +65,7 @@ async def main():
             log_info(f"Processing {len(document_paths)} documents with SimpleKGPipeline...")
             
             # Process documents using SimpleKGPipeline
-            results = await kb.process_documents(document_paths[:3])  # Start with first 3 docs
+            results = await kb.process_documents(document_paths)  # Process all documents
             
             log_info("Processing results:")
             log_info(f"Documents processed: {results['processed_documents']}")
@@ -88,16 +88,25 @@ async def main():
                 log_info("\nTesting search functionality...")
                 search_results = await kb.search_documents(
                     query="GDPR privacy data protection",
-                    top_k=3,
-                    include_entities=True
+                    top_k=3
                 )
                 
-                log_info(f"Found {len(search_results)} search results:")
-                for i, result in enumerate(search_results, 1):
-                    log_info(f"Result {i}:")
-                    log_info(f"  Score: {result.get('score', 'N/A')}")
-                    log_info(f"  Text preview: {result.get('text', '')[:200]}...")
-                    log_info(f"  Metadata: {result.get('metadata', {})}")
+                # Handle RetrieverResult format properly
+                if hasattr(search_results, 'items') and search_results.items:
+                    log_info(f"Found {len(search_results.items)} search results:")
+                    for i, result_item in enumerate(search_results.items, 1):
+                        # Extract text from the result content
+                        import json
+                        try:
+                            content_data = json.loads(result_item.content)
+                            text_preview = content_data.get('text', '')[:200] + "..."
+                            score = result_item.metadata.get('score', 'N/A')
+                            log_info(f"Result {i} (Score: {score}):")
+                            log_info(f"  Preview: {text_preview}")
+                        except:
+                            log_info(f"Result {i}: {result_item.content[:200]}...")
+                else:
+                    log_info(f"No search results found or unexpected format")
             
             log_info("SimpleKGPipeline test completed successfully!")
             
