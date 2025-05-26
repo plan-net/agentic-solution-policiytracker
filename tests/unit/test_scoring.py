@@ -1,4 +1,3 @@
-
 import pytest
 
 from src.scoring.confidence import ConfidenceCalculator

@@ -33,6 +33,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> dict[str, Any]:
         priority_threshold = inputs.get("priority_threshold", 70.0)
         include_low_confidence = inputs.get("include_low_confidence", False)
         clustering_enabled = inputs.get("clustering_enabled", True)
+        graphrag_enabled = inputs.get("graphrag_enabled", False)
         storage_mode = inputs.get("storage_mode", "local")
 
         # Determine use_azure based on storage_mode or config
@@ -68,6 +69,7 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> dict[str, Any]:
 - **Priority Threshold**: {priority_threshold}%
 - **Include Low Confidence**: {include_low_confidence}
 - **Clustering Enabled**: {clustering_enabled}
+- **GraphRAG Analysis**: {graphrag_enabled} {"(Experimental)" if graphrag_enabled else ""}
 
 ## Analysis Progress
 
@@ -107,8 +109,13 @@ async def execute_analysis(inputs: dict, tracer: Tracer) -> dict[str, Any]:
             ray.init(num_cpus=4)
             await tracer.markdown("✅ Ray cluster initialized")
 
-        # Create initial workflow state with runtime storage mode
-        initial_state = WorkflowState(job_id=job_id, job_request=job_request, use_azure=use_azure)
+        # Create initial workflow state with runtime storage mode and GraphRAG setting
+        initial_state = WorkflowState(
+            job_id=job_id,
+            job_request=job_request,
+            use_azure=use_azure,
+            graphrag_enabled=graphrag_enabled,
+        )
 
         await tracer.markdown(
             f"""

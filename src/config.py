@@ -124,33 +124,41 @@ class Settings(BaseSettings):
 
 class GraphRAGSettings(BaseSettings):
     """Settings for GraphRAG integration (v0.2.0)."""
-    
+
     # Feature flag
     ENABLE_GRAPHRAG: bool = Field(default=False, description="Enable GraphRAG features")
-    
+
     # Neo4j Configuration
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j connection URI")
     NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")
     NEO4J_PASSWORD: str = Field(default="password123", description="Neo4j password")
     NEO4J_DATABASE: str = Field(default="politicalmonitoring", description="Neo4j database name")
-    
+
     # Embedding Configuration
-    GRAPHRAG_EMBEDDING_PROVIDER: str = Field(default="openai", description="Embedding provider: openai or local")
-    GRAPHRAG_EMBEDDING_MODEL: str = Field(default="text-embedding-3-small", description="Embedding model name")
+    GRAPHRAG_EMBEDDING_PROVIDER: str = Field(
+        default="openai", description="Embedding provider: openai or local"
+    )
+    GRAPHRAG_EMBEDDING_MODEL: str = Field(
+        default="text-embedding-3-small", description="Embedding model name"
+    )
     GRAPHRAG_EMBEDDING_DIMS: int = Field(default=1536, description="Embedding dimensions")
-    
+
     # Chunking Configuration
     GRAPHRAG_CHUNK_SIZE: int = Field(default=1000, description="Document chunk size")
     GRAPHRAG_CHUNK_OVERLAP: int = Field(default=200, description="Chunk overlap size")
-    
+
     # Ray Data Configuration
     RAY_DATA_NUM_WORKERS: int = Field(default=4, description="Number of Ray workers")
     RAY_DATA_BATCH_SIZE: int = Field(default=100, description="Batch size for processing")
-    
+
     # Retrieval Configuration
-    GRAPHRAG_VECTOR_SEARCH_LIMIT: int = Field(default=10, description="Max results for vector search")
+    GRAPHRAG_VECTOR_SEARCH_LIMIT: int = Field(
+        default=10, description="Max results for vector search"
+    )
     GRAPHRAG_TRAVERSAL_DEPTH: int = Field(default=3, description="Max graph traversal depth")
-    GRAPHRAG_HYBRID_WEIGHT: float = Field(default=0.7, description="Weight for vector vs graph search")
+    GRAPHRAG_HYBRID_WEIGHT: float = Field(
+        default=0.7, description="Weight for vector vs graph search"
+    )
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

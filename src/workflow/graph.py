@@ -13,6 +13,7 @@ from src.workflow.nodes import (
     load_context,
     load_documents,
     process_documents,
+    process_graphrag_analysis,
     score_documents,
 )
 from src.workflow.state import WorkflowState
@@ -31,15 +32,17 @@ def create_workflow() -> StateGraph:
     workflow.add_node("load_context", load_context)
     workflow.add_node("process_documents", process_documents)
     workflow.add_node("score_documents", score_documents)
+    workflow.add_node("process_graphrag_analysis", process_graphrag_analysis)
     workflow.add_node("cluster_results", cluster_results)
     workflow.add_node("generate_report", generate_report)
 
-    # Define edges (sequential flow)
+    # Define edges (sequential flow with GraphRAG between scoring and clustering)
     workflow.set_entry_point("load_documents")
     workflow.add_edge("load_documents", "load_context")
     workflow.add_edge("load_context", "process_documents")
     workflow.add_edge("process_documents", "score_documents")
-    workflow.add_edge("score_documents", "cluster_results")
+    workflow.add_edge("score_documents", "process_graphrag_analysis")
+    workflow.add_edge("process_graphrag_analysis", "cluster_results")
     workflow.add_edge("cluster_results", "generate_report")
     workflow.add_edge("generate_report", END)
 
@@ -129,6 +132,22 @@ async def execute_workflow(
                 "scored_documents": len(final_state.get("scoring_results", [])),
                 "errors": final_state.get("errors", []),
                 "progress": final_state.get("current_progress", {}),
+                "graphrag_enabled": final_state.get("graphrag_enabled", False),
+                "graphrag_metrics": {
+                    "search_results": len(final_state.get("graphrag_search_results", [])),
+                    "entities_analyzed": final_state.get("graphrag_entity_analysis", {}).get(
+                        "entities_analyzed", 0
+                    ),
+                    "relationships_analyzed": final_state.get("graphrag_relationship_insights", {})
+                    .get("network_metrics", {})
+                    .get("total_relationships", 0),
+                    "comparative_analysis_performed": final_state.get(
+                        "graphrag_comparative_analysis"
+                    )
+                    is not None,
+                }
+                if final_state.get("graphrag_enabled")
+                else None,
                 "summary": {
                     "total_documents_analyzed": len(final_state.get("documents", [])),
                     "high_priority_count": len(
