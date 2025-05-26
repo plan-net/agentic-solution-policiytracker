@@ -1,4 +1,3 @@
-from typing import Dict, List
 
 from src.models.scoring import DimensionScore
 
@@ -8,7 +7,7 @@ class JustificationGenerator:
 
     @staticmethod
     def generate_overall_justification(
-        dimension_scores: Dict[str, DimensionScore], master_score: float, confidence_score: float
+        dimension_scores: dict[str, DimensionScore], master_score: float, confidence_score: float
     ) -> str:
         """Generate overall justification for the master score."""
 
@@ -33,7 +32,7 @@ class JustificationGenerator:
         elif highest_score >= 60:
             parts.append(f"Moderately influenced by {highest_name} (score: {highest_score:.0f})")
         else:
-            parts.append(f"Limited relevance across dimensions")
+            parts.append("Limited relevance across dimensions")
 
         # Add other significant factors
         if len(significant_dims) > 1:
@@ -54,7 +53,7 @@ class JustificationGenerator:
         return ". ".join(parts) + "."
 
     @staticmethod
-    def generate_key_factors(dimension_scores: Dict[str, DimensionScore]) -> List[str]:
+    def generate_key_factors(dimension_scores: dict[str, DimensionScore]) -> list[str]:
         """Extract key factors from dimension justifications."""
 
         factors = []
@@ -83,8 +82,8 @@ class JustificationGenerator:
 
     @staticmethod
     def generate_summary_insights(
-        all_scores: List[Dict[str, DimensionScore]], master_scores: List[float]
-    ) -> Dict[str, str]:
+        all_scores: list[dict[str, DimensionScore]], master_scores: list[float]
+    ) -> dict[str, str]:
         """Generate insights across all documents in a batch."""
 
         if not all_scores or not master_scores:
@@ -103,7 +102,7 @@ class JustificationGenerator:
         )
 
         # Most impactful dimension
-        dimension_totals = {}
+        dimension_totals: dict[str, list[float]] = {}
         for scores in all_scores:
             for dim_name, dim_score in scores.items():
                 if dim_name not in dimension_totals:
@@ -127,7 +126,7 @@ class JustificationGenerator:
                 all_evidence.extend(dim_score.evidence_snippets)
 
         # Simple keyword frequency analysis
-        common_words = {}
+        common_words: dict[str, int] = {}
         for evidence in all_evidence:
             words = evidence.lower().split()
             for word in words:

@@ -1,8 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 
 class DocumentType(str, Enum):
@@ -21,8 +21,8 @@ class DocumentMetadata(BaseModel):
     created_at: Optional[datetime] = None
     modified_at: Optional[datetime] = None
     author: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
-    extraction_metadata: Dict[str, Any] = Field(default_factory=dict)
+    tags: list[str] = Field(default_factory=list)
+    extraction_metadata: dict[str, Any] = Field(default_factory=dict)
 
     model_config = ConfigDict(use_enum_values=True)
 
@@ -33,8 +33,8 @@ class ProcessedContent(BaseModel):
     metadata: DocumentMetadata
     processing_timestamp: datetime
     language: str = Field(default="en", description="Detected language")
-    sections: List[Dict[str, str]] = Field(default_factory=list)
-    extraction_errors: List[str] = Field(default_factory=list)
+    sections: list[dict[str, str]] = Field(default_factory=list)
+    extraction_errors: list[str] = Field(default_factory=list)
 
     @field_validator("raw_text", mode="before")
     @classmethod
@@ -42,7 +42,6 @@ class ProcessedContent(BaseModel):
         return v.strip() if v else ""
 
     @computed_field
-    @property
     def word_count(self) -> int:
         """Calculate word count from raw text."""
         return len(self.raw_text.split()) if self.raw_text else 0
@@ -51,11 +50,10 @@ class ProcessedContent(BaseModel):
 class ContentBatch(BaseModel):
     batch_id: str
     job_id: str
-    documents: List[ProcessedContent]
+    documents: list[ProcessedContent]
     created_at: datetime
 
     @computed_field
-    @property
     def total_documents(self) -> int:
         """Calculate total number of documents."""
         return len(self.documents)
