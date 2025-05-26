@@ -10,7 +10,7 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings, SentenceTransformerEmbed
 from neo4j_graphrag.experimental.components.schema import SchemaBuilder
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 from neo4j_graphrag.llm import OpenAILLM
-from neo4j_graphrag.retrievers import HybridRetriever
+from neo4j_graphrag.retrievers import HybridRetriever, HybridCypherRetriever
 
 from .political_schema import (
     POLITICAL_SCHEMA,
@@ -245,6 +245,82 @@ class PoliticalKnowledgeBuilder:
             embedder=self.embedder,
         )
 
+    async def create_graph_traversal_retriever(self) -> HybridCypherRetriever:
+        """Create a HybridCypherRetriever for graph traversal with political relationships.
+        
+        Returns:
+            Configured HybridCypherRetriever with custom political traversal query
+        """
+        # Political graph traversal query - finds related entities and regulations
+        political_traversal_query = """
+        // After vector/fulltext search finds initial chunks
+        MATCH (chunk:Chunk)<-[:HAS_CHUNK]-(doc:Document)
+        
+        // Find political entities mentioned in the document
+        OPTIONAL MATCH (doc)-[:MENTIONS]->(entity)
+        WHERE entity:Policy OR entity:Politician OR entity:Organization OR entity:Regulation
+        
+        // Find regulations that implement or relate to policies
+        OPTIONAL MATCH (doc)-[:REFERENCES]->(regulation:Regulation)
+        OPTIONAL MATCH (regulation)-[:IMPLEMENTS]->(policy:Policy)
+        
+        // Find organizations affected by policies
+        OPTIONAL MATCH (entity)-[:AFFECTS]->(affected_org:Organization)
+        
+        // Find politicians who authored policies
+        OPTIONAL MATCH (policy)-[:AUTHORED_BY]->(politician:Politician)
+        
+        // Find topics covered by the document
+        OPTIONAL MATCH (doc)-[:COVERS]->(topic:Topic)
+        
+        // Return rich political context
+        RETURN 
+            chunk.text AS text,
+            score,
+            {
+                document_id: doc.id,
+                document_title: doc.title,
+                entities: collect(DISTINCT {
+                    name: entity.name,
+                    type: labels(entity)[0],
+                    properties: properties(entity)
+                }),
+                regulations: collect(DISTINCT {
+                    name: regulation.name,
+                    code: regulation.code,
+                    jurisdiction: regulation.jurisdiction
+                }),
+                policies: collect(DISTINCT {
+                    name: policy.name,
+                    status: policy.status
+                }),
+                politicians: collect(DISTINCT {
+                    name: politician.name,
+                    party: politician.party,
+                    role: politician.role
+                }),
+                affected_organizations: collect(DISTINCT {
+                    name: affected_org.name,
+                    type: affected_org.type,
+                    sector: affected_org.sector
+                }),
+                topics: collect(DISTINCT {
+                    name: topic.name,
+                    description: topic.description
+                }),
+                chunk_position: chunk.position
+            } AS metadata
+        ORDER BY score DESC
+        """
+        
+        return HybridCypherRetriever(
+            driver=self.driver,
+            vector_index_name="chunk_embeddings",
+            fulltext_index_name="chunk_fulltext",
+            retrieval_query=political_traversal_query,
+            embedder=self.embedder,
+        )
+
     async def search_documents(
         self, 
         query: str, 
@@ -281,6 +357,105 @@ class PoliticalKnowledgeBuilder:
         except Exception as e:
             logger.error("Failed to search documents", query=query, error=str(e))
             return []
+
+    async def search_with_graph_traversal(
+        self, 
+        query: str, 
+        top_k: int = 5
+    ) -> Dict[str, Any]:
+        """Search using HybridCypherRetriever with political graph traversal.
+        
+        Args:
+            query: Search query text
+            top_k: Number of results to return
+            
+        Returns:
+            Rich results with political entity relationships and context
+        """
+        try:
+            def _graph_search():
+                # Create HybridCypherRetriever with political traversal
+                retriever = HybridCypherRetriever(
+                    driver=self.driver,
+                    vector_index_name="chunk_embeddings",
+                    fulltext_index_name="chunk_fulltext",
+                    retrieval_query="""
+                    // Basic graph traversal after vector search
+                    MATCH (chunk:Chunk)<-[:HAS_CHUNK]-(doc:Document)
+                    
+                    // Find one political entity as example of graph traversal
+                    OPTIONAL MATCH (doc)-[:MENTIONS]->(entity)
+                    WHERE entity:Policy OR entity:Politician OR entity:Organization OR entity:Regulation
+                    
+                    // Return with basic political context
+                    RETURN 
+                        chunk.text AS text,
+                        score,
+                        doc.id + '_traversed' AS document_id,
+                        doc.title AS document_title,
+                        entity.name AS found_entity
+                    ORDER BY score DESC
+                    """,
+                    embedder=self.embedder,
+                )
+                
+                return retriever.search(query_text=query, top_k=top_k)
+
+            # Run search in thread pool
+            loop = asyncio.get_event_loop()
+            results = await loop.run_in_executor(None, _graph_search)
+            
+            # Process results to extract political insights
+            if hasattr(results, 'items') and results.items:
+                processed_results = []
+                for item in results.items:
+                    try:
+                        import json
+                        content_data = json.loads(item.content)
+                        processed_results.append({
+                            "text": content_data.get("text", ""),
+                            "score": item.metadata.get("score", 0),
+                            "political_context": content_data.get("metadata", {}),
+                            "relationship_count": content_data.get("relationship_count", 0)
+                        })
+                    except Exception as parse_error:
+                        logger.warning("Failed to parse graph search result", error=str(parse_error))
+                        continue
+                
+                return {
+                    "query": query,
+                    "results": processed_results,
+                    "total_results": len(processed_results),
+                    "retrieval_method": "graph_traversal",
+                    "political_entities_found": len(set([
+                        entity["name"] 
+                        for result in processed_results 
+                        for entity in result.get("political_context", {}).get("entities", [])
+                    ])),
+                    "regulations_found": len(set([
+                        reg["name"] 
+                        for result in processed_results 
+                        for reg in result.get("political_context", {}).get("regulations", [])
+                    ]))
+                }
+            else:
+                return {
+                    "query": query,
+                    "results": [],
+                    "total_results": 0,
+                    "retrieval_method": "graph_traversal",
+                    "message": "No results found"
+                }
+
+        except Exception as e:
+            logger.error("Failed to search with graph traversal", query=query, error=str(e))
+            return {
+                "query": query,
+                "results": [],
+                "total_results": 0,
+                "retrieval_method": "graph_traversal",
+                "error": str(e)
+            }
 
     async def get_document_context(self, document_id: str) -> Dict[str, Any]:
         """Get comprehensive context for a document from the graph."""

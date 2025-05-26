@@ -85,7 +85,7 @@ async def main():
             
             # Test search functionality if we have data
             if stats['chunks'] > 0:
-                log_info("\nTesting search functionality...")
+                log_info("\nTesting basic search functionality...")
                 search_results = await kb.search_documents(
                     query="GDPR privacy data protection",
                     top_k=3
@@ -93,20 +93,33 @@ async def main():
                 
                 # Handle RetrieverResult format properly
                 if hasattr(search_results, 'items') and search_results.items:
-                    log_info(f"Found {len(search_results.items)} search results:")
-                    for i, result_item in enumerate(search_results.items, 1):
-                        # Extract text from the result content
-                        import json
-                        try:
-                            content_data = json.loads(result_item.content)
-                            text_preview = content_data.get('text', '')[:200] + "..."
-                            score = result_item.metadata.get('score', 'N/A')
-                            log_info(f"Result {i} (Score: {score}):")
-                            log_info(f"  Preview: {text_preview}")
-                        except:
-                            log_info(f"Result {i}: {result_item.content[:200]}...")
+                    log_info(f"Found {len(search_results.items)} basic search results")
                 else:
-                    log_info(f"No search results found or unexpected format")
+                    log_info("No basic search results found")
+                
+                log_info("\nTesting GraphRAG with graph traversal...")
+                graph_results = await kb.search_with_graph_traversal(
+                    query="AI Act regulation implementation",
+                    top_k=3
+                )
+                
+                log_info(f"Graph traversal results:")
+                log_info(f"  Total results: {graph_results['total_results']}")
+                log_info(f"  Political entities found: {graph_results.get('political_entities_found', 0)}")
+                log_info(f"  Regulations found: {graph_results.get('regulations_found', 0)}")
+                log_info(f"  Retrieval method: {graph_results['retrieval_method']}")
+                
+                if graph_results['results']:
+                    for i, result in enumerate(graph_results['results'], 1):
+                        log_info(f"Graph Result {i} (Score: {result['score']}):")
+                        log_info(f"  Text preview: {result['text'][:150]}...")
+                        political_context = result.get('political_context', {})
+                        log_info(f"  Entity count: {political_context.get('entity_count', 0)}")
+                        log_info(f"  Regulation count: {political_context.get('regulation_count', 0)}")
+                        log_info(f"  Topic count: {political_context.get('topic_count', 0)}")
+                        log_info(f"  Document: {political_context.get('document_title', 'N/A')}")
+                else:
+                    log_info("  No graph traversal results found")
             
             log_info("SimpleKGPipeline test completed successfully!")
             
