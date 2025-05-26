@@ -20,6 +20,7 @@ AI-powered document analysis system for political and regulatory monitoring.
 @.claude/langfuse-prompts.md
 @.claude/testing-standards.md
 @.claude/development-workflow.md
+@.claude/git-workflow.md
 
 ## Project-Specific Details
 @.claude/project-architecture.md
