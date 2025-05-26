@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from src.models.content import ProcessedContent
 from src.models.scoring import DimensionScore
@@ -8,10 +8,10 @@ from src.models.scoring import DimensionScore
 class DimensionScorer:
     """Base class for dimension scoring."""
 
-    def __init__(self, context: Dict[str, Any]):
+    def __init__(self, context: dict[str, Any]):
         self.context = context
 
-    def extract_evidence(self, text: str, keywords: List[str], max_snippets: int = 3) -> List[str]:
+    def extract_evidence(self, text: str, keywords: list[str], max_snippets: int = 3) -> list[str]:
         """Extract evidence snippets containing keywords."""
         evidence = []
         text_lower = text.lower()

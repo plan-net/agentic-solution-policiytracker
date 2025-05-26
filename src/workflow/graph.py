@@ -1,21 +1,21 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
 import structlog
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
 
 from src.config import settings
+from src.integrations.azure_checkpoint import AzureCheckpointSaver
 from src.models.job import Job
-from src.workflow.state import WorkflowState
 from src.workflow.nodes import (
-    load_documents,
-    load_context,
-    process_documents,
-    score_documents,
     cluster_results,
     generate_report,
+    load_context,
+    load_documents,
+    process_documents,
+    score_documents,
 )
-from src.integrations.azure_checkpoint import AzureCheckpointSaver
+from src.workflow.state import WorkflowState
 
 logger = structlog.get_logger()
 
@@ -61,7 +61,7 @@ async def execute_workflow(
     job: Job,
     resume_from_checkpoint: Optional[str] = None,
     initial_state: Optional[Any] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Execute workflow for a job with checkpointing support."""
     try:
         logger.info(
@@ -156,7 +156,7 @@ async def execute_workflow(
         raise
 
 
-async def get_workflow_checkpoints(job_id: str) -> List[Dict[str, Any]]:
+async def get_workflow_checkpoints(job_id: str) -> list[dict[str, Any]]:
     """Get available checkpoints for a workflow."""
     try:
         use_azure = getattr(settings, "USE_AZURE_STORAGE", False)

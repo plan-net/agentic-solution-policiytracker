@@ -3,14 +3,12 @@
 import json
 import pickle
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 from uuid import uuid4
 
 import structlog
 from langgraph.checkpoint.base import BaseCheckpointSaver
-from langgraph.checkpoint.serde.types import TASKS
 
-from src.config import settings
 from src.integrations.azure_storage import AzureStorageClient
 
 logger = structlog.get_logger()
@@ -39,12 +37,12 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
     async def aget(
         self,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         *,
-        filter: Optional[Dict[str, Any]] = None,
+        filter: Optional[dict[str, Any]] = None,
         before: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> Optional[Tuple[Dict[str, Any], Dict[str, Any], Optional[str]]]:
+    ) -> Optional[tuple[dict[str, Any], dict[str, Any], Optional[str]]]:
         """Asynchronously get checkpoint data from Azure Storage."""
         try:
             thread_id = config.get("configurable", {}).get("thread_id")
@@ -96,11 +94,11 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
     async def aput(
         self,
-        config: Dict[str, Any],
-        checkpoint: Dict[str, Any],
-        metadata: Dict[str, Any],
-        new_versions: Dict[str, Union[str, int]],
-    ) -> Dict[str, Any]:
+        config: dict[str, Any],
+        checkpoint: dict[str, Any],
+        metadata: dict[str, Any],
+        new_versions: dict[str, Union[str, int]],
+    ) -> dict[str, Any]:
         """Asynchronously save checkpoint data to Azure Storage."""
         try:
             thread_id = config.get("configurable", {}).get("thread_id")
@@ -162,8 +160,8 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
     async def aput_writes(
         self,
-        config: Dict[str, Any],
-        writes: List[Tuple[str, Any]],
+        config: dict[str, Any],
+        writes: list[tuple[str, Any]],
         task_id: str,
     ) -> None:
         """Asynchronously save pending writes to Azure Storage."""
@@ -259,7 +257,7 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
             logger.error("Failed to get latest checkpoint ID", thread_id=thread_id, error=str(e))
             return None
 
-    def _serialize_checkpoint(self, checkpoint: Dict[str, Any]) -> Dict[str, Any]:
+    def _serialize_checkpoint(self, checkpoint: dict[str, Any]) -> dict[str, Any]:
         """Serialize checkpoint data for storage."""
         serialized = {}
 
@@ -284,7 +282,7 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
         return serialized
 
-    def _deserialize_checkpoint(self, checkpoint_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _deserialize_checkpoint(self, checkpoint_data: dict[str, Any]) -> dict[str, Any]:
         """Deserialize checkpoint data from storage."""
         deserialized = {}
 
@@ -375,8 +373,8 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
     # Synchronous methods (required by base class)
     def get(
-        self, config: Dict[str, Any], **kwargs
-    ) -> Optional[Tuple[Dict[str, Any], Dict[str, Any], Optional[str]]]:
+        self, config: dict[str, Any], **kwargs
+    ) -> Optional[tuple[dict[str, Any], dict[str, Any], Optional[str]]]:
         """Synchronous get method (not recommended for Azure Storage)."""
         import asyncio
 
@@ -384,18 +382,18 @@ class AzureCheckpointSaver(BaseCheckpointSaver):
 
     def put(
         self,
-        config: Dict[str, Any],
-        checkpoint: Dict[str, Any],
-        metadata: Dict[str, Any],
-        new_versions: Dict[str, Union[str, int]],
-    ) -> Dict[str, Any]:
+        config: dict[str, Any],
+        checkpoint: dict[str, Any],
+        metadata: dict[str, Any],
+        new_versions: dict[str, Union[str, int]],
+    ) -> dict[str, Any]:
         """Synchronous put method (not recommended for Azure Storage)."""
         import asyncio
 
         return asyncio.run(self.aput(config, checkpoint, metadata, new_versions))
 
     def put_writes(
-        self, config: Dict[str, Any], writes: List[Tuple[str, Any]], task_id: str
+        self, config: dict[str, Any], writes: list[tuple[str, Any]], task_id: str
     ) -> None:
         """Synchronous put_writes method (not recommended for Azure Storage)."""
         import asyncio

@@ -1,7 +1,6 @@
 import os
 import re
 from pathlib import Path
-from typing import List
 
 from src.utils.exceptions import ConfigurationError
 
@@ -28,7 +27,7 @@ def validate_path_security(path: str) -> bool:
     return True
 
 
-def validate_file_extension(file_path: str, allowed_extensions: List[str]) -> bool:
+def validate_file_extension(file_path: str, allowed_extensions: list[str]) -> bool:
     """Check if file has allowed extension."""
     extension = Path(file_path).suffix.lower()
     return extension in [ext.lower() for ext in allowed_extensions]
@@ -62,7 +61,7 @@ def validate_context_file(context_path: str) -> None:
     # Additional validation can be added here for YAML structure
 
 
-def get_supported_extensions() -> List[str]:
+def get_supported_extensions() -> list[str]:
     """Get list of supported file extensions."""
     return [".md", ".markdown", ".pdf", ".docx", ".txt", ".html"]
 

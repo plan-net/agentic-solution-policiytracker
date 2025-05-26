@@ -3,15 +3,16 @@ Prompt management system with Langfuse integration and local fallbacks.
 Implements the pattern specified in CLAUDE.md.
 """
 
-import os
 import re
 from pathlib import Path
-from typing import Dict, Any, Optional
-import structlog
+from typing import Any, Optional
+
 import aiofiles
+import structlog
 
 # Use official Langfuse client directly
 from langfuse import Langfuse
+
 from src.config import settings
 
 logger = structlog.get_logger()
@@ -30,22 +31,22 @@ class PromptManager:
     """
 
     def __init__(self):
-        self.cache: Dict[str, str] = {}
+        self.cache: dict[str, str] = {}
         self.prompts_dir = Path(__file__).parent
         self.fallback_count = 0
         self._langfuse: Optional[Langfuse] = None
         self._initialized = False
 
     async def get_prompt(
-        self, name: str, variables: Optional[Dict[str, Any]] = None, version: Optional[int] = None
+        self, name: str, variables: Optional[dict[str, Any]] = None, version: Optional[int] = None
     ) -> str:
         """Get prompt text with variable substitution."""
         prompt_data = await self.get_prompt_with_config(name, variables, version)
         return prompt_data["prompt"]
-    
+
     async def get_prompt_with_config(
-        self, name: str, variables: Optional[Dict[str, Any]] = None, version: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, name: str, variables: Optional[dict[str, Any]] = None, version: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Get prompt with config from Langfuse integration and local fallback.
 
@@ -65,7 +66,7 @@ class PromptManager:
             cached_data = self.cache[cache_key]
             return {
                 "prompt": self._substitute_variables(cached_data["prompt"], variables or {}),
-                "config": cached_data.get("config", {})
+                "config": cached_data.get("config", {}),
             }
 
         # Try Langfuse first
@@ -76,7 +77,7 @@ class PromptManager:
                 logger.info("Prompt loaded from Langfuse", prompt_name=name, version=version)
                 return {
                     "prompt": self._substitute_variables(prompt_data["prompt"], variables or {}),
-                    "config": prompt_data.get("config", {})
+                    "config": prompt_data.get("config", {}),
                 }
 
         except Exception as e:
@@ -95,7 +96,7 @@ class PromptManager:
             )
             return {
                 "prompt": self._substitute_variables(prompt_text, variables or {}),
-                "config": {}  # No config from local files
+                "config": {},  # No config from local files
             }
 
         except Exception as e:
@@ -106,24 +107,26 @@ class PromptManager:
         """Initialize official Langfuse client."""
         if self._initialized:
             return
-            
+
         try:
-            if not all([settings.LANGFUSE_SECRET_KEY, settings.LANGFUSE_PUBLIC_KEY, settings.LANGFUSE_HOST]):
+            if not all(
+                [settings.LANGFUSE_SECRET_KEY, settings.LANGFUSE_PUBLIC_KEY, settings.LANGFUSE_HOST]
+            ):
                 logger.info("Langfuse not configured, will use local prompts only")
                 self._initialized = True
                 return
-                
+
             self._langfuse = Langfuse(
                 secret_key=settings.LANGFUSE_SECRET_KEY,
                 public_key=settings.LANGFUSE_PUBLIC_KEY,
                 host=settings.LANGFUSE_HOST,
             )
-            
+
             # Test connection
             self._langfuse.auth_check()
             logger.info("Official Langfuse client initialized successfully")
             self._initialized = True
-            
+
         except Exception as e:
             logger.warning(f"Failed to initialize Langfuse: {e}, using local prompts only")
             self._langfuse = None
@@ -134,27 +137,30 @@ class PromptManager:
         data = await self._get_from_langfuse_with_config(name, version)
         return data["prompt"] if data else None
 
-    async def _get_from_langfuse_with_config(self, name: str, version: Optional[int]) -> Optional[Dict[str, Any]]:
+    async def _get_from_langfuse_with_config(
+        self, name: str, version: Optional[int]
+    ) -> Optional[dict[str, Any]]:
         """Try to get prompt with config from Langfuse using official client."""
         try:
             self._initialize_langfuse()
-            
+
             if not self._langfuse:
                 logger.debug(f"Langfuse not available for prompt '{name}'")
                 return None
-            
+
             if version is not None:
                 # Specific version requested
                 prompt = self._langfuse.get_prompt(name=name, version=version)
             else:
                 # Default to production label for current active version
                 prompt = self._langfuse.get_prompt(name=name, label="production")
-            
+
             return {
                 "prompt": prompt.prompt,
-                "config": getattr(prompt, 'config', {}) or {}  # Handle case where config might be None
+                "config": getattr(prompt, "config", {})
+                or {},  # Handle case where config might be None
             }
-            
+
         except Exception as e:
             logger.warning(f"Langfuse prompt retrieval failed for '{name}': {e}")
             return None
@@ -184,7 +190,7 @@ class PromptManager:
             # No frontmatter - return entire content
             return content.strip()
 
-    def _substitute_variables(self, template: str, variables: Dict[str, Any]) -> str:
+    def _substitute_variables(self, template: str, variables: dict[str, Any]) -> str:
         """Substitute {{variable}} placeholders with actual values."""
         result = template
 
@@ -215,7 +221,7 @@ class PromptManager:
             except Exception as e:
                 logger.warning("Failed to preload prompt", prompt_name=prompt_name, error=str(e))
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics for monitoring."""
         return {
             "cached_prompts": len(self.cache),

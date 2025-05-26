@@ -1,16 +1,16 @@
 import os
-from typing import List, Optional, Tuple
 from pathlib import Path
+from typing import Optional
 
 import structlog
 
+from src.integrations.azure_storage import AzureStorageClient
+from src.utils.exceptions import BatchProcessingError
 from src.utils.validators import (
-    validate_file_extension,
     get_supported_extensions,
     validate_directory_exists,
+    validate_file_extension,
 )
-from src.utils.exceptions import BatchProcessingError
-from src.integrations.azure_storage import AzureStorageClient
 
 logger = structlog.get_logger()
 
@@ -23,14 +23,14 @@ class BatchDocumentLoader:
         self.use_azure = use_azure
         self.azure_client = AzureStorageClient() if use_azure else None
 
-    async def discover_files(self, input_source: str, job_id: Optional[str] = None) -> List[str]:
+    async def discover_files(self, input_source: str, job_id: Optional[str] = None) -> list[str]:
         """Discover all supported files from input source (folder or Azure Storage job)."""
         if self.use_azure:
             return await self._discover_files_azure(input_source, job_id)
         else:
             return await self._discover_files_local(input_source)
 
-    async def _discover_files_local(self, input_folder: str) -> List[str]:
+    async def _discover_files_local(self, input_folder: str) -> list[str]:
         """Discover all supported files in local input folder."""
         try:
             logger.info("Discovering local files", input_folder=input_folder)
@@ -88,7 +88,7 @@ class BatchDocumentLoader:
 
     async def _discover_files_azure(
         self, job_prefix: str, job_id: Optional[str] = None
-    ) -> List[str]:
+    ) -> list[str]:
         """Discover all supported files in Azure Storage for a job."""
         try:
             logger.info("Discovering Azure Storage files", job_prefix=job_prefix, job_id=job_id)
@@ -139,14 +139,14 @@ class BatchDocumentLoader:
         except Exception as e:
             raise BatchProcessingError(0, 0, f"Azure Storage file discovery failed: {str(e)}")
 
-    async def filter_by_size(self, file_paths: List[str], max_size_mb: int) -> List[str]:
+    async def filter_by_size(self, file_paths: list[str], max_size_mb: int) -> list[str]:
         """Filter files by maximum size."""
         if self.use_azure:
             return await self._filter_by_size_azure(file_paths, max_size_mb)
         else:
             return self._filter_by_size_local(file_paths, max_size_mb)
 
-    def _filter_by_size_local(self, file_paths: List[str], max_size_mb: int) -> List[str]:
+    def _filter_by_size_local(self, file_paths: list[str], max_size_mb: int) -> list[str]:
         """Filter local files by maximum size."""
         filtered_files = []
 
@@ -172,7 +172,7 @@ class BatchDocumentLoader:
 
         return filtered_files
 
-    async def _filter_by_size_azure(self, blob_names: List[str], max_size_mb: int) -> List[str]:
+    async def _filter_by_size_azure(self, blob_names: list[str], max_size_mb: int) -> list[str]:
         """Filter Azure Storage blobs by maximum size."""
         filtered_files = []
 
@@ -209,14 +209,14 @@ class BatchDocumentLoader:
 
         return filtered_files
 
-    async def get_file_stats(self, file_paths: List[str]) -> dict:
+    async def get_file_stats(self, file_paths: list[str]) -> dict:
         """Get statistics about discovered files."""
         if self.use_azure:
             return await self._get_file_stats_azure(file_paths)
         else:
             return self._get_file_stats_local(file_paths)
 
-    def _get_file_stats_local(self, file_paths: List[str]) -> dict:
+    def _get_file_stats_local(self, file_paths: list[str]) -> dict:
         """Get statistics about local files."""
         stats = {
             "total_files": len(file_paths),
@@ -250,7 +250,7 @@ class BatchDocumentLoader:
         stats["total_size_mb"] = round(stats["total_size_mb"], 2)
         return stats
 
-    async def _get_file_stats_azure(self, blob_names: List[str]) -> dict:
+    async def _get_file_stats_azure(self, blob_names: list[str]) -> dict:
         """Get statistics about Azure Storage blobs."""
         stats = {
             "total_files": len(blob_names),

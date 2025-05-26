@@ -1,25 +1,24 @@
 import os
 import tempfile
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
 from pathlib import Path
-from io import BytesIO
+from typing import Optional
 
-import pypdf
 import markdown
+import pypdf
+import structlog
 from bs4 import BeautifulSoup
 from docx import Document
-import structlog
 
-from src.models.content import DocumentType, DocumentMetadata
-from src.utils.exceptions import DocumentProcessingError
-from src.utils.validators import (
-    validate_file_size,
-    validate_file_extension,
-    get_supported_extensions,
-)
 from src.config import settings
 from src.integrations.azure_storage import AzureStorageClient
+from src.models.content import DocumentMetadata, DocumentType
+from src.utils.exceptions import DocumentProcessingError
+from src.utils.validators import (
+    get_supported_extensions,
+    validate_file_extension,
+    validate_file_size,
+)
 
 logger = structlog.get_logger()
 
@@ -33,7 +32,7 @@ class DocumentReader:
 
     async def read_document(
         self, file_path: str, use_azure: bool = False
-    ) -> Tuple[str, DocumentMetadata]:
+    ) -> tuple[str, DocumentMetadata]:
         """Read document and extract text content and metadata from local or Azure Storage."""
         try:
             if use_azure:
@@ -46,7 +45,7 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError(file_path, f"Unexpected error: {str(e)}")
 
-    async def _read_document_local(self, file_path: str) -> Tuple[str, DocumentMetadata]:
+    async def _read_document_local(self, file_path: str) -> tuple[str, DocumentMetadata]:
         """Read document from local filesystem."""
         # Validate file
         if not os.path.exists(file_path):
@@ -94,7 +93,7 @@ class DocumentReader:
 
         return text, metadata
 
-    async def _read_document_azure(self, blob_name: str) -> Tuple[str, DocumentMetadata]:
+    async def _read_document_azure(self, blob_name: str) -> tuple[str, DocumentMetadata]:
         """Read document from Azure Storage."""
         azure_client = AzureStorageClient()
 
@@ -190,7 +189,7 @@ class DocumentReader:
             extraction_metadata={},
         )
 
-    async def _read_pdf(self, file_path: str) -> Tuple[str, Dict]:
+    async def _read_pdf(self, file_path: str) -> tuple[str, dict]:
         """Read PDF file using pypdf."""
         try:
             extraction_meta = {"pages_extracted": 0, "pages_failed": 0}
@@ -237,7 +236,7 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError(file_path, f"PDF reading failed: {str(e)}")
 
-    async def _read_docx(self, file_path: str) -> Tuple[str, Dict]:
+    async def _read_docx(self, file_path: str) -> tuple[str, dict]:
         """Read DOCX file using python-docx."""
         try:
             extraction_meta = {"paragraphs": 0, "tables": 0}
@@ -272,12 +271,12 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError(file_path, f"DOCX reading failed: {str(e)}")
 
-    async def _read_markdown(self, file_path: str) -> Tuple[str, Dict]:
+    async def _read_markdown(self, file_path: str) -> tuple[str, dict]:
         """Read Markdown file and convert to plain text."""
         try:
             extraction_meta = {"format": "markdown"}
 
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 md_content = file.read()
 
             # Convert markdown to HTML, then extract text
@@ -297,7 +296,7 @@ class DocumentReader:
             # Try different encodings
             for encoding in ["latin-1", "cp1252"]:
                 try:
-                    with open(file_path, "r", encoding=encoding) as file:
+                    with open(file_path, encoding=encoding) as file:
                         md_content = file.read()
 
                     html = markdown.markdown(md_content)
@@ -315,12 +314,12 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError(file_path, f"Markdown reading failed: {str(e)}")
 
-    async def _read_html(self, file_path: str) -> Tuple[str, Dict]:
+    async def _read_html(self, file_path: str) -> tuple[str, dict]:
         """Read HTML file and extract text."""
         try:
             extraction_meta = {"format": "html"}
 
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 html_content = file.read()
 
             soup = BeautifulSoup(html_content, "html.parser")
@@ -346,7 +345,7 @@ class DocumentReader:
             # Try different encodings
             for encoding in ["latin-1", "cp1252"]:
                 try:
-                    with open(file_path, "r", encoding=encoding) as file:
+                    with open(file_path, encoding=encoding) as file:
                         html_content = file.read()
 
                     soup = BeautifulSoup(html_content, "html.parser")
@@ -369,14 +368,14 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError(file_path, f"HTML reading failed: {str(e)}")
 
-    async def _read_text(self, file_path: str) -> Tuple[str, Dict]:
+    async def _read_text(self, file_path: str) -> tuple[str, dict]:
         """Read plain text file."""
         try:
             extraction_meta = {"format": "text"}
 
             # Try UTF-8 first
             try:
-                with open(file_path, "r", encoding="utf-8") as file:
+                with open(file_path, encoding="utf-8") as file:
                     text = file.read()
                 extraction_meta["encoding"] = "utf-8"
 
@@ -384,7 +383,7 @@ class DocumentReader:
                 # Try other encodings
                 for encoding in ["latin-1", "cp1252", "iso-8859-1"]:
                     try:
-                        with open(file_path, "r", encoding=encoding) as file:
+                        with open(file_path, encoding=encoding) as file:
                             text = file.read()
                         extraction_meta["encoding"] = encoding
                         break
@@ -408,7 +407,7 @@ class DocumentReader:
         self,
         blob_name: str,
         doc_type: DocumentType,
-        blob_properties: Optional[Dict],
+        blob_properties: Optional[dict],
         file_size: int,
     ) -> DocumentMetadata:
         """Extract metadata from Azure blob properties."""
@@ -436,7 +435,7 @@ class DocumentReader:
             extraction_metadata={"source": "azure_storage"},
         )
 
-    async def _read_markdown_content(self, content: str) -> Tuple[str, Dict]:
+    async def _read_markdown_content(self, content: str) -> tuple[str, dict]:
         """Read Markdown content from string."""
         try:
             extraction_meta = {"format": "markdown"}
@@ -457,7 +456,7 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError("markdown_content", f"Markdown reading failed: {str(e)}")
 
-    async def _read_html_content(self, content: str) -> Tuple[str, Dict]:
+    async def _read_html_content(self, content: str) -> tuple[str, dict]:
         """Read HTML content from string."""
         try:
             extraction_meta = {"format": "html"}
@@ -484,7 +483,7 @@ class DocumentReader:
         except Exception as e:
             raise DocumentProcessingError("html_content", f"HTML reading failed: {str(e)}")
 
-    async def _read_text_content(self, content: str) -> Tuple[str, Dict]:
+    async def _read_text_content(self, content: str) -> tuple[str, dict]:
         """Read plain text content from string."""
         try:
             extraction_meta = {"format": "text", "encoding": "utf-8"}

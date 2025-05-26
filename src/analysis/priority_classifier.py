@@ -1,9 +1,8 @@
 from collections import defaultdict
-from typing import Dict, List
 
 import structlog
 
-from src.models.scoring import ScoringResult, PriorityLevel
+from src.models.scoring import PriorityLevel, ScoringResult
 
 logger = structlog.get_logger()
 
@@ -21,8 +20,8 @@ class PriorityClassifier:
         }
 
     def classify_by_priority(
-        self, scoring_results: List[ScoringResult]
-    ) -> Dict[PriorityLevel, List[ScoringResult]]:
+        self, scoring_results: list[ScoringResult]
+    ) -> dict[PriorityLevel, list[ScoringResult]]:
         """Classify documents into priority levels."""
         try:
             logger.info("Classifying documents by priority", document_count=len(scoring_results))
@@ -61,8 +60,8 @@ class PriorityClassifier:
             return PriorityLevel.INFORMATIONAL
 
     def get_priority_summary(
-        self, priority_groups: Dict[PriorityLevel, List[ScoringResult]]
-    ) -> Dict[str, any]:
+        self, priority_groups: dict[PriorityLevel, list[ScoringResult]]
+    ) -> dict[str, any]:
         """Get summary statistics for priority groups."""
         summary = {
             "total_documents": sum(len(docs) for docs in priority_groups.values()),
@@ -97,8 +96,8 @@ class PriorityClassifier:
         return summary
 
     def filter_by_threshold(
-        self, scoring_results: List[ScoringResult], threshold: float
-    ) -> List[ScoringResult]:
+        self, scoring_results: list[ScoringResult], threshold: float
+    ) -> list[ScoringResult]:
         """Filter documents by score threshold."""
         filtered = [result for result in scoring_results if result.master_score >= threshold]
 
@@ -112,8 +111,8 @@ class PriorityClassifier:
         return filtered
 
     def filter_by_confidence(
-        self, scoring_results: List[ScoringResult], min_confidence: float
-    ) -> List[ScoringResult]:
+        self, scoring_results: list[ScoringResult], min_confidence: float
+    ) -> list[ScoringResult]:
         """Filter documents by confidence threshold."""
         filtered = [
             result for result in scoring_results if result.confidence_score >= min_confidence

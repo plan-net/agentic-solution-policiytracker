@@ -1,16 +1,15 @@
+import hashlib
 import re
 import unicodedata
-import json
-import hashlib
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Optional
 
 import structlog
 
 from src.config import settings
+from src.integrations.azure_storage import AzureStorageClient
 from src.models.content import ProcessedContent
 from src.processors.document_reader import DocumentReader
-from src.integrations.azure_storage import AzureStorageClient
 from src.utils.exceptions import DocumentProcessingError
 
 logger = structlog.get_logger()
@@ -115,7 +114,7 @@ class ContentProcessor:
 
         return text
 
-    def _extract_sections(self, text: str) -> List[Dict[str, str]]:
+    def _extract_sections(self, text: str) -> list[dict[str, str]]:
         """Extract document sections based on headers and structure."""
         sections = []
 
@@ -248,7 +247,7 @@ class ContentProcessor:
         else:
             return "en"  # Default to English
 
-    def extract_metadata_keywords(self, text: str) -> List[str]:
+    def extract_metadata_keywords(self, text: str) -> list[str]:
         """Extract potential keywords from text."""
         if not text:
             return []

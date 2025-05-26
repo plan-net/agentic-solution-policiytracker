@@ -1,11 +1,11 @@
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any
 
 import structlog
 
-from src.models.scoring import ScoringResult, PriorityLevel
-from src.models.report import PriorityQueue
 from src.analysis.priority_classifier import PriorityClassifier
+from src.models.report import PriorityQueue
+from src.models.scoring import PriorityLevel, ScoringResult
 
 logger = structlog.get_logger()
 
@@ -16,7 +16,7 @@ class ResultAggregator:
     def __init__(self):
         self.priority_classifier = PriorityClassifier()
 
-    def group_by_priority(self, scoring_results: List[ScoringResult]) -> List[PriorityQueue]:
+    def group_by_priority(self, scoring_results: list[ScoringResult]) -> list[PriorityQueue]:
         """Group scoring results by priority level."""
         try:
             logger.info("Grouping results by priority", document_count=len(scoring_results))
@@ -48,7 +48,7 @@ class ResultAggregator:
             logger.error("Priority grouping failed", error=str(e))
             raise
 
-    def calculate_aggregate_metrics(self, scoring_results: List[ScoringResult]) -> Dict[str, Any]:
+    def calculate_aggregate_metrics(self, scoring_results: list[ScoringResult]) -> dict[str, Any]:
         """Calculate aggregate metrics across all results."""
         if not scoring_results:
             return self._empty_metrics()
@@ -77,7 +77,7 @@ class ResultAggregator:
 
         return metrics
 
-    def _empty_metrics(self) -> Dict[str, Any]:
+    def _empty_metrics(self) -> dict[str, Any]:
         """Return empty metrics structure."""
         return {
             "total_documents": 0,
@@ -94,8 +94,8 @@ class ResultAggregator:
         }
 
     def _calculate_priority_distribution(
-        self, scoring_results: List[ScoringResult]
-    ) -> Dict[str, int]:
+        self, scoring_results: list[ScoringResult]
+    ) -> dict[str, int]:
         """Calculate distribution of documents across priority levels."""
         distribution = defaultdict(int)
 
@@ -104,7 +104,7 @@ class ResultAggregator:
 
         return dict(distribution)
 
-    def _analyze_dimensions(self, scoring_results: List[ScoringResult]) -> Dict[str, Any]:
+    def _analyze_dimensions(self, scoring_results: list[ScoringResult]) -> dict[str, Any]:
         """Analyze dimension scores across all documents."""
         dimension_stats = defaultdict(list)
 
@@ -127,7 +127,7 @@ class ResultAggregator:
 
         return analysis
 
-    def _calculate_processing_stats(self, scoring_results: List[ScoringResult]) -> Dict[str, float]:
+    def _calculate_processing_stats(self, scoring_results: list[ScoringResult]) -> dict[str, float]:
         """Calculate processing time statistics."""
         processing_times = [
             result.processing_time_ms for result in scoring_results if result.processing_time_ms > 0
@@ -141,7 +141,7 @@ class ResultAggregator:
             "average_time_ms": round(sum(processing_times) / len(processing_times), 2),
         }
 
-    def generate_insights(self, scoring_results: List[ScoringResult]) -> List[str]:
+    def generate_insights(self, scoring_results: list[ScoringResult]) -> list[str]:
         """Generate insights based on aggregate analysis."""
         insights = []
 
@@ -194,7 +194,7 @@ class ResultAggregator:
 
         return insights
 
-    def generate_recommendations(self, scoring_results: List[ScoringResult]) -> List[str]:
+    def generate_recommendations(self, scoring_results: list[ScoringResult]) -> list[str]:
         """Generate action recommendations based on results."""
         recommendations = []
 

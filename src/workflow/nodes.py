@@ -1,23 +1,20 @@
 import os
 import time
 from datetime import datetime
-from typing import Dict, List
 
-import yaml
 import structlog
+import yaml
 
+from src.analysis.aggregator import ResultAggregator
+from src.analysis.topic_clusterer import TopicClusterer
 from src.config import settings
-from src.models.content import ProcessedContent
-from src.models.scoring import ScoringResult
+from src.integrations.azure_storage import AzureStorageClient
+from src.output.report_generator import ReportGenerator
 from src.processors.batch_loader import BatchDocumentLoader
 from src.processors.content_processor import ContentProcessor
 from src.scoring.hybrid_engine import HybridScoringEngine
-from src.analysis.topic_clusterer import TopicClusterer
-from src.analysis.aggregator import ResultAggregator
-from src.output.report_generator import ReportGenerator
-from src.integrations.azure_storage import AzureStorageClient
 from src.utils.exceptions import WorkflowError
-from src.utils.validators import validate_directory_exists, validate_context_file
+from src.utils.validators import validate_context_file, validate_directory_exists
 from src.workflow.state import WorkflowState
 
 logger = structlog.get_logger()
@@ -109,7 +106,7 @@ async def load_context(state: WorkflowState) -> WorkflowState:
             validate_context_file(context_file)
 
             # Load YAML context from local file
-            with open(context_file, "r", encoding="utf-8") as f:
+            with open(context_file, encoding="utf-8") as f:
                 context_data = yaml.safe_load(f)
 
         # Validate required fields
@@ -181,7 +178,7 @@ async def process_documents(state: WorkflowState) -> WorkflowState:
                     }
                 )
                 logger.warning(
-                    f"Failed to process document",
+                    "Failed to process document",
                     job_id=state.job_id,
                     file_path=file_path,
                     error=str(e),
@@ -200,7 +197,7 @@ async def process_documents(state: WorkflowState) -> WorkflowState:
         state.failed_documents = failed_docs
 
         logger.info(
-            f"Document processing completed",
+            "Document processing completed",
             job_id=state.job_id,
             processed=len(processed_docs),
             failed=len(failed_docs),
@@ -246,7 +243,7 @@ async def score_documents(state: WorkflowState) -> WorkflowState:
 
             except Exception as e:
                 logger.warning(
-                    f"Failed to score document",
+                    "Failed to score document",
                     job_id=state.job_id,
                     document_id=document.id,
                     error=str(e),
@@ -255,7 +252,7 @@ async def score_documents(state: WorkflowState) -> WorkflowState:
 
         state.scoring_results = scoring_results
 
-        logger.info(f"Document scoring completed", job_id=state.job_id, scored=len(scoring_results))
+        logger.info("Document scoring completed", job_id=state.job_id, scored=len(scoring_results))
 
         return state
 
@@ -281,7 +278,9 @@ async def cluster_results(state: WorkflowState) -> WorkflowState:
 
         # Topic clustering with context
         clusterer = TopicClusterer()
-        topic_clusters = await clusterer.cluster_by_topic(state.scoring_results, state.context, state.job_id)
+        topic_clusters = await clusterer.cluster_by_topic(
+            state.scoring_results, state.context, state.job_id
+        )
 
         # Result aggregation
         aggregator = ResultAggregator()
@@ -296,7 +295,7 @@ async def cluster_results(state: WorkflowState) -> WorkflowState:
         }
 
         logger.info(
-            f"Result clustering completed", job_id=state.job_id, clusters=len(topic_clusters)
+            "Result clustering completed", job_id=state.job_id, clusters=len(topic_clusters)
         )
 
         return state

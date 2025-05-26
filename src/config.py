@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -91,7 +91,7 @@ class Settings(BaseSettings):
     AZURE_OUTPUT_PATH: str = Field(default="output", description="Azure output blob path")
 
     @property
-    def dimension_weights(self) -> Dict[str, float]:
+    def dimension_weights(self) -> dict[str, float]:
         return {
             "direct_impact": self.DIRECT_IMPACT_WEIGHT,
             "industry_relevance": self.INDUSTRY_RELEVANCE_WEIGHT,

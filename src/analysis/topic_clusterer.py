@@ -1,15 +1,14 @@
 import re
 from collections import Counter, defaultdict
-from typing import Dict, List, Set, Optional
+from typing import Optional
 
 import structlog
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
-import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-from src.models.scoring import ScoringResult
-from src.models.report import TopicCluster
 from src.llm.langchain_service import langchain_llm_service
+from src.models.report import TopicCluster
+from src.models.scoring import ScoringResult
 
 logger = structlog.get_logger()
 
@@ -21,7 +20,12 @@ class TopicClusterer:
         self.max_clusters = max_clusters
         self.min_cluster_size = min_cluster_size
 
-    async def cluster_by_topic(self, scoring_results: List[ScoringResult], context: Optional[Dict] = None, job_id: Optional[str] = None) -> List[TopicCluster]:
+    async def cluster_by_topic(
+        self,
+        scoring_results: list[ScoringResult],
+        context: Optional[dict] = None,
+        job_id: Optional[str] = None,
+    ) -> list[TopicCluster]:
         """Cluster documents by identified topics using ML and LLM insights."""
         try:
             logger.info("Starting topic clustering", document_count=len(scoring_results))
@@ -48,8 +52,10 @@ class TopicClusterer:
                 documents_text.append(combined_text)
 
             # Try LLM-based clustering first
-            llm_clusters = await self._perform_llm_clustering(documents_text, scoring_results, context, job_id)
-            
+            llm_clusters = await self._perform_llm_clustering(
+                documents_text, scoring_results, context, job_id
+            )
+
             if llm_clusters:
                 logger.info(f"Using LLM-based clustering with {len(llm_clusters)} clusters")
                 clusters = llm_clusters
@@ -62,7 +68,9 @@ class TopicClusterer:
             topic_clusters = []
             for cluster_id, cluster_docs in clusters.items():
                 if len(cluster_docs) >= self.min_cluster_size:
-                    topic_cluster = await self._create_topic_cluster(cluster_id, cluster_docs, context)
+                    topic_cluster = await self._create_topic_cluster(
+                        cluster_id, cluster_docs, context
+                    )
                     topic_clusters.append(topic_cluster)
 
             # Sort clusters by average score (highest first)
@@ -77,8 +85,8 @@ class TopicClusterer:
             return self._create_single_cluster(scoring_results)
 
     def _perform_text_clustering(
-        self, documents_text: List[str], scoring_results: List[ScoringResult]
-    ) -> Dict[int, List[ScoringResult]]:
+        self, documents_text: list[str], scoring_results: list[ScoringResult]
+    ) -> dict[int, list[ScoringResult]]:
         """Perform text-based clustering using TF-IDF and K-means."""
         try:
             # Determine optimal number of clusters
@@ -107,8 +115,8 @@ class TopicClusterer:
             return self._fallback_clustering(scoring_results)
 
     def _fallback_clustering(
-        self, scoring_results: List[ScoringResult]
-    ) -> Dict[int, List[ScoringResult]]:
+        self, scoring_results: list[ScoringResult]
+    ) -> dict[int, list[ScoringResult]]:
         """Fallback clustering based on scoring dimensions."""
         clusters = defaultdict(list)
 
@@ -124,8 +132,12 @@ class TopicClusterer:
         return dict(clusters)
 
     async def _perform_llm_clustering(
-        self, documents_text: List[str], scoring_results: List[ScoringResult], context: Optional[Dict] = None, job_id: Optional[str] = None
-    ) -> Optional[Dict[int, List[ScoringResult]]]:
+        self,
+        documents_text: list[str],
+        scoring_results: list[ScoringResult],
+        context: Optional[dict] = None,
+        job_id: Optional[str] = None,
+    ) -> Optional[dict[int, list[ScoringResult]]]:
         """Perform LLM-based topic clustering."""
         try:
             if not langchain_llm_service.enabled:
@@ -138,23 +150,33 @@ class TopicClusterer:
                     "index": i,
                     "score": result.master_score,
                     "key_evidence": text[:500] + "..." if len(text) > 500 else text,
-                    "top_dimension": max(result.dimension_scores.items(), key=lambda x: x[1].score)[0] if result.dimension_scores else "unknown"
+                    "top_dimension": max(result.dimension_scores.items(), key=lambda x: x[1].score)[
+                        0
+                    ]
+                    if result.dimension_scores
+                    else "unknown",
                 }
                 document_summaries.append(summary)
 
             # langchain_service handles prompts internally
 
             # Call LLM service for topic analysis
-            topic_analyses = await langchain_llm_service.analyze_topics_batch(documents_text, context or {}, session_id=job_id)
-            
+            topic_analyses = await langchain_llm_service.analyze_topics_batch(
+                documents_text, context or {}, session_id=job_id
+            )
+
             if not topic_analyses:
                 return None
 
             # Convert LLM results to clusters
             clusters = {}
             for i, analysis in enumerate(topic_analyses):
-                if hasattr(analysis, 'topic_name') and hasattr(analysis, 'document_indices'):
-                    cluster_docs = [scoring_results[idx] for idx in analysis.document_indices if idx < len(scoring_results)]
+                if hasattr(analysis, "topic_name") and hasattr(analysis, "document_indices"):
+                    cluster_docs = [
+                        scoring_results[idx]
+                        for idx in analysis.document_indices
+                        if idx < len(scoring_results)
+                    ]
                     if cluster_docs:
                         clusters[i] = cluster_docs
 
@@ -165,7 +187,7 @@ class TopicClusterer:
             return None
 
     async def _create_topic_cluster(
-        self, cluster_id: int, cluster_docs: List[ScoringResult], context: Optional[Dict] = None
+        self, cluster_id: int, cluster_docs: list[ScoringResult], context: Optional[dict] = None
     ) -> TopicCluster:
         """Create a TopicCluster from grouped documents."""
 
@@ -187,7 +209,9 @@ class TopicClusterer:
             key_themes=key_themes,
         )
 
-    def _identify_topic(self, cluster_docs: List[ScoringResult], context: Optional[Dict] = None) -> tuple[str, str]:
+    def _identify_topic(
+        self, cluster_docs: list[ScoringResult], context: Optional[dict] = None
+    ) -> tuple[str, str]:
         """Identify topic name and description from cluster documents."""
 
         # Collect all evidence and justifications
@@ -220,7 +244,7 @@ class TopicClusterer:
 
         return topic_name, topic_description
 
-    def _extract_key_phrases(self, text: str) -> List[str]:
+    def _extract_key_phrases(self, text: str) -> list[str]:
         """Extract key phrases from text."""
         # Simple phrase extraction based on common patterns
         phrases = []
@@ -245,7 +269,7 @@ class TopicClusterer:
         phrase_counts = Counter(phrases)
         return [phrase for phrase, _ in phrase_counts.most_common(10)]
 
-    def _extract_key_themes(self, cluster_docs: List[ScoringResult]) -> List[str]:
+    def _extract_key_themes(self, cluster_docs: list[ScoringResult]) -> list[str]:
         """Extract key themes from cluster documents."""
         themes = []
 
@@ -274,7 +298,7 @@ class TopicClusterer:
         theme_counts = Counter(themes)
         return [theme for theme, _ in theme_counts.most_common(5)]
 
-    def _create_single_cluster(self, scoring_results: List[ScoringResult]) -> List[TopicCluster]:
+    def _create_single_cluster(self, scoring_results: list[ScoringResult]) -> list[TopicCluster]:
         """Create a single cluster when clustering is not possible."""
         if not scoring_results:
             return []

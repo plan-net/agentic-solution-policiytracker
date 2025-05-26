@@ -1,5 +1,4 @@
 import statistics
-from typing import Dict, List
 
 from src.models.content import ProcessedContent
 from src.models.scoring import DimensionScore
@@ -10,7 +9,7 @@ class ConfidenceCalculator:
 
     @staticmethod
     def calculate_confidence(
-        document: ProcessedContent, dimension_scores: Dict[str, DimensionScore]
+        document: ProcessedContent, dimension_scores: dict[str, DimensionScore]
     ) -> float:
         """Calculate overall confidence score (0-1)."""
 
@@ -62,8 +61,8 @@ class ConfidenceCalculator:
 
     @staticmethod
     def get_confidence_factors(
-        document: ProcessedContent, dimension_scores: Dict[str, DimensionScore]
-    ) -> Dict[str, float]:
+        document: ProcessedContent, dimension_scores: dict[str, DimensionScore]
+    ) -> dict[str, float]:
         """Get detailed confidence factors for debugging."""
 
         text_length_factor = min(document.word_count / 500, 1.0)

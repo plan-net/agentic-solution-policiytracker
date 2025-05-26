@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 import structlog
 
@@ -82,7 +82,7 @@ class MarkdownFormatter:
             return f"{hours:.1f} hours"
 
     @staticmethod
-    def create_table(headers: List[str], rows: List[List[str]]) -> str:
+    def create_table(headers: list[str], rows: list[list[str]]) -> str:
         """Create markdown table from headers and rows."""
         if not headers or not rows:
             return ""
@@ -106,7 +106,7 @@ class MarkdownFormatter:
         return "\n".join(table_lines)
 
     @staticmethod
-    def format_evidence_list(evidence_snippets: List[str], max_snippets: int = 3) -> str:
+    def format_evidence_list(evidence_snippets: list[str], max_snippets: int = 3) -> str:
         """Format evidence snippets as markdown list."""
         if not evidence_snippets:
             return "*No specific evidence available*"
@@ -125,7 +125,7 @@ class MarkdownFormatter:
         return "\n".join(formatted_snippets)
 
     @staticmethod
-    def format_dimension_scores(dimension_scores: Dict[str, Any]) -> str:
+    def format_dimension_scores(dimension_scores: dict[str, Any]) -> str:
         """Format dimension scores as markdown list."""
         if not dimension_scores:
             return "*No scoring dimensions available*"
@@ -181,7 +181,7 @@ class MarkdownFormatter:
         return sanitized
 
     @staticmethod
-    def format_metadata_table(metadata: Dict[str, Any]) -> str:
+    def format_metadata_table(metadata: dict[str, Any]) -> str:
         """Format metadata as markdown table."""
         if not metadata:
             return "*No metadata available*"
