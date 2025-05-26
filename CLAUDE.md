@@ -29,3 +29,4 @@ AI-powered document analysis system for political and regulatory monitoring.
 - **Admin Panel**: http://localhost:3370 (admin/admin)
 - **Main Commands**: `just dev`, `just dev-quick`, `just test`
 - **Logs**: `just kodosumi-logs`
+- **Custom Commands**: `/deploy`, `/status`, `/test [scope]`
