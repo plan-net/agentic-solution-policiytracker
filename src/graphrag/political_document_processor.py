@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from graphiti_core import Graphiti
+from graphiti_core.nodes import EpisodeType
 from pydantic import BaseModel, Field
 
 from src.llm.base_client import BaseLLMClient
@@ -30,6 +31,63 @@ from .political_schema_v2 import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# Custom Entity Types for Graphiti (following documentation pattern)
+class Policy(BaseModel):
+    """High-level laws, acts, directives, and policy frameworks that establish regulatory requirements"""
+    policy_name: str = Field(..., description="The name of the policy")
+    jurisdiction: str | None = Field(None, description="Primary jurisdiction where policy applies")
+    status: str | None = Field(None, description="Current status (draft, enacted, implemented, etc.)")
+    effective_date: str | None = Field(None, description="When the policy becomes effective")
+
+
+class Company(BaseModel):
+    """Business entities, corporations, and commercial organizations affected by regulations"""
+    company_name: str = Field(..., description="The company name")
+    sector: str | None = Field(None, description="Industry sector (technology, finance, etc.)")
+    jurisdiction: str | None = Field(None, description="Primary jurisdiction of operations")
+    size: str | None = Field(None, description="Company size (startup, SME, large enterprise)")
+
+
+class Politician(BaseModel):
+    """Individual political figures, elected officials, and government representatives"""
+    politician_name: str = Field(..., description="The politician's name")
+    position: str | None = Field(None, description="Current political position or title")
+    party: str | None = Field(None, description="Political party affiliation")
+    jurisdiction: str | None = Field(None, description="Jurisdiction they represent")
+
+
+class GovernmentAgency(BaseModel):
+    """Government departments, regulatory bodies, and enforcement agencies"""
+    agency_name: str = Field(..., description="The agency name")
+    jurisdiction: str | None = Field(None, description="Jurisdiction of authority")
+    authority_type: str | None = Field(None, description="Type of authority (regulatory, enforcement, advisory)")
+    parent_department: str | None = Field(None, description="Parent government department if applicable")
+
+
+class Regulation(BaseModel):
+    """Implementing rules, technical standards, and detailed regulatory requirements"""
+    regulation_name: str = Field(..., description="The regulation name")
+    regulation_number: str | None = Field(None, description="Official regulation number or code")
+    parent_policy: str | None = Field(None, description="Parent policy or act this implements")
+    compliance_deadline: str | None = Field(None, description="Deadline for compliance")
+
+
+class LobbyGroup(BaseModel):
+    """Industry associations, advocacy groups, and lobbying organizations"""
+    organization_name: str = Field(..., description="The organization name")
+    industry_focus: str | None = Field(None, description="Primary industry focus")
+    advocacy_position: str | None = Field(None, description="General advocacy position (pro/against regulation)")
+    jurisdiction: str | None = Field(None, description="Primary jurisdiction of operations")
+
+
+class LegalFramework(BaseModel):
+    """Constitutional provisions, treaties, and foundational legal structures"""
+    framework_name: str = Field(..., description="The legal framework name")
+    framework_type: str | None = Field(None, description="Type (constitution, treaty, convention)")
+    jurisdiction: str | None = Field(None, description="Applicable jurisdiction")
+    binding_level: str | None = Field(None, description="Binding level (constitutional, statutory, regulatory)")
 
 
 class ProcessingResult(BaseModel):
@@ -125,6 +183,7 @@ class PoliticalDocumentProcessor:
     async def __aenter__(self):
         """Async context manager entry - initialize Graphiti client."""
         try:
+            # Initialize Graphiti (entity types will be passed to add_episode)
             self.graphiti_client = Graphiti(
                 self.graphiti_config.neo4j_uri,
                 self.graphiti_config.neo4j_user,
@@ -170,14 +229,10 @@ class PoliticalDocumentProcessor:
                 document_path
             )
 
-            # Step 2: Extract entities and relationships using LLM
-            extraction_result = await self._extract_entities_and_relationships(
-                document_content, document_metadata
-            )
-
-            # Step 3: Create structured episode for Graphiti
+            # Step 2: Create episode content with full document (Approach A)
+            # Let Graphiti handle entity extraction with our custom types
             episode_content = await self._create_episode_content(
-                document_content, document_metadata, extraction_result
+                document_content, document_metadata, None
             )
 
             # Step 4: Store episode in Graphiti
@@ -185,11 +240,11 @@ class PoliticalDocumentProcessor:
                 episode_content, document_metadata
             )
 
-            # Step 5: Update processing result
+            # Step 4: Update processing result
             processing_time = (datetime.now() - start_time).total_seconds()
 
             result.episode_id = episode_result.episode.uuid
-            result.entities_extracted = len(episode_result.nodes)
+            result.entities_extracted = len(episode_result.nodes) if episode_result.nodes else 0
             result.relationships_extracted = (
                 len(episode_result.episode.entity_edges)
                 if episode_result.episode.entity_edges
@@ -197,10 +252,9 @@ class PoliticalDocumentProcessor:
             )
             result.processing_time_seconds = processing_time
             result.success = True
-            result.extraction_confidence = extraction_result.extraction_confidence
-            result.business_impact_level = extraction_result.processing_metadata.get(
-                "business_impact_level"
-            )
+            # For Approach A, we let Graphiti handle extraction so no confidence scores from our extraction
+            result.extraction_confidence = None
+            result.business_impact_level = "unknown"  # Will be determined by Graphiti's extraction
 
             logger.info(
                 f"Successfully processed {document_path}: "
@@ -319,34 +373,21 @@ class PoliticalDocumentProcessor:
             raise DocumentProcessingError(metadata.source, f"Entity extraction failed: {e}")
 
     async def _create_episode_content(
-        self, content: str, metadata: DocumentMetadata, extraction_result: ExtractionResult
+        self, content: str, metadata: DocumentMetadata, extraction_result: Optional[ExtractionResult]
     ) -> str:
-        """Create structured episode content optimized for Graphiti ingestion."""
+        """Create episode content with full document for Graphiti's custom entity extraction."""
         try:
-            # Generate episode name following convention
+            # For Approach A: Send full document content to Graphiti
+            # Let Graphiti do the chunking, embedding, and extraction with our custom entity types
+            
+            # Add minimal metadata header to help with context
             doc_date = metadata.modified_at or datetime.now()
-            episode_name = self._generate_episode_name(metadata.source, doc_date)
-
-            # Structure episode content
-            episode_content = f"""
-POLITICAL DOCUMENT ANALYSIS
-Title: {metadata.source}
+            
+            episode_content = f"""POLITICAL DOCUMENT: {metadata.source}
 Date: {doc_date.strftime('%Y-%m-%d')}
 Type: Political/Regulatory Document
-Source: Document Processing Pipeline
 
-DOCUMENT CONTENT:
-{content}
-
-EXTRACTED METADATA:
-Entities Found: {len(extraction_result.entities)}
-Relationships Found: {len(extraction_result.relationships)}
-Extraction Confidence: {extraction_result.extraction_confidence:.2f}
-Business Impact Level: {extraction_result.processing_metadata.get('business_impact_level', 'Unknown')}
-Key Policy Areas: {extraction_result.processing_metadata.get('affected_industries', [])}
-Key Dates: {extraction_result.processing_metadata.get('key_dates', [])}
-Jurisdictions: {extraction_result.processing_metadata.get('jurisdiction_focus', 'Unknown')}
-            """.strip()
+{content}"""
 
             return episode_content
 
@@ -366,7 +407,7 @@ Jurisdictions: {extraction_result.processing_metadata.get('jurisdiction_focus', 
         return f"political_doc_{clean_name}_{timestamp}"
 
     async def _store_episode_in_graphiti(self, episode_content: str, metadata: DocumentMetadata):
-        """Store structured episode in Graphiti temporal knowledge graph."""
+        """Store structured episode in Graphiti temporal knowledge graph with custom entity types."""
         try:
             if not self.graphiti_client:
                 raise ConfigurationError("graphiti", "Graphiti client not initialized")
@@ -379,16 +420,29 @@ Jurisdictions: {extraction_result.processing_metadata.get('jurisdiction_focus', 
             # Generate episode name
             episode_name = self._generate_episode_name(metadata.source, reference_time)
 
-            # Create episode in Graphiti
+            # Define custom entity types for this episode
+            entity_types = {
+                "Policy": Policy,
+                "Company": Company,
+                "Politician": Politician,
+                "GovernmentAgency": GovernmentAgency,
+                "Regulation": Regulation,
+                "LobbyGroup": LobbyGroup,
+                "LegalFramework": LegalFramework,
+            }
+
+            # Create episode in Graphiti with custom entity types
             result = await self.graphiti_client.add_episode(
                 name=episode_name,
                 episode_body=episode_content,
-                source="text",
                 source_description=f"Political document: {metadata.source}",
                 reference_time=reference_time,
+                source=EpisodeType.text,
+                group_id=self.graphiti_config.group_id,
+                entity_types=entity_types,
             )
 
-            logger.info(f"Created Graphiti episode: {episode_name} (ID: {result.episode.uuid})")
+            logger.info(f"Created Graphiti episode with custom entity types: {episode_name} (ID: {result.episode.uuid})")
             return result
 
         except Exception as e:
