@@ -47,47 +47,52 @@ class DocumentReader:
 
     async def _read_document_local(self, file_path: str) -> tuple[str, DocumentMetadata]:
         """Read document from local filesystem."""
+        # Convert to string in case we received a Path object
+        file_path_str = str(file_path)
+
         # Validate file
-        if not os.path.exists(file_path):
-            raise DocumentProcessingError(file_path, "File does not exist")
+        if not os.path.exists(file_path_str):
+            raise DocumentProcessingError(file_path_str, "File does not exist")
 
-        if not validate_file_extension(file_path, self.supported_extensions):
-            raise DocumentProcessingError(file_path, "Unsupported file format")
+        if not validate_file_extension(file_path_str, self.supported_extensions):
+            raise DocumentProcessingError(file_path_str, "Unsupported file format")
 
-        if not validate_file_size(file_path, self.max_size_mb):
-            raise DocumentProcessingError(file_path, f"File too large (>{self.max_size_mb}MB)")
+        if not validate_file_size(file_path_str, self.max_size_mb):
+            raise DocumentProcessingError(file_path_str, f"File too large (>{self.max_size_mb}MB)")
 
         # Determine document type
-        extension = os.path.splitext(file_path)[1].lower()
+        extension = os.path.splitext(file_path_str)[1].lower()
         doc_type = self._get_document_type(extension)
 
         # Extract metadata
-        metadata = self._extract_base_metadata(file_path, doc_type)
+        metadata = self._extract_base_metadata(file_path_str, doc_type)
 
         # Extract text based on type
         if doc_type == DocumentType.PDF:
-            text, extraction_meta = await self._read_pdf(file_path)
+            text, extraction_meta = await self._read_pdf(file_path_str)
         elif doc_type == DocumentType.DOCX:
-            text, extraction_meta = await self._read_docx(file_path)
+            text, extraction_meta = await self._read_docx(file_path_str)
         elif doc_type in [DocumentType.MARKDOWN]:
-            text, extraction_meta = await self._read_markdown(file_path)
+            text, extraction_meta = await self._read_markdown(file_path_str)
         elif doc_type == DocumentType.HTML:
-            text, extraction_meta = await self._read_html(file_path)
+            text, extraction_meta = await self._read_html(file_path_str)
         elif doc_type == DocumentType.TXT:
-            text, extraction_meta = await self._read_text(file_path)
+            text, extraction_meta = await self._read_text(file_path_str)
         else:
-            raise DocumentProcessingError(file_path, f"No reader for type: {doc_type}")
+            raise DocumentProcessingError(file_path_str, f"No reader for type: {doc_type}")
 
         # Update metadata with extraction info
         metadata.extraction_metadata = extraction_meta
 
         # Validate extracted text
         if not text or len(text.strip()) < 10:
-            raise DocumentProcessingError(file_path, "No meaningful text content extracted")
+            raise DocumentProcessingError(file_path_str, "No meaningful text content extracted")
 
         # Truncate if too long (1MB text limit)
         if len(text) > 1024 * 1024:
-            logger.warning("Text content truncated", file_path=file_path, original_length=len(text))
+            logger.warning(
+                "Text content truncated", file_path=file_path_str, original_length=len(text)
+            )
             text = text[: 1024 * 1024] + "\n\n[Content truncated due to size limit]"
             metadata.extraction_metadata["truncated"] = True
 
@@ -177,12 +182,14 @@ class DocumentReader:
 
     def _extract_base_metadata(self, file_path: str, doc_type: DocumentType) -> DocumentMetadata:
         """Extract basic file metadata."""
-        stat = os.stat(file_path)
+        # Convert to string in case we received a Path object
+        file_path_str = str(file_path)
+        stat = os.stat(file_path_str)
 
         return DocumentMetadata(
-            source=os.path.basename(file_path),
+            source=os.path.basename(file_path_str),
             type=doc_type,
-            file_path=file_path,
+            file_path=file_path_str,
             file_size_bytes=stat.st_size,
             created_at=datetime.fromtimestamp(stat.st_ctime),
             modified_at=datetime.fromtimestamp(stat.st_mtime),
