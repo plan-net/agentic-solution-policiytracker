@@ -452,6 +452,7 @@ async def process_graphrag_analysis(state: WorkflowState) -> WorkflowState:
                 query_results=basic_search_results,
                 company_context=company_context,
                 query_topic=search_query,
+                session_id=state.job_id,
             )
             state.graphrag_entity_analysis = entity_analysis
 
@@ -467,9 +468,10 @@ async def process_graphrag_analysis(state: WorkflowState) -> WorkflowState:
             # Relationship insights generation
             logger.info("Generating GraphRAG relationship insights", job_id=state.job_id)
             relationship_insights = await builder.generate_relationship_insights(
-                graph_traversal_results=graph_traversal_results,
+                query_results=basic_search_results,
                 company_context=company_context,
-                time_horizon="6-12 months",
+                query_topic=search_query,
+                session_id=state.job_id,
             )
             state.graphrag_relationship_insights = relationship_insights
 
@@ -489,20 +491,22 @@ async def process_graphrag_analysis(state: WorkflowState) -> WorkflowState:
                 traditional_results = {
                     "method": "hybrid_scoring_engine",
                     "total_documents": len(state.scoring_results),
-                    "average_relevance": sum(r.relevance_score for r in state.scoring_results)
+                    "average_relevance": sum(r.master_score for r in state.scoring_results)
                     / len(state.scoring_results),
-                    "average_confidence": sum(r.confidence for r in state.scoring_results)
+                    "average_confidence": sum(r.confidence_score for r in state.scoring_results)
                     / len(state.scoring_results),
-                    "key_findings": [r.document.title for r in state.scoring_results[:5]],
+                    "key_findings": [r.document_id for r in state.scoring_results[:5]],
                     "scoring_dimensions": ["relevance", "priority", "sentiment", "urgency"],
                 }
 
                 comparative_analysis = await builder.compare_with_traditional_analysis(
+                    graphrag_results={
+                        "entity_analysis": entity_analysis,
+                        "relationship_insights": relationship_insights,
+                    },
                     traditional_results=traditional_results,
-                    graphrag_entity_analysis=entity_analysis,
-                    graphrag_relationship_insights=relationship_insights,
-                    analysis_topic=search_query,
                     company_context=company_context,
+                    session_id=state.job_id,
                 )
                 state.graphrag_comparative_analysis = comparative_analysis
 
