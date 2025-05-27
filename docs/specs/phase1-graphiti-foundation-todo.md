@@ -12,7 +12,7 @@ Set up Neo4j + Graphiti infrastructure and test temporal queries with sample pol
 
 ### 1.1 Neo4j Setup
 - [x] Neo4j service already in `docker-compose.yml` ✓
-  - [x] Neo4j 5.20 Enterprise configured
+  - [x] Neo4j 5.26 Enterprise configured (required for MCP compatibility)
   - [x] Ports: 7474 (browser), 7687 (bolt)
   - [x] Password: neo4j/password123
   - [x] APOC and GDS plugins enabled
@@ -61,7 +61,7 @@ Set up Neo4j + Graphiti infrastructure and test temporal queries with sample pol
   - [x] Set up proper authentication ✓
 - [x] Update `CLAUDE.md` with MCP setup instructions ✓
 - [x] Create `.claude/mcp-patterns.md` documentation ✓
-- [ ] Test Claude Code can connect to both servers (after Docker setup)
+- [x] Test Claude Code can connect to both servers ✓
 
 ### 1.5 MCP Server Configuration
 - [x] Add MCP server settings to `.env` ✓

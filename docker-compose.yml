@@ -65,7 +65,7 @@ services:
 
   # Neo4j - Graph database for GraphRAG
   neo4j:
-    image: neo4j:5.20-enterprise
+    image: neo4j:5.26-enterprise
     container_name: policiytracker-neo4j
     ports:
       - "7474:7474"  # HTTP/Browser

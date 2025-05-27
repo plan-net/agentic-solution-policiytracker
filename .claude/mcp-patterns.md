@@ -69,7 +69,7 @@ results = await client.search(
 
 ### Neo4j Memory MCP Server
 **Purpose**: Entity tracking with observations
-**Port**: 8766
+**Installation**: Via uvx (mcp-neo4j-memory@0.1.3)
 
 **Key Operations**:
 - `create_entity()` - Create political entities

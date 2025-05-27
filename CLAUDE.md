@@ -42,7 +42,7 @@ AI-powered document analysis system for political and regulatory monitoring.
 
 ### Setting Up Claude Code MCP Access
 1. Ensure MCP servers are running: `docker ps | grep mcp`
-2. The `.mcp.json` file is already configured in project root
+2. Copy `.mcp.json.template` to `.mcp.json` and add your OpenAI API key
 3. Claude can directly interact with both servers when they're running
 
 ### Using MCP in Claude Code
