@@ -96,17 +96,24 @@ Key operations we'll use:
   - [ ] Test connection to MCP server
 
 ### 2.2 Define Political Schema
-- [ ] Create `src/graphrag/political_schema_v2.py`
-  - [ ] Define entity types (Policy, Politician, Organization, Event)
-  - [ ] Define relationships (PROPOSES, AFFECTS, AMENDS, etc.)
-  - [ ] Create Pydantic models for validation
+- [x] Create `src/graphrag/political_schema_v2.py` ✓
+  - [x] Define entity types (Policy, Politician, Organization, Event, Company, ComplianceObligation, etc.) ✓
+  - [x] Define relationships (AFFECTS, INFLUENCES, LOBBIES_FOR, REQUIRES_COMPLIANCE, etc.) ✓
+  - [x] Create Pydantic models for validation ✓
+- [x] Create comprehensive documentation in `docs/political-schema-v2.md` ✓
+- [x] Add validation test script `scripts/test_political_schema_v2.py` ✓
+- [x] Enhanced schema with 23 entity types and 21 relationship types for company impact analysis ✓
 
 ### 2.3 Test MCP Connection
-- [ ] Create `scripts/test_mcp_graphiti_connection.py`
-  - [ ] Test MCP server availability
-  - [ ] Test Graphiti operations via MCP
-  - [ ] Verify Neo4j connection through MCP
-  - [ ] Test basic episode creation
+- [x] Create `scripts/test_mcp_graphiti_connection.py` ✓
+  - [x] Test MCP server availability ✓
+  - [x] Test Graphiti operations via MCP ✓
+  - [x] Verify Neo4j connection through MCP ✓
+  - [x] Test basic episode creation ✓
+- [x] Create `scripts/test_mcp_direct_connection.py` for comprehensive testing ✓
+- [x] Verify both Graphiti and Neo4j Memory MCP servers working ✓
+- [x] Test political schema integration with MCP ✓
+- [x] Validate sample data preparation for Phase 3 ✓
 
 ## 3. Document Processing Pipeline
 
