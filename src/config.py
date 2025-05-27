@@ -140,6 +140,10 @@ class GraphRAGSettings(BaseSettings):
     NEO4J_PASSWORD: str = Field(default="password123", description="Neo4j password")
     NEO4J_DATABASE: str = Field(default="politicalmonitoring", description="Neo4j database name")
 
+    # MCP Server Configuration
+    GRAPHITI_MCP_HOST: str = Field(default="localhost", description="Graphiti MCP server host")
+    GRAPHITI_MCP_PORT: int = Field(default=8000, description="Graphiti MCP server port")
+
     # Embedding Configuration
     GRAPHRAG_EMBEDDING_PROVIDER: str = Field(
         default="openai", description="Embedding provider: openai or local"

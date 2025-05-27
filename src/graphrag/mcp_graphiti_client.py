@@ -2,48 +2,79 @@
 MCP Client for Graphiti temporal knowledge graph operations.
 """
 
+import asyncio
 import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime
 
-from langchain_mcp_adapters import MCPToolkit
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.tools import load_mcp_tools
 import httpx
 
-from ..config import Settings
+from ..config import GraphRAGSettings
 
 logger = logging.getLogger(__name__)
 
 class GraphitiMCPClient:
     """Client for interacting with Graphiti via MCP server."""
     
-    def __init__(self, settings: Optional[Settings] = None):
+    def __init__(self, settings: Optional[GraphRAGSettings] = None):
         """Initialize the Graphiti MCP client."""
-        self.settings = settings or Settings()
+        self.settings = settings or GraphRAGSettings()
         self.base_url = f"http://{self.settings.GRAPHITI_MCP_HOST}:{self.settings.GRAPHITI_MCP_PORT}"
         self.sse_url = f"{self.base_url}/sse"
         
-        # Initialize MCP toolkit
+        # Configure MCP client
+        self.client_config = {
+            "graphiti": {
+                "url": self.sse_url,
+                "transport": "sse"
+            }
+        }
+        
+        self.client = None
+        self.tools = None
+        logger.info(f"Configured Graphiti MCP client for {self.sse_url}")
+    
+    async def _ensure_connected(self):
+        """Ensure the MCP client is connected and tools are loaded."""
+        if self.client is None:
+            try:
+                self.client = MultiServerMCPClient(self.client_config)
+                self.tools = await self.client.get_tools()
+                logger.info(f"Connected to Graphiti MCP server, loaded {len(self.tools)} tools")
+            except Exception as e:
+                logger.error(f"Failed to connect to Graphiti MCP server: {e}")
+                raise
+    
+    async def _call_tool(self, tool_name: str, **kwargs) -> Any:
+        """Call a specific MCP tool by name."""
+        await self._ensure_connected()
+        
+        # Find the tool
+        tool = None
+        for t in self.tools:
+            if hasattr(t, 'name') and t.name == tool_name:
+                tool = t
+                break
+        
+        if tool is None:
+            available_tools = [t.name for t in self.tools if hasattr(t, 'name')]
+            raise ValueError(f"Tool '{tool_name}' not found. Available tools: {available_tools}")
+        
+        # Call the tool
         try:
-            self.toolkit = MCPToolkit(
-                server_name="graphiti-memory",
-                transport="sse",
-                url=self.sse_url
-            )
-            logger.info(f"Connected to Graphiti MCP server at {self.sse_url}")
+            result = await tool.ainvoke(kwargs)
+            return result
         except Exception as e:
-            logger.error(f"Failed to connect to Graphiti MCP server: {e}")
+            logger.error(f"Failed to call tool '{tool_name}': {e}")
             raise
     
     async def test_connection(self) -> bool:
         """Test if the MCP server is accessible."""
         try:
-            async with httpx.AsyncClient() as client:
-                # Try to connect to the SSE endpoint
-                response = await client.get(
-                    self.sse_url,
-                    headers={"Accept": "text/event-stream"}
-                )
-                return response.status_code == 200
+            await self._ensure_connected()
+            return True
         except Exception as e:
             logger.error(f"Connection test failed: {e}")
             return False
@@ -59,12 +90,12 @@ class GraphitiMCPClient:
         try:
             params = {
                 "name": name,
-                "content": content,
-                "timestamp": timestamp.isoformat() if timestamp else datetime.now().isoformat(),
-                "metadata": metadata or {}
+                "episode_body": content,  # Graphiti uses episode_body not content
+                "source": "text",
+                "source_description": metadata.get("source_description", "") if metadata else ""
             }
             
-            result = await self.toolkit.call_tool("add_episode", **params)
+            result = await self._call_tool("add_memory", **params)
             logger.info(f"Added episode: {name}")
             return result
         except Exception as e:
@@ -74,54 +105,59 @@ class GraphitiMCPClient:
     async def search(
         self,
         query: str,
-        limit: int = 10,
+        max_nodes: int = 10,
         time_range: Optional[tuple[datetime, datetime]] = None
     ) -> List[Dict[str, Any]]:
         """Search the knowledge graph with optional time range."""
         try:
             params = {
                 "query": query,
-                "limit": limit
+                "max_nodes": max_nodes
             }
             
-            if time_range:
-                params["start_date"] = time_range[0].isoformat()
-                params["end_date"] = time_range[1].isoformat()
-            
-            results = await self.toolkit.call_tool("search", **params)
-            logger.info(f"Search returned {len(results)} results")
-            return results
+            result = await self._call_tool("search_memory_nodes", **params)
+            logger.info(f"Search returned results")
+            return result
         except Exception as e:
             logger.error(f"Search failed: {e}")
             raise
     
-    async def get_entity_mentions(
+    async def search_facts(
         self,
-        entity_name: str,
-        limit: int = 10
+        query: str,
+        max_facts: int = 10
     ) -> List[Dict[str, Any]]:
-        """Get all mentions of an entity across episodes."""
+        """Search for relevant facts in the knowledge graph."""
         try:
-            results = await self.toolkit.call_tool(
-                "get_entity_mentions",
-                entity_name=entity_name,
-                limit=limit
-            )
-            logger.info(f"Found {len(results)} mentions of {entity_name}")
-            return results
+            params = {
+                "query": query,
+                "max_facts": max_facts
+            }
+            
+            result = await self._call_tool("search_memory_facts", **params)
+            logger.info(f"Found facts for query: {query}")
+            return result
         except Exception as e:
-            logger.error(f"Failed to get entity mentions: {e}")
+            logger.error(f"Failed to search facts: {e}")
             raise
     
-    async def delete_episode(self, episode_id: str) -> bool:
+    async def get_episodes(self, last_n: int = 10) -> List[Dict[str, Any]]:
+        """Get the most recent episodes."""
+        try:
+            params = {"last_n": last_n}
+            result = await self._call_tool("get_episodes", **params)
+            logger.info(f"Retrieved {last_n} recent episodes")
+            return result
+        except Exception as e:
+            logger.error(f"Failed to get episodes: {e}")
+            raise
+    
+    async def delete_episode(self, uuid: str) -> bool:
         """Delete an episode from the knowledge graph."""
         try:
-            result = await self.toolkit.call_tool(
-                "delete_episode",
-                episode_id=episode_id
-            )
-            logger.info(f"Deleted episode: {episode_id}")
-            return result.get("success", False)
+            result = await self._call_tool("delete_episode", uuid=uuid)
+            logger.info(f"Deleted episode: {uuid}")
+            return True
         except Exception as e:
             logger.error(f"Failed to delete episode: {e}")
             raise
@@ -129,9 +165,14 @@ class GraphitiMCPClient:
     async def clear_graph(self) -> bool:
         """Clear the entire knowledge graph (use with caution!)."""
         try:
-            result = await self.toolkit.call_tool("clear")
+            result = await self._call_tool("clear_graph")
             logger.warning("Cleared entire knowledge graph")
-            return result.get("success", False)
+            return True
         except Exception as e:
             logger.error(f"Failed to clear graph: {e}")
             raise
+    
+    async def list_available_tools(self) -> List[str]:
+        """List all available MCP tools."""
+        await self._ensure_connected()
+        return [tool.name for tool in self.tools if hasattr(tool, 'name')]
