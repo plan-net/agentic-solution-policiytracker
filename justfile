@@ -117,19 +117,20 @@ logs service="":
 
 # === Kodosumi Deployment ===
 
-# Start Ray and deploy to Kodosumi
+# Start Ray and deploy Flow 1 to Kodosumi
 kodosumi-deploy:
     @echo "🚀 Starting Ray cluster..."
     uv run --active ray start --head
     @echo "📝 Syncing environment variables to config.yaml..."
     uv run python scripts/sync_env_to_config.py
-    @echo "📦 Deploying to Ray Serve..."
+    @echo "📦 Deploying Flow 1 (Data Ingestion) to Ray Serve..."
     uv run --active serve deploy config.yaml
     @echo "🎯 Starting Kodosumi server..."
     uv run --active koco start --register http://localhost:8001/-/routes
-    @echo "✅ Kodosumi deployment complete!"
+    @echo "✅ Flow 1 deployment complete!"
     @echo "🌐 Admin Panel: http://localhost:3370 (admin/admin)"
     @echo "📊 Ray Dashboard: http://localhost:8265"
+    @echo "📄 Data Ingestion: http://localhost:8001/data-ingestion"
 
 # Stop Kodosumi and Ray
 kodosumi-stop:
@@ -147,7 +148,7 @@ kodosumi-status:
     @echo "🌐 Service URLs:"
     @echo "  Kodosumi Admin: http://localhost:3370"
     @echo "  Ray Dashboard:  http://localhost:8265"
-    @echo "  App Endpoint:   http://localhost:8001/political-analysis"
+    @echo "  Flow 1 Endpoint: http://localhost:8001/data-ingestion"
 
 # View Kodosumi logs
 kodosumi-logs:
@@ -159,12 +160,18 @@ kodosumi-restart: kodosumi-stop kodosumi-deploy
 
 # Quick Kodosumi development cycle (restart only app)
 dev-quick:
-    @echo "🔄 Quick Kodosumi restart..."
+    @echo "🔄 Quick Flow 1 restart..."
     @echo "📝 Syncing environment variables to config.yaml..."
     uv run python scripts/sync_env_to_config.py
     -uv run --active serve shutdown --yes 2>/dev/null || true
     uv run --active serve deploy config.yaml
-    @echo "✅ App redeployed to Kodosumi"
+    @echo "✅ Flow 1 redeployed to Kodosumi"
+
+# Main development command (alias for kodosumi-deploy)
+dev: kodosumi-deploy
+
+# Deploy specific flows (for future use)
+dev-flow1: dev-quick
 
 # === Development ===
 
@@ -212,8 +219,8 @@ reset-langfuse:
         echo "❌ Reset cancelled"; \
     fi
 
-# Start full development environment (Kodosumi-first)
-dev: services-up kodosumi-deploy
+# Start full development environment (Kodosumi-first) - alias for backwards compatibility
+dev-full: services-up kodosumi-deploy
 
 
 # Watch for changes and auto-redeploy (development workflow)

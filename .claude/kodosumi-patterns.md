@@ -23,6 +23,10 @@ async def execute_analysis(inputs: dict, tracer: Tracer):
     # Use tracer.markdown() for progress updates
     # Create Ray tasks with @ray.remote
     # Monitor progress with ray.wait()
+    
+    # CRITICAL: Always return core.response.Markdown for final display
+    await tracer.markdown("### ✅ Analysis Complete! Report ready for viewing.")
+    return core.response.Markdown(execution_summary + report_content)
 ```
 
 ## Key Commands
@@ -35,3 +39,37 @@ async def execute_analysis(inputs: dict, tracer: Tracer):
 - Set ray_actor_options: `{"num_cpus": 2, "memory": 4000000000}`
 - Use Tracer for real-time progress streaming
 - Handle errors with proper error.add() pattern
+
+## Final Response Pattern (CRITICAL)
+
+**❌ WRONG - Never return raw dict/data:**
+```python
+return {"status": "success", "results": data}
+```
+
+**✅ CORRECT - Always return Markdown response:**
+```python
+from kodosumi import core
+
+# Generate comprehensive report content
+execution_summary = f"# {job_name} - Final Report\n\n..."
+report_content = f"## Results\n\n..."
+
+# Return proper Kodosumi Markdown response for display
+await tracer.markdown("### ✅ Analysis Complete! Report ready for viewing.")
+return core.response.Markdown(execution_summary + report_content)
+```
+
+**Why This Matters:**
+- Raw dict returns display poorly in Kodosumi UI
+- Users expect professional, formatted reports
+- Markdown responses render properly with styling
+- Enables rich content (links, code blocks, tables)
+- Provides actionable next steps and documentation
+
+**Report Content Should Include:**
+- Executive summary with key metrics
+- Detailed processing results
+- Next steps with actionable guidance
+- Technical details and references
+- Error handling with troubleshooting steps
