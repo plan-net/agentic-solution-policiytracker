@@ -5,6 +5,7 @@ import json
 from typing import Any, Optional
 
 import structlog
+from langfuse.decorators import langfuse_context, observe
 from neo4j import GraphDatabase
 from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.components.schema import SchemaBuilder
@@ -12,7 +13,7 @@ from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
 from neo4j_graphrag.llm import OpenAILLM
 from neo4j_graphrag.retrievers import HybridCypherRetriever, HybridRetriever
 
-from src.prompts.prompt_manager import prompt_manager
+from src.llm.langchain_service import LangChainLLMService
 
 logger = structlog.get_logger()
 
@@ -49,6 +50,9 @@ class PoliticalKnowledgeBuilder:
             model=embedding_model,
             api_key=openai_api_key,
         )
+
+        # Initialize LangChain service for proper Langfuse integration
+        self.langchain_service = LangChainLLMService()
 
         # Initialize schema builder with political domain
         self.schema_builder = SchemaBuilder()
@@ -329,7 +333,7 @@ class PoliticalKnowledgeBuilder:
             top_k: Number of results to return
 
         Returns:
-            Search results with metadata
+            Search results with metadata as list of dictionaries
         """
         try:
 
@@ -347,9 +351,31 @@ class PoliticalKnowledgeBuilder:
 
             # Run search in thread pool
             loop = asyncio.get_event_loop()
-            results = await loop.run_in_executor(None, _search)
+            retriever_result = await loop.run_in_executor(None, _search)
 
-            return results
+            # Convert RetrieverResult to list of dictionaries
+            if hasattr(retriever_result, "items") and retriever_result.items:
+                results = []
+                for item in retriever_result.items:
+                    try:
+                        # Extract text and metadata from each result item
+                        result_dict = {
+                            "text": item.content if hasattr(item, "content") else str(item),
+                            "score": item.metadata.get("score", 0)
+                            if hasattr(item, "metadata") and item.metadata
+                            else 0,
+                            "metadata": item.metadata if hasattr(item, "metadata") else {},
+                            "political_context": {},  # Will be populated by analysis
+                        }
+                        results.append(result_dict)
+                    except Exception as parse_error:
+                        logger.warning("Failed to parse search result item", error=str(parse_error))
+                        continue
+
+                return results
+            else:
+                logger.info("No search results found", query=query)
+                return []
 
         except Exception as e:
             logger.error("Failed to search documents", query=query, error=str(e))
@@ -404,15 +430,32 @@ class PoliticalKnowledgeBuilder:
                 processed_results = []
                 for item in results.items:
                     try:
-                        import json
+                        # Handle both JSON and direct content
+                        if hasattr(item, "content"):
+                            try:
+                                # Try to parse as JSON first
+                                content_data = json.loads(item.content)
+                                text = content_data.get("text", "")
+                                political_context = content_data.get("metadata", {})
+                                relationship_count = content_data.get("relationship_count", 0)
+                            except (json.JSONDecodeError, TypeError):
+                                # If not JSON, treat as plain text
+                                text = str(item.content)
+                                political_context = {}
+                                relationship_count = 0
+                        else:
+                            text = str(item)
+                            political_context = {}
+                            relationship_count = 0
 
-                        content_data = json.loads(item.content)
                         processed_results.append(
                             {
-                                "text": content_data.get("text", ""),
-                                "score": item.metadata.get("score", 0),
-                                "political_context": content_data.get("metadata", {}),
-                                "relationship_count": content_data.get("relationship_count", 0),
+                                "text": text,
+                                "score": item.metadata.get("score", 0)
+                                if hasattr(item, "metadata") and item.metadata
+                                else 0,
+                                "political_context": political_context,
+                                "relationship_count": relationship_count,
                             }
                         )
                     except Exception as parse_error:
@@ -607,8 +650,13 @@ class PoliticalKnowledgeBuilder:
             logger.error("Failed to clear knowledge graph", error=str(e))
             return False
 
+    @observe()
     async def analyze_entities_with_langfuse(
-        self, query_results: list[dict[str, Any]], company_context: dict[str, Any], query_topic: str
+        self,
+        query_results: list[dict[str, Any]],
+        company_context: dict[str, Any],
+        query_topic: str,
+        session_id: Optional[str] = None,
     ) -> dict[str, Any]:
         """Analyze GraphRAG entities using Langfuse prompts for enhanced insights.
 
@@ -620,6 +668,17 @@ class PoliticalKnowledgeBuilder:
         Returns:
             Enhanced analysis with political intelligence insights
         """
+        # Update trace with meaningful metadata
+        langfuse_context.update_current_trace(
+            name="GraphRAG Entity Analysis",
+            tags=["graphrag", "entity-analysis"],
+            metadata={
+                "query_topic": query_topic,
+                "results_count": len(query_results),
+                "company_terms": company_context.get("terms", []),
+            },
+        )
+
         try:
             # Extract entities and relationships from search results
             entities = []
@@ -632,52 +691,42 @@ class PoliticalKnowledgeBuilder:
                 if "relationships" in political_context:
                     relationships.extend(political_context["relationships"])
 
-            # Prepare variables for the prompt
+            # Prepare variables for the prompt - clean data to avoid Unicode issues
+            def clean_for_prompt(data):
+                """Clean data to avoid Unicode escape issues in prompts"""
+                if isinstance(data, str):
+                    # Replace problematic Unicode characters
+                    return data.encode("ascii", "ignore").decode("ascii")
+                elif isinstance(data, list):
+                    return [clean_for_prompt(item) for item in data]
+                elif isinstance(data, dict):
+                    return {k: clean_for_prompt(v) for k, v in data.items()}
+                else:
+                    return data
+
+            cleaned_entities = clean_for_prompt(entities)
+            cleaned_relationships = clean_for_prompt(relationships)
+            cleaned_results = clean_for_prompt(query_results)
+
             prompt_variables = {
                 "company_terms": company_context.get("terms", []),
                 "core_industries": company_context.get("industries", []),
                 "primary_markets": company_context.get("markets", []),
                 "strategic_themes": company_context.get("themes", []),
-                "entities": json.dumps(entities, indent=2),
-                "relationships": json.dumps(relationships, indent=2),
-                "graph_results": json.dumps(query_results, indent=2),
+                "entities": json.dumps(cleaned_entities, indent=2, ensure_ascii=True),
+                "relationships": json.dumps(cleaned_relationships, indent=2, ensure_ascii=True),
+                "graph_results": json.dumps(cleaned_results, indent=2, ensure_ascii=True),
             }
 
-            # Get enhanced analysis prompt from Langfuse
-            analysis_prompt = await prompt_manager.get_prompt(
-                "graphrag_entity_analysis", variables=prompt_variables
+            # Call LangChain service method directly (following v0.1.0 pattern)
+            analysis_result = await self.langchain_service.analyze_graphrag_entities(
+                query_results=query_results,
+                company_context=company_context,
+                query_topic=query_topic,
+                session_id=session_id,
             )
 
-            # Send to LLM for analysis
-            def _analyze():
-                response = self.llm.invoke(analysis_prompt)
-                return response.content
-
-            loop = asyncio.get_event_loop()
-            llm_response = await loop.run_in_executor(None, _analyze)
-
-            # Parse LLM response as JSON
-            try:
-                analysis_result = json.loads(llm_response)
-                analysis_result["query_topic"] = query_topic
-                analysis_result["analysis_type"] = "graphrag_entity_analysis"
-                analysis_result["entities_analyzed"] = len(entities)
-                analysis_result["relationships_analyzed"] = len(relationships)
-
-                return analysis_result
-
-            except json.JSONDecodeError as json_error:
-                logger.warning(
-                    "Failed to parse LLM analysis response as JSON", error=str(json_error)
-                )
-                return {
-                    "query_topic": query_topic,
-                    "analysis_type": "graphrag_entity_analysis",
-                    "error": "Failed to parse LLM response",
-                    "raw_response": llm_response,
-                    "entities_analyzed": len(entities),
-                    "relationships_analyzed": len(relationships),
-                }
+            return analysis_result
 
         except Exception as e:
             logger.error("Failed to analyze entities with Langfuse", error=str(e))
@@ -689,192 +738,62 @@ class PoliticalKnowledgeBuilder:
                 "relationships_analyzed": 0,
             }
 
+    @observe()
     async def generate_relationship_insights(
         self,
-        graph_traversal_results: dict[str, Any],
+        query_results: list[dict[str, Any]],
         company_context: dict[str, Any],
-        time_horizon: str = "6-12 months",
+        query_topic: str,
+        session_id: Optional[str] = None,
     ) -> dict[str, Any]:
-        """Generate strategic insights from relationship patterns using Langfuse prompts.
-
-        Args:
-            graph_traversal_results: Results from graph traversal search
-            company_context: Business context for strategic analysis
-            time_horizon: Planning timeframe for recommendations
-
-        Returns:
-            Strategic insights and recommendations based on relationship analysis
-        """
+        """Generate insights about relationships between entities."""
         try:
-            # Extract network patterns from traversal results
-            relationship_patterns = []
-            entity_clusters = {}
-
-            for result in graph_traversal_results.get("results", []):
-                political_context = result.get("political_context", {})
-
-                # Extract relationship patterns
-                if "relationships" in political_context:
-                    relationship_patterns.extend(political_context["relationships"])
-
-                # Group entities by type for cluster analysis
-                if "entities" in political_context:
-                    for entity in political_context["entities"]:
-                        entity_type = entity.get("type", "unknown")
-                        if entity_type not in entity_clusters:
-                            entity_clusters[entity_type] = []
-                        entity_clusters[entity_type].append(entity)
-
-            # Calculate basic network metrics
-            network_metrics = {
-                "total_relationships": len(relationship_patterns),
-                "entity_types": len(entity_clusters),
-                "entities_per_type": {k: len(v) for k, v in entity_clusters.items()},
-                "relationship_types": list(
-                    set([rel.get("type", "unknown") for rel in relationship_patterns])
-                ),
-                "political_entities_count": graph_traversal_results.get(
-                    "political_entities_found", 0
-                ),
-                "regulations_count": graph_traversal_results.get("regulations_found", 0),
-            }
-
-            # Prepare variables for the relationship insights prompt
-            prompt_variables = {
-                "query_topic": graph_traversal_results.get("query", ""),
-                "company_terms": company_context.get("terms", []),
-                "strategic_themes": company_context.get("themes", []),
-                "time_horizon": time_horizon,
-                "relationship_patterns": json.dumps(relationship_patterns, indent=2),
-                "entity_clusters": json.dumps(entity_clusters, indent=2),
-                "network_metrics": json.dumps(network_metrics, indent=2),
-                "traversal_results": json.dumps(graph_traversal_results, indent=2),
-            }
-
-            # Get strategic insights prompt from Langfuse
-            insights_prompt = await prompt_manager.get_prompt(
-                "graphrag_relationship_insights", variables=prompt_variables
+            # Call LangChain service method directly (following v0.1.0 pattern)
+            analysis_result = await self.langchain_service.analyze_graphrag_relationships(
+                query_results=query_results,
+                company_context=company_context,
+                query_topic=query_topic,
+                session_id=session_id,
             )
 
-            # Send to LLM for strategic analysis
-            def _analyze():
-                response = self.llm.invoke(insights_prompt)
-                return response.content
-
-            loop = asyncio.get_event_loop()
-            llm_response = await loop.run_in_executor(None, _analyze)
-
-            # Parse LLM response
-            try:
-                insights_result = json.loads(llm_response)
-                insights_result["query_topic"] = graph_traversal_results.get("query", "")
-                insights_result["analysis_type"] = "graphrag_relationship_insights"
-                insights_result["network_metrics"] = network_metrics
-                insights_result["time_horizon"] = time_horizon
-
-                return insights_result
-
-            except json.JSONDecodeError as json_error:
-                logger.warning(
-                    "Failed to parse relationship insights response as JSON", error=str(json_error)
-                )
-                return {
-                    "query_topic": graph_traversal_results.get("query", ""),
-                    "analysis_type": "graphrag_relationship_insights",
-                    "error": "Failed to parse LLM response",
-                    "raw_response": llm_response,
-                    "network_metrics": network_metrics,
-                    "time_horizon": time_horizon,
-                }
+            return analysis_result
 
         except Exception as e:
-            logger.error("Failed to generate relationship insights", error=str(e))
+            logger.error(f"Failed to generate relationship insights: {e}")
             return {
-                "query_topic": graph_traversal_results.get("query", ""),
-                "analysis_type": "graphrag_relationship_insights",
+                "relationships": [],
+                "insights": [f"Error generating insights: {str(e)}"],
+                "recommendations": [],
                 "error": str(e),
-                "network_metrics": {},
-                "time_horizon": time_horizon,
             }
 
+    @observe()
     async def compare_with_traditional_analysis(
         self,
+        graphrag_results: dict[str, Any],
         traditional_results: dict[str, Any],
-        graphrag_entity_analysis: dict[str, Any],
-        graphrag_relationship_insights: dict[str, Any],
-        analysis_topic: str,
         company_context: dict[str, Any],
+        session_id: Optional[str] = None,
     ) -> dict[str, Any]:
-        """Compare GraphRAG insights with traditional analysis using Langfuse prompts.
-
-        Args:
-            traditional_results: Results from traditional document analysis
-            graphrag_entity_analysis: Results from GraphRAG entity analysis
-            graphrag_relationship_insights: Results from GraphRAG relationship analysis
-            analysis_topic: The topic being analyzed
-            company_context: Business context for the comparison
-
-        Returns:
-            Comparative analysis highlighting unique value of GraphRAG approach
-        """
+        """Compare GraphRAG results with traditional document analysis."""
         try:
-            # Prepare variables for comparative analysis prompt
-            prompt_variables = {
-                "analysis_topic": analysis_topic,
-                "company_context": json.dumps(company_context, indent=2),
-                "strategic_focus": company_context.get("strategic_focus", ""),
-                "traditional_results": json.dumps(traditional_results, indent=2),
-                "graphrag_entities": json.dumps(graphrag_entity_analysis, indent=2),
-                "graphrag_relationships": json.dumps(graphrag_relationship_insights, indent=2),
-                "network_metrics": json.dumps(
-                    graphrag_relationship_insights.get("network_metrics", {}), indent=2
-                ),
-            }
-
-            # Get comparative analysis prompt from Langfuse
-            comparison_prompt = await prompt_manager.get_prompt(
-                "graphrag_comparative_analysis", variables=prompt_variables
+            # Call LangChain service method directly (following v0.1.0 pattern)
+            analysis_result = await self.langchain_service.analyze_graphrag_comparison(
+                graphrag_results=graphrag_results,
+                traditional_results=traditional_results,
+                company_context=company_context,
+                session_id=session_id,
             )
 
-            # Send to LLM for comparative analysis
-            def _analyze():
-                response = self.llm.invoke(comparison_prompt)
-                return response.content
-
-            loop = asyncio.get_event_loop()
-            llm_response = await loop.run_in_executor(None, _analyze)
-
-            # Parse LLM response
-            try:
-                comparison_result = json.loads(llm_response)
-                comparison_result["analysis_topic"] = analysis_topic
-                comparison_result["analysis_type"] = "graphrag_comparative_analysis"
-                comparison_result["traditional_method"] = traditional_results.get(
-                    "method", "document_analysis"
-                )
-                comparison_result["graphrag_methods"] = ["entity_analysis", "relationship_insights"]
-
-                return comparison_result
-
-            except json.JSONDecodeError as json_error:
-                logger.warning(
-                    "Failed to parse comparative analysis response as JSON", error=str(json_error)
-                )
-                return {
-                    "analysis_topic": analysis_topic,
-                    "analysis_type": "graphrag_comparative_analysis",
-                    "error": "Failed to parse LLM response",
-                    "raw_response": llm_response,
-                    "traditional_method": traditional_results.get("method", "document_analysis"),
-                    "graphrag_methods": ["entity_analysis", "relationship_insights"],
-                }
+            return analysis_result
 
         except Exception as e:
-            logger.error("Failed to compare with traditional analysis", error=str(e))
+            logger.error(f"Failed to compare with traditional analysis: {e}")
             return {
-                "analysis_topic": analysis_topic,
-                "analysis_type": "graphrag_comparative_analysis",
+                "unique_to_graphrag": [],
+                "unique_to_traditional": [],
+                "common_insights": [f"Error in comparison: {str(e)}"],
+                "recommendation": "Comparison failed",
+                "confidence": 0.0,
                 "error": str(e),
-                "traditional_method": traditional_results.get("method", "document_analysis"),
-                "graphrag_methods": ["entity_analysis", "relationship_insights"],
             }

@@ -862,6 +862,442 @@ Top 5 Findings:
 
         return status
 
+    @observe()
+    async def analyze_graphrag_entities(
+        self,
+        query_results: list[dict[str, Any]],
+        company_context: dict[str, Any],
+        query_topic: str,
+        session_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Analyze GraphRAG entities using Langfuse prompts for enhanced insights."""
+
+        # Update trace with session and meaningful tags (following v0.1.0 pattern)
+        langfuse_context.update_current_trace(
+            name="GraphRAG Entity Analysis Session",
+            session_id=session_id,
+            tags=["graphrag", "entity-analysis"],
+            metadata={
+                "query_topic": query_topic,
+                "results_count": len(query_results),
+                "company_terms": company_context.get("terms", []),
+                "provider": self.current_provider.value,
+            },
+        )
+
+        @observe(as_type="generation")
+        async def execute_entity_analysis(llm: BaseChatModel) -> dict[str, Any]:
+            # Extract entities and relationships from search results
+            entities = []
+            relationships = []
+            for result in query_results:
+                political_context = result.get("political_context", {})
+                if "entities" in political_context:
+                    entities.extend(political_context["entities"])
+                if "relationships" in political_context:
+                    relationships.extend(political_context["relationships"])
+
+            # Clean data to avoid Unicode issues in prompts
+            def clean_for_prompt(data):
+                if isinstance(data, str):
+                    return data.encode("ascii", "ignore").decode("ascii")
+                elif isinstance(data, list):
+                    return [clean_for_prompt(item) for item in data]
+                elif isinstance(data, dict):
+                    return {k: clean_for_prompt(v) for k, v in data.items()}
+                else:
+                    return data
+
+            cleaned_entities = clean_for_prompt(entities)
+            cleaned_relationships = clean_for_prompt(relationships)
+            cleaned_results = clean_for_prompt(query_results)
+
+            # Prepare variables for the prompt
+            prompt_variables = {
+                "company_terms": company_context.get("terms", []),
+                "core_industries": company_context.get("industries", []),
+                "primary_markets": company_context.get("markets", []),
+                "strategic_themes": company_context.get("themes", []),
+                "entities": json.dumps(cleaned_entities, indent=2, ensure_ascii=True),
+                "relationships": json.dumps(cleaned_relationships, indent=2, ensure_ascii=True),
+                "graph_results": json.dumps(cleaned_results, indent=2, ensure_ascii=True),
+            }
+
+            # Get prompt and config from prompt manager (following v0.1.0 pattern)
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "graphrag_entity_analysis", variables=prompt_variables
+            )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+
+            # Get Langfuse prompt object for generation tracking (following v0.1.0 pattern)
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(
+                        name="graphrag_entity_analysis", label="production"
+                    )
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info(
+                        "Updated observation with Langfuse prompt for graphrag_entity_analysis"
+                    )
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+
+            # Log config for debugging (following v0.1.0 pattern)
+            logger.info(f"GraphRAG entity analysis Langfuse config: {prompt_config}")
+
+            # Use temperature from Langfuse config if available (following v0.1.0 pattern)
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(
+                    f"Using temperature {prompt_config['temperature']} from Langfuse prompt config"
+                )
+            # Reduce max_tokens to fit within context limit for gpt-4o-mini (8k context)
+            llm_kwargs["max_tokens"] = min(prompt_config.get("max_tokens", 1000), 1000)
+
+            # Update current observation with detailed context (following v0.1.0 pattern)
+            langfuse_context.update_current_observation(
+                name=f"GraphRAG Entity Analysis - {self.current_provider.value}",
+                input={
+                    "entities_count": len(entities),
+                    "relationships_count": len(relationships),
+                    "prompt_length": len(prompt_text),
+                    "query_topic": query_topic,
+                },
+                model=getattr(settings, "OPENAI_MODEL", "gpt-4"),  # GraphRAG uses OpenAI
+                metadata={
+                    "operation": "graphrag_entity_analysis",
+                    "provider": "openai",
+                },
+            )
+
+            # Create a new LLM instance with config from Langfuse if needed (following v0.1.0 pattern)
+            if llm_kwargs:
+                if hasattr(llm, "bind"):
+                    configured_llm = llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = llm
+
+            # Use the LLM without conflicting callback handlers (following v0.1.0 pattern)
+            # The @observe decorator handles Langfuse tracking
+            llm_response = await configured_llm.ainvoke([HumanMessage(content=prompt_text)])
+
+            # Parse LLM response as JSON
+            content = llm_response.content
+            try:
+                # Clean the response - remove markdown code blocks if present
+                cleaned_response = content.strip()
+                if cleaned_response.startswith("```json"):
+                    cleaned_response = cleaned_response[7:]
+                elif cleaned_response.startswith("```"):
+                    cleaned_response = cleaned_response[3:]
+                if cleaned_response.endswith("```"):
+                    cleaned_response = cleaned_response[:-3]
+                cleaned_response = cleaned_response.strip()
+
+                # Try to extract JSON from the response if it's mixed with text
+                import re
+
+                json_match = re.search(r"\{.*\}", cleaned_response, re.DOTALL)
+                if json_match:
+                    cleaned_response = json_match.group(0)
+
+                analysis_result = json.loads(cleaned_response)
+                analysis_result["query_topic"] = query_topic
+                analysis_result["analysis_type"] = "graphrag_entity_analysis"
+                analysis_result["entities_analyzed"] = len(entities)
+                analysis_result["relationships_analyzed"] = len(relationships)
+
+                # Update observation with structured output (following v0.1.0 pattern)
+                langfuse_context.update_current_observation(
+                    output={
+                        "entities_analyzed": len(entities),
+                        "relationships_analyzed": len(relationships),
+                        "key_actors_found": len(analysis_result.get("key_actors", [])),
+                        "policy_networks_found": len(analysis_result.get("policy_networks", [])),
+                        "confidence": analysis_result.get("confidence", 0),
+                        "analysis_type": "graphrag_entity_analysis",
+                    }
+                )
+
+                return analysis_result
+
+            except json.JSONDecodeError as json_error:
+                logger.warning(
+                    "Failed to parse LLM analysis response as JSON",
+                    error=str(json_error),
+                    response_preview=content[:200] if content else "None",
+                )
+                return {
+                    "query_topic": query_topic,
+                    "analysis_type": "graphrag_entity_analysis",
+                    "error": "Failed to parse LLM response",
+                    "raw_response": content,
+                    "entities_analyzed": len(entities),
+                    "relationships_analyzed": len(relationships),
+                }
+
+        # Use fallback LLM (OpenAI) for GraphRAG
+        mock_response = {
+            "query_topic": query_topic,
+            "analysis_type": "graphrag_entity_analysis",
+            "error": "Mock response - GraphRAG not available",
+            "entities_analyzed": 0,
+            "relationships_analyzed": 0,
+        }
+
+        return await self._execute_with_fallback(
+            "graphrag_entity_analysis", execute_entity_analysis, mock_response
+        )
+
+    @observe()
+    async def analyze_graphrag_relationships(
+        self,
+        query_results: list[dict[str, Any]],
+        company_context: dict[str, Any],
+        query_topic: str,
+        session_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Analyze relationships between entities in GraphRAG query results."""
+        try:
+            # Update trace with session and meaningful tags (following v0.1.0 pattern)
+            langfuse_context.update_current_trace(
+                name="GraphRAG Relationship Analysis Session",
+                session_id=session_id,
+                tags=["graphrag", "relationship-analysis"],
+                metadata={
+                    "company_context": company_context.get("name", "Unknown"),
+                    "query_topic": query_topic,
+                    "result_count": len(query_results),
+                },
+            )
+
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "graphrag_relationship_insights",
+                variables={
+                    "query_results": json.dumps(query_results, indent=2),
+                    "company_context": json.dumps(company_context, indent=2),
+                    "query_topic": query_topic,
+                },
+            )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+
+            # Get Langfuse prompt object for generation tracking (following v0.1.0 pattern)
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(
+                        name="graphrag_relationship_insights", label="production"
+                    )
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info(
+                        "Updated observation with Langfuse prompt for graphrag_relationship_insights"
+                    )
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+
+            # Use temperature from Langfuse config if available (following v0.1.0 pattern)
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(
+                    f"Using temperature {prompt_config['temperature']} from Langfuse prompt config"
+                )
+            llm_kwargs["max_tokens"] = min(prompt_config.get("max_tokens", 1000), 1000)
+
+            # Create a new LLM instance with config from Langfuse if needed (following v0.1.0 pattern)
+            if llm_kwargs:
+                if hasattr(self.primary_llm, "bind"):
+                    configured_llm = self.primary_llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = self.primary_llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = self.primary_llm
+
+            # Update current observation with detailed context (following v0.1.0 pattern)
+            langfuse_context.update_current_observation(
+                name=f"GraphRAG Relationship Analysis - {self.current_provider.value}",
+                input={
+                    "query_results_count": len(query_results),
+                    "prompt_length": len(prompt_text),
+                    "query_topic": query_topic,
+                },
+                model=getattr(settings, "OPENAI_MODEL", "gpt-4"),  # GraphRAG uses OpenAI
+                metadata={
+                    "operation": "graphrag_relationship_analysis",
+                    "provider": "openai",
+                },
+            )
+
+            # Use LangChain with proper Langfuse integration (following v0.1.0 pattern)
+            response = await configured_llm.ainvoke([HumanMessage(content=prompt_text)])
+
+            # Parse response
+            response_text = response.content.strip()
+
+            # Try to parse as JSON, fallback to text
+            try:
+                # Clean the response - remove markdown code blocks if present
+                cleaned_response = response_text.strip()
+                if cleaned_response.startswith("```json"):
+                    cleaned_response = cleaned_response[7:]
+                elif cleaned_response.startswith("```"):
+                    cleaned_response = cleaned_response[3:]
+                if cleaned_response.endswith("```"):
+                    cleaned_response = cleaned_response[:-3]
+                cleaned_response = cleaned_response.strip()
+
+                # Try to extract JSON from the response if it's mixed with text
+                import re
+
+                json_match = re.search(r"\{.*\}", cleaned_response, re.DOTALL)
+                if json_match:
+                    cleaned_response = json_match.group(0)
+
+                analysis_result = json.loads(cleaned_response)
+            except json.JSONDecodeError:
+                analysis_result = {
+                    "relationships": [],
+                    "insights": response_text,
+                    "analysis_complete": True,
+                }
+
+            logger.info(
+                f"GraphRAG relationship analysis completed: {len(analysis_result.get('relationships', []))} relationships"
+            )
+            return analysis_result
+
+        except Exception as e:
+            logger.error(f"GraphRAG relationship analysis failed: {e}")
+            return {"relationships": [], "error": str(e), "analysis_complete": False}
+
+    @observe()
+    async def analyze_graphrag_comparison(
+        self,
+        graphrag_results: dict[str, Any],
+        traditional_results: dict[str, Any],
+        company_context: dict[str, Any],
+        session_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Compare GraphRAG results with traditional analysis."""
+        try:
+            # Update trace with session and meaningful tags (following v0.1.0 pattern)
+            langfuse_context.update_current_trace(
+                name="GraphRAG Comparison Analysis Session",
+                session_id=session_id,
+                tags=["graphrag", "comparison-analysis"],
+                metadata={
+                    "company_context": company_context.get("name", "Unknown"),
+                    "graphrag_entities": len(graphrag_results.get("entities", [])),
+                    "traditional_documents": len(traditional_results.get("documents", [])),
+                },
+            )
+
+            prompt_data = await prompt_manager.get_prompt_with_config(
+                "graphrag_comparison_analysis",
+                variables={
+                    "graphrag_results": json.dumps(graphrag_results, indent=2),
+                    "traditional_results": json.dumps(traditional_results, indent=2),
+                    "company_context": json.dumps(company_context, indent=2),
+                },
+            )
+            prompt_text = prompt_data["prompt"]
+            prompt_config = prompt_data["config"]
+
+            # Get Langfuse prompt object for generation tracking (following v0.1.0 pattern)
+            try:
+                if langfuse:
+                    langfuse_prompt = langfuse.get_prompt(
+                        name="graphrag_comparison_analysis", label="production"
+                    )
+                    langfuse_context.update_current_observation(prompt=langfuse_prompt)
+                    logger.info(
+                        "Updated observation with Langfuse prompt for graphrag_comparison_analysis"
+                    )
+            except Exception as e:
+                logger.warning(f"Could not get Langfuse prompt for generation tracking: {e}")
+
+            # Use temperature from Langfuse config if available (following v0.1.0 pattern)
+            llm_kwargs = {}
+            if prompt_config.get("temperature") is not None:
+                llm_kwargs["temperature"] = prompt_config["temperature"]
+                logger.info(
+                    f"Using temperature {prompt_config['temperature']} from Langfuse prompt config"
+                )
+            llm_kwargs["max_tokens"] = min(prompt_config.get("max_tokens", 1000), 1000)
+
+            # Create a new LLM instance with config from Langfuse if needed (following v0.1.0 pattern)
+            if llm_kwargs:
+                if hasattr(self.primary_llm, "bind"):
+                    configured_llm = self.primary_llm.bind(**llm_kwargs)
+                else:
+                    configured_llm = self.primary_llm
+                    logger.warning("LLM doesn't support parameter binding, using default config")
+            else:
+                configured_llm = self.primary_llm
+
+            # Update current observation with detailed context (following v0.1.0 pattern)
+            langfuse_context.update_current_observation(
+                name=f"GraphRAG Comparison Analysis - {self.current_provider.value}",
+                input={
+                    "graphrag_entities": len(
+                        graphrag_results.get("entity_analysis", {}).get("entities", [])
+                    ),
+                    "traditional_documents": len(traditional_results.get("key_findings", [])),
+                    "prompt_length": len(prompt_text),
+                },
+                model=getattr(settings, "OPENAI_MODEL", "gpt-4"),  # GraphRAG uses OpenAI
+                metadata={
+                    "operation": "graphrag_comparison_analysis",
+                    "provider": "openai",
+                },
+            )
+
+            # Use LangChain with proper Langfuse integration (following v0.1.0 pattern)
+            response = await configured_llm.ainvoke([HumanMessage(content=prompt_text)])
+
+            # Parse response
+            response_text = response.content.strip()
+
+            # Try to parse as JSON, fallback to text
+            try:
+                # Clean the response - remove markdown code blocks if present
+                cleaned_response = response_text.strip()
+                if cleaned_response.startswith("```json"):
+                    cleaned_response = cleaned_response[7:]
+                elif cleaned_response.startswith("```"):
+                    cleaned_response = cleaned_response[3:]
+                if cleaned_response.endswith("```"):
+                    cleaned_response = cleaned_response[:-3]
+                cleaned_response = cleaned_response.strip()
+
+                # Try to extract JSON from the response if it's mixed with text
+                import re
+
+                json_match = re.search(r"\{.*\}", cleaned_response, re.DOTALL)
+                if json_match:
+                    cleaned_response = json_match.group(0)
+
+                analysis_result = json.loads(cleaned_response)
+            except json.JSONDecodeError:
+                analysis_result = {
+                    "comparison": response_text,
+                    "insights": [],
+                    "analysis_complete": True,
+                }
+
+            logger.info("GraphRAG comparison analysis completed successfully")
+            return analysis_result
+
+        except Exception as e:
+            logger.error(f"GraphRAG comparison analysis failed: {e}")
+            return {"comparison": "", "error": str(e), "analysis_complete": False}
+
 
 # Global instance
 langchain_llm_service = LangChainLLMService()

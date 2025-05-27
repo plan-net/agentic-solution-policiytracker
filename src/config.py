@@ -68,6 +68,12 @@ class Settings(BaseSettings):
         default="https://cloud.langfuse.com", description="Langfuse host URL"
     )
 
+    # Neo4j GraphRAG Configuration
+    NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j database URI")
+    NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")
+    NEO4J_PASSWORD: str = Field(default="password", description="Neo4j password")
+    NEO4J_DATABASE: str = Field(default="neo4j", description="Neo4j database name")
+
     # Azure Storage Configuration
     USE_AZURE_STORAGE: bool = Field(
         default=False, description="Use Azure Blob Storage instead of local filesystem"
