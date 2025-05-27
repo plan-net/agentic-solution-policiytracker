@@ -79,6 +79,11 @@ def get_relevant_env_vars():
         "RAY_TASK_TIMEOUT_SECONDS",
         # Performance
         "ENABLE_PERFORMANCE_LOGGING",
+        # Graphiti Configuration (v0.2.0)
+        "NEO4J_URI",
+        "NEO4J_USER", 
+        "NEO4J_PASSWORD",
+        "GRAPHITI_GROUP_ID",
     ]
 
     env_vars = {}
