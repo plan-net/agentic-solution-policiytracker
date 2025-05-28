@@ -155,7 +155,26 @@ kodosumi-status:
 # View Kodosumi logs
 kodosumi-logs:
     @echo "📋 Recent Ray logs:"
-    uv run --active ray logs --follow
+    @echo "💡 Monitoring all Ray application logs - look for Flow1 processing here"
+    @echo "🔗 Use Ctrl+C to stop streaming"
+    @echo ""
+    uv run --active ray logs cluster dashboard_ServeHead.out --tail 50 -f 2>/dev/null || echo "No ServeHead logs yet - try after running Flow1"
+
+# Stream Graphiti application logs (for observing Flow1 processing)
+graphiti-logs:
+    @echo "📊 Streaming Graphiti application logs from Flow1..."
+    @echo "💡 This shows real-time entity extraction and graph building during document ingestion"
+    @echo "🔗 Use Ctrl+C to stop streaming"
+    @echo ""
+    @echo "Available Ray worker logs:"
+    @uv run --active ray logs cluster | grep "worker-.*\.out" | head -3
+    @echo ""
+    @echo "💡 To monitor a specific worker for Graphiti logs, run:"
+    @echo "   uv run --active ray logs cluster [worker-name].out --tail 100 -f | grep -i graphiti"
+    @echo ""
+    @echo "📊 Or try these simpler commands:"
+    @echo "   just flow1-worker-logs    (monitors most recent worker)"
+    @echo "   just kodosumi-logs        (monitors Ray Serve logs)"
 
 # Restart entire Kodosumi stack
 kodosumi-restart: kodosumi-stop kodosumi-deploy
@@ -338,17 +357,70 @@ etl-reset-all:
     @echo "🔄 Resetting ETL initialization for all collectors..."
     uv run python scripts/etl_init_manager.py reset-all
 
+# === GraphRAG & Flow 1 ===
+
+# Stream Flow1 logs in real-time (comprehensive)
+flow1-logs:
+    @echo "🚀 Streaming Flow1 (Data Ingestion) logs..."
+    @echo "💡 This shows all Flow1 processing including Graphiti operations"
+    @echo "🔗 Use Ctrl+C to stop streaming"
+    @echo ""
+    @echo "📊 Monitoring Ray Serve logs for Flow1 processing..."
+    uv run --active ray logs cluster dashboard_ServeHead.out --tail 100 -f 2>/dev/null | grep -i -E "(flow|ingestion|document|graphiti|episode|entity|relationship|community|processing)" || echo "No Flow1 activity yet - try running data ingestion first"
+
+# Stream only Graphiti-specific logs
+flow1-graphiti-logs: graphiti-logs
+
+# Stream logs from most recent worker (often where Flow1 runs)  
+flow1-worker-logs:
+    @echo "🔍 To monitor Flow1 worker logs for Graphiti activity:"
+    @echo ""
+    @echo "📋 Available worker logs:"
+    @uv run --active ray logs cluster | grep "worker-.*\.out" | head -3
+    @echo ""
+    @echo "💡 Example command to monitor Graphiti logs:"
+    @echo "   uv run --active ray logs cluster [worker-name].out --tail 100 -f | grep -i graphiti"
+    @echo ""
+    @echo "🔄 Or try: just kodosumi-logs (for Ray Serve logs)"
+
+# Build communities from existing knowledge graph
+build-communities:
+    @echo "🏘️ Building document communities from knowledge graph..."
+    @echo "💡 This runs Graphiti community detection on existing data"
+    @echo "⏳ Please wait, this may take up to 60 seconds..."
+    @echo ""
+    uv run python scripts/build_communities.py
+
+# Check Neo4j database status
+neo4j-status:
+    @echo "🗄️  Neo4j Database Status:"
+    @docker compose exec neo4j cypher-shell -u neo4j -p password123 "CALL db.info() YIELD name, value RETURN name, value;" 2>/dev/null || echo "❌ Neo4j not accessible"
+
+# Clear Neo4j database (⚠️ destructive)
+neo4j-clear:
+    @echo "⚠️  This will delete ALL graph data!"
+    @read -p "Continue? (y/N) " -n 1 -r; \
+    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+        echo ""; \
+        docker compose exec neo4j cypher-shell -u neo4j -p password123 "MATCH (n) DETACH DELETE n;" 2>/dev/null; \
+        echo "✅ Neo4j database cleared"; \
+    else \
+        echo ""; \
+        echo "❌ Clear cancelled"; \
+    fi
+
 # === Policy Collection (Flow 1) ===
 
-# Test policy collection system
+# Test policy collection system (requires EXA_API_KEY)
 policy-test:
     @echo "🧪 Testing policy collection system..."
-    uv run python scripts/test_policy_simple.py
-
-# Test policy collection with full features (requires EXA_API_KEY)
-policy-test-full:
-    @echo "🧪 Testing complete policy collection system..."
+    @echo "💡 This requires EXA_API_KEY in your .env file"
     uv run python scripts/test_policy_collection.py
+
+# Test basic policy components (development testing)
+policy-test-simple:
+    @echo "🧪 Testing basic policy components (no API key needed)..."
+    uv run python scripts/_dev_testing/test_policy_simple.py
 
 # Generate sample policy queries (no API calls)
 policy-queries:

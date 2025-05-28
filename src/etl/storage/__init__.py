@@ -6,7 +6,7 @@ from .base import BaseStorage
 from .local import LocalStorage
 from .azure import AzureStorage
 
-__all__ = ['BaseStorage', 'LocalStorage', 'AzureStorage', 'get_storage']
+__all__ = ["BaseStorage", "LocalStorage", "AzureStorage", "get_storage"]
 
 
 def get_storage(storage_type: str = "local", **kwargs) -> BaseStorage:

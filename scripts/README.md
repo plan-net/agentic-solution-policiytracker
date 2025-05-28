@@ -1,90 +1,119 @@
 # Scripts Directory
 
-This directory contains utility scripts for development, testing, and deployment of the Political Monitoring Agent.
+This directory contains utility scripts for the Political Monitoring Agent production workflows and testing.
 
-## Available Scripts
+## 🛠️ **Core Utility Scripts**
 
-### 🧪 **Testing & Development**
+These scripts are integrated into the main workflow via `justfile` commands and provide essential functionality:
 
-#### `test_simple_kg_pipeline.py`
-Test the Neo4j GraphRAG SimpleKGPipeline with political documents.
+### **Community Building**
+#### `build_communities.py`
+Build document communities from existing knowledge graph using Graphiti.
 
 ```bash
-# Test GraphRAG with example documents
-uv run python scripts/test_simple_kg_pipeline.py
+# Manual community detection
+just build-communities
 ```
 
-**Prerequisites:**
-- Neo4j running (`docker-compose up neo4j`)
-- OPENAI_API_KEY in .env
-- ANTHROPIC_API_KEY in .env (for future Claude integration)
+### **Environment & Configuration**
+#### `sync_env_to_config.py`
+Sync environment variables from .env to config.yaml for Kodosumi deployment.
 
-**What it does:**
-- Processes political documents using SimpleKGPipeline
-- Extracts entities, relationships, and topics
-- Creates knowledge graph in Neo4j
-- Tests semantic search functionality
+```bash
+# Sync config for deployment (auto-run by just dev)
+just sync-config
+```
 
-### ☁️ **Azure Storage**
-
+### **Azure Storage Management**
 #### `import_data_to_azurite.py`
 Import local data to Azurite (Azure Storage Emulator) for development.
 
 ```bash
 # Import all data
-uv run python scripts/import_data_to_azurite.py
-
-# Import only input documents
-uv run python scripts/import_data_to_azurite.py --input-only
+just azure-import
 
 # Import with custom job ID
-uv run python scripts/import_data_to_azurite.py --job-id custom_job_123
+just azure-import-job my_job_123
+
+# Dry run (preview)
+just azure-import-dry
+
+# Verify connection
+just azure-verify
 ```
 
-**Prerequisites:**
-- Azurite running (`docker-compose up azurite`)
-
-### 🚀 **Deployment**
-
-#### `sync_env_to_config.py`
-Sync environment variables from .env to config.yaml for Kodosumi deployment.
+### **ETL Pipeline Management**
+#### `etl_init_manager.py`
+Manage ETL initialization tracking for historical data collection.
 
 ```bash
-# Sync config for deployment
-uv run python scripts/sync_env_to_config.py
+# Check ETL status
+just etl-status
+
+# Reset specific collector
+just etl-reset exa_direct
+
+# Reset all collectors
+just etl-reset-all
 ```
 
-**What it does:**
-- Creates config.yaml from template if needed
-- Syncs .env variables to config.yaml
-- Ensures Ray workers have access to environment variables
-
-### 📊 **Observability**
-
+### **Prompt Management**
 #### `upload_prompts_to_langfuse.py`
 Upload local prompt files to Langfuse for centralized management.
 
 ```bash
 # Upload prompts to Langfuse
-uv run python scripts/upload_prompts_to_langfuse.py
+just upload-prompts
 ```
 
-**Prerequisites:**
-- Langfuse running (`docker-compose up langfuse`)
-- Langfuse API keys in .env
+### **Policy Collection Testing**
+#### `test_policy_collection.py`
+Test complete policy collection system with full features.
+
+```bash
+# Test policy collection (requires EXA_API_KEY)
+just policy-test
+
+# Test basic policy components (no API needed)
+just policy-test-simple
+```
+
+## 🧪 **Development Testing Scripts**
+
+Located in `_dev_testing/` - these are ad-hoc scripts created during development for testing specific features:
+
+- **ETL Testing**: `etl_test_summary.py`, `test_etl_*` files
+- **News Collection**: `compare_news_collectors.py`, `test_exa_*` files  
+- **Document Processing**: `full_document_processing.py`, `process_*` files
+- **GraphRAG**: `test_graphrag_langfuse.py`, `explore_graphiti_mcp_search.py`
+- **Validation**: `validate_*`, `verify_*`, `inspect_*` files
+
+These scripts are preserved for reference but not part of the main workflow.
 
 ## Quick Reference
 
 ```bash
 # Start all services
-docker-compose up -d
+just services-up
 
-# Test GraphRAG
-uv run python scripts/test_simple_kg_pipeline.py
+# Deploy Flow1 with config sync
+just dev
 
-# View knowledge graph
-open http://localhost:7474  # Neo4j Browser
+# Build communities manually
+just build-communities
 
-# View Langfuse traces
-open http://localhost:3001  # Langfuse UI
+# Test policy collection
+just policy-test
+
+# Import sample data
+just azure-import
+
+# Upload prompts
+just upload-prompts
 ```
+
+## Prerequisites
+
+- **Services Running**: `just services-up`
+- **Environment**: Valid API keys in `.env`
+- **Dependencies**: `uv sync` for Python packages

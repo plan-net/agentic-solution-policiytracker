@@ -55,21 +55,6 @@ data_ingestion_form = F.Model(
         placeholder="Maximum documents to process in this run"
     ),
     
-    F.InputText(
-        label="Source Path",
-        name="source_path",
-        placeholder="Path to documents or directory",
-        value="data/input/examples/"
-    ),
-    
-    # Advanced Options
-    F.Checkbox(
-        label="Build Communities",
-        name="enable_communities",
-        value=True,
-        option="Create document communities using Graphiti algorithms (recommended)"
-    ),
-    
     # Action Buttons
     F.Submit("Start Ingestion"),
     F.Cancel("Cancel"),
@@ -98,26 +83,20 @@ async def ingest_documents(request: fastapi.Request, inputs: dict):
     if len(inputs.get("job_name", "")) < 3:
         error.add(job_name="Job name must be at least 3 characters long")
     
-    # Source path validation
-    source_path_str = inputs.get("source_path", "").strip()
-    if not source_path_str:
-        error.add(source_path="Please provide a source path")
+    # Source path is fixed to policy directory
+    source_path_str = "data/input/policy/"
+    source_path = Path(source_path_str)
+    
+    if not source_path.exists():
+        error.add(source_path=f"Default policy directory does not exist: {source_path_str}")
     else:
-        source_path = Path(source_path_str)
-        if not source_path.exists():
-            error.add(source_path=f"Path does not exist: {source_path_str}")
-        else:
-            # Check for supported documents
-            if source_path.is_file():
-                if source_path.suffix.lower() not in ['.txt', '.md']:
-                    error.add(source_path="File must be .txt or .md format")
-            else:
-                doc_count = 0
-                for pattern in ["*.txt", "*.md"]:
-                    doc_count += len(list(source_path.glob(pattern)))
-                
-                if doc_count == 0:
-                    error.add(source_path="No .txt or .md documents found in directory")
+        # Check for supported documents
+        doc_count = 0
+        for pattern in ["**/*.txt", "**/*.md"]:
+            doc_count += len(list(source_path.rglob(pattern.split("/", 1)[1])))
+        
+        if doc_count == 0:
+            error.add(source_path="No .txt or .md documents found in policy directory")
     
     # Document limit validation
     try:
@@ -142,7 +121,7 @@ async def ingest_documents(request: fastapi.Request, inputs: dict):
             "source_path": source_path_str,
             "document_limit": document_limit,
             "clear_data": bool(inputs.get("clear_data", False)),
-            "enable_communities": bool(inputs.get("enable_communities", True)),
+            "enable_communities": False,  # Communities now built manually via just command
         },
     )
 

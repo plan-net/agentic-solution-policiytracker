@@ -1,0 +1,20 @@
+---
+title: EU watchdog launches inquiry into Commission's easing of green rules
+url: https://www.reuters.com/sustainability/climate-energy/eu-watchdog-launches-inquiry-into-commissions-easing-green-rules-2025-05-23/
+published_date: 2025-05-23T14:08:09.832000
+collected_date: 2025-05-28T14:08:12.245228
+source: Reuters
+source_url: https://www.reuters.com
+author: Benoit Van Overstraeten, Kate Abnett
+description: European Union flags flutter outside the EU Commission headquarters in Brussels, Belgium March 18, 2025. REUTERS/Yves Herman/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 23 (Reuters) - The EU's Ombudswoman said on Friday she had launched an inquiry into how the European...
+language: en
+collection_type: policy_landscape
+---
+
+# EU watchdog launches inquiry into Commission's easing of green rules
+
+*By Benoit Van Overstraeten, Kate Abnett*
+
+European Union flags flutter outside the EU Commission headquarters in Brussels, Belgium March 18, 2025. REUTERS/Yves Herman/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 23 (Reuters) - The EU's Ombudswoman said on Friday she had launched an inquiry into how the European...
+
+European Union flags flutter outside the EU Commission headquarters in Brussels, Belgium March 18, 2025. REUTERS/Yves Herman/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 23 (Reuters) - The EU's Ombudswoman said on Friday she had launched an inquiry into how the European Commission fashioned its recent proposals to simplify sustainability laws, following a complaint by campaigners accusing the EU executive of weakening the rules without first consulting the public. In February, the Commission proposed legal changes it named the "simplification omnibus" that would exempt thousands of smaller European businesses from EU sustainability reporting rules, and curb obligations for bigger firms to check their supply chains for human rights and environmental problems. Sign up here. "The decision to open an inquiry follows a complaint by eight civil society organisations who argue that the Commission breached its better regulation guidelines by failing to justify why it did not carry out a public consultation or impact assessment on the draft legislation," Ombudswoman Teresa Anjinho said in statement. The European Ombudsman, an independent watchdog set up in 1995, investigates cases of maladministration in EU institutions, acting on its own initiative or in response to citizen complaints. Anjinho took up her post in February, taking over from Emily O'Reilly, who was the first woman to hold the post. Anjinho said she has asked the Commission a series of questions, including why it had not carried out a public consultation, and has requested more detail about which companies and stakeholders had been invited to meet with the Commission to discuss the issue. The complainants have accused the Commission of consulting industry lobbyists in closed-door meetings before publishing its proposal. A European Commission spokesperson did not immediately respond to a request for comment. The Commission had proposed changing the sustainability laws after European industries complained that burdensome EU rules meant they could not compete with rivals in China and the U.S., where President Donald Trump is rolling back regulation and imposing tariffs on foreign goods. Reporting by Benoit Van Overstraeten and Kate Abnett; Editing by GV De Clercq Our Standards: The Thomson Reuters Trust Principles., opens new tab Kate Abnett covers EU climate and energy policy in Brussels, reporting on Europe’s green transition and how climate change is affecting people and ecosystems across the EU. Other areas of coverage include international climate diplomacy. Before joining Reuters, Kate covered emissions and energy markets for Argus Media in London. She is part of the teams whose reporting on Europe’s energy crisis won two Reuters journalist of the year awards in 2022.

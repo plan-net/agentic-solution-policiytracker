@@ -1,0 +1,19 @@
+---
+title: PVH stock plunges to 52-week low, hitting 61.52 USD By Investing.com
+url: https://www.investing.com/news/company-news/pvh-stock-plunges-to-52week-low-hitting-6152-usd-93CH-3974765
+published_date: 2025-05-28T13:21:52.433271
+collected_date: 2025-05-28T13:21:52.433345
+source: Investing
+source_url: https://www.investing.com
+description: PVH Corp (NYSE:), the global apparel company, has seen its stock tumble to a 52-week low, with shares dropping to 61.52 USD. This latest price level reflects a significant downturn for the company, which has experienced a 1-year decline of 43.83%. According to InvestingPro analysis, the stock...
+language: en
+---
+
+# PVH stock plunges to 52-week low, hitting 61.52 USD By Investing.com
+
+PVH Corp (NYSE:), the global apparel company, has seen its stock tumble to a 52-week low, with shares dropping to 61.52 USD. This latest price level reflects a significant downturn for the company, which has experienced a 1-year decline of 43.83%. According to InvestingPro analysis, the stock...
+
+PVH Corp (NYSE:), the global apparel company, has seen its stock tumble to a 52-week low, with shares dropping to 61.52 USD. This latest price level reflects a significant downturn for the company, which has experienced a 1-year decline of 43.83%. According to InvestingPro analysis, the stock appears undervalued, trading at a modest P/E ratio of 5.83, while management has been actively buying back shares. The fashion giant, known for brands such as Tommy Hilfiger and Calvin Klein, has faced numerous challenges over the past year, including shifts in consumer spending and supply chain disruptions, which have evidently weighed heavily on the company's stock performance. Despite these headwinds, the company maintains impressive gross profit margins of 59.43%. Investors and analysts are closely monitoring PVH's strategies for recovery and stabilization in the face of a rapidly changing retail landscape. For deeper insights into PVH's valuation and growth prospects, InvestingPro offers 12 additional exclusive tips and comprehensive analysis. In other recent news, PVH Corp reported better-than-expected earnings for Q1 2025, with earnings per share (EPS) of $3.27, surpassing the forecast of $3.24. The company's revenue reached $2.37 billion, slightly above the expected $2.34 billion, highlighting its strong financial performance. Analysts from UBS maintained a Buy rating on PVH, with a price target of $160, citing the company's brand strength and potential for earnings growth under CEO Stefan Larsson's strategic initiatives. Meanwhile, Citi analysts raised their price target for PVH to $83 from $72, maintaining a Neutral rating due to concerns about challenges in China and potential tariffs. Despite these challenges, PVH has projected flat to slight revenue growth for 2025, with EPS expected to rise between $12.40 and $12.75. The company also plans to accelerate its share repurchase program, reflecting confidence in its financial position. These developments underscore PVH's resilience and strategic focus amid a complex global market environment. 3rd party Ad. Not an offer or recommendation by Investing.com. See disclosure here or remove ads. This article was generated with the support of AI and reviewed by an editor. For more information see our T&amp;C. Should you invest $2,000 in PVH right now? Before you buy stock in PVH, consider this:
+ProPicks AI are 6 easy-to-follow model portfolios created by Investing.com for building wealth by identifying winning stocks and letting them run. Over 150,000 paying members trust ProPicks to find new stocks to buy – driven by AI.
+The ProPicks AI algorithm has just identified the best stocks for investors to buy now. The stocks that made the cut could produce enormous returns in the coming years.
+Is PVH one of them? Reveal Undervalued Stocks Now

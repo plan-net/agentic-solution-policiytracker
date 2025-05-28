@@ -280,8 +280,8 @@ def find_documents(source_path: Path, limit: Optional[int] = None) -> List[Path]
     
     documents = []
     for ext in get_supported_extensions():
-        pattern = f"*{ext}"
-        documents.extend(source_path.glob(pattern))
+        pattern = f"**/*{ext}"
+        documents.extend(source_path.rglob(pattern))
     
     # Sort by name for consistent processing order
     documents.sort()

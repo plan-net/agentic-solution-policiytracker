@@ -25,30 +25,33 @@ _collectors = {}
 
 try:
     from .collectors.apify_news import ApifyNewsCollector
-    _collectors['ApifyNewsCollector'] = ApifyNewsCollector
+
+    _collectors["ApifyNewsCollector"] = ApifyNewsCollector
 except ImportError:
     pass
 
 try:
     from .collectors.exa_direct import ExaDirectCollector
-    _collectors['ExaDirectCollector'] = ExaDirectCollector
+
+    _collectors["ExaDirectCollector"] = ExaDirectCollector
 except ImportError:
     pass
 
 try:
     from .collectors.policy_landscape import PolicyLandscapeCollector
-    _collectors['PolicyLandscapeCollector'] = PolicyLandscapeCollector
+
+    _collectors["PolicyLandscapeCollector"] = PolicyLandscapeCollector
 except ImportError:
     pass
 
 # Export what's available
 __all__ = [
-    'MarkdownTransformer', 
-    'get_storage',
-    'BaseStorage',
-    'LocalStorage',
-    'AzureStorage',
-    'ClientConfigLoader'
+    "MarkdownTransformer",
+    "get_storage",
+    "BaseStorage",
+    "LocalStorage",
+    "AzureStorage",
+    "ClientConfigLoader",
 ] + list(_collectors.keys())
 
 # Add collectors to module namespace
