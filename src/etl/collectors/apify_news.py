@@ -132,8 +132,8 @@ class ApifyNewsCollector:
             "loaded_url": raw_article.get("loadedUrl", ""),  # Actual loaded URL
             "rss_link": raw_article.get("rssLink", ""),
             
-            # Raw data for reference
-            "_raw": raw_article
+            # Raw data for reference (add collector type)
+            "_raw": {**raw_article, "collector_type": "apify"}
         }
     
     async def deduplicate_articles(self, 
