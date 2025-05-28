@@ -633,6 +633,20 @@ wheels = [
 ]
 
 [[package]]
+name = "exa-py"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "openai" },
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cf/6e/58f0676c64494e2154a58f08843b0466ca07cbd62960d50e94478b03cb57/exa_py-1.9.0.tar.gz", hash = "sha256:a4ba76f9b44072248cf3369e88bb801061da2ba713b7f712b155ad62660b27de", size = 12115, upload-time = "2025-03-11T17:53:59.333Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9a/da/555713b4269858f4fed4bfd70d1d34de3a1bdafa9b2f3e4efefab43d4a6f/exa_py-1.9.0-py3-none-any.whl", hash = "sha256:3aace8d0cf0d1e3a70839f22e45d1296ce259b5fa50262ebfa85a0fe8e9cf778", size = 12533, upload-time = "2025-03-11T17:53:58.395Z" },
+]
+
+[[package]]
 name = "faker"
 version = "20.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1943,6 +1957,7 @@ dependencies = [
     { name = "azure-identity" },
     { name = "azure-storage-blob" },
     { name = "beautifulsoup4" },
+    { name = "exa-py" },
     { name = "fastapi" },
     { name = "graphiti-core" },
     { name = "httpx" },
@@ -2013,6 +2028,7 @@ requires-dist = [
     { name = "azure-identity", specifier = ">=1.23.0" },
     { name = "azure-storage-blob", specifier = ">=12.25.1" },
     { name = "beautifulsoup4", specifier = "==4.12.2" },
+    { name = "exa-py", specifier = ">=1.9.0" },
     { name = "faker", marker = "extra == 'test'", specifier = "==20.1.0" },
     { name = "fastapi", specifier = "==0.115.12" },
     { name = "graphiti-core", specifier = "==0.12.0rc1" },

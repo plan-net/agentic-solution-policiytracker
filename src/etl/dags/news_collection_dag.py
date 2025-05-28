@@ -1,8 +1,9 @@
 """
-Airflow DAG for collecting news articles from Apify.
+Airflow DAG for collecting news articles using configurable collectors.
 """
 
 import asyncio
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 import sys
@@ -14,7 +15,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
-from src.etl.collectors.apify_news import ApifyNewsCollector
+from src.etl.collectors import create_news_collector, get_available_collectors
 from src.etl.transformers.markdown_transformer import MarkdownTransformer
 from src.etl.storage import get_storage
 from src.etl.utils.config_loader import ClientConfigLoader
@@ -34,29 +35,43 @@ default_args = {
 dag = DAG(
     'news_collection',
     default_args=default_args,
-    description='Collect news articles from Apify for political monitoring',
+    description='Collect news articles using configurable collectors for political monitoring',
     schedule_interval='@daily',  # Run daily
     catchup=False,
-    tags=['etl', 'news', 'apify'],
+    tags=['etl', 'news', 'collectors'],
 )
 
 
 def load_client_config(**context):
-    """Load client configuration."""
+    """Load client configuration and determine available collectors."""
     config_loader = ClientConfigLoader()
     company_name = config_loader.get_primary_company_name()
+    available_collectors = get_available_collectors()
+    collector_type = os.getenv("NEWS_COLLECTOR", "exa").lower()
+    
+    # Validate collector availability
+    if collector_type not in available_collectors:
+        if available_collectors:
+            collector_type = available_collectors[0]
+            print(f"Configured collector '{os.getenv('NEWS_COLLECTOR')}' not available. Using '{collector_type}'")
+        else:
+            raise ValueError("No news collectors available. Please configure API keys.")
     
     # Store in XCom for next tasks
     context['task_instance'].xcom_push(key='company_name', value=company_name)
     context['task_instance'].xcom_push(key='search_queries', value=config_loader.get_search_queries())
+    context['task_instance'].xcom_push(key='collector_type', value=collector_type)
+    context['task_instance'].xcom_push(key='available_collectors', value=available_collectors)
     
     print(f"Loaded client config. Primary company: {company_name}")
+    print(f"Using collector: {collector_type}")
+    print(f"Available collectors: {available_collectors}")
     return True
 
 
-async def collect_news_async(company_name: str, days_back: int = 1):
-    """Async function to collect news."""
-    collector = ApifyNewsCollector()
+async def collect_news_async(company_name: str, collector_type: str, days_back: int = 1):
+    """Async function to collect news using specified collector."""
+    collector = create_news_collector(collector_type)
     articles = await collector.collect_news(
         query=company_name,
         days_back=days_back,
@@ -66,16 +81,18 @@ async def collect_news_async(company_name: str, days_back: int = 1):
 
 
 def collect_news_data(**context):
-    """Collect news articles from Apify."""
+    """Collect news articles using configured collector."""
     company_name = context['task_instance'].xcom_pull(key='company_name')
+    collector_type = context['task_instance'].xcom_pull(key='collector_type')
     
     # Run async collector
-    articles = asyncio.run(collect_news_async(company_name))
+    articles = asyncio.run(collect_news_async(company_name, collector_type))
     
     # Store in XCom
     context['task_instance'].xcom_push(key='articles', value=articles)
+    context['task_instance'].xcom_push(key='collector_used', value=collector_type)
     
-    print(f"Collected {len(articles)} articles for {company_name}")
+    print(f"Collected {len(articles)} articles for {company_name} using {collector_type}")
     return len(articles)
 
 
@@ -113,12 +130,14 @@ async def transform_and_save_async(articles, storage_type="local"):
             year_month = pub_date[:7]  # YYYY-MM
             file_path = f"{year_month}/{filename}"
             
-            # Save document with metadata
+            # Save document with metadata (support both collectors)
             metadata = {
                 'url': article['url'],
                 'source': article.get('source'),
                 'published_date': article.get('published_date'),
-                'apify_id': article.get('apify_id')
+                'apify_id': article.get('apify_id'),
+                'exa_id': article.get('exa_id'),
+                'collector_type': article.get('_raw', {}).get('collector_type', 'unknown')
             }
             
             success = await storage.save_document(markdown_content, file_path, metadata)
@@ -157,6 +176,8 @@ def transform_to_markdown(**context):
 def generate_summary(**context):
     """Generate summary of the collection run."""
     company_name = context['task_instance'].xcom_pull(key='company_name')
+    collector_used = context['task_instance'].xcom_pull(key='collector_used')
+    available_collectors = context['task_instance'].xcom_pull(key='available_collectors') or []
     articles = context['task_instance'].xcom_pull(key='articles') or []
     saved_count = context['task_instance'].xcom_pull(key='saved_count') or 0
     failed_count = context['task_instance'].xcom_pull(key='failed_count') or 0
@@ -165,6 +186,8 @@ def generate_summary(**context):
 News Collection Summary
 ======================
 Company: {company_name}
+Collector Used: {collector_used}
+Available Collectors: {', '.join(available_collectors)}
 Articles Collected: {len(articles)}
 Articles Saved: {saved_count}
 Articles Failed: {failed_count}
