@@ -338,6 +338,23 @@ etl-reset-all:
     @echo "🔄 Resetting ETL initialization for all collectors..."
     uv run python scripts/etl_init_manager.py reset-all
 
+# === Policy Collection (Flow 1) ===
+
+# Test policy collection system
+policy-test:
+    @echo "🧪 Testing policy collection system..."
+    uv run python scripts/test_policy_simple.py
+
+# Test policy collection with full features (requires EXA_API_KEY)
+policy-test-full:
+    @echo "🧪 Testing complete policy collection system..."
+    uv run python scripts/test_policy_collection.py
+
+# Generate sample policy queries (no API calls)
+policy-queries:
+    @echo "🔍 Generating policy search queries from client context..."
+    uv run python src/etl/utils/policy_query_generator.py
+
 # Reset Airflow database (for development)
 airflow-reset:
     @echo "⚠️  This will reset Airflow database!"

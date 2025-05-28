@@ -15,17 +15,41 @@ Architecture:
     utils/ - Shared utilities and configuration
 """
 
-from .collectors.apify_news import ApifyNewsCollector
+# Core components that should always be available
 from .transformers.markdown_transformer import MarkdownTransformer
 from .storage import get_storage, BaseStorage, LocalStorage, AzureStorage
 from .utils.config_loader import ClientConfigLoader
 
+# Optional collectors with graceful failure
+_collectors = {}
+
+try:
+    from .collectors.apify_news import ApifyNewsCollector
+    _collectors['ApifyNewsCollector'] = ApifyNewsCollector
+except ImportError:
+    pass
+
+try:
+    from .collectors.exa_direct import ExaDirectCollector
+    _collectors['ExaDirectCollector'] = ExaDirectCollector
+except ImportError:
+    pass
+
+try:
+    from .collectors.policy_landscape import PolicyLandscapeCollector
+    _collectors['PolicyLandscapeCollector'] = PolicyLandscapeCollector
+except ImportError:
+    pass
+
+# Export what's available
 __all__ = [
-    'ApifyNewsCollector',
     'MarkdownTransformer', 
     'get_storage',
     'BaseStorage',
     'LocalStorage',
     'AzureStorage',
     'ClientConfigLoader'
-]
+] + list(_collectors.keys())
+
+# Add collectors to module namespace
+globals().update(_collectors)
