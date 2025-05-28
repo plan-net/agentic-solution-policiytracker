@@ -130,6 +130,14 @@ Found **{len(available_docs)}** documents to process:
 """)
             return {"error": error_msg}
         
+        # Get relationship distribution from the graph
+        relationship_distribution = {}
+        try:
+            async with SharedGraphitiClient() as graphiti_client:
+                relationship_distribution = await graphiti_client.get_relationship_distribution()
+        except Exception as e:
+            logger.warning(f"Failed to get relationship distribution: {e}")
+        
         # Build communities if enabled
         communities_result = {"status": "skipped", "communities": [], "community_count": 0}
         
@@ -212,6 +220,38 @@ Found **{len(available_docs)}** documents to process:
         communities_count = communities_result.get('community_count', 0)
         success_rate = stats.get('success_rate', 0)
         
+        # Extract top entities and date info from processing results
+        top_entities = []
+        document_dates = []
+        for result in processing_result.get('results', []):
+            if result.get('status') == 'success':
+                # Collect entity information
+                if result.get('entities'):
+                    for entity in result.get('entities', [])[:3]:  # Top 3 per document
+                        entity_name = getattr(entity, 'name', 'Unknown')
+                        entity_type = entity.labels[0] if hasattr(entity, 'labels') and entity.labels else 'Unknown'
+                        top_entities.append({'name': entity_name, 'type': entity_type})
+                
+                # Collect document date information
+                if result.get('document_date'):
+                    document_dates.append(result['document_date'])
+        
+        # Remove duplicates and limit to top 10
+        seen_entities = set()
+        unique_entities = []
+        for entity in top_entities:
+            entity_key = (entity['name'], entity['type'])
+            if entity_key not in seen_entities:
+                seen_entities.add(entity_key)
+                unique_entities.append(entity)
+                if len(unique_entities) >= 10:
+                    break
+        
+        # Calculate date range
+        docs_with_dates = len(document_dates)
+        earliest_date = min(document_dates) if document_dates else None
+        latest_date = max(document_dates) if document_dates else None
+        
         # Create execution summary
         execution_summary = f"""# 📄 {job_name} - Final Report
 
@@ -242,6 +282,16 @@ Found **{len(available_docs)}** documents to process:
 - **Total Relationships Created:** {total_relationships}
 - **Entity Types:** Policy, Company, GovernmentAgency, Politician, Regulation, LobbyGroup, LegalFramework
 - **Processing Time:** {stats.get('total_processing_time', 0):.2f}s
+
+### Key Entities Discovered
+{chr(10).join([f"- **{entity['name']}** ({entity['type']})" for entity in unique_entities[:8]]) if unique_entities else "- No entities extracted"}
+
+### Relationship Types Found
+{chr(10).join([f"- **{rel_type}**: {count} relationships" for rel_type, count in list(relationship_distribution.items())[:5]]) if relationship_distribution else "- No relationships analyzed"}
+
+### Document Timeline
+- **Documents with dates**: {docs_with_dates}/{processed_docs}
+- **Date range**: {f"{earliest_date} to {latest_date}" if earliest_date and latest_date else "No dates extracted"}
 
 ### Community Detection
 - **Status:** {'✅ Success' if communities_count > 0 else '⚠️ No communities found'}
@@ -302,8 +352,13 @@ LIMIT 10
                     path = result.get('path', 'Unknown')
                     entities = result.get('entity_count', 0)
                     relationships = result.get('relationship_count', 0)
+                    doc_date = result.get('document_date', 'No date')
+                    content_preview = result.get('content_preview', '')[:150] + "..." if result.get('content_preview') else 'No preview'
+                    
                     report_content += f"""
-- **{Path(path).name}:** `{episode_id}` ({entities} entities, {relationships} relationships)"""
+- **{Path(path).name}:** `{episode_id}` ({entities} entities, {relationships} relationships)
+  - **Date**: {doc_date}
+  - **Preview**: {content_preview}"""
 
         report_content += f"""
 

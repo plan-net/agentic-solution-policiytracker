@@ -121,7 +121,10 @@ class SimpleDocumentProcessor:
                     "entity_count": result["entity_count"],
                     "relationship_count": result["relationship_count"],
                     "processing_time": processing_time,
-                    "content_length": len(content)
+                    "content_length": len(content),
+                    "entities": result.get("entities", []),
+                    "document_date": reference_time.strftime('%Y-%m-%d') if reference_time != datetime.now() else None,
+                    "content_preview": content[:200] + "..." if len(content) > 200 else content
                 }
                 
             except Exception as e:
