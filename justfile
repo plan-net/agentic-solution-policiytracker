@@ -323,6 +323,21 @@ airflow-trigger-flows:
     @echo "🔄 Triggering flow orchestration DAG..."
     docker compose exec airflow-webserver airflow dags trigger flow_orchestration
 
+# Check ETL initialization status
+etl-status:
+    @echo "🔍 ETL Initialization Status:"
+    uv run python scripts/etl_init_manager.py status
+
+# Reset ETL initialization for specific collector
+etl-reset collector:
+    @echo "🔄 Resetting ETL initialization for {{collector}}..."
+    uv run python scripts/etl_init_manager.py reset {{collector}}
+
+# Reset ETL initialization for all collectors
+etl-reset-all:
+    @echo "🔄 Resetting ETL initialization for all collectors..."
+    uv run python scripts/etl_init_manager.py reset-all
+
 # Reset Airflow database (for development)
 airflow-reset:
     @echo "⚠️  This will reset Airflow database!"
