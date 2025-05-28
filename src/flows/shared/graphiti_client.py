@@ -32,54 +32,68 @@ class GraphitiConfig:
         return client
 
 
-# Custom entity types for political domain (from successful v0.2.0 implementation)
+# Enhanced entity types for political domain with relationship guidance
 class Policy(BaseModel):
-    policy_name: str = Field(..., description="The name of the policy")
-    jurisdiction: str | None = Field(None, description="Primary jurisdiction where policy applies")
-    status: str | None = Field(None, description="Current status (draft, enacted, implemented, etc.)")
-    effective_date: str | None = Field(None, description="When the policy becomes effective")
+    """Government policies, laws, and regulations that create compliance obligations and affect companies."""
+    policy_name: str = Field(..., description="Official name of the policy, law, or regulation that companies must comply with")
+    jurisdiction: str | None = Field(None, description="Geographic region where this policy is enforced and companies must comply")
+    status: str | None = Field(None, description="Current legislative status: draft, enacted, implemented, or repealed")
+    effective_date: str | None = Field(None, description="Date when companies must begin compliance with this policy")
+    regulatory_body: str | None = Field(None, description="Government agency that enforces this policy and monitors compliance")
 
 
 class Company(BaseModel):
-    company_name: str = Field(..., description="The name of the company")
-    industry: str | None = Field(None, description="Primary industry or sector")
-    headquarters: str | None = Field(None, description="Location of headquarters")
-    size: str | None = Field(None, description="Company size (startup, SME, large, multinational)")
+    """Business entities that are subject to government regulations and policies."""
+    company_name: str = Field(..., description="Name of the company that may be regulated, fined, or required to comply with policies")
+    industry: str | None = Field(None, description="Business sector that determines which regulations apply to this company")
+    headquarters: str | None = Field(None, description="Primary location that determines jurisdictional authority over the company")
+    size: str | None = Field(None, description="Company scale (startup, SME, large corporation) affecting regulatory requirements")
+    regulatory_status: str | None = Field(None, description="Current compliance status or regulatory issues facing the company")
 
 
 class Politician(BaseModel):
-    politician_name: str = Field(..., description="The name of the politician")
-    position: str | None = Field(None, description="Current position or role")
-    party: str | None = Field(None, description="Political party affiliation")
-    jurisdiction: str | None = Field(None, description="Geographic jurisdiction of influence")
+    """Political figures who propose, support, or oppose policies and regulations."""
+    politician_name: str = Field(..., description="Name of the politician who influences, proposes, or votes on policies affecting companies")
+    position: str | None = Field(None, description="Official role that grants authority to create or influence regulatory policy")
+    party: str | None = Field(None, description="Political party affiliation that indicates policy stance and voting patterns")
+    jurisdiction: str | None = Field(None, description="Geographic area where this politician has regulatory authority")
+    policy_focus: str | None = Field(None, description="Key policy areas this politician champions or opposes")
 
 
 class GovernmentAgency(BaseModel):
-    agency_name: str = Field(..., description="The name of the government agency")
-    jurisdiction: str | None = Field(None, description="Geographic jurisdiction")
-    mandate: str | None = Field(None, description="Primary mandate or responsibility")
-    regulatory_power: str | None = Field(None, description="Type of regulatory authority")
+    """Regulatory bodies that enforce policies and monitor company compliance."""
+    agency_name: str = Field(..., description="Name of the government agency that enforces regulations and monitors company compliance")
+    jurisdiction: str | None = Field(None, description="Geographic area where this agency has enforcement authority")
+    mandate: str | None = Field(None, description="Regulatory powers and responsibilities for overseeing company compliance")
+    regulatory_power: str | None = Field(None, description="Types of enforcement actions this agency can take against companies")
+    enforcement_history: str | None = Field(None, description="Notable fines, sanctions, or actions taken against companies")
 
 
 class LegalFramework(BaseModel):
-    framework_name: str = Field(..., description="The name of the legal framework")
-    framework_type: str | None = Field(None, description="Type (law, regulation, directive, etc.)")
-    jurisdiction: str | None = Field(None, description="Geographic scope")
-    domain: str | None = Field(None, description="Legal domain (privacy, AI, cybersecurity, etc.)")
+    """Overarching legal systems that establish regulatory authority and company obligations."""
+    framework_name: str = Field(..., description="Name of the legal framework that establishes company regulatory obligations")
+    framework_type: str | None = Field(None, description="Type of legal instrument: constitutional law, statutory law, regulatory code")
+    jurisdiction: str | None = Field(None, description="Geographic scope where companies must comply with this framework")
+    domain: str | None = Field(None, description="Regulatory area: data privacy, AI ethics, cybersecurity, financial compliance")
+    company_impact: str | None = Field(None, description="How this framework affects company operations and compliance requirements")
 
 
 class Regulation(BaseModel):
-    regulation_name: str = Field(..., description="The name of the regulation")
-    regulatory_body: str | None = Field(None, description="Issuing regulatory body")
-    compliance_deadline: str | None = Field(None, description="Compliance deadline if applicable")
-    penalties: str | None = Field(None, description="Penalties for non-compliance")
+    """Specific regulatory requirements that companies must implement and follow."""
+    regulation_name: str = Field(..., description="Specific regulation that creates compliance obligations for companies")
+    regulatory_body: str | None = Field(None, description="Agency responsible for enforcing this regulation against companies")
+    compliance_deadline: str | None = Field(None, description="Date by which companies must achieve full compliance")
+    penalties: str | None = Field(None, description="Fines, sanctions, or penalties for companies that violate this regulation")
+    affected_industries: str | None = Field(None, description="Business sectors and company types subject to this regulation")
 
 
 class LobbyGroup(BaseModel):
-    group_name: str = Field(..., description="The name of the lobby group")
-    focus_area: str | None = Field(None, description="Primary area of lobbying focus")
-    members: str | None = Field(None, description="Key member organizations")
-    position: str | None = Field(None, description="Stated position on key issues")
+    """Organizations that advocate for or against policies on behalf of companies and industries."""
+    group_name: str = Field(..., description="Name of organization that lobbies politicians and agencies on behalf of companies")
+    focus_area: str | None = Field(None, description="Policy domains where this group advocates for company interests")
+    members: str | None = Field(None, description="Companies, industries, or organizations represented by this lobby group")
+    position: str | None = Field(None, description="Stance on regulations: supportive of company interests or regulatory compliance")
+    lobbying_target: str | None = Field(None, description="Politicians, agencies, or policies this group seeks to influence")
 
 
 # Entity types mapping for Graphiti
@@ -200,6 +214,32 @@ class SharedGraphitiClient:
             "query": query
         }
     
+    async def get_relationship_distribution(self) -> dict:
+        """Get distribution of relationship types in the graph."""
+        if not self.client:
+            raise RuntimeError("Client not initialized. Use async context manager.")
+        
+        try:
+            query = """
+            MATCH ()-[r]->() 
+            WHERE NOT type(r) IN ['MEMBER_OF', 'HAS_EMBEDDING']
+            RETURN type(r) as relationship_type, count(*) as count
+            ORDER BY count DESC
+            LIMIT 10
+            """
+            
+            async with self.client.driver.session() as session:
+                result = await session.run(query)
+                records = await result.data()
+                
+                return {
+                    rel['relationship_type']: rel['count'] 
+                    for rel in records
+                }
+        except Exception as e:
+            logger.warning(f"Failed to get relationship distribution: {e}")
+            return {}
+    
     async def build_communities(self, timeout_seconds: int = 60) -> list:
         """Build communities using Graphiti's built-in community detection with timeout."""
         if not self.client:
@@ -256,6 +296,34 @@ def generate_episode_name(doc_path, timestamp: datetime) -> str:
 
 
 def extract_document_date(content: str) -> Optional[datetime]:
-    """Extract document date from content (placeholder for future implementation)."""
-    # TODO: Implement date extraction logic
+    """Extract document date from content using common patterns."""
+    import re
+    from datetime import datetime as dt
+    
+    # Check first 1000 characters for date patterns
+    content_start = content[:1000]
+    
+    # ISO format: 2024-05-27, Published: 2024-05-27
+    iso_pattern = r'(?:Published|Date|Updated|Effective):\s*(\d{4}-\d{2}-\d{2})'
+    match = re.search(iso_pattern, content_start, re.IGNORECASE)
+    if match:
+        try:
+            date_str = match.group(1)
+            parsed_date = dt.strptime(date_str, '%Y-%m-%d')
+            if 2020 <= parsed_date.year <= 2030:
+                return parsed_date
+        except ValueError:
+            pass
+    
+    # YYYY-MM-DD anywhere in text
+    date_pattern = r'(\d{4}-\d{1,2}-\d{1,2})'
+    matches = re.findall(date_pattern, content_start)
+    for match in matches:
+        try:
+            parsed_date = dt.strptime(match, '%Y-%m-%d')
+            if 2020 <= parsed_date.year <= 2030:
+                return parsed_date
+        except ValueError:
+            continue
+    
     return None
