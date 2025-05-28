@@ -1,6 +1,6 @@
 # Political Monitoring Agent v0.1.0
 
-A sophisticated AI-powered document analysis system for political and regulatory monitoring. Built on **Kodosumi v0.9.2** with Ray distributed processing, LangGraph workflows, and Azure Storage integration.
+A sophisticated AI-powered document analysis system for political and regulatory monitoring with **automated data collection**. Built on **Kodosumi v0.9.2** with Ray distributed processing, LangGraph workflows, Apache Airflow ETL, and Azure Storage integration.
 
 ## 🚀 Quick Start
 
@@ -21,9 +21,12 @@ just dev
 # 4. Access the application
 # → Kodosumi Admin: http://localhost:3370 (admin/admin)
 # → Your App: http://localhost:8001/political-analysis
+# → Airflow ETL: http://localhost:8080 (admin/admin)
 ```
 
 **Test with sample data**: Sample documents are included in `data/input/examples/` - upload these via the web interface to see the system in action.
+
+**Automated data collection**: Set up [ETL pipeline](#-automated-data-collection-etl) to automatically collect and process news articles daily.
 
 **Next steps**: Configure [Langfuse observability](#step-4-configure-langfuse-one-time-only) and customize the [context file](#client-context-configuration) for your organization.
 
@@ -38,6 +41,13 @@ just dev
 - **Intelligent Clustering**: Automatic topic grouping and priority classification
 - **Distributed Processing**: Ray-powered parallel computation for scalability
 - **Rich Reporting**: Detailed markdown reports with AI-generated insights
+
+### 🔄 Automated Data Collection (ETL)
+- **Daily News Collection**: Automated gathering from Apify news sources
+- **Apache Airflow Orchestration**: Reliable scheduling and monitoring
+- **Smart Deduplication**: URL-based filtering to avoid duplicate articles
+- **Temporal Metadata**: Date extraction for knowledge graph integration
+- **Flow Integration**: Automatic triggering of analysis workflows
 
 ### Kodosumi Platform Features
 - **Rich Web Interface**: Beautiful forms with real-time progress tracking
@@ -57,19 +67,26 @@ just dev
 - **Langfuse Observability**: Complete LLM operation tracing and monitoring
 - **Semantic Analysis**: AI-powered document understanding and relevance scoring
 
-## 🏗️ Kodosumi Architecture
+## 🏗️ Complete System Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Kodosumi      │    │   Political      │    │   LangGraph     │
-│   Web Interface │───▶│   Analyzer       │───▶│   Workflows     │
-│   (Forms + UI)  │    │   (Entrypoint)   │    │   + Ray Tasks   │
+│   Apache        │    │   Kodosumi       │    │   Political     │
+│   Airflow       │───▶│   Web Interface  │───▶│   Analyzer      │
+│   (ETL)         │    │   (Forms + UI)   │    │   (Entrypoint)  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Ray Serve     │    │   Azure Storage  │    │   Langfuse      │
-│   (HTTP/gRPC)   │    │   (Azurite)      │    │   (Observability)│
+│   Apify API     │    │   LangGraph      │    │   Graphiti      │
+│   (News Data)   │    │   Workflows      │    │   (Knowledge    │
+│                 │    │   + Ray Tasks    │    │    Graph)       │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Local Storage │    │   Azure Storage  │    │   Langfuse      │
+│   (data/input/) │    │   (Azurite)      │    │   (Observability)│
 │                 │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
@@ -77,6 +94,100 @@ just dev
 ### Two-Part Kodosumi Design
 - **Endpoint** (`app.py`): Rich web forms, validation, and HTTP interface
 - **Entrypoint** (`political_analyzer.py`): Core business logic with distributed Ray processing
+
+## 🔄 Automated Data Collection (ETL)
+
+The system includes a complete ETL pipeline for **automated news collection and processing**:
+
+### What Gets Collected
+- **News articles** about your company from multiple sources
+- **Headlines and summaries** from RSS feeds and news aggregators
+- **Temporal metadata** for knowledge graph integration
+- **Source attribution** and publication dates
+
+### How It Works
+1. **Daily Collection**: Airflow runs news collection DAG automatically
+2. **Smart Filtering**: Queries based on your `client.yaml` company terms
+3. **Deduplication**: Avoids collecting the same article multiple times
+4. **Markdown Conversion**: Creates structured documents ready for analysis
+5. **Auto-Processing**: Triggers Flow 1 to process new articles
+
+### Getting Started with ETL
+
+**Setup Requirements:**
+```bash
+# Add your Apify API token to .env
+APIFY_API_TOKEN=your_apify_api_token_here
+```
+
+**Start ETL Services:**
+```bash
+# Start Airflow alongside other services
+just services-up
+just airflow-up
+
+# Access Airflow UI
+open http://localhost:8080  # Login: admin/admin
+```
+
+**Manual Triggers:**
+```bash
+# Trigger news collection manually
+just airflow-trigger-news
+
+# Trigger flow processing manually
+just airflow-trigger-flows
+```
+
+**Monitor Collection:**
+- **Airflow UI**: http://localhost:8080 - View DAG runs and logs
+- **Output Files**: `data/input/news/YYYY-MM/` - Generated markdown files
+- **Processing Logs**: Track collection success/failure rates
+
+### ETL Configuration
+
+The ETL pipeline uses your existing `data/context/client.yaml` to determine what to collect:
+
+```yaml
+company_terms:      # Primary search terms
+  - your-company
+  - brand-name
+  
+exclusion_terms:    # Filter out irrelevant content
+  - sports
+  - entertainment
+```
+
+**File Structure Created:**
+```
+data/input/news/
+├── 2025-05/
+│   ├── 20250527_techcrunch_company-announces-new-product.md
+│   └── 20250527_reuters_regulatory-update-affects-industry.md
+└── 2025-04/
+    └── ...older articles...
+```
+
+### ETL Commands Reference
+
+```bash
+# Airflow Management
+just airflow-up              # Start Airflow services
+just airflow-down            # Stop Airflow services  
+just airflow-logs            # View Airflow logs
+just airflow-reset           # Reset Airflow database
+
+# Manual DAG Triggers
+just airflow-trigger-news    # Collect news articles
+just airflow-trigger-flows   # Process collected articles
+
+# Status & Monitoring
+just services-status         # Check all services including Airflow
+just logs airflow-scheduler  # View scheduler logs
+just logs airflow-webserver  # View webserver logs
+```
+
+> **💡 Pro Tip**: Use the Airflow UI at http://localhost:8080 to monitor DAG runs, view logs, and manually trigger collections when needed.
 
 ## 🚀 Complete First-Time Setup Guide
 

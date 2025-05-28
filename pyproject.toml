@@ -66,6 +66,8 @@ dependencies = [
     # Enhanced NLP for entity extraction
     "spacy>=3.7.0",
     "sentence-transformers>=2.5.0",
+    # ETL Dependencies
+    "apify-client==1.6.4",
 ]
 
 [project.optional-dependencies]

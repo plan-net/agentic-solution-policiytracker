@@ -11,6 +11,7 @@
 - [AI vs Rule-Based Analysis](#ai-vs-rule-based-analysis)
 - [Required Inputs](#required-inputs)
 - [Understanding Your Results](#understanding-your-results)
+- [Automated Data Collection (ETL) Guide](#automated-data-collection-etl-guide)
 - [Quality Assurance & Reliability](#quality-assurance--reliability)
 - [Customizing for Your Organization](#customizing-for-your-organization)
 - [Best Practices for Use](#best-practices-for-use)
@@ -49,13 +50,23 @@ The Political Monitoring Agent automatically analyzes political and regulatory d
 
 ## How It Works: The Complete Process
 
-### Step 1: Document Collection
+### Step 1: Document Collection (Manual & Automated)
+
+**Manual Document Upload**:
 You provide documents in various formats:
 - **PDF files** (regulatory reports, policy papers)
 - **Word documents** (.docx format)
 - **Text files** (.txt format)
 - **Markdown files** (.md format)
 - **Web content** (HTML format)
+
+**Automated Data Collection** (ETL Pipeline):
+The system can automatically collect relevant news and regulatory updates:
+- **Daily news collection** from multiple sources via Apify API
+- **Smart filtering** based on your company terms and industry keywords
+- **Automatic deduplication** to avoid processing the same content multiple times
+- **Temporal organization** with files organized by date for easy tracking
+- **Seamless integration** with manual uploads for comprehensive coverage
 
 ### Step 2: Content Processing
 The system extracts and processes the text:
@@ -496,6 +507,247 @@ Related documents are grouped by theme:
 - Responsible teams and stakeholders
 - Suggested timelines for response
 - Monitoring and follow-up recommendations
+
+---
+
+## Automated Data Collection (ETL) Guide
+
+The Political Monitoring Agent includes a complete **Extract, Transform, Load (ETL) pipeline** for automatically collecting and processing news articles about your organization. This reduces manual effort and ensures you don't miss important developments.
+
+### What Gets Collected Automatically
+
+**News Sources**:
+- RSS feeds from major news outlets
+- Industry publications and trade journals
+- Government press releases and announcements
+- Regulatory agency updates
+- Policy think tank reports
+
+**Content Types**:
+- Breaking news about regulatory changes
+- Industry analysis and commentary
+- Policy announcements affecting your sector
+- Enforcement actions and compliance updates
+- Market developments with regulatory implications
+
+**Smart Filtering**:
+- Articles mentioning your company or brands
+- Content related to your industry sectors
+- News from your operational markets
+- Stories matching your strategic themes
+- Exclusion of irrelevant topics (sports, entertainment, etc.)
+
+### How Automated Collection Works
+
+**Daily Collection Process**:
+1. **Query Generation**: System uses your `client.yaml` configuration to create search queries
+2. **News Gathering**: Apify API collects articles from multiple sources
+3. **Deduplication**: Removes duplicate articles based on URL matching
+4. **Transformation**: Converts articles to structured markdown format
+5. **Organization**: Files stored by date for easy chronological tracking
+6. **Integration**: New articles automatically trigger analysis workflows
+
+**File Organization**:
+```
+data/input/news/
+├── 2025-05/
+│   ├── 20250527_techcrunch_new-ai-regulation-proposed.md
+│   ├── 20250527_reuters_financial-privacy-update.md
+│   └── 20250528_bloomberg_compliance-deadline-extended.md
+└── 2025-04/
+    └── ...previous month's articles...
+```
+
+### Setting Up Automated Collection
+
+**Prerequisites**:
+- Apify API account and token (free tier available)
+- Properly configured `client.yaml` with your company terms
+- ETL services running (handled automatically in development)
+
+**Configuration Steps**:
+
+1. **Add API Token**: Update your `.env` file with Apify credentials
+2. **Review Company Terms**: Ensure `client.yaml` includes all relevant search terms
+3. **Start ETL Services**: Services start automatically with `just dev`
+4. **Monitor Collection**: Check Airflow UI at http://localhost:8080
+
+**Company Terms Configuration**:
+Your existing `client.yaml` drives what content gets collected:
+
+```yaml
+company_terms:        # Primary search terms
+  - your-company
+  - brand-name
+  - stock-ticker
+  
+core_industries:      # Industry-related content
+  - fintech
+  - digital-payments
+  
+exclusion_terms:      # Filter out irrelevant content
+  - sports
+  - entertainment
+  - celebrity
+```
+
+### Monitoring Automated Collection
+
+**Airflow Dashboard** (http://localhost:8080):
+- **DAG Status**: View success/failure of daily collection runs
+- **Execution Logs**: Detailed information about each collection attempt
+- **Manual Triggers**: Force collection runs when needed
+- **Schedule Management**: Adjust collection frequency and timing
+
+**Collection Metrics**:
+- Articles collected per day
+- Deduplication statistics
+- Processing success rates
+- Sources contributing content
+- Error rates and failure patterns
+
+**File Output Monitoring**:
+- Check `data/input/news/YYYY-MM/` for new files
+- Review file naming patterns for consistency
+- Validate markdown formatting and metadata
+- Monitor file sizes and content quality
+
+### Manual Control Options
+
+**Trigger Collection Manually**:
+```bash
+# Force immediate news collection
+just airflow-trigger-news
+
+# Process collected articles through analysis
+just airflow-trigger-flows
+```
+
+**Adjust Collection Frequency**:
+- Default: Daily at 8:00 AM
+- Modification: Edit `src/etl/dags/news_collection_dag.py`
+- Options: Hourly, twice daily, weekly, or custom schedules
+
+**Pause/Resume Collection**:
+- Use Airflow UI to pause DAGs during maintenance
+- Resume collection when ready
+- Backfill missed periods if needed
+
+### Integration with Analysis Workflows
+
+**Automatic Processing**:
+- New articles trigger Flow 1 (Data Ingestion) automatically
+- Collected content goes through same analysis as manual uploads
+- Results appear in regular analysis reports
+- No additional configuration needed
+
+**Combined Analysis**:
+- Automated and manual documents analyzed together
+- Topic clustering includes both sources
+- Priority scoring treats all content equally
+- Executive summaries combine insights from all sources
+
+### Content Quality and Limitations
+
+**What You Get**:
+- **Headlines and summaries**: Full article text often not available
+- **Source attribution**: Clear indication of where content originated
+- **Publication dates**: Accurate timestamps for temporal analysis
+- **Metadata extraction**: Key information for knowledge graph integration
+
+**Current Limitations**:
+- RSS feed content may be truncated (headlines and summaries only)
+- Full article text requires additional processing capabilities
+- Some sources may have rate limiting or access restrictions
+- Content quality varies by source and article type
+
+**Future Enhancements**:
+- Full content scraping capabilities
+- Additional source integration
+- Advanced content filtering
+- Real-time collection options
+
+### Troubleshooting ETL Issues
+
+**Common Problems**:
+
+1. **No Articles Collected**:
+   - Check Apify API token is valid
+   - Verify company terms are not too restrictive
+   - Review exclusion terms for over-filtering
+   - Check Airflow DAG execution logs
+
+2. **Duplicate Content**:
+   - System automatically deduplicates by URL
+   - Manual deduplication may be needed for similar content
+   - Review collection sources for overlap
+
+3. **Poor Content Quality**:
+   - Adjust company terms for better targeting
+   - Add more specific industry keywords
+   - Refine exclusion terms to filter noise
+   - Consider source quality in Apify configuration
+
+**Monitoring Commands**:
+```bash
+# Check ETL service status
+just services-status
+
+# View collection logs
+just airflow-logs
+
+# Test Apify connection
+just test-etl-connection  # (if available)
+
+# Review collected files
+ls -la data/input/news/$(date +%Y-%m)/
+```
+
+### Best Practices for ETL Usage
+
+**Configuration Optimization**:
+- Start with broad terms, then narrow based on results
+- Regular review of collected content quality
+- Seasonal adjustment of search terms for industry cycles
+- Geographic term adjustment for market expansion
+
+**Quality Management**:
+- Monthly review of collection accuracy
+- Feedback incorporation for search term refinement
+- Regular cleanup of low-quality sources
+- Performance monitoring and optimization
+
+**Integration Workflows**:
+- Combine automated collection with manual document uploads
+- Use both sources for comprehensive market monitoring
+- Regular analysis of automated vs manual content quality
+- Strategic planning based on combined insights
+
+**Cost Management**:
+- Monitor Apify API usage and costs
+- Optimize collection frequency based on business needs
+- Balance comprehensiveness with operational efficiency
+- Regular cost-benefit analysis of automated collection
+
+### Success Metrics for ETL
+
+**Collection Quality**:
+- Percentage of relevant articles collected
+- Coverage of important industry developments
+- Timeliness of content collection
+- Accuracy of metadata extraction
+
+**Business Value**:
+- Critical developments identified automatically
+- Time saved vs manual monitoring
+- Early warning effectiveness
+- Decision support quality improvement
+
+**Technical Performance**:
+- Collection reliability and uptime
+- Processing speed and efficiency
+- Error rates and failure recovery
+- System resource utilization
 
 ---
 
