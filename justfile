@@ -106,6 +106,8 @@ services-status:
     @echo "  Azurite:     http://localhost:10000"
     @echo "  PostgreSQL:  localhost:5432" 
     @echo "  Langfuse:    http://localhost:3001"
+    @echo "  Neo4j:       http://localhost:7474"
+    @echo "  Airflow:     http://localhost:8080"
 
 # View service logs
 logs service="":
@@ -293,11 +295,54 @@ azure-import-dry:
 azure-verify:
     uv run python scripts/import_data_to_azurite.py --verify-only
 
+# === Airflow ETL ===
+
+# Start Airflow services (including webserver and scheduler)
+airflow-up:
+    @echo "🚁 Starting Airflow services..."
+    docker compose up -d airflow-postgres airflow-init airflow-webserver airflow-scheduler
+    @echo "✅ Airflow started"
+    @echo "🌐 Airflow UI: http://localhost:8080 (admin/admin)"
+    @echo "📊 Available DAGs: news_collection, flow_orchestration"
+
+# Stop Airflow services
+airflow-down:
+    docker compose stop airflow-webserver airflow-scheduler airflow-postgres
+
+# View Airflow logs
+airflow-logs service="webserver":
+    docker compose logs -f airflow-{{service}}
+
+# Trigger news collection DAG manually
+airflow-trigger-news:
+    @echo "📰 Triggering news collection DAG..."
+    docker compose exec airflow-webserver airflow dags trigger news_collection
+
+# Trigger flow orchestration DAG manually
+airflow-trigger-flows:
+    @echo "🔄 Triggering flow orchestration DAG..."
+    docker compose exec airflow-webserver airflow dags trigger flow_orchestration
+
+# Reset Airflow database (for development)
+airflow-reset:
+    @echo "⚠️  This will reset Airflow database!"
+    @read -p "Continue? (y/N) " -n 1 -r; \
+    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+        docker compose stop airflow-webserver airflow-scheduler; \
+        docker volume rm policiytracker_airflow_postgres_data 2>/dev/null || true; \
+        docker compose up -d airflow-postgres airflow-init; \
+        echo "✅ Airflow database reset"; \
+    fi
+
 # === Database ===
 
 # Connect to PostgreSQL
 db-connect:
     docker compose exec postgres psql -U postgres -d policiytracker
+
+# Connect to Airflow PostgreSQL
+airflow-db-connect:
+    docker compose exec airflow-postgres psql -U airflow -d airflow
 
 # Reset database
 db-reset:
