@@ -43,11 +43,13 @@ just dev
 - **Rich Reporting**: Detailed markdown reports with AI-generated insights
 
 ### 🔄 Automated Data Collection (ETL)
-- **Daily News Collection**: Automated gathering from Apify news sources
+- **Dual Collection Flows**: Flow 1 (Policy Landscape) + Flow 2 (Client News)
+- **Policy Collection**: Weekly regulatory document gathering via Exa.ai
+- **News Collection**: Daily client-specific news from multiple sources
 - **Apache Airflow Orchestration**: Reliable scheduling and monitoring
+- **Smart Query Generation**: Context-aware search queries from client YAML
+- **Initialization Tracking**: Historical data collection on first run
 - **Smart Deduplication**: URL-based filtering to avoid duplicate articles
-- **Temporal Metadata**: Date extraction for knowledge graph integration
-- **Flow Integration**: Automatic triggering of analysis workflows
 
 ### Kodosumi Platform Features
 - **Rich Web Interface**: Beautiful forms with real-time progress tracking
@@ -97,27 +99,39 @@ just dev
 
 ## 🔄 Automated Data Collection (ETL)
 
-The system includes a complete ETL pipeline for **automated news collection and processing**:
+The system includes a **dual-flow ETL pipeline** for comprehensive document collection:
 
-### What Gets Collected
-- **News articles** about your company from multiple sources
-- **Headlines and summaries** from RSS feeds and news aggregators
-- **Temporal metadata** for knowledge graph integration
-- **Source attribution** and publication dates
+### 📊 Two Collection Flows
+
+**Flow 1: Policy Landscape Collection**
+- **Weekly Schedule**: Sundays at 2 AM UTC
+- **Content**: Regulatory documents, policy changes, enforcement actions
+- **Sources**: Exa.ai with intelligent query generation
+- **Scope**: EU regulations (GDPR, DSA, DMA), sustainability, competition law
+- **Storage**: `data/input/policy/YYYY-MM/`
+
+**Flow 2: Client News Collection**  
+- **Daily Schedule**: Configurable timing
+- **Content**: Company-specific news and industry developments
+- **Sources**: Exa.ai, Apify news aggregators
+- **Scope**: Based on your client context (company terms, markets)
+- **Storage**: `data/input/news/YYYY-MM/`
 
 ### How It Works
-1. **Daily Collection**: Airflow runs news collection DAG automatically
-2. **Smart Filtering**: Queries based on your `client.yaml` company terms
-3. **Deduplication**: Avoids collecting the same article multiple times
-4. **Markdown Conversion**: Creates structured documents ready for analysis
-5. **Auto-Processing**: Triggers Flow 1 to process new articles
+1. **Smart Query Generation**: Automatic queries from `client.yaml` context
+2. **Initialization Mode**: Historical data collection (30-90 days) on first run
+3. **Regular Collection**: Daily/weekly incremental updates
+4. **Deduplication**: URL-based filtering across all sources
+5. **Markdown Conversion**: Structured documents ready for analysis
+6. **Auto-Processing**: Triggers analysis workflows for new documents
 
 ### Getting Started with ETL
 
 **Setup Requirements:**
 ```bash
-# Add your Apify API token to .env
-APIFY_API_TOKEN=your_apify_api_token_here
+# Add API keys to .env
+EXA_API_KEY=your_exa_api_key_here           # Primary source (recommended)
+APIFY_API_TOKEN=your_apify_api_token_here   # Optional fallback
 ```
 
 **Start ETL Services:**
@@ -130,42 +144,83 @@ just airflow-up
 open http://localhost:8080  # Login: admin/admin
 ```
 
+**Test Collection Systems:**
+```bash
+# Test policy collection (Flow 1)
+just policy-test
+just policy-queries  # See generated queries
+
+# Test news collection (Flow 2) 
+just etl-status      # Check initialization status
+```
+
 **Manual Triggers:**
 ```bash
-# Trigger news collection manually
-just airflow-trigger-news
+# Trigger policy collection (weekly)
+just airflow-trigger policy_collection_dag
 
-# Trigger flow processing manually
-just airflow-trigger-flows
+# Trigger news collection (daily)
+just airflow-trigger news_collection_dag
 ```
 
 **Monitor Collection:**
 - **Airflow UI**: http://localhost:8080 - View DAG runs and logs
-- **Output Files**: `data/input/news/YYYY-MM/` - Generated markdown files
+- **Policy Documents**: `data/input/policy/YYYY-MM/` - Regulatory documents
+- **News Articles**: `data/input/news/YYYY-MM/` - Client-specific news
 - **Processing Logs**: Track collection success/failure rates
 
 ### ETL Configuration
 
-The ETL pipeline uses your existing `data/context/client.yaml` to determine what to collect:
+The ETL pipeline uses your existing `data/context/client.yaml` to generate intelligent search queries:
 
+**For Policy Collection (Flow 1):**
 ```yaml
-company_terms:      # Primary search terms
-  - your-company
-  - brand-name
+topic_patterns:
+  data-protection:    # GDPR, privacy regulations
+    - gdpr
+    - data privacy
+  ecommerce-regulation:   # DSA, DMA, platform rules
+    - digital services act
+    - marketplace regulation
+  sustainability:     # ESG, environmental laws
+    - esg
+    - carbon footprint
+
+primary_markets:      # Geographic focus
+  - european union
+  - germany
+  - france
+```
+
+**For News Collection (Flow 2):**
+```yaml
+company_terms:        # Your organization
+  - zalando
+  - zln
   
-exclusion_terms:    # Filter out irrelevant content
+core_industries:      # Business sectors  
+  - e-commerce
+  - fashion
+  - marketplace
+
+exclusion_terms:      # Filter out irrelevant content
   - sports
-  - entertainment
+  - automotive
 ```
 
 **File Structure Created:**
 ```
-data/input/news/
-├── 2025-05/
-│   ├── 20250527_techcrunch_company-announces-new-product.md
-│   └── 20250527_reuters_regulatory-update-affects-industry.md
-└── 2025-04/
-    └── ...older articles...
+data/input/
+├── policy/           # Flow 1: Regulatory landscape
+│   ├── 2025-05/
+│   │   ├── 20250527_europa-eu_dsa-implementation-guidelines.md
+│   │   └── 20250527_edpb_gdpr-enforcement-update.md
+│   └── 2025-04/...
+└── news/             # Flow 2: Client-specific news
+    ├── 2025-05/
+    │   ├── 20250527_techcrunch_zalando-announces-new-feature.md
+    │   └── 20250527_reuters_eu-ecommerce-regulation-update.md
+    └── 2025-04/...
 ```
 
 ### ETL Commands Reference
@@ -177,9 +232,19 @@ just airflow-down            # Stop Airflow services
 just airflow-logs            # View Airflow logs
 just airflow-reset           # Reset Airflow database
 
-# Manual DAG Triggers
-just airflow-trigger-news    # Collect news articles
-just airflow-trigger-flows   # Process collected articles
+# Policy Collection (Flow 1)
+just policy-test             # Test policy collection system
+just policy-queries          # View generated policy queries
+just policy-test-full        # Full test (requires EXA_API_KEY)
+
+# ETL Status & Management
+just etl-status              # Check initialization status
+just etl-reset <collector>   # Reset specific collector
+just etl-reset-all          # Reset all collectors
+
+# Manual DAG Triggers (via Airflow UI)
+# - policy_collection_dag    # Weekly policy collection
+# - news_collection_dag      # Daily news collection  
 
 # Status & Monitoring
 just services-status         # Check all services including Airflow
@@ -187,7 +252,7 @@ just logs airflow-scheduler  # View scheduler logs
 just logs airflow-webserver  # View webserver logs
 ```
 
-> **💡 Pro Tip**: Use the Airflow UI at http://localhost:8080 to monitor DAG runs, view logs, and manually trigger collections when needed.
+> **💡 Pro Tip**: Use the Airflow UI at http://localhost:8080 to monitor DAG runs, view logs, and manually trigger collections. Policy collection runs weekly (Sundays), news collection runs daily.
 
 ## 🚀 Complete First-Time Setup Guide
 
