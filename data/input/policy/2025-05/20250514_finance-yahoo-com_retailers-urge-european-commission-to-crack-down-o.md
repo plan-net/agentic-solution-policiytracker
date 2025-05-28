@@ -1,0 +1,20 @@
+---
+title: Retailers urge European Commission to crack down on Visa, Mastercard
+url: https://finance.yahoo.com/news/retailers-urge-european-commission-crack-173230347.html
+published_date: 2025-05-14T00:00:00
+collected_date: 2025-05-28T14:08:01.496013
+source: Finance
+source_url: https://finance.yahoo.com
+author: Foo Yun Chee Wed, May 14, 2025, 10:32 AM 2 min read
+description: By Foo Yun Chee BRUSSELS (Reuters) - Europe's largest retailers and online retail companies have urged the European Commission to rein in allegedly high fees charged by Visa and Mastercard, saying they hurt the bloc's competitiveness and hamper rivals. Visa and Mastercard dominate the market for...
+language: en
+collection_type: policy_landscape
+---
+
+# Retailers urge European Commission to crack down on Visa, Mastercard
+
+*By Foo Yun Chee Wed, May 14, 2025, 10:32 AM 2 min read*
+
+By Foo Yun Chee BRUSSELS (Reuters) - Europe's largest retailers and online retail companies have urged the European Commission to rein in allegedly high fees charged by Visa and Mastercard, saying they hurt the bloc's competitiveness and hamper rivals. Visa and Mastercard dominate the market for...
+
+By Foo Yun Chee BRUSSELS (Reuters) - Europe's largest retailers and online retail companies have urged the European Commission to rein in allegedly high fees charged by Visa and Mastercard, saying they hurt the bloc's competitiveness and hamper rivals. Visa and Mastercard dominate the market for payment cards and have in recent years faced complaints from retailers about their fees, and what retailers say is a lack of transparency on these fees. The two U.S. companies process about two-thirds of card payments in the euro zone. The retailers' grievances have in part prompted the 27-country European Union to look into alternatives such as a digital euro to lessen dependence on American payment providers. The slow legislative process on a digital currency, however, has frustrated some policymakers and businesses. "International Card Schemes (ICS) have been able to increase their fees without competitive challenge or regulatory scrutiny. They have also rendered their system of fees and rules so complex and opaque that players are unable to understand, let alone challenge, what they are paying for and why," the retailers said in a letter dated May 13 and seen by Reuters. ICS is a term for a payment card network. The group cited a 2024 report by The Brattle Group that showed a cumulative increase in ICS' fees of 33.9% between 2018 and 2022 - averaging 7.6% per year - on top of inflation, but did not find any corresponding improvement in service for EU merchants and consumers. Visa said its fees reflect the value of its services to financial institutions, merchants and consumers in Europe. "This includes extremely high levels of security and fraud prevention, near-perfect operational resilience and reliability, and a wide range of consumer protections and high-quality, innovative products and services that serve consumer and merchant needs," a Visa spokesperson said. Mastercard did not respond to a request for comment. The letter was addressed to the Commission's antitrust chief Teresa Ribera, financial services commissioner Maria Luís Albuquerque and economy chief Valdis Dombrovskis. Signatories were EuroCommerce, Ecommerce Europe, Independent Retail Europe, the European Association of Corporate Treasurers and the European Digital Payments Industry Alliance. Members of the lobby groups include Aldi, Amazon, Carrefour, eBay, H&amp;M, Ikea, Intersport, Marks &amp; Spencer, Worldline, Nexi and Teya. The letter called on the Commission to take action against Visa and Mastercard under EU antitrust rules, modify the rules on interchange fees by imposing price controls on fees, levy transparency and non-discriminatory obligations on ICSs and introduce a tool for regulators to scrutinise actions taken by the ICSs. (Reporting by Foo Yun Chee in Brussels; Editing by Nia Williams and Rod Nickel)

@@ -27,19 +27,19 @@ async def execute_ingestion(inputs: dict, tracer: Tracer):
     
     # Extract inputs
     job_name = inputs.get("job_name", "Document Ingestion")
-    source_path = inputs.get("source_path", "data/input/examples/")
+    source_path = inputs.get("source_path", "data/input/policy/")
     document_limit = inputs.get("document_limit", 10)
     clear_data = inputs.get("clear_data", False)
-    enable_communities = inputs.get("enable_communities", True)
+    enable_communities = inputs.get("enable_communities", False)  # Now disabled by default
     
     await tracer.markdown(f"""
 # 📄 {job_name} - Starting
 
 **Configuration:**
-- Source Path: `{source_path}`
+- Source Path: `{source_path}` (policy documents)
 - Document Limit: {document_limit}
 - Clear Data: {'✅ Yes' if clear_data else '❌ No'}
-- Build Communities: {'✅ Yes' if enable_communities else '❌ No'}
+- Build Communities: ❌ No (use `just build-communities` command)
 
 ---
 """)
@@ -261,7 +261,7 @@ Found **{len(available_docs)}** documents to process:
 - **✅ Success Rate:** {success_rate:.1f}%
 - **🧠 Entities Extracted:** {total_entities}
 - **🔗 Relationships Created:** {total_relationships}
-- **🏘️ Communities Built:** {communities_count}
+- **🏘️ Communities:** Use `just build-communities` to create
 
 ---
 
@@ -294,9 +294,9 @@ Found **{len(available_docs)}** documents to process:
 - **Date range**: {f"{earliest_date} to {latest_date}" if earliest_date and latest_date else "No dates extracted"}
 
 ### Community Detection
-- **Status:** {'✅ Success' if communities_count > 0 else '⚠️ No communities found'}
-- **Communities Created:** {communities_count}
+- **Status:** ⏸️ Manual (run `just build-communities`)
 - **Algorithm:** Graphiti temporal community detection
+- **Trigger:** Use command when you have sufficient documents
 
 ---
 
@@ -327,7 +327,13 @@ RETURN p.policy_name, type(r), labels(o)[0], o.name
 LIMIT 10
 ```
 
-### 3. Continue Analysis
+### 3. Build Communities (Optional)
+Run community detection when you have sufficient documents:
+```bash
+just build-communities
+```
+
+### 4. Continue Analysis
 - **Flow 2:** Company Context Analysis (coming soon)
 - **Flow 3:** Relevance Assessment (coming soon)
 

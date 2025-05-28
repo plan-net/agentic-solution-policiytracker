@@ -1,0 +1,27 @@
+---
+title: Evolent Health (EVH) Reports Q1 Earnings: What Key Metrics Have to Say
+url: https://www.nasdaq.com/articles/evolent-health-evh-reports-q1-earnings-what-key-metrics-have-say
+published_date: 2025-05-28T13:21:52.433718
+collected_date: 2025-05-28T13:21:52.433775
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: Zacks
+description: For the quarter ended March 2025, Evolent Health (EVH) reported revenue of $483.65 million, down 24.4% over the same period last year. EPS came in at $0.06, compared to $0.34 in the year-ago quarter. The reported revenue represents a surprise of +4.76% over the Zacks Consensus Estimate of...
+language: en
+---
+
+# Evolent Health (EVH) Reports Q1 Earnings: What Key Metrics Have to Say
+
+*By Zacks*
+
+For the quarter ended March 2025, Evolent Health (EVH) reported revenue of $483.65 million, down 24.4% over the same period last year. EPS came in at $0.06, compared to $0.34 in the year-ago quarter. The reported revenue represents a surprise of +4.76% over the Zacks Consensus Estimate of...
+
+For the quarter ended March 2025, Evolent Health (EVH) reported revenue of $483.65 million, down 24.4% over the same period last year. EPS came in at $0.06, compared to $0.34 in the year-ago quarter. The reported revenue represents a surprise of +4.76% over the Zacks Consensus Estimate of $461.69 million. With the consensus EPS estimate being $0.09, the EPS surprise was -33.33%. 
+ While investors scrutinize revenue and earnings changes year-over-year and how they compare with Wall Street expectations to determine their next move, some key metrics always offer a more accurate picture of a company's financial health. Since these metrics play a crucial role in driving the top- and bottom-line numbers, comparing them with the year-ago numbers and what analysts estimated about them helps investors better project a stock's price performance. Here is how Evolent Health performed in the just reported quarter in terms of the metrics most widely monitored and projected by Wall Street analysts: Average PMPM Fees / Revenue per Case - Performance Suite: $15.57 versus $16.14 estimated by three analysts on average. Average PMPM Fees / Revenue per Case - Specialty Technology and Services Suite: $0.36 versus the three-analyst average estimate of $0.38. Average PMPM Fees / Revenue per Case - Administrative Services: $15.72 compared to the $15.87 average estimate based on three analysts. Average Lives on Platform / Cases - Cases: 14 thousand compared to the 14.88 thousand average estimate based on three analysts. Average Lives on Platform / Cases - Performance Suite: 6.49 million versus 5.72 million estimated by three analysts on average. Average Lives on Platform / Cases - Specialty Technology and Services Suite: 77.08 million compared to the 73.62 million average estimate based on three analysts. Average Lives on Platform / Cases - Administrative Services: 1.21 million versus 1.2 million estimated by three analysts on average. Average PMPM Fees / Revenue per Case - Cases: $2,947 versus the three-analyst average estimate of $2,957.33. Total Revenue by product type- Performance Suite: $303.02 million versus $275.18 million estimated by three analysts on average. Compared to the year-ago quarter, this number represents a -32.4% change. Total Revenue by product type- Cases: $40.62 million compared to the $43.93 million average estimate based on three analysts. The reported number represents a change of -7.4% year over year. Total Revenue by product type- Administrative Services: $57.19 million versus the three-analyst average estimate of $59.48 million. The reported number represents a year-over-year change of -2.4%. Total Revenue by product type- Specialty Technology and Services Suite: $82.82 million versus $83.47 million estimated by three analysts on average. Compared to the year-ago quarter, this number represents a -7% change. View all Key Company Metrics for Evolent Health here&gt;&gt;&gt; Shares of Evolent Health have returned +9% over the past month versus the Zacks S&amp;P 500 composite's +13.7% change. The stock currently has a Zacks Rank #2 (Buy), indicating that it could outperform the broader market in the near term. 
+ Research Chief Names "Single Best Pick to Double" 
+ 
+ From thousands of stocks, 5 Zacks experts each have chosen their favorite to skyrocket +100% or more in months to come. From those 5, Director of Research Sheraz Mian hand-picks one to have the most explosive upside of all. 
+ 
+ This company targets millennial and Gen Z audiences, generating nearly $1 billion in revenue last quarter alone. A recent pullback makes now an ideal time to jump aboard. Of course, all our elite picks aren’t winners but this one could far surpass earlier Zacks’ Stocks Set to Double like Nano-X Imaging which shot up +129.6% in little more than 9 months. Free: See Our Top Stock And 4 Runners Up Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report Evolent Health, Inc (EVH) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.
