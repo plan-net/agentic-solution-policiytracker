@@ -512,65 +512,105 @@ Related documents are grouped by theme:
 
 ## Automated Data Collection (ETL) Guide
 
-The Political Monitoring Agent includes a complete **Extract, Transform, Load (ETL) pipeline** for automatically collecting and processing news articles about your organization. This reduces manual effort and ensures you don't miss important developments.
+The Political Monitoring Agent includes a **dual-flow ETL pipeline** for comprehensive document collection. This reduces manual effort and ensures you don't miss important developments across both regulatory landscape and company-specific news.
+
+### 📊 Two Collection Flows
+
+**Flow 1: Policy Landscape Collection (Weekly)**
+- **Purpose**: Monitor broad regulatory environment affecting your industry
+- **Schedule**: Sundays at 2 AM UTC (weekly comprehensive scan)
+- **Scope**: EU regulations, policy changes, enforcement actions
+- **Sources**: Exa.ai with intelligent query generation
+- **Content**: GDPR updates, DSA/DMA developments, sustainability regulations, competition law
+
+**Flow 2: Client News Collection (Daily)**  
+- **Purpose**: Track company-specific news and developments
+- **Schedule**: Daily (configurable timing)
+- **Scope**: Your organization, competitors, industry developments
+- **Sources**: Exa.ai + Apify news aggregators
+- **Content**: Company announcements, market analysis, industry trends
 
 ### What Gets Collected Automatically
 
-**News Sources**:
-- RSS feeds from major news outlets
-- Industry publications and trade journals
-- Government press releases and announcements
-- Regulatory agency updates
-- Policy think tank reports
+**Policy Documents (Flow 1)**:
+- Regulatory guidance and implementation documents
+- Enforcement actions and penalty announcements
+- Policy consultations and draft legislation
+- Court decisions affecting regulatory interpretation
+- Cross-border regulatory cooperation updates
 
-**Content Types**:
-- Breaking news about regulatory changes
+**News Articles (Flow 2)**:
+- Breaking news about your company or brands
 - Industry analysis and commentary
-- Policy announcements affecting your sector
-- Enforcement actions and compliance updates
 - Market developments with regulatory implications
+- Competitor actions and market positioning
+- Technology and business model innovations
 
-**Smart Filtering**:
-- Articles mentioning your company or brands
+**Smart Filtering for Both Flows**:
 - Content related to your industry sectors
-- News from your operational markets
+- News from your operational markets (EU focus)
 - Stories matching your strategic themes
 - Exclusion of irrelevant topics (sports, entertainment, etc.)
+- Deduplication across all sources
 
 ### How Automated Collection Works
 
-**Daily Collection Process**:
-1. **Query Generation**: System uses your `client.yaml` configuration to create search queries
-2. **News Gathering**: Apify API collects articles from multiple sources
-3. **Deduplication**: Removes duplicate articles based on URL matching
-4. **Transformation**: Converts articles to structured markdown format
-5. **Organization**: Files stored by date for easy chronological tracking
-6. **Integration**: New articles automatically trigger analysis workflows
+**Collection Process**:
+1. **Smart Query Generation**: System uses your `client.yaml` to create targeted searches
+2. **Initialization Mode**: Historical data collection (30-90 days) on first run
+3. **Regular Collection**: Daily/weekly incremental updates
+4. **Content Gathering**: Exa.ai provides high-quality, full-text articles
+5. **Deduplication**: Removes duplicate content based on URL matching
+6. **Transformation**: Converts to structured markdown with metadata
+7. **Organization**: Files stored by flow and date for easy tracking
+8. **Integration**: New documents automatically trigger analysis workflows
 
 **File Organization**:
 ```
-data/input/news/
-├── 2025-05/
-│   ├── 20250527_techcrunch_new-ai-regulation-proposed.md
-│   ├── 20250527_reuters_financial-privacy-update.md
-│   └── 20250528_bloomberg_compliance-deadline-extended.md
-└── 2025-04/
-    └── ...previous month's articles...
+data/input/
+├── policy/              # Flow 1: Regulatory landscape
+│   ├── 2025-05/
+│   │   ├── 20250527_europa-eu_dsa-implementation-timeline.md
+│   │   ├── 20250527_edpb_gdpr-ai-guidance-update.md
+│   │   └── 20250528_competition-eu_digital-markets-enforcement.md
+│   └── 2025-04/...
+└── news/                # Flow 2: Client-specific news
+    ├── 2025-05/
+    │   ├── 20250527_techcrunch_zalando-ai-features.md
+    │   ├── 20250527_reuters_ecommerce-regulation-impact.md
+    │   └── 20250528_bloomberg_sustainable-fashion-trends.md
+    └── 2025-04/...
 ```
 
 ### Setting Up Automated Collection
 
 **Prerequisites**:
-- Apify API account and token (free tier available)
-- Properly configured `client.yaml` with your company terms
+- Exa.ai API account and key (primary, recommended)
+- Apify API account and token (optional fallback)
+- Properly configured `client.yaml` with company terms and topic patterns
 - ETL services running (handled automatically in development)
 
 **Configuration Steps**:
 
-1. **Add API Token**: Update your `.env` file with Apify credentials
-2. **Review Company Terms**: Ensure `client.yaml` includes all relevant search terms
-3. **Start ETL Services**: Services start automatically with `just dev`
-4. **Monitor Collection**: Check Airflow UI at http://localhost:8080
+1. **Add API Keys**: Update your `.env` file with credentials
+   ```bash
+   EXA_API_KEY=your_exa_api_key_here           # Primary source
+   APIFY_API_TOKEN=your_apify_api_token_here   # Optional fallback
+   ```
+
+2. **Review Configuration**: Ensure `client.yaml` includes:
+   - Company terms for news collection
+   - Topic patterns for policy collection  
+   - Geographic markets and industry focus
+
+3. **Test Collection**: Verify setup before automation
+   ```bash
+   just policy-test      # Test policy collection
+   just etl-status       # Check news collection status
+   ```
+
+4. **Start ETL Services**: Services start automatically with `just dev`
+5. **Monitor Collection**: Check Airflow UI at http://localhost:8080
 
 **Company Terms Configuration**:
 Your existing `client.yaml` drives what content gets collected:
