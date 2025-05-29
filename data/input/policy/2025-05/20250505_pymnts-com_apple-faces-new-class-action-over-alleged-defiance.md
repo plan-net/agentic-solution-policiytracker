@@ -2,7 +2,7 @@
 title: Apple Faces New Class Action Over Alleged Defiance of App Store Injunction | PYMNTS.com
 url: https://www.pymnts.com/cpi-posts/apple-faces-new-class-action-over-alleged-defiance-of-app-store-injunction/
 published_date: 2025-05-05T00:00:00
-collected_date: 2025-05-28T14:39:09.575455
+collected_date: 2025-05-29T16:49:40.312771
 source: Pymnts
 source_url: https://www.pymnts.com
 author: CPI

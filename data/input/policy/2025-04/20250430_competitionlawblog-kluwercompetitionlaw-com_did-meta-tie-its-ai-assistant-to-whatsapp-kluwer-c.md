@@ -2,7 +2,7 @@
 title: Did Meta Tie its AI Assistant to WhatsApp? - Kluwer Competition Law Blog
 url: https://competitionlawblog.kluwercompetitionlaw.com/2025/04/30/did-meta-tie-its-ai-assistant-to-whatsapp/
 published_date: 2025-04-30T00:00:00
-collected_date: 2025-05-29T14:05:11.591087
+collected_date: 2025-05-29T18:04:22.320317
 source: Competitionlawblog
 source_url: https://competitionlawblog.kluwercompetitionlaw.com
 description: In March 2025, Meta rolled out its AI assistant in Europe, which is accessible through its WhatsApp Messenger and will soon be available on Instagram and Facebook Messenger, too. The feature grants users of its platforms access to a “ reliable and intelligent assistant ” via a “ new blue circle...

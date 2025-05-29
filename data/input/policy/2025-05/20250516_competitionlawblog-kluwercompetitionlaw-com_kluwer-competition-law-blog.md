@@ -2,7 +2,7 @@
 title: Kluwer Competition Law Blog
 url: https://competitionlawblog.kluwercompetitionlaw.com/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T14:05:11.591038
+collected_date: 2025-05-29T18:35:16.824767
 source: Competitionlawblog
 source_url: https://competitionlawblog.kluwercompetitionlaw.com
 description: [Skip to content](https://competitionlawblog.kluwercompetitionlaw.com/#content)

@@ -2,7 +2,7 @@
 title: Shein’s ‘fake discounts’ break the law, EU says
 url: https://www.theverge.com/news/674575/shein-fake-discounts-eu-consumer-protection-law
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-29T14:04:43.384469
+collected_date: 2025-05-29T18:34:50.186154
 source: Theverge
 source_url: https://www.theverge.com
 author: Emma Roth

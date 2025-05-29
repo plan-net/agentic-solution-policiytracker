@@ -1,8 +1,8 @@
 ---
 title: “EU Sends a Clear Message”: This Bold Move to Fine SHEIN Could Cost the Fast-Fashion Giant Millions of Dollars and Send Shockwaves Across the Industry
 url: https://visegradpost.com/en/2025/05/28/eu-sends-a-clear-message-this-bold-move-to-fine-shein-could-cost-the-fast-fashion-giant-millions-of-dollars-and-send-shockwaves-across-the-industry/
-published_date: 2025-05-28T14:04:50.608000
-collected_date: 2025-05-29T14:04:53.767732
+published_date: 2025-05-28T16:49:05.803000
+collected_date: 2025-05-29T16:49:07.201914
 source: Visegradpost
 source_url: https://visegradpost.com
 author: Eirwen Williams

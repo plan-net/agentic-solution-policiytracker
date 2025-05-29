@@ -2,7 +2,7 @@
 title: Germany defends Ukraine’s right to hit Russia with western long-range weapons
 url: https://efe.com/en/latest-news/2025-05-27/ukraines-right-to-hit-russia/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-29T14:05:23.295650
+collected_date: 2025-05-29T17:33:39.778627
 source: Efe
 source_url: https://efe.com
 author: Agencia EFE

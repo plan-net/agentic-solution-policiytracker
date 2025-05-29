@@ -2,7 +2,7 @@
 title: EU watchdog finds Shein breached consumer laws
 url: https://www.siliconrepublic.com/business/eu-consumer-protection-shein
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-29T14:04:39.334915
+collected_date: 2025-05-29T18:34:45.808916
 source: Siliconrepublic
 source_url: https://www.siliconrepublic.com
 author: Suhasini Srinivasaragavan

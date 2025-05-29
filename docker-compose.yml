@@ -242,6 +242,11 @@ services:
       # UI customization
       - WEBUI_NAME="Political Monitoring Chat"
       - WEBUI_URL=http://localhost:3000
+      # Performance and streaming optimizations
+      - ENABLE_REALTIME_CHAT_SAVE=false
+      # Try to enable streaming by default (if supported)
+      - DEFAULT_STREAMING=true
+      - STREAMING_ENABLED=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

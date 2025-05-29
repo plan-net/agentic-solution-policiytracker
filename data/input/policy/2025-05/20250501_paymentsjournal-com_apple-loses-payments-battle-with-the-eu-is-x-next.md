@@ -2,7 +2,7 @@
 title: Apple Loses Payments Battle with the EU; Is X Next?
 url: https://www.paymentsjournal.com/apple-loses-payments-battle-with-the-eu-is-x-next/
 published_date: 2025-05-01T00:00:00
-collected_date: 2025-05-29T14:05:23.295470
+collected_date: 2025-05-29T18:35:30.724202
 source: Paymentsjournal
 source_url: https://www.paymentsjournal.com
 author: Tom Nawrocki

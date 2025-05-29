@@ -2,7 +2,7 @@
 title: EU moves to settle Microsoft Teams antitrust case
 url: https://www.ft.com/content/3c6548b1-97b6-4891-acae-75b776ef2cb3
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T14:05:10.851844
+collected_date: 2025-05-29T16:49:29.315948
 source: Ft
 source_url: https://www.ft.com
 author: Barbara Moens

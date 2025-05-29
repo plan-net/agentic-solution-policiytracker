@@ -2,7 +2,7 @@
 title: Zoll- und Außenwirtschaftsrecht: Was änderte sich alles 2025?
 url: https://www.ihk.de/rhein-neckar/international/export-import/zoll/zollrechtliche-aenderungen-5666166
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T14:05:27.261226
+collected_date: 2025-05-29T18:35:31.586498
 source: Ihk
 source_url: https://www.ihk.de
 description: "Der aktuelle Druck in den globalen Lieferketten und die geopolitischen Herausforderungen verlangen von verantwortlichen Zollfachkräften hohe Flexibilität und tiefgreifende Kenntnisse im Zoll- und Außenwirtschaftsrecht.

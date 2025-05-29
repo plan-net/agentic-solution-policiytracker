@@ -2,7 +2,7 @@
 title: CFPB’s Move to Rescind Rule 1033 Creates Uncertainty in Open Banking
 url: https://www.pymnts.com/digital-first-banking/2025/cfpbs-move-to-rescind-rule-1033-creates-uncertainty-in-open-banking/
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-29T14:05:23.295607
+collected_date: 2025-05-29T17:33:39.778593
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS

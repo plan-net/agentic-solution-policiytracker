@@ -1,8 +1,8 @@
 ---
 title: EU promotes e-invoicing integration into accounting software & ERP's - vatcalc.com
 url: https://www.vatcalc.com/eu/eu-promotes-e-invoicing-integration-to-accounting-erp-systems/
-published_date: 2025-05-22T15:09:43.071000
-collected_date: 2025-05-28T15:09:48.694020
+published_date: 2025-05-22T18:04:05.707000
+collected_date: 2025-05-29T18:04:07.083302
 source: Vatcalc
 source_url: https://www.vatcalc.com
 author: Richard Asquith

@@ -2,7 +2,7 @@
 title: Is Your WordPress Website Ready for the European Accessibility Act (EAA)?
 url: https://www.multidots.com/blog/european-accessibility-act-wordpress-compliance/
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-29T14:04:47.702055
+collected_date: 2025-05-29T18:34:53.738586
 source: Multidots
 source_url: https://www.multidots.com
 author: Aslam Multani

@@ -1,8 +1,8 @@
 ---
 title: Digital product passport: transparency at bonprix and s.Oliver
 url: https://www.euroshop-tradefair.com/en/euroshopmag/digital-product-passport-transparency-at-bonprix-and-s-Oliver
-published_date: 2025-05-29T03:40:24.930427
-collected_date: 2025-05-29T03:40:24.930769
+published_date: 2025-05-29T18:35:13.236780
+collected_date: 2025-05-29T18:35:13.237414
 source: Euroshop Tradefair
 source_url: https://www.euroshop-tradefair.com
 description: close

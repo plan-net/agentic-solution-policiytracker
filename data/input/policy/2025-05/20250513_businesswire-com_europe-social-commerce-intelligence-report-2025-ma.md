@@ -2,7 +2,7 @@
 title: Europe Social Commerce Intelligence Report 2025: Market to Grow by 20.7% to Reach $146.35 Billion this Year - Future Growth Dynamics to 2030 - ResearchAndMarkets.com
 url: https://www.businesswire.com/news/home/20250513423595/en/Europe-Social-Commerce-Intelligence-Report-2025-Market-to-Grow-by-20.7-to-Reach-%24146.35-Billion-this-Year---Future-Growth-Dynamics-to-2030---ResearchAndMarkets.com
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T14:04:56.734267
+collected_date: 2025-05-29T18:35:04.402778
 source: Businesswire
 source_url: https://www.businesswire.com
 description: "May 13, 2025 12:40 PM Eastern Daylight Time 

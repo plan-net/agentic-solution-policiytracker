@@ -2,7 +2,7 @@
 title: Spooked by US tariffs, retailers look for growth in Europe
 url: https://www.reuters.com/business/retail-consumer/spooked-by-us-tariffs-retailers-look-growth-europe-2025-05-06/
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-28T13:24:30.610372
+collected_date: 2025-05-29T14:35:59.319786
 source: Reuters
 source_url: https://www.reuters.com
 author: Helen Reid

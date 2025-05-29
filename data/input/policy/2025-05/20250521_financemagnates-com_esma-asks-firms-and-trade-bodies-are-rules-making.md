@@ -2,7 +2,7 @@
 title: ESMA Asks Firms and Trade Bodies: Are Rules Making It Harder for Retail Investment?
 url: https://www.financemagnates.com/forex/esma-asks-retail-investors-are-rules-making-it-harder-to-invest/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-28T20:15:17.950928
+collected_date: 2025-05-29T14:35:59.319751
 source: Financemagnates
 source_url: https://www.financemagnates.com
 author: Tareq Sikder

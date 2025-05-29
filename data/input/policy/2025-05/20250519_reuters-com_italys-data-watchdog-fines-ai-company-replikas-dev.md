@@ -2,7 +2,7 @@
 title: Italy's data watchdog fines AI company Replika's developer $5.6 million
 url: https://www.reuters.com/sustainability/boards-policy-regulation/italys-data-watchdog-fines-ai-company-replikas-developer-56-million-2025-05-19/
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-29T00:58:49.373897
+collected_date: 2025-05-29T14:35:39.637218
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters
