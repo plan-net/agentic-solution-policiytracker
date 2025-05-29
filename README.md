@@ -1,6 +1,19 @@
-# Political Monitoring Agent v0.1.0
+# Political Monitoring Agent v0.2.0
 
-A sophisticated AI-powered document analysis system for political and regulatory monitoring with **automated data collection**. Built on **Kodosumi v0.9.2** with Ray distributed processing, LangGraph workflows, Apache Airflow ETL, and Azure Storage integration.
+A sophisticated AI-powered document analysis system for political and regulatory monitoring with **advanced chat interface** and **automated data collection**. Built on **Kodosumi v0.9.2** with Graphiti temporal knowledge graphs, Ray distributed processing, LangGraph workflows, Apache Airflow ETL, and Azure Storage integration.
+
+## 🔥 NEW: Advanced Chat Interface
+
+**Experience next-generation political monitoring through our sophisticated chat interface powered by Graphiti temporal knowledge graphs:**
+
+- **🧠 16 Specialized Tools**: Entity analysis, network traversal, temporal tracking, community detection
+- **🕸️ Multi-hop Reasoning**: Discover hidden connections through knowledge graph traversal
+- **⏰ Temporal Intelligence**: Track policy evolution and entity changes over time
+- **📊 Network Analysis**: Identify key influencers and community structures
+- **🔍 Advanced Search**: Semantic search with reranking strategies (RRF, MMR, cross-encoder)
+- **💭 Context Awareness**: Session memory and conversation continuity
+
+**Access the Chat Interface**: http://localhost:8001/chat (after setup)
 
 ## 🚀 Quick Start
 
@@ -19,8 +32,9 @@ just services-up
 just dev
 
 # 4. Access the application
+# → Chat Interface: http://localhost:8001/chat
 # → Kodosumi Admin: http://localhost:3370 (admin/admin)
-# → Your App: http://localhost:8001/political-analysis
+# → Document Analysis: http://localhost:8001/political-analysis
 # → Airflow ETL: http://localhost:8080 (admin/admin)
 ```
 
@@ -33,6 +47,16 @@ just dev
 > **📖 For Business Users**: See the [User Guide](docs/USER_GUIDE.md) for a comprehensive explanation of how the system works, what inputs are needed, and how to interpret results.
 
 ## 🚀 Features
+
+### 🤖 Advanced Chat Interface (NEW v0.2.0)
+- **🔍 Sophisticated Search**: 16 specialized tools for knowledge graph exploration
+- **🧠 Multi-hop Reasoning**: Discover hidden connections between entities and policies
+- **⏰ Temporal Analysis**: Track entity evolution and policy changes over time
+- **🕸️ Network Traversal**: Identify influence patterns and impact cascades
+- **👥 Community Detection**: Find natural groupings and policy clusters
+- **💡 Graph-Powered Insights**: Leverage unique advantages of temporal knowledge graphs
+- **🗣️ Natural Language**: Ask complex questions in plain English
+- **🧵 Context Awareness**: Maintains conversation history and builds on previous queries
 
 ### Core Capabilities
 - **Multi-format Document Processing**: PDF, DOCX, Markdown, HTML, and text files
@@ -73,16 +97,24 @@ just dev
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Apache        │    │   Kodosumi       │    │   Political     │
-│   Airflow       │───▶│   Web Interface  │───▶│   Analyzer      │
-│   (ETL)         │    │   (Forms + UI)   │    │   (Entrypoint)  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
+│   Chat Interface│    │   Apache         │    │   Kodosumi      │
+│   (Advanced Q&A)│    │   Airflow        │    │   Web Interface │
+│   + 16 Tools    │    │   (ETL)          │    │   (Forms + UI)  │
+└─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘
+          │                      │                       │
+          ▼                      ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Apify API     │    │   LangGraph      │    │   Graphiti      │
-│   (News Data)   │    │   Workflows      │    │   (Knowledge    │
-│                 │    │   + Ray Tasks    │    │    Graph)       │
+│   Graphiti      │◀───│   Document       │───▶│   Political     │
+│   Temporal      │    │   Processing     │    │   Analyzer      │
+│   Knowledge     │    │   Pipeline       │    │   (Entrypoint)  │
+│   Graph         │    │                  │    │                 │
+└─────────┬───────┘    └──────────────────┘    └─────────────────┘
+          │                      │                       │
+          ▼                      ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Neo4j         │    │   Exa.ai API     │    │   LangGraph     │
+│   Database      │    │   (News Data)    │    │   Workflows     │
+│   (Graph Store) │    │                  │    │   + Ray Tasks   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
@@ -92,6 +124,13 @@ just dev
 │                 │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
+
+### New: Chat Interface Features
+- **Entity Tools**: Deep analysis, relationships, timelines, similarity search
+- **Network Traversal**: Multi-hop exploration, path finding, neighbor analysis
+- **Temporal Tools**: Time-based queries, entity evolution, concurrent events
+- **Community Detection**: Policy clusters, organization networks, influence mapping
+- **Advanced Search**: Semantic search with multiple reranking strategies
 
 ### Two-Part Kodosumi Design
 - **Endpoint** (`app.py`): Rich web forms, validation, and HTTP interface
@@ -254,6 +293,123 @@ just logs airflow-webserver  # View webserver logs
 
 > **💡 Pro Tip**: Use the Airflow UI at http://localhost:8080 to monitor DAG runs, view logs, and manually trigger collections. Policy collection runs weekly (Sundays), news collection runs daily.
 
+## 🤖 Advanced Chat Interface & Knowledge Graph Search
+
+### What Makes Our Chat Interface Special
+
+Unlike typical LLM + web search solutions, our chat interface leverages **Graphiti temporal knowledge graphs** to provide unique insights impossible with traditional approaches:
+
+**🧠 Graph-Powered Intelligence**:
+- **Multi-hop reasoning** through relationship networks
+- **Temporal analysis** tracking entity evolution over time
+- **Network centrality** identifying key influencers and connectors
+- **Impact cascade analysis** showing how changes propagate
+- **Community detection** revealing natural groupings and clusters
+
+### 16 Specialized Search Tools
+
+#### 🔍 Entity Tools (4 tools)
+- **Entity Details**: Comprehensive information about specific entities
+- **Entity Relationships**: Network of connections and relationships
+- **Entity Timeline**: Evolution and changes over time
+- **Similar Entities**: Find entities with similar characteristics
+
+#### 🕸️ Network Traversal Tools (4 tools)
+- **Traverse from Entity**: Multi-hop relationship exploration
+- **Find Paths**: Connection routes between entities
+- **Get Neighbors**: Immediate network neighborhood
+- **Impact Analysis**: Impact cascades and influence patterns
+
+#### ⏰ Temporal Tools (4 tools)
+- **Date Range Search**: Time-bounded content searches
+- **Entity History**: Track entity changes over time
+- **Concurrent Events**: What happened simultaneously
+- **Policy Evolution**: Track regulatory development over time
+
+#### 👥 Community Tools (3 tools)
+- **Detect Communities**: Find natural entity groupings
+- **Policy Clusters**: Analyze policy area relationships
+- **Organization Networks**: Map organizational relationship patterns
+
+#### 🔍 Enhanced Search (1 tool)
+- **Advanced Search**: Semantic search with sophisticated reranking strategies
+
+### Example Chat Capabilities
+
+**Entity Exploration**:
+```
+"Tell me about the EU Digital Services Act"
+→ Entity details + relationships + timeline + impact analysis
+```
+
+**Network Analysis**:
+```
+"How is Meta connected to EU privacy regulations?"
+→ Multi-hop path finding + relationship traversal + impact cascade
+```
+
+**Temporal Intelligence**:
+```
+"What has changed in GDPR enforcement this year?"
+→ Timeline analysis + concurrent events + policy evolution tracking
+```
+
+**Community Detection**:
+```
+"What organizations are working on AI regulation?"
+→ Community detection + organization networks + policy clusters
+```
+
+### Advanced Search Configurations
+
+Our chat interface uses **Graphiti's advanced search capabilities**:
+
+- **RRF (Reciprocal Rank Fusion)**: Combines multiple ranking strategies
+- **MMR (Maximal Marginal Relevance)**: Balances relevance and diversity
+- **Cross-encoder Reranking**: Deep semantic understanding
+- **Temporal Weighting**: Recent information prioritized
+- **Entity-focused Search**: Optimized for entity vs. relationship queries
+
+### Source Attribution & Citations
+
+Every chat response includes proper source attribution:
+- **Original article URLs** extracted from document metadata
+- **Publication dates** for temporal context
+- **Source quality indicators** for reliability assessment
+- **Direct quotes** with proper attribution
+
+### Getting Started with Chat
+
+1. **Start the system**: `just dev`
+2. **Access chat interface**: http://localhost:8001/chat
+3. **Try example queries**:
+   - "What policies affect e-commerce platforms?"
+   - "Show me the relationship between GDPR and the Digital Services Act"
+   - "What has changed in data protection law recently?"
+   - "Which organizations are most connected to AI regulation?"
+
+### Chat Interface Benefits
+
+**For Policy Analysts**:
+- Discover hidden connections between regulations
+- Track policy evolution and implementation timelines
+- Identify key stakeholders and influence networks
+- Analyze impact cascades across jurisdictions
+
+**For Compliance Teams**:
+- Understand relationship between different regulatory requirements
+- Find all policies affecting specific business areas
+- Track changes in enforcement patterns
+- Identify emerging compliance risks
+
+**For Strategic Planning**:
+- Map competitive regulatory landscapes
+- Identify influential policy makers and organizations
+- Understand market dynamics through regulatory networks
+- Plan strategic responses to regulatory changes
+
+> **🎯 Unique Value**: Our chat interface provides insights that would take hours of manual research through traditional search methods, by leveraging the power of temporal knowledge graphs to reveal patterns and connections that are invisible to conventional approaches.
+
 ## 🚀 Complete First-Time Setup Guide
 
 This guide walks you through setting up the Political Monitoring Agent from a fresh clone to running your first analysis.
@@ -387,8 +543,9 @@ This will:
 After setup completion:
 
 **Access Points**:
+- **🤖 Chat Interface**: http://localhost:8001/chat (NEW - Advanced Q&A)
 - **📊 Kodosumi Admin Panel**: http://localhost:3370 (admin/admin)
-- **🎯 Your App Interface**: http://localhost:8001/political-analysis
+- **🎯 Document Analysis**: http://localhost:8001/political-analysis
 - **📈 Ray Dashboard**: http://localhost:8265
 - **🔍 Langfuse Observability**: http://localhost:3001
 
@@ -478,9 +635,10 @@ just dev-watch
 ```
 
 **Access the Kodosumi platform**:
+- **Chat Interface**: http://localhost:8001/chat (NEW - Advanced Q&A)
 - **Admin Panel**: http://localhost:3370 (login: `admin` / `admin`)
 - **Ray Dashboard**: http://localhost:8265
-- **Your App**: http://localhost:8001/political-analysis
+- **Document Analysis**: http://localhost:8001/political-analysis
 - **Supporting Services**:
   - Azurite: http://localhost:10000 (Azure Storage Emulator)
   - PostgreSQL: localhost:5432 (used by Langfuse)
