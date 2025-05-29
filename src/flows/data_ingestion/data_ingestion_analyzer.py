@@ -15,7 +15,9 @@ from kodosumi.core import Tracer
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
 from src.flows.data_ingestion.document_processor import SimpleDocumentProcessor, find_documents
-from src.flows.shared.graphiti_client import SharedGraphitiClient
+from graphiti_core import Graphiti
+from graphiti_core.utils.maintenance.graph_data_operations import clear_data
+import os
 
 logger = structlog.get_logger()
 
@@ -73,13 +75,28 @@ Found **{len(available_docs)}** documents to process:
         # Clear data if requested
         if clear_data:
             await tracer.markdown("🧹 **Clearing existing data...**")
-            async with SharedGraphitiClient() as graphiti_client:
-                cleared = await graphiti_client.clear_graph()
-                if cleared:
-                    tracker.clear_all()
-                    logger.info("Graph and tracking data cleared")
-                else:
-                    logger.warning("Failed to clear graph data")
+            try:
+                # Direct Graphiti clear
+                NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+                NEO4J_USER = os.getenv("NEO4J_USER", "neo4j") 
+                NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+                
+                client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+                await client.build_indices_and_constraints()
+                
+                logger.info("Clearing all graph data...")
+                await clear_data(client.driver)
+                
+                logger.info("Rebuilding indices and constraints...")
+                await client.build_indices_and_constraints()
+                
+                await client.close()
+                
+                tracker.clear_all()
+                logger.info("Graph and tracking data cleared")
+            except Exception as e:
+                logger.error(f"Failed to clear graph data: {e}")
+                await tracer.markdown(f"❌ **Warning:** Failed to clear graph data: {e}")
         
         # Process documents with progress updates
         processing_result = await processor.process_documents(
