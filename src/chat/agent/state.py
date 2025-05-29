@@ -40,7 +40,7 @@ class AgentState(MessagesState):
     
     # Agent reasoning
     iterations: int = 0
-    max_iterations: int = 3
+    max_iterations: int = 10
     is_satisfied: bool = False
     confidence_score: float = 0.0
     
