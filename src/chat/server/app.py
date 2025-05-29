@@ -15,7 +15,6 @@ import asyncio
 from graphiti_core import Graphiti
 from src.config import settings
 from ..agent.simple_agent import SimplePoliticalAgent
-from ..agent.streaming_agent import StreamingPoliticalAgent
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,6 @@ class ChatServer:
     def __init__(self):
         self.graphiti_client = None
         self.agent = None
-        self.streaming_agent = None
         logger.info("ChatServer initialized")
     
     async def _get_graphiti_client(self):
@@ -108,22 +106,6 @@ class ChatServer:
             
         return self.agent
     
-    async def _get_streaming_agent(self):
-        """Lazy initialization of the streaming agent."""
-        if self.streaming_agent is None:
-            # Get Graphiti client first
-            graphiti_client = await self._get_graphiti_client()
-            
-            # Get OpenAI API key
-            openai_api_key = os.getenv("OPENAI_API_KEY")
-            if not openai_api_key:
-                raise ValueError("OPENAI_API_KEY environment variable not set")
-            
-            # Initialize streaming agent
-            self.streaming_agent = StreamingPoliticalAgent(graphiti_client, openai_api_key)
-            logger.info("Streaming agent initialized")
-            
-        return self.streaming_agent
     
     @app.get("/health")
     async def health_check(self) -> Dict[str, str]:

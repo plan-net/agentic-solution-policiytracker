@@ -2,7 +2,7 @@
 title: EU’s Single Market Strategy Shows Promise but Needs Real Follow-Through, Digital Sector Says - CCIA
 url: https://ccianet.org/news/2025/05/eus-single-market-strategy-shows-promise-but-needs-real-follow-through-digital-sector-says/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T12:57:00.292799
+collected_date: 2025-05-29T17:33:31.324252
 source: Ccianet
 source_url: https://ccianet.org
 author: Kasper Peters

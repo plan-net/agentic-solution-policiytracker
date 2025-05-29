@@ -1,8 +1,8 @@
 ---
 title: The EU announces modest (first) red tape cuts to the GDPR
 url: https://eutechloop.com/simplificationomnibus/
-published_date: 2025-05-22T12:56:58.959000
-collected_date: 2025-05-29T12:57:00.292701
+published_date: 2025-05-22T17:33:01.877000
+collected_date: 2025-05-29T17:33:03.066316
 source: Eutechloop
 source_url: https://eutechloop.com
 author: Egle Markeviciute

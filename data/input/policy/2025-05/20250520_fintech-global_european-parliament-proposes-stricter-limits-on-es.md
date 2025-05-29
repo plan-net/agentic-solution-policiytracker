@@ -2,7 +2,7 @@
 title: European Parliament proposes stricter limits on ESG reporting requirements
 url: https://fintech.global/2025/05/20/european-parliament-proposes-stricter-limits-on-esg-reporting-requirements/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T14:05:02.351544
+collected_date: 2025-05-29T16:18:27.465137
 source: Fintech
 source_url: https://fintech.global
 author: dwillis

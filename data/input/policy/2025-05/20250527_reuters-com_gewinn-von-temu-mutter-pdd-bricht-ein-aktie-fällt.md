@@ -2,7 +2,7 @@
 title: Gewinn von Temu-Mutter PDD bricht ein - Aktie fällt
 url: https://www.reuters.com/de/firma/gewinn-von-temu-mutter-pdd-bricht-ein-aktie-fllt-2025-05-27/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-29T14:05:27.261155
+collected_date: 2025-05-29T18:35:31.586472
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

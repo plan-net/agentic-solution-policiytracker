@@ -2,7 +2,7 @@
 title: Microsoft on Track to Dodge EU Antitrust Fines in Teams Probe
 url: https://www.bloomberg.com/news/articles/2025-05-16/microsoft-on-track-to-dodge-eu-antitrust-fines-in-teams-probe
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T14:05:07.357034
+collected_date: 2025-05-29T17:33:24.123299
 source: Bloomberg
 source_url: https://www.bloomberg.com
 author: Samuel Stolton

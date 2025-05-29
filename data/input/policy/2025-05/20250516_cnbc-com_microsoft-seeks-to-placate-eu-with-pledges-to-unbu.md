@@ -2,7 +2,7 @@
 title: Microsoft seeks to placate EU with pledges to unbundle Teams, Office
 url: https://www.cnbc.com/2025/05/16/microsoft-offers-to-sell-office-without-teams-to-placate-eu-regulators.html
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T14:05:10.851909
+collected_date: 2025-05-29T18:35:16.404570
 source: Cnbc
 source_url: https://www.cnbc.com
 author: Ryan Browne

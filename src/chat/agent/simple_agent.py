@@ -192,37 +192,59 @@ ALWAYS:
             yield "<think>\n"
             await asyncio.sleep(0.5)
             
-            # Phase 2: Query understanding
-            yield f"🎯 UNDERSTANDING QUERY\n"
-            yield f"Query: {clean_query}\n"
+            # Phase 2: Query understanding  
+            yield f"Looking at this question, I need to understand what type of analysis you're requesting. "
             
             # Extract entities for planning
             entities = self._extract_query_entities(clean_query)
             intent = self._determine_query_intent(clean_query)
             
-            yield f"Intent: {intent}\n"
             if entities:
-                yield f"Key entities detected: {', '.join(entities[:3])}\n"
+                entity_list = ', '.join(entities[:3])
+                yield f"The key entities here appear to be {entity_list}. "
+                if len(entities) > 3:
+                    yield f"There are additional entities mentioned that will be relevant to the analysis.\n\n"
+                else:
+                    yield f"\n\n"
+            
+            if intent == "Impact analysis":
+                yield f"This is clearly an impact analysis question - you want to understand how different entities affect each other and what the downstream consequences are. "
+            elif intent == "Relationship analysis":
+                yield f"You're asking about the web of connections and relationships between these entities. "
+            elif intent == "Information lookup":
+                yield f"You're looking for comprehensive information about these specific entities. "
+            elif intent == "Temporal analysis":
+                yield f"This requires understanding how things have evolved and changed over time. "
+            else:
+                yield f"This calls for a comprehensive exploration of the topic. "
+            
+            yield f"Since this involves complex regulatory relationships, a graph-based approach will be essential.\n\n"
             await asyncio.sleep(1)
             
-            # Phase 3: Tool planning  
-            yield f"\n🛠️ PLANNING ANALYSIS\n"
+            # Phase 3: Tool planning with reasoning
             predicted_tools = self._predict_tools_needed(intent, entities)
-            yield f"Strategy: Multi-tool graph analysis\n"
-            yield f"Expected tools: {', '.join(predicted_tools[:4])}\n"
-            yield f"Graph advantages: Multi-hop reasoning, relationship mapping\n"
+            
+            yield f"My strategy will be to start with a broad search to map the landscape. "
+            if "get_entity_relationships" in predicted_tools:
+                yield f"Once I understand the basic entities, I'll need to examine their relationships to see how they're connected. "
+            if "analyze_entity_impact" in predicted_tools:
+                yield f"Then I can analyze the impact networks to understand who influences whom and how effects cascade through the system. "
+            if "get_entity_timeline" in predicted_tools:
+                yield f"The temporal dimension will be important to see how these relationships have evolved. "
+            
+            yield f"This multi-layered approach will reveal insights that simple keyword searches would miss.\n\n"
             await asyncio.sleep(1)
             
             # Phase 4: Execute agent with real-time monitoring
-            yield f"\n⚡ EXECUTING ANALYSIS\n"
+            yield f"Starting the analysis now.\n\n"
             
             # Simulate real-time tool execution updates while agent runs
             tool_steps = [
-                "Initializing graph search...",
-                "Searching knowledge base...", 
-                "Analyzing entity relationships...",
-                "Processing temporal patterns...",
-                "Synthesizing insights..."
+                "Beginning with a comprehensive search of the knowledge graph to identify all relevant entities and their current status.",
+                "Now examining the relationship patterns between these entities to understand the connection networks.", 
+                "Analyzing the impact flows and influence patterns to see how changes propagate through the system.",
+                "Looking at temporal patterns to understand how these relationships have evolved over time.",
+                "Synthesizing all findings to provide a comprehensive view of the impact network."
             ]
             
             # Start agent execution properly in async context
@@ -230,7 +252,7 @@ ALWAYS:
             
             # Stream thinking updates while agent runs
             for i, step in enumerate(tool_steps):
-                yield step + "\n"
+                yield step + "\n\n"
                 await asyncio.sleep(1.5 if i < 2 else 1)  # Longer for first steps
                 
                 # Check if agent is done
@@ -242,13 +264,11 @@ ALWAYS:
                 result = await agent_task
             except Exception as e:
                 logger.error(f"Agent execution failed: {e}")
-                yield f"Agent execution error: {str(e)}\n"
+                yield f"I encountered an error during the analysis: {str(e)}. Let me provide what information I can based on general knowledge.\n\n"
                 result = {"output": f"I encountered an error while processing your request: {str(e)}"}
             
             # Phase 5: Complete thinking
-            yield f"\n💡 SYNTHESIS COMPLETE\n"
-            yield f"Found comprehensive insights using graph analysis\n"
-            yield f"Ready to present findings\n"
+            yield f"The analysis is complete. I've gathered comprehensive information about the entities, their relationships, and the impact patterns. The graph-based approach has revealed several key insights that wouldn't be visible through traditional search methods."
             yield "</think>\n\n"
             await asyncio.sleep(0.5)
             

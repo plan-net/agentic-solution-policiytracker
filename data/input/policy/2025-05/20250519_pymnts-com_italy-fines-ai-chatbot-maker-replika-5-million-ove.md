@@ -2,7 +2,7 @@
 title: Italy Fines AI Chatbot Maker Replika €5 Million Over Privacy Violations | PYMNTS.com
 url: https://www.pymnts.com/cpi-posts/italy-fines-ai-chatbot-maker-replika-e5-million-over-privacy-violations/
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-29T14:04:39.615262
+collected_date: 2025-05-29T14:35:39.637292
 source: Pymnts
 source_url: https://www.pymnts.com
 author: CPI

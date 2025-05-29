@@ -2,7 +2,7 @@
 title: All EU members classified as 'low risk' under anti-deforestation rules
 url: https://www.euractiv.com/section/agriculture-food/news/all-eu-members-classified-as-low-risk-under-anti-deforestation-rules/
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-29T03:40:24.930376
+collected_date: 2025-05-29T18:35:13.237498
 source: Euractiv
 source_url: https://www.euractiv.com
 author: Sofia Sanchez Manzanaro

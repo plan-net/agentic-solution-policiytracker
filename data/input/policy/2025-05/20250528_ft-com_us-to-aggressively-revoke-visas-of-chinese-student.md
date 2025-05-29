@@ -2,7 +2,7 @@
 title: US to ‘aggressively’ revoke visas of Chinese students
 url: https://www.ft.com/content/6628727d-69b6-4d45-938f-0c45578f4599
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T14:05:23.295564
+collected_date: 2025-05-29T17:33:39.778555
 source: Ft
 source_url: https://www.ft.com
 author: Guy Chazan, Demetri Sevastopulo, Stephanie Stacey, Lauren Fedor, Michael Pooler

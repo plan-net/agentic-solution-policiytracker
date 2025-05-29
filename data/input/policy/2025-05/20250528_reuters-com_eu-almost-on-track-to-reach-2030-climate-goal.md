@@ -1,8 +1,8 @@
 ---
 title: EU almost on track to reach 2030 climate goal
 url: https://www.reuters.com/sustainability/cop/eu-almost-track-reach-2030-climate-goal-2025-05-28/
-published_date: 2025-05-28T16:34:24.775000
-collected_date: 2025-05-29T13:34:26.460528
+published_date: 2025-05-28T18:04:31.718000
+collected_date: 2025-05-29T18:04:33.115568
 source: Reuters
 source_url: https://www.reuters.com
 author: Kate Abnett

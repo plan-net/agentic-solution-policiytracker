@@ -2,7 +2,7 @@
 title: Meta warns of 'worse' experience for European users
 url: https://www.bbc.com/news/articles/czd3mey1ej2o
 published_date: 2025-05-01T00:00:00
-collected_date: 2025-05-29T12:26:08.422160
+collected_date: 2025-05-29T18:34:45.809086
 source: Bbc
 source_url: https://www.bbc.com
 author: Lily Jamali

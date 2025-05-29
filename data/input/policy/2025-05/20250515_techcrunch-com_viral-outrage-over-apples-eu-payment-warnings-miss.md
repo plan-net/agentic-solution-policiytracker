@@ -2,7 +2,7 @@
 title: Viral outrage over Apple’s EU payment warnings misses key fact
 url: https://techcrunch.com/2025/05/15/viral-outrage-over-apples-eu-payment-warnings-misses-key-fact/
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-29T12:26:08.422172
+collected_date: 2025-05-29T16:48:55.955407
 source: Techcrunch
 source_url: https://techcrunch.com
 author: Sarah Perez

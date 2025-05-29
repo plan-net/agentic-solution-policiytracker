@@ -2,7 +2,7 @@
 title: Death by dung: How Brussels failed to save Europe’s waters from a farm waste deluge
 url: https://www.politico.eu/article/climate-eu-policy-failed-clean-up-europe-waters/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T12:57:30.319898
+collected_date: 2025-05-29T18:35:13.237601
 source: Politico
 source_url: https://www.politico.eu
 author: James Fernyhough

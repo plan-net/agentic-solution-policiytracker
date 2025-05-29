@@ -2,7 +2,7 @@
 title: Mozilla stellt auch Fakespot ein
 url: https://stadt-bremerhaven.de/mozilla-stellt-auch-fakespot-ein/
 published_date: 2025-05-22T00:00:00
-collected_date: 2025-05-29T14:05:27.261266
+collected_date: 2025-05-29T18:35:31.586514
 source: Stadt Bremerhaven
 source_url: https://stadt-bremerhaven.de
 author: von caschy Mai 22, 2025 | 6 Kommentare

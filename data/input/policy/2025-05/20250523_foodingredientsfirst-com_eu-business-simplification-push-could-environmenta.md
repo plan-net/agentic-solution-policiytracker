@@ -2,7 +2,7 @@
 title: EU business simplification push: Could environmental and social due diligence be at risk?
 url: https://www.foodingredientsfirst.com/news/eu-business-simplification-due-diligence-risk.html
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-29T14:05:19.479232
+collected_date: 2025-05-29T16:49:35.900796
 source: Foodingredientsfirst
 source_url: https://www.foodingredientsfirst.com
 author: Gaynor Selby

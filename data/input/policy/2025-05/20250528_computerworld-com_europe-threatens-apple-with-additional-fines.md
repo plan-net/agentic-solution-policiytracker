@@ -2,7 +2,7 @@
 title: Europe threatens Apple with additional fines
 url: https://www.computerworld.com/article/3997079/europe-threatens-apple-with-additional-fines.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T10:08:55.011346
+collected_date: 2025-05-29T16:49:28.246954
 source: Computerworld
 source_url: https://www.computerworld.com
 author: by Jonny Evans

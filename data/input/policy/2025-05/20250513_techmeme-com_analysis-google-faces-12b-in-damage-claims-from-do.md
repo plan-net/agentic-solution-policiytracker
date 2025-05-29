@@ -2,7 +2,7 @@
 title: Analysis: Google faces €12B+ in damage claims from dozens of EU price comparison websites that allege it stole their customers, after a €2.4B EU fine in 2017
 url: https://www.techmeme.com/250513/p8
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T14:05:16.000673
+collected_date: 2025-05-29T18:04:18.352898
 source: Techmeme
 source_url: https://www.techmeme.com
 description: "May 13, 2025, 9:50 AM 

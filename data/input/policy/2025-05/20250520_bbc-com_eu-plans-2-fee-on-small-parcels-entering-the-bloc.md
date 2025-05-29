@@ -2,7 +2,7 @@
 title: EU plans €2 fee on small parcels entering the bloc
 url: https://www.bbc.com/news/articles/cq699ymm81vo
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T12:57:03.582818
+collected_date: 2025-05-29T16:12:50.458209
 source: Bbc
 source_url: https://www.bbc.com
 author: Jack Burgess

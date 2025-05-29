@@ -2,7 +2,7 @@
 title: EU says it is on track to meet main 2030 climate and energy goals - UPI.com
 url: https://www.upi.com/Top_News/World-News/2025/05/28/EU-will-hit-emissions-energy-targets/6581748430636/
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T13:34:26.460451
+collected_date: 2025-05-29T18:35:27.194167
 source: Upi
 source_url: https://www.upi.com
 author: Paul Godfrey
