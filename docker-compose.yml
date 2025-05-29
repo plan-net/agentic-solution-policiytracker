@@ -223,6 +223,30 @@ services:
       timeout: 10s
       retries: 3
 
+  # Open WebUI - Chat interface
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: policiytracker-open-webui
+    ports:
+      - "3000:8080"
+    environment:
+      # Disable authentication for development
+      - WEBUI_AUTH=false
+      # Configure our political monitoring agent as default
+      - OPENAI_API_BASE_URL=http://host.docker.internal:8001
+      - OPENAI_API_KEY=dummy-key-not-required
+      # Disable Ollama since we're using custom API
+      - OLLAMA_BASE_URL=""
+      # Set default model
+      - DEFAULT_MODELS=political-monitoring-agent
+      # UI customization
+      - WEBUI_NAME="Political Monitoring Chat"
+      - WEBUI_URL=http://localhost:3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open_webui_data:/app/backend/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
@@ -234,6 +258,7 @@ volumes:
   neo4j_plugins:
   airflow_postgres_data:
   airflow_logs:
+  open_webui_data:
 
 networks:
   default:
