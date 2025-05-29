@@ -13,15 +13,25 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from flows.shared.graphiti_client import SharedGraphitiClient
+from graphiti_core import Graphiti
+import os
 
 
 async def build_communities():
     """Build communities from existing knowledge graph."""
     try:
         print("🔍 Analyzing graph structure...")
-        async with SharedGraphitiClient() as client:
-            communities = await client.build_communities(timeout_seconds=60)
+        
+        # Direct Graphiti usage
+        NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+        NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+        NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+        
+        client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+        await client.build_indices_and_constraints()
+        
+        try:
+            communities = await client.build_communities()
             
             if communities:
                 print(f"✅ Successfully built {len(communities)} communities!")
@@ -41,6 +51,9 @@ async def build_communities():
             else:
                 print("⚠️  No communities found or operation timed out")
                 print("💡 Try with more documents or check graph connectivity")
+        
+        finally:
+            await client.close()
                 
     except Exception as e:
         print(f"❌ Community building failed: {e}")
