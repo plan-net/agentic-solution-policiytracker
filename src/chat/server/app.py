@@ -6,8 +6,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict, Any
 import logging
+import os
 from graphiti_core import Graphiti
 from src.config import settings
+from ..agent.simple_agent import SimplePoliticalAgent
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +57,7 @@ class ChatServer:
     
     def __init__(self):
         self.graphiti_client = None
+        self.agent = None
         logger.info("ChatServer initialized")
     
     async def _get_graphiti_client(self):
@@ -68,6 +71,23 @@ class ChatServer:
             await self.graphiti_client.build_indices_and_constraints()
             logger.info("Graphiti client initialized")
         return self.graphiti_client
+    
+    async def _get_agent(self):
+        """Lazy initialization of the LLM agent."""
+        if self.agent is None:
+            # Get Graphiti client first
+            graphiti_client = await self._get_graphiti_client()
+            
+            # Get OpenAI API key
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            if not openai_api_key:
+                raise ValueError("OPENAI_API_KEY environment variable not set")
+            
+            # Initialize agent
+            self.agent = SimplePoliticalAgent(graphiti_client, openai_api_key)
+            logger.info("LLM agent initialized")
+            
+        return self.agent
     
     @app.get("/health")
     async def health_check(self) -> Dict[str, str]:
@@ -107,30 +127,9 @@ class ChatServer:
             if not user_message:
                 response_content = "Please provide a message."
             else:
-                # Simple search logic
-                if "search" in user_message.lower():
-                    query = user_message.replace("search", "").strip()
-                    if query:
-                        results = await client.search(query)
-                        if results:
-                            num_shown = min(len(results), 3)
-                            response_content = f"Found {len(results)} facts related to '{query}' (showing top {num_shown}):\n\n"
-                            # Show first few results with better formatting
-                            for i, fact in enumerate(results[:3]):
-                                response_content += f"{i+1}. {fact.fact}\n"
-                                if hasattr(fact, 'name') and fact.name:
-                                    response_content += f"   Relationship: {fact.name}\n"
-                                response_content += "\n"
-                            
-                            # Add note if there are more results
-                            if len(results) > 3:
-                                response_content += f"... and {len(results) - 3} more facts. Ask me to 'search {query} more' for additional results."
-                        else:
-                            response_content = f"No results found for '{query}'"
-                    else:
-                        response_content = "Please specify what to search for"
-                else:
-                    response_content = "I can help you explore political data. Try asking me to 'search for EU AI Act' or 'search Digital Services Act'"
+                # Use LLM agent for processing
+                agent = await self._get_agent()
+                response_content = await agent.process_query(user_message)
             
         except Exception as e:
             logger.error(f"Chat error: {e}")
