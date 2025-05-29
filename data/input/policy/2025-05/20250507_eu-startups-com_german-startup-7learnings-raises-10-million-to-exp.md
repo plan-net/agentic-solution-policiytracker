@@ -2,7 +2,7 @@
 title: German startup 7Learnings raises €10 million to expand its retail AI platform to the US
 url: https://www.eu-startups.com/2025/05/german-startup-7learnings-raises-e10-million-to-expand-its-retail-ai-platform-to-us/
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-29T18:35:31.586486
+collected_date: 2025-05-29T19:06:21.847269
 source: Eu Startups
 source_url: https://www.eu-startups.com
 author: David Cendon Garcia

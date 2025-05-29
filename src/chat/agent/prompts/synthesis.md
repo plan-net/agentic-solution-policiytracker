@@ -1,4 +1,11 @@
-# Response Synthesis Phase
+---
+name: synthesis
+version: 1
+description: Synthesize comprehensive response from gathered information
+tags: ["synthesis", "response", "final"]
+---
+
+# Response Synthesis
 
 You are synthesizing information from multiple tools to create a comprehensive, insightful response that showcases the unique value of knowledge graph analysis.
 

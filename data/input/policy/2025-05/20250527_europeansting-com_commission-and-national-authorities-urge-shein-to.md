@@ -1,8 +1,8 @@
 ---
 title: Commission and national authorities urge SHEIN to respect EU consumer protection laws
 url: https://europeansting.com/2025/05/27/commission-and-national-authorities-urge-shein-to-respect-eu-consumer-protection-laws/
-published_date: 2025-05-27T18:34:57.627000
-collected_date: 2025-05-29T18:34:58.855009
+published_date: 2025-05-27T19:05:50.598000
+collected_date: 2025-05-29T19:05:51.826927
 source: Europeansting
 source_url: https://europeansting.com
 author: European Union

@@ -2,7 +2,7 @@
 title: Data protection digest 3 – 16 May 2025: ‘divided’ court ruling on IAB Europe, data brokers and national security
 url: https://techgdpr.com/blog/data-protection-digest-19052025-divided-court-ruling-on-iab-europe-data-brokers-and-national-security/
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-29T18:34:46.061051
+collected_date: 2025-05-29T19:05:41.685508
 source: Techgdpr
 source_url: https://techgdpr.com
 author: Olya Vasylyk

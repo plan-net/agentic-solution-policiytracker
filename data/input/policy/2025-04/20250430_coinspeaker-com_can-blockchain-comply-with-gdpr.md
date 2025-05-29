@@ -2,7 +2,7 @@
 title: Can Blockchain Comply with GDPR?
 url: https://www.coinspeaker.com/blockchain-gdpr-compliance-eu-guidelines/
 published_date: 2025-04-30T00:00:00
-collected_date: 2025-05-29T18:34:46.061114
+collected_date: 2025-05-29T19:05:41.685537
 source: Coinspeaker
 source_url: https://www.coinspeaker.com
 author: Yana Khlebnikova

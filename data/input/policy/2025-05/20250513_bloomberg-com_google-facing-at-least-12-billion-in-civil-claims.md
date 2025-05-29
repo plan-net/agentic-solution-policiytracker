@@ -2,7 +2,7 @@
 title: Google Facing at Least €12 Billion in Civil Claims Across Europe
 url: https://www.bloomberg.com/news/articles/2025-05-13/google-facing-at-least-12-billion-in-civil-claims-across-europe
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T18:35:16.220849
+collected_date: 2025-05-29T19:06:05.905599
 source: Bloomberg
 source_url: https://www.bloomberg.com
 author: Karin Matussek

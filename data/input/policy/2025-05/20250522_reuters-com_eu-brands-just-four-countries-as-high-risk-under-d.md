@@ -2,7 +2,7 @@
 title: EU brands just four countries as 'high risk' under deforestation law
 url: https://www.reuters.com/sustainability/climate-energy/eu-brands-just-four-countries-high-risk-under-deforestation-law-2025-05-22/
 published_date: 2025-05-22T00:00:00
-collected_date: 2025-05-29T18:35:27.089117
+collected_date: 2025-05-29T19:06:17.918504
 source: Reuters
 source_url: https://www.reuters.com
 author: Kate Abnett, Charlotte Van Campenhout, Bart Meijer

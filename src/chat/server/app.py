@@ -14,7 +14,7 @@ import uuid
 import asyncio
 from graphiti_core import Graphiti
 from src.config import settings
-from ..agent.simple_agent import SimplePoliticalAgent
+from ..agent.graph import EnhancedPoliticalMonitoringAgent
 
 logger = logging.getLogger(__name__)
 
@@ -100,9 +100,9 @@ class ChatServer:
             if not openai_api_key:
                 raise ValueError("OPENAI_API_KEY environment variable not set")
             
-            # Initialize agent
-            self.agent = SimplePoliticalAgent(graphiti_client, openai_api_key)
-            logger.info("LLM agent initialized")
+            # Initialize enhanced agent
+            self.agent = EnhancedPoliticalMonitoringAgent(graphiti_client, openai_api_key)
+            logger.info("Enhanced LangGraph agent initialized")
             
         return self.agent
     
@@ -297,7 +297,7 @@ class ChatServer:
             yield f"data: [DONE]\n\n"
     
     async def _stream_with_enhanced_agent(self, model: str, user_message: str) -> AsyncGenerator[str, None]:
-        """Stream with the enhanced SimplePoliticalAgent real-time thinking."""
+        """Stream with the enhanced LangGraph agent real-time thinking."""
         chat_id = f"chatcmpl-{uuid.uuid4().hex[:29]}"
         created = int(time.time())
         

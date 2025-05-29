@@ -2,7 +2,7 @@
 title: What DOJ and EU Antitrust Cases Mean for Google, Apple, Meta, Amazon and X
 url: https://www.bloomberg.com/news/articles/2025-05-06/what-doj-and-eu-antitrust-cases-mean-for-google-apple-meta-amazon-and-x
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-29T18:35:23.538488
+collected_date: 2025-05-29T19:06:13.428539
 source: Bloomberg
 source_url: https://www.bloomberg.com
 author: Leah Nylen, Samuel Stolton, Jillian Deutsch

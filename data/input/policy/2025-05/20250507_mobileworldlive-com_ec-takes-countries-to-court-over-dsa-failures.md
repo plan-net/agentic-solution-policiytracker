@@ -2,7 +2,7 @@
 title: EC takes countries to court over DSA failures
 url: https://www.mobileworldlive.com/europe/ec-takes-countries-to-court-over-dsa-failures/
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-29T09:41:32.255757
+collected_date: 2025-05-29T19:05:51.823959
 source: Mobileworldlive
 source_url: https://www.mobileworldlive.com
 author: Amiya Johar

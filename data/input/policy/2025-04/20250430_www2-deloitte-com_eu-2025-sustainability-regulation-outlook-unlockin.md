@@ -2,7 +2,7 @@
 title: EU 2025 Sustainability Regulation Outlook: Unlocking competitiveness and growth
 url: https://www2.deloitte.com/us/en/insights/environmental-social-governance/eu-2025-sustainability-regulation-outlook.html
 published_date: 2025-04-30T00:00:00
-collected_date: 2025-05-29T18:04:33.220996
+collected_date: 2025-05-29T19:06:17.695311
 source: Www2
 source_url: https://www2.deloitte.com
 author: Simon Brennan
