@@ -1,8 +1,8 @@
 ---
 title: EU Warns Shein of Fines in Consumer Protection Probe
 url: https://www.businessoffashion.com/news/retail/eu-shein-consumer-protection-probe/
-published_date: 2025-05-26T14:07:43.618000
-collected_date: 2025-05-28T14:07:45.337257
+published_date: 2025-05-26T20:47:06.056000
+collected_date: 2025-05-28T20:30:22.492645
 source: Businessoffashion
 source_url: https://www.businessoffashion.com
 author: Reuters

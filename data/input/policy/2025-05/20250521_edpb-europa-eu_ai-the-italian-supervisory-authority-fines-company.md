@@ -2,7 +2,7 @@
 title: AI: the Italian Supervisory Authority fines company behind chatbot “Replika”
 url: https://www.edpb.europa.eu/news/national-news/2025/ai-italian-supervisory-authority-fines-company-behind-chatbot-replika_en
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-28T14:07:31.635633
+collected_date: 2025-05-29T14:04:39.615219
 source: Edpb
 source_url: https://www.edpb.europa.eu
 description: "Background information 

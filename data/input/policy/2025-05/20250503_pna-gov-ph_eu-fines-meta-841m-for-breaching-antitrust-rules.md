@@ -2,7 +2,7 @@
 title: EU fines Meta $841M for breaching antitrust rules
 url: https://www.pna.gov.ph/articles/1237937
 published_date: 2025-05-03T00:00:00
-collected_date: 2025-05-28T14:08:06.603619
+collected_date: 2025-05-29T12:57:25.404583
 source: Pna
 source_url: https://www.pna.gov.ph
 description: "November 15, 2024, 1:25 pm

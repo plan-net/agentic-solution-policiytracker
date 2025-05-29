@@ -2,7 +2,7 @@
 title: Retailers demand European Commission investigate Visa and Mastercard fees
 url: https://www.techradar.com/pro/retailers-demand-european-commission-investigate-visa-and-mastercard-fees
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-28T14:08:01.496027
+collected_date: 2025-05-29T11:28:20.872781
 source: Techradar
 source_url: https://www.techradar.com
 author: Craig Hale

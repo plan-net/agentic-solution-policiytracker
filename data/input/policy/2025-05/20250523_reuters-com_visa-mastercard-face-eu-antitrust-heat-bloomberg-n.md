@@ -2,7 +2,7 @@
 title: Visa, Mastercard face EU antitrust heat, Bloomberg News reports
 url: https://www.reuters.com/sustainability/boards-policy-regulation/visa-mastercard-face-eu-antitrust-heat-bloomberg-news-reports-2025-05-23/
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-28T14:07:58.427732
+collected_date: 2025-05-29T14:05:16.000889
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

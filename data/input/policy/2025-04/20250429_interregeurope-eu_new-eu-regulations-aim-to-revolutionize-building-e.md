@@ -2,7 +2,7 @@
 title: New EU Regulations Aim to Revolutionize Building Efficiency | Interreg Europe
 url: https://www.interregeurope.eu/news-and-events/news/new-eu-regulations-aim-to-revolutionize-building-efficiency
 published_date: 2025-04-29T00:00:00
-collected_date: 2025-05-28T14:08:11.091812
+collected_date: 2025-05-28T19:02:31.381880
 source: Interregeurope
 source_url: https://www.interregeurope.eu
 author: By Project MonitorEE

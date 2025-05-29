@@ -154,7 +154,14 @@ class EntityRelationshipsTool(BaseTool):
             if relationship_types:
                 search_query += " " + " ".join(relationship_types)
             
-            results = await self.client.search(search_query)
+            # Use advanced search with edge-focused configuration for relationships
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for relationship analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No relationships found for entity '{entity_name}'"
@@ -235,7 +242,15 @@ class EntityTimelineTool(BaseTool):
             
             # Search for temporal mentions of the entity
             search_query = f"{entity_name} timeline history evolution changes development"
-            results = await self.client.search(search_query)
+            
+            # Use advanced search with edge-focused configuration for temporal analysis
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for timeline analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No timeline information found for entity '{entity_name}'"
@@ -315,7 +330,17 @@ class SimilarEntitesTool(BaseTool):
             
             # Search for similar entities using context and relationships
             search_query = f"{entity_name} similar like comparable equivalent type category"
-            results = await self.client.search(search_query)
+            
+            # Use advanced search with node-focused configuration for entity similarity
+            from graphiti_core.search.search_config_recipes import NODE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=NODE_HYBRID_SEARCH_RRF)
+            
+            # Extract both nodes and edges for similarity analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
+            if hasattr(search_results, 'nodes') and search_results.nodes:
+                results.extend(search_results.nodes)
             
             if not results:
                 return f"No similar entities found for '{entity_name}'"

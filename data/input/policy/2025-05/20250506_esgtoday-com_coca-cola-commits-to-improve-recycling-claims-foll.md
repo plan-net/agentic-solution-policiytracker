@@ -2,7 +2,7 @@
 title: Coca-Cola Commits to Improve Recycling Claims Following EU Greenwashing Complaint
 url: https://www.esgtoday.com/coca-cola-commits-to-improve-recycling-claims-following-eu-greenwashing-complaint/
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-28T13:24:31.065614
+collected_date: 2025-05-29T12:57:14.832647
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

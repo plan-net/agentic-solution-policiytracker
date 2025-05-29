@@ -2,7 +2,7 @@
 title: ‘Deleting the Whole Blockchain’ – EU Regulators Say Entire Chain Histories Could be Erased for Personal Data Protection
 url: https://dailyhodl.com/2025/04/29/deleting-the-whole-blockchain-eu-regulators-say-entire-chain-histories-could-be-erased-for-personal-data-protection/
 published_date: 2025-04-29T00:00:00
-collected_date: 2025-05-28T13:24:07.953718
+collected_date: 2025-05-28T19:01:54.841139
 source: Dailyhodl
 source_url: https://dailyhodl.com
 author: Alex Richardson

@@ -2,7 +2,7 @@
 title: Leak: EU to target clean-up of 'forever chemicals' in water strategy
 url: https://www.euronews.com/my-europe/2025/05/15/leak-commission-to-launch-major-pfas-clean-up-as-part-of-water-resilience-strategy
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T13:24:47.144444
+collected_date: 2025-05-29T13:34:26.460477
 source: Euronews
 source_url: https://www.euronews.com
 description: "Published on 15/05/2025 - 11:51 GMT+2 • Updated

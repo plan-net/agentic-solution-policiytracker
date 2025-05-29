@@ -1,8 +1,8 @@
 ---
 title: Eliminating De Minimis, New Fees Among Proposed EU Responses to Low-Value Imports
 url: https://www.strtrade.com/trade-news-resources/str-trade-report/trade-report/february/eliminating-de-minimis-new-fees-among-proposed-eu-responses-to-low-value-imports
-published_date: 2025-05-28T14:07:40.417594
-collected_date: 2025-05-28T14:07:40.418607
+published_date: 2025-05-28T20:15:17.950533
+collected_date: 2025-05-28T20:15:17.950841
 source: Strtrade
 source_url: https://www.strtrade.com
 author: Sandler, Travis & Rosenberg, P.A.

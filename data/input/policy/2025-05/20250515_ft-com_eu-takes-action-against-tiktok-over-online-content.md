@@ -2,7 +2,7 @@
 title: EU takes action against TikTok over online content rules
 url: https://www.ft.com/content/6feebcf5-a1cb-4507-a691-211173dc84d6
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T13:24:46.745871
+collected_date: 2025-05-28T19:02:35.490060
 source: Ft
 source_url: https://www.ft.com
 author: Barbara Moens

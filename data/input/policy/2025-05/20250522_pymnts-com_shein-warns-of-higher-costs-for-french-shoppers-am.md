@@ -1,8 +1,8 @@
 ---
 title: Shein Warns of Higher Costs for French Shoppers Amid EU Fee Proposal | PYMNTS.com
 url: https://www.pymnts.com/cpi-posts/shein-warns-of-higher-costs-for-french-shoppers-amid-eu-fee-proposal/
-published_date: 2025-05-22T14:07:57.220000
-collected_date: 2025-05-28T14:07:58.427651
+published_date: 2025-05-22T15:42:22.798000
+collected_date: 2025-05-28T15:42:24.691126
 source: Pymnts
 source_url: https://www.pymnts.com
 author: CPI

@@ -2,7 +2,7 @@
 title: EU to charge €2 fee for Temu, Shein packages
 url: https://www.politico.eu/article/commission-supports-handling-fee-on-small-packages/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-28T14:07:41.742366
+collected_date: 2025-05-28T20:15:18.630002
 source: Politico
 source_url: https://www.politico.eu
 author: Koen Verhelst

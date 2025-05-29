@@ -2,7 +2,7 @@
 title: EU sails past deadline to tame AI models amid vocal US opposition
 url: https://www.politico.eu/article/eu-deadline-artificial-intelligence-models-lobbying/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-28T14:08:06.859586
+collected_date: 2025-05-29T14:05:15.444327
 source: Politico
 source_url: https://www.politico.eu
 author: Pieter Haeck

@@ -2,7 +2,7 @@
 title: Showing your ID to get online might become a reality - European Digital Rights (EDRi)
 url: https://edri.org/our-work/showing-your-id-to-get-online-might-become-a-reality-a-closer-look-at-the-eus-new-age-verification-app/
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-28T14:07:37.357826
+collected_date: 2025-05-28T16:14:24.038890
 source: Edri
 source_url: https://edri.org
 description: Coming to a website near you this summer: the European Commission is close to a ‘solution’ that could force people to use their government-issued ID to get online. EDRi and EFF’s concerns about threats to everyone’s privacy and data protection, a chilling effect on access to...

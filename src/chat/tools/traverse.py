@@ -71,8 +71,14 @@ class TraverseFromEntityTool(BaseTool):
                 search_query += " " + " ".join(relationship_types)
             search_query += " connected related network influence affects"
             
-            # Get initial results
-            results = await self.client.search(search_query)
+            # Get initial results using advanced search
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for traversal analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No connections found for entity '{entity_name}'"
@@ -180,7 +186,15 @@ class FindPathsTool(BaseTool):
             
             # Search for facts mentioning both entities
             search_query = f"{source_entity} {target_entity} connection relationship path"
-            results = await self.client.search(search_query)
+            
+            # Use advanced search for path finding
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for path analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No connection paths found between '{source_entity}' and '{target_entity}'"
@@ -279,7 +293,14 @@ class GetNeighborsTool(BaseTool):
             if neighbor_types:
                 search_query += " " + " ".join(neighbor_types)
             
-            results = await self.client.search(search_query)
+            # Use advanced search for neighbor discovery
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for neighbor analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No neighbors found for entity '{entity_name}'"
@@ -393,7 +414,14 @@ class ImpactAnalysisTool(BaseTool):
             if impact_types:
                 search_query += " " + " ".join(impact_types)
             
-            results = await self.client.search(search_query)
+            # Use advanced search for impact analysis
+            from graphiti_core.search.search_config_recipes import EDGE_HYBRID_SEARCH_RRF
+            search_results = await self.client._search(search_query, config=EDGE_HYBRID_SEARCH_RRF)
+            
+            # Extract edges for impact analysis
+            results = []
+            if hasattr(search_results, 'edges') and search_results.edges:
+                results.extend(search_results.edges)
             
             if not results:
                 return f"No impact information found for entity '{entity_name}'"

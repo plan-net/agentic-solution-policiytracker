@@ -2,7 +2,7 @@
 title: California Privacy Protection Agency Fines Retailer $345,000 for Alleged CCPA Privacy Rights Violations
 url: https://www.hunton.com/privacy-and-information-security-law/california-privacy-protection-agency-fines-retailer-345-000-for-alleged-ccpa-privacy-rights-violations
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-28T14:07:37.357840
+collected_date: 2025-05-28T16:14:24.038942
 source: Hunton
 source_url: https://www.hunton.com
 description: California Privacy Protection Agency Fines Retailer $345,000 for Alleged CCPA Privacy Rights Violations On May 6, 2025, the California Privacy Protection Agency (“CPPA”) announced that it had issued an Order requiring clothing retailer Todd Snyder, Inc. (the “Company”) to change its business...

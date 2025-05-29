@@ -2,7 +2,7 @@
 title: France urges fees on cheap e-commerce parcels in EU
 url: https://www.reuters.com/business/retail-consumer/france-urges-fees-cheap-e-commerce-packages-eu-2025-04-29/
 published_date: 2025-04-29T00:00:00
-collected_date: 2025-05-28T14:07:40.418930
+collected_date: 2025-05-28T20:15:17.950888
 source: Reuters
 source_url: https://www.reuters.com
 author: Helen Reid

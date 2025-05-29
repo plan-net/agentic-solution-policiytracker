@@ -1,8 +1,8 @@
 ---
 title: Navigating the Regulatory Crossroads: How EU Scrutiny is Redefining Fast-Fashion E-Commerce Opportunities
 url: https://www.ainvest.com/news/navigating-regulatory-crossroads-eu-scrutiny-redefining-fast-fashion-commerce-opportunities-2505/
-published_date: 2025-05-24T14:07:34.678000
-collected_date: 2025-05-28T14:07:35.847531
+published_date: 2025-05-24T14:04:42.301000
+collected_date: 2025-05-29T14:04:43.384435
 source: Ainvest
 source_url: https://www.ainvest.com
 author: Clyde Morgan

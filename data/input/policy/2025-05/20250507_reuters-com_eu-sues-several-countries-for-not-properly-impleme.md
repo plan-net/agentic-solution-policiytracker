@@ -2,7 +2,7 @@
 title: EU sues several countries for not properly implementing Digital Services Act
 url: https://www.reuters.com/technology/eu-sues-several-countries-not-properly-implementing-digital-services-act-2025-05-07/
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-28T14:07:41.742630
+collected_date: 2025-05-29T14:04:51.111871
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

@@ -2,7 +2,7 @@
 title: The EU provisionally finds that TikTok breached the DSA by failing to offer a publicly searchable ad library, potentially opening the platform up to a fine
 url: https://www.techmeme.com/250515/p11
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:07:40.419425
+collected_date: 2025-05-28T16:14:44.210395
 source: Techmeme
 source_url: https://www.techmeme.com
 description: "May 15, 2025, 6:25 AM 

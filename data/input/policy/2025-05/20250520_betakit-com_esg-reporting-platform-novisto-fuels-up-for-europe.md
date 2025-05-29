@@ -2,7 +2,7 @@
 title: ESG reporting platform Novisto fuels up for European expansion with $37.7-million CAD Series C | BetaKit
 url: https://betakit.com/esg-reporting-platform-novisto-fuels-up-for-european-expansion-with-37-7-million-cad-series-c/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-28T14:07:54.255843
+collected_date: 2025-05-28T20:30:29.233910
 source: Betakit
 source_url: https://betakit.com
 author: Josh Scott

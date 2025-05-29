@@ -1,8 +1,8 @@
 ---
 title: EU digital law 2025 – These innovations should be considered
 url: https://www.heuking.de/en/news-events/newsletter-articles/detail/eu-digitalrecht-2025-diese-neuerungen-sollten-beachtung-finden.html
-published_date: 2025-05-28T14:07:40.418960
-collected_date: 2025-05-28T14:07:40.419258
+published_date: 2025-05-28T20:15:17.949316
+collected_date: 2025-05-28T20:15:17.950361
 source: Heuking
 source_url: https://www.heuking.de
 description: Update Data Protection No. 197 The new year has begun. Many companies have largely completed their strategic planning for the 2025 financial year. But what can companies expect from a regulatory perspective in terms of digital law and what questions from their own customers can be expected on the...

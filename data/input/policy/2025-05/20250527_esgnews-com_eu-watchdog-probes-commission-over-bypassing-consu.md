@@ -1,8 +1,8 @@
 ---
 title: EU Watchdog Probes Commission Over Bypassing Consultation on Eased Sustainability Rules
 url: https://esgnews.com/eu-watchdog-probes-commission-over-bypassing-consultation-on-eased-sustainability-rules/
-published_date: 2025-05-27T15:08:09.832000
-collected_date: 2025-05-28T14:08:12.245259
+published_date: 2025-05-27T18:40:59.905000
+collected_date: 2025-05-28T18:31:42.052585
 source: Esgnews
 source_url: https://esgnews.com
 author: ESG News

@@ -2,7 +2,7 @@
 title: Privacy regulator fines TikTok $600 million over EU data transfers to China
 url: https://therecord.media/tiktok-fined-gdpr-data-chinese-servers
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-28T14:07:32.107622
+collected_date: 2025-05-28T15:40:58.556396
 source: Therecord
 source_url: https://therecord.media
 author: Suzanne Smalley
