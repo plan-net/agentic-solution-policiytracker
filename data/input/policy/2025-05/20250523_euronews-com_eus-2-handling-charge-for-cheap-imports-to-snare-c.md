@@ -1,8 +1,8 @@
 ---
 title: EU's €2 handling charge for cheap imports to snare Chinese products
 url: https://www.euronews.com/my-europe/2025/05/23/eus-2-handling-charge-for-cheap-imports-to-snare-chinese-products
-published_date: 2025-05-23T14:07:48.322000
-collected_date: 2025-05-28T14:07:49.451366
+published_date: 2025-05-23T14:04:56.176000
+collected_date: 2025-05-29T14:04:57.357271
 source: Euronews
 source_url: https://www.euronews.com
 description: "By  Romane Armangau 

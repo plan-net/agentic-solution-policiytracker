@@ -1,8 +1,8 @@
 ---
 title: EU and Singapore sign Digital Trade Agreement to advance digital trade and innovation | Perspectives | Reed Smith LLP
 url: https://www.reedsmith.com/en/perspectives/2025/05/eu-and-singapore-sign-digital-trade-agreement
-published_date: 2025-05-26T14:07:34.233000
-collected_date: 2025-05-28T14:07:35.599906
+published_date: 2025-05-26T14:04:41.552000
+collected_date: 2025-05-29T14:04:42.728837
 source: Reedsmith
 source_url: https://www.reedsmith.com
 author: Bryan Tan

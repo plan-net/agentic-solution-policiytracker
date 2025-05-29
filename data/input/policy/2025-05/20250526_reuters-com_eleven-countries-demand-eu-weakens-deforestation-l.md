@@ -1,8 +1,8 @@
 ---
 title: Eleven countries demand EU weakens deforestation law further, document shows
 url: https://www.reuters.com/sustainability/climate-energy/eleven-countries-demand-eu-weakens-deforestation-law-further-document-shows-2025-05-26/
-published_date: 2025-05-26T14:08:09.832000
-collected_date: 2025-05-28T14:08:12.245964
+published_date: 2025-05-26T14:05:18.280000
+collected_date: 2025-05-29T14:05:19.633502
 source: Reuters
 source_url: https://www.reuters.com
 author: Kate Abnett

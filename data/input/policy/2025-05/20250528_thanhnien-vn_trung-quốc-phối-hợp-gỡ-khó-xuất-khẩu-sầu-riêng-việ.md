@@ -2,7 +2,7 @@
 title: Trung Quốc phối hợp gỡ khó xuất khẩu sầu riêng Việt Nam
 url: https://thanhnien.vn/trung-quoc-phoi-hop-go-kho-xuat-khau-sau-rieng-viet-nam-1852505281755513.htm
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-28T14:08:15.273553
+collected_date: 2025-05-28T15:10:30.517193
 source: Thanhnien
 source_url: https://thanhnien.vn
 author: Phan Hậu

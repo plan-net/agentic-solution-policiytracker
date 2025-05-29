@@ -2,7 +2,7 @@
 title: The EU is threatening to fine Shein, accusing it of deceiving customers with fake discounts and misleading information
 url: https://www.businessinsider.com/eu-threaten-fine-shein-accuse-deceiving-customers-fake-discounts-2025-5
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-28T14:07:35.847841
+collected_date: 2025-05-29T14:04:43.384739
 source: Businessinsider
 source_url: https://www.businessinsider.com
 author: Aditi Bharade

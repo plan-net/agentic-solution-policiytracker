@@ -1,0 +1,20 @@
+---
+title: EU targets business barriers to enhance competitiveness amid US tariffs
+url: https://www.reuters.com/business/eu-targets-business-barriers-enhance-competitiveness-amid-us-tariffs-2025-05-21/
+published_date: 2025-05-21T00:00:00
+collected_date: 2025-05-29T12:57:18.409159
+source: Reuters
+source_url: https://www.reuters.com
+author: Philip Blenkinsop
+description: U.S. and European Union flags are seen in this illustration taken April 10, 2025. REUTERS/Dado Ruvic/Illustration/ File Photo Purchase Licensing Rights, opens new tab Summary EU single market is fragmented, particularly in services Internal reform could more than counteract U.S. tariffs National...
+language: en
+collection_type: policy_landscape
+---
+
+# EU targets business barriers to enhance competitiveness amid US tariffs
+
+*By Philip Blenkinsop*
+
+U.S. and European Union flags are seen in this illustration taken April 10, 2025. REUTERS/Dado Ruvic/Illustration/ File Photo Purchase Licensing Rights, opens new tab Summary EU single market is fragmented, particularly in services Internal reform could more than counteract U.S. tariffs National...
+
+U.S. and European Union flags are seen in this illustration taken April 10, 2025. REUTERS/Dado Ruvic/Illustration/ File Photo Purchase Licensing Rights, opens new tab Summary EU single market is fragmented, particularly in services Internal reform could more than counteract U.S. tariffs National markets often closed due to vested interests BRUSSELS, May 21 (Reuters) - The European Commission set out plans on Wednesday to remove barriers to business within the European Union as part of a push to boost competitiveness and counteract the impact of U.S. tariffs. The International Monetary Fund has estimated that internal EU barriers are equivalent to tariffs of 44% for goods and 110% for services, far higher than the import duties set by U.S. President Donald Trump. Sign up here. The EU executive will make proposals this year and next to encourage businesses to choose Europe and allow smaller companies to scale up by spreading across the bloc. However, it will rely on EU member states themselves to adopt laws and follow recommendations to open up sectors that are dominated by domestic vested interests. The Commission says it is targeting the "terrible ten" barriers, including the limited recognition of other member states' professional qualifications, lack of common standards and fragmented rules on packaging. The Commission will push for greater use of QR codes on labels to allow customers to access product information and act against producers who prevent specific retailers from selling in certain countries. The Commission noted that cross-border trade in services was stagnating, and said it would work to open up the construction, postal, telecoms, energy, transport and financial services sectors. This will include setting guidelines to allow companies to provide services temporarily in another EU country. The Commission will also encourage coalitions of willing EU members to free up regulated professions, such as nursing or mechanics. EU members each regulate on average 212 professions, in some cases requiring fees, meaning that people qualified in one EU country have difficulty moving to work in another. In Germany, up to a third of the workforce is in a regulated profession. The Commission also proposed reduced a range of reporting requirements, such as on data privacy and battery supply chains, to cut 400 million euros ($450 million) of annual costs for the bloc's 38,000 mid-cap companies, with 250 to 750 workers. Current rules discourage growth by treating companies that expand beyond 250 employees as large enterprises with increased compliance obligations. ($1 = 0.8820 euros) Reporting by Philip Blenkinsop; Editing by Kevin Liffey Our Standards: The Thomson Reuters Trust Principles., opens new tab

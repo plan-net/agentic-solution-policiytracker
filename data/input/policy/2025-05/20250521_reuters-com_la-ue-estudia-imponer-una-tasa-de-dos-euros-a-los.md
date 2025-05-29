@@ -2,7 +2,7 @@
 title: La UE estudia imponer una tasa de dos euros a los paquetes de las compras en línea
 url: https://www.reuters.com/es/negocio/XEOD7KALA5MLDKAECUTYVDEKYE-2025-05-21/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-28T14:07:54.255748
+collected_date: 2025-05-29T12:26:29.400266
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

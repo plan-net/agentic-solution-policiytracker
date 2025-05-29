@@ -2,7 +2,7 @@
 title: Shein accused of breaking EU law with manipulative sales tactics
 url: https://www.euronews.com/my-europe/2025/05/26/shein-accused-of-breaking-eu-law-with-manipulative-sales-tactics
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-28T14:07:31.832658
+collected_date: 2025-05-29T14:04:47.702456
 source: Euronews
 source_url: https://www.euronews.com
 description: "Published on

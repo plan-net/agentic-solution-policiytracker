@@ -2,7 +2,7 @@
 title: Euralarm welcomes EC’s e-commerce initiative: improving consumer safety and market fairness
 url: https://www.euralarm.org/resource/euralarm-welcomes-ec-s-e-commerce-initiative-improving-consumer-safety-and-market-fairness.html
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-28T13:24:21.682718
+collected_date: 2025-05-29T14:04:53.767372
 source: Euralarm
 source_url: https://www.euralarm.org
 author: EURALARM

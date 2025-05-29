@@ -2,7 +2,7 @@
 title: Amazon brings its Temu clone Haul to Europa
 url: https://www.retaildetail.eu/news/general/amazon-brings-its-temu-clone-haul-to-europa/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-28T14:07:50.776978
+collected_date: 2025-05-28T15:09:54.796767
 source: Retaildetail
 source_url: https://www.retaildetail.eu
 author: Maarten Reul

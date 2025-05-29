@@ -2,7 +2,7 @@
 title: Carrefour Deploys Supply Chain Platform to Beef Up Sustainable Sourcing
 url: https://www.retailtouchpoints.com/features/news-briefs/carrefour-deploys-supply-chain-platform-to-beef-up-sustainable-sourcing
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:07:54.255787
+collected_date: 2025-05-29T12:57:14.832561
 source: Retailtouchpoints
 source_url: https://www.retailtouchpoints.com
 author: Adam Blair

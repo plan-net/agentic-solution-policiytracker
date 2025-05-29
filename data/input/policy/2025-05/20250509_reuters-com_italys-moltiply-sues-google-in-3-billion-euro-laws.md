@@ -2,7 +2,7 @@
 title: Italy's Moltiply sues Google in 3 billion euro lawsuit over market dominance
 url: https://www.reuters.com/sustainability/boards-policy-regulation/italys-moltiply-sues-google-3-billion-euro-lawsuit-over-market-dominance-2025-05-09/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-28T14:08:02.750529
+collected_date: 2025-05-29T14:05:16.000608
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

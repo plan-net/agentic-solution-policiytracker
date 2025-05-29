@@ -2,7 +2,7 @@
 title: Meta ordered to stop training AI using EU user data by German data protection watchdog
 url: https://www.cyberdaily.au/security/12085-meta-ordered-to-stop-training-ai-using-eu-user-data-by-german-data-protection-watchdog
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-28T14:07:31.635751
+collected_date: 2025-05-29T13:33:49.994717
 source: Cyberdaily
 source_url: https://www.cyberdaily.au
 author: Daniel Croft

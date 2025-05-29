@@ -2,7 +2,7 @@
 title: Google faces $13 billion in European lawsuits over price comparison abuses
 url: https://www.techspot.com/news/107927-google-could-forced-pay-billions-violating-europe-antitrust.html
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:08:01.802252
+collected_date: 2025-05-29T14:05:11.038727
 source: Techspot
 source_url: https://www.techspot.com
 author: Alfonso Maruccia

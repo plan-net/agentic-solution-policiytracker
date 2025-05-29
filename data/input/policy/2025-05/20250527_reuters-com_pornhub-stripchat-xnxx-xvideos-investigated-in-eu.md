@@ -2,7 +2,7 @@
 title: Pornhub, Stripchat, XNXX, XVideos investigated in EU over child protection
 url: https://www.reuters.com/technology/pornhub-stripchat-xnxx-xvideos-targeted-eu-investigation-2025-05-27/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-28T13:24:50.462361
+collected_date: 2025-05-28T16:14:44.416160
 source: Reuters
 source_url: https://www.reuters.com
 author: Yun Chee Foo

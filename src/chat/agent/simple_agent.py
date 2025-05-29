@@ -21,6 +21,17 @@ from ..tools.traverse import (
     GetNeighborsTool,
     ImpactAnalysisTool
 )
+from ..tools.temporal import (
+    DateRangeSearchTool,
+    EntityHistoryTool,
+    ConcurrentEventsTool,
+    PolicyEvolutionTool
+)
+from ..tools.community import (
+    GetCommunitiesTool,
+    CommunityMembersTool,
+    PolicyClustersTool
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +59,14 @@ class SimplePoliticalAgent:
             TraverseFromEntityTool(graphiti_client),
             FindPathsTool(graphiti_client),
             GetNeighborsTool(graphiti_client),
-            ImpactAnalysisTool(graphiti_client)
+            ImpactAnalysisTool(graphiti_client),
+            DateRangeSearchTool(graphiti_client),
+            EntityHistoryTool(graphiti_client),
+            ConcurrentEventsTool(graphiti_client),
+            PolicyEvolutionTool(graphiti_client),
+            GetCommunitiesTool(graphiti_client),
+            CommunityMembersTool(graphiti_client),
+            PolicyClustersTool(graphiti_client)
         ]
         
         # Create agent
@@ -76,6 +94,13 @@ Available tools:
 - find_paths_between_entities: Find connection paths between two entities through intermediate relationships
 - get_entity_neighbors: Get immediate neighbors and their relationship types
 - analyze_entity_impact: Analyze what entities impact or are impacted by the given entity
+- search_by_date_range: Search for events within specific date ranges for temporal analysis
+- get_entity_history: Track how entities have evolved and changed over time
+- find_concurrent_events: Find events that happened around the same time for context analysis
+- track_policy_evolution: Track how policies and regulations have evolved with amendments and changes
+- get_communities: Discover communities and clusters of related entities in the network
+- get_community_members: Get members of specific communities or thematic groups
+- get_policy_clusters: Identify clusters of related policies grouped by theme, jurisdiction, or time
 
 RESPONSE STRATEGY (Be selective - max 3-4 tools per query):
 1. **Start with search** - Always begin with search to understand the topic
@@ -83,14 +108,22 @@ RESPONSE STRATEGY (Be selective - max 3-4 tools per query):
    - Policy questions: search → get_entity_details → analyze_entity_impact
    - Company questions: search → get_entity_relationships → find_paths_between_entities  
    - Network questions: search → traverse_from_entity → get_entity_neighbors
-   - Timeline questions: search → get_entity_timeline → find_similar_entities
+   - Timeline questions: search → get_entity_timeline → get_entity_history
+   - Temporal analysis: search → search_by_date_range → track_policy_evolution
+   - Context questions: search → find_concurrent_events → get_entity_history
+   - Community analysis: search → get_communities → get_community_members
+   - Policy landscape: search → get_policy_clusters → get_community_members
 3. **Provide comprehensive analysis** from the tools used rather than using many tools
 
 EFFICIENT TOOL COMBINATIONS (stick to 2-3 tools max):
 - Policy questions: search → get_entity_details → analyze_entity_impact
 - Company questions: search → get_entity_relationships → find_paths_between_entities  
 - Network questions: search → traverse_from_entity OR get_entity_neighbors
-- Timeline questions: search → get_entity_timeline
+- Timeline questions: search → get_entity_timeline OR get_entity_history
+- Temporal analysis: search → search_by_date_range → track_policy_evolution
+- Historical context: search → find_concurrent_events → get_entity_history
+- Community analysis: search → get_communities OR get_community_members
+- Policy landscape: search → get_policy_clusters → get_community_members
 
 GRAPH ANALYSIS ADVANTAGES:
 - **Multi-hop reasoning**: "Company A → regulated by Policy B → enforced by Agency C → affects Industry D"

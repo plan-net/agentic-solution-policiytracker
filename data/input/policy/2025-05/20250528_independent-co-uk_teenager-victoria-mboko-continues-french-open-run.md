@@ -2,7 +2,7 @@
 title: Teenager Victoria Mboko continues French Open run and sets up Qinwen Zheng test
 url: https://www.independent.co.uk/sport/tennis/victoria-mboko-french-open-age-ranking-b2759170.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-28T14:08:15.273480
+collected_date: 2025-05-28T15:10:30.517151
 source: Independent
 source_url: https://www.independent.co.uk
 author: Jamie Braidwood

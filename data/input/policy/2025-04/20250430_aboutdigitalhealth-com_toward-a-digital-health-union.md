@@ -2,7 +2,7 @@
 title: Toward a Digital Health Union
 url: https://aboutdigitalhealth.com/2025/04/30/toward-a-digital-health-union/
 published_date: 2025-04-30T00:00:00
-collected_date: 2025-05-28T14:08:06.859600
+collected_date: 2025-05-29T14:05:15.443484
 source: Aboutdigitalhealth
 source_url: https://aboutdigitalhealth.com
 description: "Eva Hrncirova is a spokesperson of the European Commission responsible for health-related topics 

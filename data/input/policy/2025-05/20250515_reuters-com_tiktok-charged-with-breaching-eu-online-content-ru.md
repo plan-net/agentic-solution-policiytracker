@@ -2,7 +2,7 @@
 title: TikTok charged with breaching EU online content rules
 url: https://www.reuters.com/sustainability/boards-policy-regulation/tiktok-charged-with-breaching-eu-online-content-rules-2025-05-15/
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:07:40.419362
+collected_date: 2025-05-29T14:04:51.112228
 source: Reuters
 source_url: https://www.reuters.com
 author: Yun Chee Foo

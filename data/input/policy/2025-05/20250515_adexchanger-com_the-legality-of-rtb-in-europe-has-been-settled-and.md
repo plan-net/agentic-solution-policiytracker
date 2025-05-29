@@ -2,7 +2,7 @@
 title: The Legality Of RTB In Europe Has Been Settled, And Nobody’s A Winner
 url: https://www.adexchanger.com/online-advertising/the-legality-of-rtb-in-europe-has-been-settled-and-nobodys-a-winner/
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:07:32.107659
+collected_date: 2025-05-28T16:14:18.346149
 source: Adexchanger
 source_url: https://www.adexchanger.com
 author: James Hercher

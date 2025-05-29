@@ -2,7 +2,7 @@
 title: KI-Training mit Nutzerdaten: Deutsche Verbraucherzentrale zieht gegen Meta vor Gericht
 url: https://www.derstandard.at/consent/tcf/story/3000000269600/ki-training-mit-nutzerdaten-deutsche-verbraucherzentrale-zieht-gegen-meta-vor-gericht
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-28T13:24:12.826952
+collected_date: 2025-05-28T16:14:24.039057
 source: Derstandard
 source_url: https://www.derstandard.at
 description: "Datenschutz 

@@ -2,7 +2,7 @@
 title: EU investors warn against deep data cuts in green rules review
 url: https://www.reuters.com/sustainability/boards-policy-regulation/eu-investors-warn-against-deep-data-cuts-green-rules-review-2025-05-09/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-28T14:08:11.091733
+collected_date: 2025-05-29T14:05:19.478390
 source: Reuters
 source_url: https://www.reuters.com
 author: Virginia Furness

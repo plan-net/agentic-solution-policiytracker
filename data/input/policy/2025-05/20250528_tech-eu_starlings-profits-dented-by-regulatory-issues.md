@@ -2,7 +2,7 @@
 title: Starling’s profits dented by regulatory issues
 url: https://tech.eu/2025/05/28/starlings-profits-dented-by-regulatory-issues/
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-28T14:08:15.273624
+collected_date: 2025-05-28T15:10:30.517172
 source: Tech
 source_url: https://tech.eu
 author: John Reynolds

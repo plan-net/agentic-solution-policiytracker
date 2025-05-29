@@ -1,8 +1,8 @@
 ---
 title: The European Board for Digital Services launches a coordinated action to reinforce the protection of minors as regards pornographic platforms
 url: https://digital-strategy.ec.europa.eu/en/news/european-board-digital-services-launches-coordinated-action-reinforce-protection-minors-regards
-published_date: 2025-05-27T14:07:43.618000
-collected_date: 2025-05-28T14:07:45.337298
+published_date: 2025-05-27T13:34:00.947000
+collected_date: 2025-05-29T13:34:02.174989
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: The European Board for Digital Services shares the European Commission’s concerns about certain platforms which make pornographic content unlawfully accessible to minors across the European Union against Union or national legislation. The Board welcomes the European Commission’s action of 27 May...

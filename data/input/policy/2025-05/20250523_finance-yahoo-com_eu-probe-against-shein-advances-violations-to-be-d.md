@@ -2,7 +2,7 @@
 title: EU probe against Shein advances, violations to be detailed soon, Bloomberg reports
 url: https://finance.yahoo.com/news/eu-probe-against-shein-advances-202308505.html
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-28T14:07:54.700616
+collected_date: 2025-05-29T12:57:14.306062
 source: Finance
 source_url: https://finance.yahoo.com
 author: Reuters Fri, May 23, 2025, 1:23 PM 1 min read

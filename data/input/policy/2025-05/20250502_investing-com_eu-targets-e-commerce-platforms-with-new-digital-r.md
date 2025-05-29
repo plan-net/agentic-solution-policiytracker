@@ -2,7 +2,7 @@
 title: EU targets e-commerce platforms with new digital regulations By Investing.com
 url: https://www.investing.com/news/world-news/eu-targets-ecommerce-platforms-with-new-digital-regulations-93CH-3850218
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-28T14:07:35.847345
+collected_date: 2025-05-29T14:04:39.733198
 source: Investing
 source_url: https://www.investing.com
 description: [Get 100% ad-free experience](https://www.investing.com/ad-free-subscription?source=desktop&medium=takeover_ad)
