@@ -1,53 +1,76 @@
-"""Agent state management for LangGraph workflow."""
+"""Enhanced agent state management for LangGraph workflow."""
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Annotated
 from pydantic import BaseModel, Field
-from langgraph.graph import MessagesState
+from langgraph.graph import MessagesState, add_messages
 
 
-class SearchResult(BaseModel):
-    """Individual search result from Graphiti."""
-    fact: str
-    relationship: Optional[str] = None
-    source_entities: List[str] = Field(default_factory=list)
-    target_entities: List[str] = Field(default_factory=list)
-    confidence: Optional[float] = None
+class QueryAnalysis(BaseModel):
+    """Results from query analysis."""
+    intent: str  # Primary intent category
+    complexity: str  # Simple/Medium/Complex
+    primary_entity: Optional[str] = None
+    secondary_entities: List[str] = Field(default_factory=list)
+    key_relationships: List[str] = Field(default_factory=list)
+    temporal_scope: str = "current"
+    analysis_strategy: str = ""
 
 
-class ExplorationPlan(BaseModel):
-    """Plan for exploring the knowledge graph."""
-    query_intent: str  # What the user is trying to find
-    search_strategy: str  # How to approach the search
-    tools_to_use: List[str] = Field(default_factory=list)
-    search_depth: int = 1  # How deep to search
-    expected_entities: List[str] = Field(default_factory=list)
+class ToolPlan(BaseModel):
+    """Plan for tool execution sequence."""
+    tool_sequence: List[str] = Field(default_factory=list)
+    rationale: str = ""
+    expected_insights: str = ""
+    thinking_narrative: str = ""
+
+
+class ToolResult(BaseModel):
+    """Result from individual tool execution."""
+    tool_name: str
+    success: bool
+    output: str = ""
+    insights: List[str] = Field(default_factory=list)
+    entities_found: List[str] = Field(default_factory=list)
+    error: Optional[str] = None
+
+
+class ThinkingState(BaseModel):
+    """State for tracking thinking output."""
+    current_phase: str = "understanding"
+    thinking_content: List[str] = Field(default_factory=list)
+    tool_reasoning: str = ""
+    synthesis_progress: str = ""
 
 
 class AgentState(MessagesState):
-    """Extended state for the political monitoring chat agent."""
+    """Enhanced state for the political monitoring chat agent."""
     
-    # User query understanding
+    # Core query processing
     original_query: str = ""
     processed_query: str = ""
-    query_intent: str = ""
+    query_analysis: Optional[QueryAnalysis] = None
     
-    # Exploration planning
-    exploration_plan: Optional[ExplorationPlan] = None
+    # Tool planning and execution
+    tool_plan: Optional[ToolPlan] = None
+    executed_tools: List[str] = Field(default_factory=list)
+    tool_results: List[ToolResult] = Field(default_factory=list)
     
-    # Search results
-    search_results: List[SearchResult] = Field(default_factory=list)
-    total_results_found: int = 0
+    # Thinking and reasoning state
+    thinking_state: ThinkingState = Field(default_factory=ThinkingState)
     
-    # Agent reasoning
+    # Progress tracking
+    current_step: str = "start"
     iterations: int = 0
-    max_iterations: int = 10
-    is_satisfied: bool = False
-    confidence_score: float = 0.0
+    max_iterations: int = 8
     
-    # Context and memory
+    # Memory and context (using LangChain memory)
+    conversation_memory: Dict[str, Any] = Field(default_factory=dict)
     session_context: Dict[str, Any] = Field(default_factory=dict)
-    previous_searches: List[str] = Field(default_factory=list)
     
-    # Final response
+    # Final output
+    synthesis_complete: bool = False
     final_response: str = ""
-    citations: List[str] = Field(default_factory=list)
+    
+    # Streaming state
+    is_streaming: bool = False
+    stream_buffer: List[str] = Field(default_factory=list)

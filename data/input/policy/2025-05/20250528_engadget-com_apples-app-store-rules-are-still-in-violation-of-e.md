@@ -2,7 +2,7 @@
 title: Apple's App Store rules are still in violation of EU policy
 url: https://www.engadget.com/big-tech/apples-app-store-rules-are-still-in-violation-of-eu-policy-161117662.html?src=rss
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T17:33:28.021534
+collected_date: 2025-05-29T19:05:47.643508
 source: Engadget
 source_url: https://www.engadget.com
 author: Andre Revilla

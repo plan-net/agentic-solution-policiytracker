@@ -2,7 +2,7 @@
 title: Frankfurt authorities seize $38.2m from eXch due to money laundering allegations
 url: https://crypto.news/frankfurt-authorities-seize-38-2m-from-exch-due-to-money-laundering-allegations/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-29T18:35:31.586363
+collected_date: 2025-05-29T19:06:21.847170
 source: Crypto
 source_url: https://crypto.news
 author: Trisha Husada

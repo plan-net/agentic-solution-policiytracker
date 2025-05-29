@@ -1,50 +1,53 @@
-# Query Analysis Phase
+---
+name: query_analysis
+version: 1
+description: Analyze user queries for intent, entities, and strategy
+tags: ["analysis", "planning", "core"]
+---
 
-You are analyzing a user query to understand their intent and plan the best approach to provide a comprehensive response.
+# Query Analysis
 
-## Current Query
-**User Question**: {query}
+Analyze this user query to understand their intent and extract key information for graph-based analysis.
 
-## Conversation Context
-{context}
+## Query to Analyze
+{query}
 
-## Analysis Tasks
+## Previous Context
+{conversation_context}
 
-1. **Intent Classification**: What is the user trying to learn?
-   - Entity exploration (learning about specific entities)
-   - Relationship analysis (understanding connections)
-   - Impact assessment (understanding effects and consequences)
-   - Temporal analysis (tracking changes over time)
-   - Network exploration (discovering clusters and communities)
-   - Path discovery (finding connections between entities)
+## Analysis Framework
 
-2. **Entity Extraction**: Identify key entities mentioned:
-   - Primary entity (main focus)
-   - Secondary entities (related/connected entities)
-   - Entity types (Policy, Organization, Politician, etc.)
+### 1. Intent Classification
+Determine the primary intent:
+- **Information lookup**: "What is X?" - seeking comprehensive information
+- **Relationship analysis**: "How does X relate to Y?" - exploring connections  
+- **Impact analysis**: "How does X affect Y?" - understanding consequences
+- **Temporal analysis**: "How has X changed?" - tracking evolution over time
+- **Community analysis**: "What groups/clusters exist?" - discovering networks
+- **Path discovery**: "How is X connected to Y?" - finding connection routes
+- **General inquiry**: Broad exploratory questions
 
-3. **Tool Selection Strategy**: Choose 2-4 tools maximum that will provide the most value:
-   - Avoid redundant tool calls
-   - Prioritize tools that leverage graph structure
-   - Consider user's expertise level
+### 2. Entity Extraction
+Identify entities using these patterns:
+- **Regulatory entities**: Policies, laws, regulations, directives
+- **Corporate entities**: Companies, organizations, platforms
+- **Political entities**: Politicians, agencies, government bodies
+- **Jurisdictions**: EU, US, national, regional scopes
+- **Topics**: AI, privacy, antitrust, cybersecurity domains
 
-4. **Expected Insights**: What unique value can the knowledge graph provide?
-   - Multi-hop relationships not obvious from simple search
-   - Temporal patterns and evolution
-   - Impact cascades and network effects
-   - Community structures and clustering
-   - Regulatory pathways and compliance chains
+### 3. Complexity Assessment
+- **Simple**: Single entity, basic information request
+- **Medium**: Multiple entities, relationship exploration
+- **Complex**: Network analysis, temporal patterns, impact cascades
 
-## Response Strategy
-- Start with most informative tool
-- Build narrative connecting different aspects
-- Highlight unique graph-based insights
-- Provide actionable next steps
+## Output Requirements
 
-## Output Format
-Provide your analysis in this structure:
+Provide a structured analysis:
 
-**Intent**: [Primary intent category]
-**Key Entities**: [List of entities to focus on]
-**Tool Strategy**: [2-4 tools to use and why]
-**Unique Value**: [What graph analysis will reveal that basic search cannot]
+**Intent**: [Primary intent category from above]
+**Complexity**: [Simple/Medium/Complex]
+**Primary Entity**: [Main entity of focus]
+**Secondary Entities**: [Additional relevant entities]
+**Key Relationships**: [Types of relationships to explore]
+**Temporal Scope**: [Time period if relevant, or "current"]
+**Analysis Strategy**: [Approach for comprehensive coverage]

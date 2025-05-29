@@ -2,7 +2,7 @@
 title: Meta lawsuit: Data use and AI take center stage in Europe
 url: https://www.fingerlakes1.com/2025/05/14/meta-ai-data-europe-privacy-lawsuit-2025/
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-29T18:34:50.035669
+collected_date: 2025-05-29T19:05:41.685593
 source: Fingerlakes1
 source_url: https://www.fingerlakes1.com
 author: Digital Team

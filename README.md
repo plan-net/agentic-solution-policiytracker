@@ -6,14 +6,14 @@ A sophisticated AI-powered document analysis system for political and regulatory
 
 **Experience next-generation political monitoring through our sophisticated chat interface powered by Graphiti temporal knowledge graphs:**
 
-- **🧠 16 Specialized Tools**: Entity analysis, network traversal, temporal tracking, community detection
+- **🧠 15 Specialized Tools**: Entity analysis, network traversal, temporal tracking, community detection
 - **🕸️ Multi-hop Reasoning**: Discover hidden connections through knowledge graph traversal
 - **⏰ Temporal Intelligence**: Track policy evolution and entity changes over time
 - **📊 Network Analysis**: Identify key influencers and community structures
 - **🔍 Advanced Search**: Semantic search with reranking strategies (RRF, MMR, cross-encoder)
 - **💭 Context Awareness**: Session memory and conversation continuity
 
-**Access the Chat Interface**: http://localhost:8001/chat (after setup)
+**Access the Chat Interface**: via Open WebUI at http://localhost:3000 (after setup)
 
 ## 🚀 Quick Start
 
@@ -32,7 +32,7 @@ just services-up
 just dev
 
 # 4. Access the application
-# → Chat Interface: http://localhost:8001/chat
+# → Chat Interface: http://localhost:3000 (Open WebUI)
 # → Kodosumi Admin: http://localhost:3370 (admin/admin)
 # → Document Analysis: http://localhost:8001/political-analysis
 # → Airflow ETL: http://localhost:8080 (admin/admin)
@@ -49,7 +49,7 @@ just dev
 ## 🚀 Features
 
 ### 🤖 Advanced Chat Interface (NEW v0.2.0)
-- **🔍 Sophisticated Search**: 16 specialized tools for knowledge graph exploration
+- **🔍 Sophisticated Search**: 15 specialized tools for knowledge graph exploration
 - **🧠 Multi-hop Reasoning**: Discover hidden connections between entities and policies
 - **⏰ Temporal Analysis**: Track entity evolution and policy changes over time
 - **🕸️ Network Traversal**: Identify influence patterns and impact cascades
@@ -99,7 +99,7 @@ just dev
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Chat Interface│    │   Apache         │    │   Kodosumi      │
 │   (Advanced Q&A)│    │   Airflow        │    │   Web Interface │
-│   + 16 Tools    │    │   (ETL)          │    │   (Forms + UI)  │
+│   + 15 Tools    │    │   (ETL)          │    │   (Forms + UI)  │
 └─────────┬───────┘    └─────────┬────────┘    └─────────┬───────┘
           │                      │                       │
           ▼                      ▼                       ▼
@@ -125,12 +125,14 @@ just dev
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-### New: Chat Interface Features
-- **Entity Tools**: Deep analysis, relationships, timelines, similarity search
-- **Network Traversal**: Multi-hop exploration, path finding, neighbor analysis
-- **Temporal Tools**: Time-based queries, entity evolution, concurrent events
-- **Community Detection**: Policy clusters, organization networks, influence mapping
-- **Advanced Search**: Semantic search with multiple reranking strategies
+### Enhanced Chat Interface (v0.2.0)
+- **LangGraph Workflow**: 4-node pipeline (understand → plan → execute → synthesize)
+- **15 Specialized Tools**: Entity analysis, network traversal, temporal queries, community detection
+- **Streaming with Thinking**: Real-time thought process via Open WebUI `<think>` tags
+- **LangChain Memory**: Conversation context with 10-exchange history
+- **External Prompts**: Modular prompt system with YAML frontmatter
+- **Strategic Tool Selection**: LLM-driven tool planning based on query complexity
+- **OpenAI-Compatible API**: Standard chat completions interface for integration
 
 ### Two-Part Kodosumi Design
 - **Endpoint** (`app.py`): Rich web forms, validation, and HTTP interface

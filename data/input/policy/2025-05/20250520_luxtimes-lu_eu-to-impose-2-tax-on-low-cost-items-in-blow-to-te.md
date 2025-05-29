@@ -2,7 +2,7 @@
 title: EU to impose €2 tax on low-cost items in blow to Temu and Shein
 url: https://www.luxtimes.lu/europeanunion/eu-to-impose-2-tax-on-low-cost-items-in-blow-to-temu-and-shein/67947412.html
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T18:34:55.362058
+collected_date: 2025-05-29T19:05:37.503572
 source: Luxtimes
 source_url: https://www.luxtimes.lu
 author: Andy Bounds

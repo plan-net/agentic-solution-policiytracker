@@ -2,7 +2,7 @@
 title: Retailers urge European Commission to crack down on Visa, MasterCard
 url: https://www.reuters.com/sustainability/boards-policy-regulation/retailers-urge-european-commission-crack-down-visa-mastercard-2025-05-14/
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-28T15:09:54.796960
+collected_date: 2025-05-29T19:06:05.905626
 source: Reuters
 source_url: https://www.reuters.com
 author: Yun Chee Foo

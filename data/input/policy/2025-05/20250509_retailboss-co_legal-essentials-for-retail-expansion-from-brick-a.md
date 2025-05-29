@@ -2,7 +2,7 @@
 title: Legal Essentials for Retail Expansion: From Brick-and-Mortar to E-Commerce - RETAILBOSS
 url: https://retailboss.co/legal-essentials-for-retail-expansion/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-29T18:34:46.603566
+collected_date: 2025-05-29T19:05:37.503722
 source: Retailboss
 source_url: https://retailboss.co
 author: RETAILBOSS

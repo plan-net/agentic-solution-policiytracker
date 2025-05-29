@@ -35,7 +35,7 @@ The Political Monitoring Agent v0.2.0 introduces revolutionary search capabiliti
 - ✅ **Path discovery** finding connection routes between any entities
 - ✅ **Influence mapping** understanding regulatory networks and power structures
 
-## 🛠️ 16 Specialized Search Tools
+## 🛠️ 15 Specialized Search Tools
 
 ### 🔍 Entity Analysis Tools
 
@@ -332,7 +332,7 @@ network_results = await client._search(network_query, config=search_config)
 
 ### 🔍 Advanced Search
 
-#### 16. Search Knowledge Graph
+#### 15. Search Knowledge Graph
 **Technical Implementation**: Comprehensive semantic search with multiple reranking strategies
 ```python
 search_config = ADVANCED_HYBRID_SEARCH_MMR
