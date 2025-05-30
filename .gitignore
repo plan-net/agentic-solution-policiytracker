@@ -480,3 +480,6 @@ sample_large_dataset/
 !data/context/client.yaml
 !data/input/examples/
 !.mcp.json.template
+# Kodosumi logs
+logs/kodosumi.log
+nohup.out

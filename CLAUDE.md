@@ -14,6 +14,7 @@ AI-powered document analysis system for political and regulatory monitoring.
 3. Check existing code patterns before creating new files
 4. Run `just format && just typecheck` before committing
 5. Version is 0.1.0 - ensure consistency across all files
+6. **CRITICAL**: For Open WebUI integration, see `/docs/OPEN_WEBUI_SETUP.md`
 
 ## Architecture & Patterns
 @.claude/kodosumi-patterns.md
