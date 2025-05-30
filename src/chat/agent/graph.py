@@ -92,10 +92,11 @@ class EnhancedPoliticalMonitoringAgent:
             # Run the enhanced workflow
             final_state = await self.graph.ainvoke(initial_state)
             
-            logger.info(f"Enhanced agent completed - Step: {final_state.current_step}")
-            logger.info(f"Tools executed: {len(final_state.executed_tools)}")
+            # LangGraph returns a dictionary, not an AgentState object
+            logger.info(f"Enhanced agent completed - Step: {final_state.get('current_step', 'unknown')}")
+            logger.info(f"Tools executed: {len(final_state.get('executed_tools', []))}")
             
-            return final_state.final_response
+            return final_state.get('final_response', 'No response generated')
             
         except Exception as e:
             logger.error(f"Enhanced agent workflow error: {e}")
@@ -161,9 +162,11 @@ class EnhancedPoliticalMonitoringAgent:
                 final_state = await graph_task
                 
                 # Phase 4: Show final thinking based on actual results
-                if hasattr(final_state, 'executed_tools') and final_state.executed_tools:
-                    tool_count = len(final_state.executed_tools)
-                    successful_tools = len([r for r in final_state.tool_results if r.success])
+                # LangGraph returns a dictionary, not an AgentState object
+                if 'executed_tools' in final_state and final_state['executed_tools']:
+                    tool_count = len(final_state['executed_tools'])
+                    tool_results = final_state.get('tool_results', [])
+                    successful_tools = len([r for r in tool_results if isinstance(r, dict) and r.get('success')])
                     
                     yield f"Analysis complete. I've successfully executed {successful_tools} out of {tool_count} tools "
                     yield f"and gathered comprehensive information from the knowledge graph. "
@@ -174,17 +177,17 @@ class EnhancedPoliticalMonitoringAgent:
             except Exception as e:
                 logger.error(f"Graph execution failed: {e}")
                 yield f"I encountered an error during the analysis: {str(e)}. Let me provide what information I can. "
-                final_state = AgentState(
-                    final_response=f"I encountered an error while processing your request: {str(e)}",
-                    current_step="error"
-                )
+                final_state = {
+                    'final_response': f"I encountered an error while processing your request: {str(e)}",
+                    'current_step': 'error'
+                }
             
             # Phase 5: Complete thinking
             yield "</think>\n\n"
             await asyncio.sleep(0.5)
             
             # Phase 6: Stream final response
-            response = final_state.final_response or "I couldn't generate a response."
+            response = final_state.get('final_response', "I couldn't generate a response.")
             
             # Stream response in natural chunks for better UX
             sentences = response.split('. ')
@@ -228,31 +231,34 @@ class EnhancedPoliticalMonitoringAgent:
             last_step = "start"
             async for state_update in self.graph.astream(initial_state):
                 for node_name, node_state in state_update.items():
-                    if hasattr(node_state, 'current_step') and node_state.current_step != last_step:
+                    # node_state is a dictionary
+                    if isinstance(node_state, dict) and 'current_step' in node_state and node_state['current_step'] != last_step:
                         # Generate thinking based on current step
-                        thinking_text = await self._generate_step_thinking(node_state.current_step, node_state)
+                        thinking_text = await self._generate_step_thinking(node_state['current_step'], node_state)
                         if thinking_text:
                             yield thinking_text + "\n\n"
                             await asyncio.sleep(1.0)
                         
-                        last_step = node_state.current_step
+                        last_step = node_state['current_step']
                     
                     # Stream thinking content if available
-                    if hasattr(node_state, 'thinking_state') and node_state.thinking_state.thinking_content:
-                        for thought in node_state.thinking_state.thinking_content:
-                            if thought not in getattr(self, '_streamed_thoughts', set()):
-                                yield thought + " "
-                                await asyncio.sleep(0.5)
-                                # Track to avoid duplicates
-                                if not hasattr(self, '_streamed_thoughts'):
-                                    self._streamed_thoughts = set()
-                                self._streamed_thoughts.add(thought)
+                    if isinstance(node_state, dict) and 'thinking_state' in node_state:
+                        thinking_state = node_state['thinking_state']
+                        if isinstance(thinking_state, dict) and 'thinking_content' in thinking_state:
+                            for thought in thinking_state['thinking_content']:
+                                if thought not in getattr(self, '_streamed_thoughts', set()):
+                                    yield thought + " "
+                                    await asyncio.sleep(0.5)
+                                    # Track to avoid duplicates
+                                    if not hasattr(self, '_streamed_thoughts'):
+                                        self._streamed_thoughts = set()
+                                    self._streamed_thoughts.add(thought)
             
             yield "</think>\n\n"
             
             # Final response from last state
             if 'synthesize' in state_update:
-                final_response = state_update['synthesize'].final_response
+                final_response = state_update['synthesize'].get('final_response', 'No response generated')
                 sentences = final_response.split('. ')
                 for i, sentence in enumerate(sentences):
                     if sentence.strip():
@@ -270,7 +276,7 @@ class EnhancedPoliticalMonitoringAgent:
             logger.error(f"Detailed streaming error: {e}")
             yield f"</think>\n\nI encountered an error: {str(e)}"
     
-    async def _generate_step_thinking(self, step: str, state: AgentState) -> str:
+    async def _generate_step_thinking(self, step: str, state: Dict[str, Any]) -> str:
         """Generate thinking text for current step."""
         thinking_map = {
             "understanding": "Let me analyze what you're asking to understand the key entities and relationships involved.",
@@ -283,11 +289,13 @@ class EnhancedPoliticalMonitoringAgent:
         base_thinking = thinking_map.get(step, "")
         
         # Add context-specific details
-        if step == "planning" and hasattr(state, 'tool_plan') and state.tool_plan:
-            tools_count = len(state.tool_plan.tool_sequence)
-            base_thinking += f" I'll use {tools_count} specialized tools for this analysis."
-        elif step == "execution" and hasattr(state, 'executed_tools'):
-            executed_count = len(state.executed_tools)
+        if step == "planning" and isinstance(state, dict) and 'tool_plan' in state and state['tool_plan']:
+            tool_plan = state['tool_plan']
+            if isinstance(tool_plan, dict) and 'tool_sequence' in tool_plan:
+                tools_count = len(tool_plan['tool_sequence'])
+                base_thinking += f" I'll use {tools_count} specialized tools for this analysis."
+        elif step == "execution" and isinstance(state, dict) and 'executed_tools' in state:
+            executed_count = len(state['executed_tools'])
             if executed_count > 0:
                 base_thinking += f" I've completed {executed_count} tool executions so far."
         
