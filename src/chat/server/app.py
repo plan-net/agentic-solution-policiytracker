@@ -356,9 +356,12 @@ class ChatServer:
             yield f"data: {error_chunk.model_dump_json()}\n\n"
             yield "data: [DONE]\n\n"
 
-# Deployment function
+# Create the Ray Serve deployment for config.yaml
+chat_app = ChatServer.bind()
+
+# Deployment function for standalone usage
 def deploy_chat_server():
-    """Deploy the chat server."""
+    """Deploy the chat server standalone (for testing)."""
     if not ray.is_initialized():
         ray.init()
     

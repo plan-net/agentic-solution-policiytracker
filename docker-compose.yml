@@ -233,7 +233,7 @@ services:
       # Disable authentication for development
       - WEBUI_AUTH=false
       # Configure our political monitoring agent as default
-      - OPENAI_API_BASE_URL=http://host.docker.internal:8001
+      - OPENAI_API_BASE_URL=http://host.docker.internal:8001/chat/v1
       - OPENAI_API_KEY=dummy-key-not-required
       # Disable Ollama since we're using custom API
       - OLLAMA_BASE_URL=""
