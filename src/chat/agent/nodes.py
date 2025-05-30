@@ -57,16 +57,16 @@ def initialize_nodes(llm_instance, graphiti_instance, openai_api_key: str):
     prompt_manager = PromptManager()
 
 
-async def understand_query_node(state: AgentState) -> Dict[str, Any]:
+async def understand_query_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node 1: Understand user query using enhanced LLM analysis.
     Uses the query_analysis.md prompt for structured understanding.
     """
-    logger.info(f"Understanding query: {state.original_query}")
+    logger.info(f"Understanding query: {state['original_query']}")
     
     try:
         # Load query analysis prompt
-        analysis_prompt_content = await prompt_manager.get_prompt("query_analysis")
+        analysis_prompt_content = await prompt_manager.get_prompt("chat/understand_query")
         
         # Get conversation context from memory
         memory_vars = memory.load_memory_variables({})
@@ -78,8 +78,7 @@ async def understand_query_node(state: AgentState) -> Dict[str, Any]:
         # Run analysis
         chain = prompt | llm | StrOutputParser()
         analysis_result = await chain.ainvoke({
-            "query": state.original_query,
-            "conversation_context": str(conversation_context)
+            "user_query": state['original_query']  # Updated variable name
         })
         
         # Parse structured output
@@ -88,42 +87,45 @@ async def understand_query_node(state: AgentState) -> Dict[str, Any]:
         logger.info(f"Query analysis complete - Intent: {query_analysis.intent}")
         
         return {
-            "processed_query": query_analysis.primary_entity or state.original_query,
-            "query_analysis": query_analysis,
+            "processed_query": query_analysis.primary_entity or state['original_query'],
+            "query_analysis": query_analysis.model_dump(),  # Convert to dict
             "current_step": "planning",
-            "thinking_state": ThinkingState(
-                current_phase="understanding",
-                thinking_content=[
+            "thinking_state": {
+                "current_phase": "understanding",
+                "thinking_content": [
                     f"Looking at this question, I can see it involves {query_analysis.primary_entity or 'complex entities'}.",
                     f"This appears to be a {query_analysis.intent.lower()} query with {query_analysis.complexity.lower()} complexity.",
                     f"Since this involves regulatory relationships, I'll need graph-based analysis to uncover the full picture."
-                ]
-            )
+                ],
+                "tool_reasoning": "",
+                "synthesis_progress": ""
+            }
         }
         
     except Exception as e:
         logger.error(f"Query understanding error: {e}")
         # Fallback analysis
         return {
-            "processed_query": state.original_query,
+            "processed_query": state['original_query'],
             "query_analysis": QueryAnalysis(
                 intent="general_inquiry",
                 complexity="medium",
                 analysis_strategy="comprehensive search and analysis"
-            ),
+            ).model_dump(),  # Convert to dict
             "current_step": "planning"
         }
 
 
-async def plan_tools_node(state: AgentState) -> Dict[str, Any]:
+async def plan_tools_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node 2: Plan tool execution sequence using tool_planning.md prompt.
     """
-    logger.info(f"Planning tool execution for intent: {state.query_analysis.intent}")
+    query_analysis = state.get('query_analysis', {})
+    logger.info(f"Planning tool execution for intent: {query_analysis.get('intent', 'unknown')}")
     
     try:
         # Load tool planning prompt
-        planning_prompt_content = await prompt_manager.get_prompt("tool_planning")
+        planning_prompt_content = await prompt_manager.get_prompt("chat/plan_exploration")
         
         # Create planning prompt with query analysis results
         prompt = ChatPromptTemplate.from_template(planning_prompt_content)
@@ -131,11 +133,9 @@ async def plan_tools_node(state: AgentState) -> Dict[str, Any]:
         # Run planning
         chain = prompt | llm | StrOutputParser()
         planning_result = await chain.ainvoke({
-            "intent": state.query_analysis.intent,
-            "complexity": state.query_analysis.complexity,
-            "primary_entity": state.query_analysis.primary_entity or "Unknown",
-            "secondary_entities": ", ".join(state.query_analysis.secondary_entities),
-            "strategy": state.query_analysis.analysis_strategy
+            "query_intent": query_analysis.get('intent', 'general_inquiry'),
+            "key_entities": ", ".join([query_analysis.get('primary_entity', '')] + query_analysis.get('secondary_entities', [])),
+            "temporal_scope": query_analysis.get('temporal_scope', 'current')
         })
         
         # Parse planning result
@@ -144,18 +144,30 @@ async def plan_tools_node(state: AgentState) -> Dict[str, Any]:
         logger.info(f"Tool plan created: {len(tool_plan.tool_sequence)} tools planned")
         
         # Update thinking state
-        new_thinking = state.thinking_state
-        new_thinking.current_phase = "planning"
-        new_thinking.thinking_content.extend([
+        thinking_state = state.get('thinking_state', {
+            'current_phase': 'planning',
+            'thinking_content': [],
+            'tool_reasoning': '',
+            'synthesis_progress': ''
+        })
+        
+        # Add new thinking content
+        thinking_content = thinking_state.get('thinking_content', [])
+        thinking_content.extend([
             f"My strategy will be to start with a broad search to map the landscape.",
             f"I'll then use {len(tool_plan.tool_sequence)} specialized tools: {', '.join(tool_plan.tool_sequence[:3])}{'...' if len(tool_plan.tool_sequence) > 3 else ''}.",
             f"This multi-layered approach will reveal insights that simple keyword searches would miss."
         ])
         
         return {
-            "tool_plan": tool_plan,
+            "tool_plan": tool_plan.model_dump(),  # Convert to dict
             "current_step": "execution",
-            "thinking_state": new_thinking
+            "thinking_state": {
+                "current_phase": "planning",
+                "thinking_content": thinking_content,
+                "tool_reasoning": thinking_state.get('tool_reasoning', ''),
+                "synthesis_progress": thinking_state.get('synthesis_progress', '')
+            }
         }
         
     except Exception as e:
@@ -166,16 +178,18 @@ async def plan_tools_node(state: AgentState) -> Dict[str, Any]:
                 tool_sequence=["search", "get_entity_details", "get_entity_relationships"],
                 rationale="Fallback plan for comprehensive analysis",
                 expected_insights="Basic entity information and relationships"
-            ),
+            ).model_dump(),  # Convert to dict
             "current_step": "execution"
         }
 
 
-async def execute_tools_node(state: AgentState) -> Dict[str, Any]:
+async def execute_tools_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node 3: Execute planned tools in sequence.
     """
-    logger.info(f"Executing {len(state.tool_plan.tool_sequence)} tools")
+    tool_plan = state.get('tool_plan', {})
+    tool_sequence = tool_plan.get('tool_sequence', [])
+    logger.info(f"Executing {len(tool_sequence)} tools")
     
     # Initialize all available tools
     tools_map = _create_tools_map()
@@ -184,20 +198,29 @@ async def execute_tools_node(state: AgentState) -> Dict[str, Any]:
     executed_tools = []
     
     # Update thinking state for execution
-    new_thinking = state.thinking_state
-    new_thinking.current_phase = "execution"
+    thinking_state = state.get('thinking_state', {
+        'current_phase': 'execution',
+        'thinking_content': [],
+        'tool_reasoning': '',
+        'synthesis_progress': ''
+    })
+    thinking_content = thinking_state.get('thinking_content', [])
     
     try:
-        for i, tool_name in enumerate(state.tool_plan.tool_sequence):
+        logger.info(f"Tool sequence to execute: {tool_sequence}")
+        logger.info(f"Available tools: {list(tools_map.keys())}")
+        
+        for i, tool_name in enumerate(tool_sequence):
             if tool_name not in tools_map:
                 logger.warning(f"Tool '{tool_name}' not found, skipping")
                 continue
                 
             tool = tools_map[tool_name]
             executed_tools.append(tool_name)
+            logger.info(f"Executing tool {i+1}/{len(tool_sequence)}: {tool_name}")
             
             # Add thinking output for current tool
-            new_thinking.thinking_content.append(
+            thinking_content.append(
                 f"Now using {tool_name} to {_get_tool_purpose(tool_name)}."
             )
             
@@ -235,7 +258,7 @@ async def execute_tools_node(state: AgentState) -> Dict[str, Any]:
         
         # Add completion thinking
         successful_tools = [r for r in tool_results if r.success]
-        new_thinking.thinking_content.append(
+        thinking_content.append(
             f"Analysis complete. I've successfully executed {len(successful_tools)} tools and gathered comprehensive information."
         )
         
@@ -243,33 +266,39 @@ async def execute_tools_node(state: AgentState) -> Dict[str, Any]:
         
         return {
             "executed_tools": executed_tools,
-            "tool_results": tool_results,
+            "tool_results": [r.model_dump() for r in tool_results],  # Convert to dicts
             "current_step": "synthesis",
-            "thinking_state": new_thinking
+            "thinking_state": {
+                "current_phase": "execution",
+                "thinking_content": thinking_content,
+                "tool_reasoning": thinking_state.get('tool_reasoning', ''),
+                "synthesis_progress": thinking_state.get('synthesis_progress', '')
+            }
         }
         
     except Exception as e:
         logger.error(f"Tool execution error: {e}")
         return {
             "executed_tools": executed_tools,
-            "tool_results": tool_results,
+            "tool_results": [r.model_dump() for r in tool_results],  # Convert to dicts
             "current_step": "synthesis"
         }
 
 
-async def synthesize_response_node(state: AgentState) -> Dict[str, Any]:
+async def synthesize_response_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Node 4: Synthesize final response using synthesis.md prompt.
     """
-    logger.info(f"Synthesizing response from {len(state.tool_results)} tool results")
+    tool_results = state.get('tool_results', [])
+    logger.info(f"Synthesizing response from {len(tool_results)} tool results")
     
     try:
         # Load synthesis prompt
-        synthesis_prompt_content = await prompt_manager.get_prompt("synthesis")
+        synthesis_prompt_content = await prompt_manager.get_prompt("chat/format_response")
         
         # Prepare tool results for synthesis
-        tool_results_text = _format_tool_results(state.tool_results)
-        tools_used = [r.tool_name for r in state.tool_results if r.success]
+        tool_results_text = _format_tool_results(tool_results)
+        tools_used = [r['tool_name'] for r in tool_results if r.get('success')]
         
         # Create synthesis prompt
         prompt = ChatPromptTemplate.from_template(synthesis_prompt_content)
@@ -277,15 +306,14 @@ async def synthesize_response_node(state: AgentState) -> Dict[str, Any]:
         # Run synthesis
         chain = prompt | llm | StrOutputParser()
         final_response = await chain.ainvoke({
-            "query": state.original_query,
-            "intent": state.query_analysis.intent,
-            "tools_used": ", ".join(tools_used),
-            "tool_results": tool_results_text
+            "original_query": state.get('original_query', ''),
+            "all_search_results": tool_results_text,
+            "confidence_level": "High" if len([r for r in tool_results if r.get('success')]) > 2 else "Medium"
         })
         
         # Update memory with this conversation
         memory.save_context(
-            {"input": state.original_query},
+            {"input": state.get('original_query', '')},
             {"output": final_response}
         )
         
@@ -300,7 +328,7 @@ async def synthesize_response_node(state: AgentState) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Response synthesis error: {e}")
         # Fallback response
-        successful_results = [r for r in state.tool_results if r.success]
+        successful_results = [r for r in tool_results if r.get('success')]
         fallback_response = f"I found information from {len(successful_results)} sources, but encountered an error during synthesis: {str(e)}"
         
         return {
@@ -316,20 +344,37 @@ def _parse_query_analysis(analysis_text: str) -> QueryAnalysis:
     """Parse LLM analysis output into QueryAnalysis object."""
     lines = analysis_text.strip().split('\n')
     parsed = {}
+    entities = []
     
     for line in lines:
         if ':' in line:
-            key, value = line.split(':', 1)
-            parsed[key.strip().lower().replace(' ', '_')] = value.strip()
+            # Remove markdown formatting
+            clean_line = line.replace('**', '').strip()
+            if clean_line.startswith('- '):
+                # This is an entity line
+                entity_name = clean_line.split(':')[0].replace('- ', '').strip()
+                entities.append(entity_name)
+            else:
+                # Regular key:value line
+                key, value = clean_line.split(':', 1)
+                key_normalized = key.strip().lower().replace(' ', '_')
+                parsed[key_normalized] = value.strip()
+    
+    # Extract primary entity from entities list or parsed data
+    primary_entity = None
+    if entities:
+        primary_entity = entities[0]
+    elif 'primary_entity' in parsed:
+        primary_entity = parsed['primary_entity']
     
     return QueryAnalysis(
         intent=parsed.get('intent', 'general_inquiry'),
         complexity=parsed.get('complexity', 'medium'),
-        primary_entity=parsed.get('primary_entity'),
-        secondary_entities=parsed.get('secondary_entities', '').split(', ') if parsed.get('secondary_entities') else [],
+        primary_entity=primary_entity,
+        secondary_entities=entities[1:] if len(entities) > 1 else [],
         key_relationships=parsed.get('key_relationships', '').split(', ') if parsed.get('key_relationships') else [],
         temporal_scope=parsed.get('temporal_scope', 'current'),
-        analysis_strategy=parsed.get('analysis_strategy', 'comprehensive exploration')
+        analysis_strategy=parsed.get('search_strategy', parsed.get('analysis_strategy', 'comprehensive exploration'))
     )
 
 
@@ -368,8 +413,10 @@ def _parse_tool_plan(planning_text: str) -> ToolPlan:
 def _create_tools_map() -> Dict[str, Any]:
     """Create mapping of tool names to tool instances."""
     if not graphiti_client:
+        logger.error("ERROR: graphiti_client is None! Tools cannot be initialized.")
         return {}
     
+    logger.info(f"Creating tools map with graphiti_client: {graphiti_client}")
     return {
         "search": GraphitiSearchTool(graphiti_client),
         "get_entity_details": EntityDetailsTool(graphiti_client),
@@ -413,19 +460,22 @@ def _get_tool_purpose(tool_name: str) -> str:
     return purposes.get(tool_name, "perform analysis")
 
 
-def _prepare_tool_input(tool_name: str, state: AgentState) -> str:
+def _prepare_tool_input(tool_name: str, state: Dict[str, Any]) -> str:
     """Prepare appropriate input for each tool."""
-    query = state.processed_query
+    query = state.get('processed_query', state.get('original_query', ''))
     
     # Use primary entity if available for entity-specific tools
-    if state.query_analysis and state.query_analysis.primary_entity:
+    query_analysis = state.get('query_analysis', {})
+    primary_entity = query_analysis.get('primary_entity')
+    
+    if primary_entity:
         entity_tools = [
             "get_entity_details", "get_entity_relationships", "get_entity_timeline",
             "find_similar_entities", "traverse_from_entity", "get_entity_neighbors",
             "analyze_entity_impact", "get_entity_history"
         ]
         if tool_name in entity_tools:
-            return state.query_analysis.primary_entity
+            return primary_entity
     
     return query
 
@@ -469,14 +519,14 @@ def _extract_entities(result: str) -> List[str]:
     return list(set(entities))[:5]  # Limit and deduplicate
 
 
-def _format_tool_results(tool_results: List[ToolResult]) -> str:
+def _format_tool_results(tool_results: List[Dict[str, Any]]) -> str:
     """Format tool results for synthesis prompt."""
     formatted = []
     
     for result in tool_results:
-        if result.success and result.output:
-            formatted.append(f"**{result.tool_name}**: {result.output[:500]}...")
-        elif not result.success:
-            formatted.append(f"**{result.tool_name}**: Failed - {result.error}")
+        if result.get('success') and result.get('output'):
+            formatted.append(f"**{result['tool_name']}**: {result['output'][:500]}...")
+        elif not result.get('success'):
+            formatted.append(f"**{result['tool_name']}**: Failed - {result.get('error', 'Unknown error')}")
     
     return "\n\n".join(formatted)

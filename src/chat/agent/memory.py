@@ -1,0 +1,331 @@
+"""Memory management interfaces for multi-agent system."""
+
+from abc import ABC, abstractmethod
+from typing import Dict, Any, List, Optional
+from langchain_core.messages import BaseMessage, trim_messages, count_tokens_approximately
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.store.memory import InMemoryStore
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class MemoryManager:
+    """Centralized memory management for multi-agent system."""
+    
+    def __init__(self):
+        # Short-term memory (conversation history)
+        self.checkpointer = InMemorySaver()
+        
+        # Long-term memory (user preferences, patterns)
+        self.store = InMemoryStore()
+        
+        # Configuration
+        self.max_conversation_tokens = 4000
+        self.summary_model = None  # Will be set later
+    
+    async def get_conversation_context(
+        self, 
+        thread_id: str, 
+        max_tokens: int = None
+    ) -> List[BaseMessage]:
+        """
+        Get conversation context with automatic trimming.
+        
+        Args:
+            thread_id: Conversation thread identifier
+            max_tokens: Maximum tokens to include (default: self.max_conversation_tokens)
+            
+        Returns:
+            List of messages within token limit
+        """
+        max_tokens = max_tokens or self.max_conversation_tokens
+        
+        try:
+            # Get full conversation history from checkpointer
+            checkpoint = await self.checkpointer.aget({"configurable": {"thread_id": thread_id}})
+            
+            if not checkpoint or "messages" not in checkpoint:
+                return []
+            
+            messages = checkpoint["messages"]
+            
+            # Trim messages to fit token limit
+            trimmed_messages = trim_messages(
+                messages,
+                strategy="last",
+                token_counter=count_tokens_approximately,
+                max_tokens=max_tokens,
+                start_on="human",
+                end_on=("human", "tool")
+            )
+            
+            return trimmed_messages
+            
+        except Exception as e:
+            logger.error(f"Error getting conversation context: {e}")
+            return []
+    
+    async def save_conversation_message(
+        self, 
+        thread_id: str, 
+        message: BaseMessage
+    ) -> None:
+        """Save a new message to conversation history."""
+        try:
+            # This integrates with LangGraph's checkpointing system
+            # Implementation will depend on how we set up the graph
+            pass
+        except Exception as e:
+            logger.error(f"Error saving conversation message: {e}")
+    
+    async def get_user_preferences(self, user_id: str) -> Dict[str, Any]:
+        """Get user preferences from long-term memory."""
+        try:
+            prefs = await self.store.aget(f"user_prefs_{user_id}")
+            return prefs or {}
+        except Exception as e:
+            logger.error(f"Error getting user preferences: {e}")
+            return {}
+    
+    async def update_user_preference(
+        self, 
+        user_id: str, 
+        key: str, 
+        value: Any
+    ) -> None:
+        """Update a specific user preference."""
+        try:
+            prefs = await self.get_user_preferences(user_id)
+            prefs[key] = value
+            await self.store.aput(f"user_prefs_{user_id}", prefs)
+        except Exception as e:
+            logger.error(f"Error updating user preference: {e}")
+    
+    async def get_learned_patterns(self, pattern_type: str) -> List[Dict[str, Any]]:
+        """Get learned patterns for optimization."""
+        try:
+            patterns = await self.store.aget(f"patterns_{pattern_type}")
+            return patterns or []
+        except Exception as e:
+            logger.error(f"Error getting learned patterns: {e}")
+            return []
+    
+    async def save_learned_pattern(
+        self, 
+        pattern_type: str, 
+        pattern_data: Dict[str, Any]
+    ) -> None:
+        """Save a learned pattern for future optimization."""
+        try:
+            patterns = await self.get_learned_patterns(pattern_type)
+            patterns.append(pattern_data)
+            
+            # Keep only last 100 patterns per type
+            if len(patterns) > 100:
+                patterns = patterns[-100:]
+            
+            await self.store.aput(f"patterns_{pattern_type}", patterns)
+        except Exception as e:
+            logger.error(f"Error saving learned pattern: {e}")
+    
+    async def get_tool_performance_history(self, tool_name: str) -> Dict[str, Any]:
+        """Get historical performance data for a tool."""
+        try:
+            history = await self.store.aget(f"tool_perf_{tool_name}")
+            return history or {
+                "total_executions": 0,
+                "success_rate": 0.0,
+                "avg_execution_time": 0.0,
+                "common_errors": []
+            }
+        except Exception as e:
+            logger.error(f"Error getting tool performance history: {e}")
+            return {}
+    
+    async def update_tool_performance(
+        self, 
+        tool_name: str, 
+        success: bool, 
+        execution_time: float,
+        error: Optional[str] = None
+    ) -> None:
+        """Update tool performance metrics."""
+        try:
+            history = await self.get_tool_performance_history(tool_name)
+            
+            # Update metrics
+            history["total_executions"] += 1
+            
+            # Update success rate
+            if success:
+                current_successes = history["success_rate"] * (history["total_executions"] - 1)
+                history["success_rate"] = (current_successes + 1) / history["total_executions"]
+            else:
+                current_successes = history["success_rate"] * (history["total_executions"] - 1)
+                history["success_rate"] = current_successes / history["total_executions"]
+            
+            # Update average execution time
+            current_total_time = history["avg_execution_time"] * (history["total_executions"] - 1)
+            history["avg_execution_time"] = (current_total_time + execution_time) / history["total_executions"]
+            
+            # Track errors
+            if error and error not in history["common_errors"]:
+                history["common_errors"].append(error)
+                # Keep only last 10 unique errors
+                if len(history["common_errors"]) > 10:
+                    history["common_errors"] = history["common_errors"][-10:]
+            
+            await self.store.aput(f"tool_perf_{tool_name}", history)
+            
+        except Exception as e:
+            logger.error(f"Error updating tool performance: {e}")
+    
+    async def get_query_insights(self, user_id: str) -> Dict[str, Any]:
+        """Get insights about user's query patterns."""
+        try:
+            insights = await self.store.aget(f"query_insights_{user_id}")
+            return insights or {
+                "common_intents": [],
+                "frequent_entities": [],
+                "preferred_detail_level": "medium",
+                "typical_query_complexity": "medium"
+            }
+        except Exception as e:
+            logger.error(f"Error getting query insights: {e}")
+            return {}
+    
+    async def learn_from_query(
+        self, 
+        user_id: str, 
+        query: str, 
+        intent: str,
+        entities: List[str],
+        satisfaction_rating: Optional[float] = None
+    ) -> None:
+        """Learn from user query patterns."""
+        try:
+            insights = await self.get_query_insights(user_id)
+            
+            # Update common intents
+            intent_counts = dict(insights.get("common_intents", []))
+            intent_counts[intent] = intent_counts.get(intent, 0) + 1
+            insights["common_intents"] = list(intent_counts.items())
+            
+            # Update frequent entities
+            entity_counts = dict(insights.get("frequent_entities", []))
+            for entity in entities:
+                entity_counts[entity] = entity_counts.get(entity, 0) + 1
+            insights["frequent_entities"] = list(entity_counts.items())
+            
+            # Learn satisfaction if provided
+            if satisfaction_rating is not None:
+                insights["last_satisfaction"] = satisfaction_rating
+            
+            await self.store.aput(f"query_insights_{user_id}", insights)
+            
+        except Exception as e:
+            logger.error(f"Error learning from query: {e}")
+    
+    async def clear_user_data(self, user_id: str) -> None:
+        """Clear all user data (GDPR compliance)."""
+        try:
+            keys_to_clear = [
+                f"user_prefs_{user_id}",
+                f"query_insights_{user_id}"
+            ]
+            
+            for key in keys_to_clear:
+                try:
+                    await self.store.adelete(key)
+                except:
+                    pass  # Key might not exist
+                    
+        except Exception as e:
+            logger.error(f"Error clearing user data: {e}")
+
+
+class ConversationSummarizer:
+    """Handles conversation summarization for long contexts."""
+    
+    def __init__(self, summarization_model=None):
+        self.model = summarization_model
+        self.max_tokens_before_summary = 3000
+        self.max_summary_tokens = 500
+    
+    async def should_summarize(self, messages: List[BaseMessage]) -> bool:
+        """Check if conversation should be summarized."""
+        token_count = count_tokens_approximately(messages)
+        return token_count > self.max_tokens_before_summary
+    
+    async def summarize_conversation(
+        self, 
+        messages: List[BaseMessage],
+        preserve_recent: int = 5
+    ) -> List[BaseMessage]:
+        """
+        Summarize conversation while preserving recent messages.
+        
+        Args:
+            messages: Full conversation history
+            preserve_recent: Number of recent messages to keep unchanged
+            
+        Returns:
+            Summarized conversation with recent messages preserved
+        """
+        if not self.model or len(messages) <= preserve_recent:
+            return messages
+        
+        try:
+            # Split messages into to-summarize and to-preserve
+            to_summarize = messages[:-preserve_recent] if preserve_recent > 0 else messages
+            to_preserve = messages[-preserve_recent:] if preserve_recent > 0 else []
+            
+            # Create summary of older messages
+            summary_text = await self._create_summary(to_summarize)
+            
+            # Create summary message
+            summary_message = BaseMessage(
+                role="system",
+                content=f"[Conversation Summary: {summary_text}]"
+            )
+            
+            # Return summary + recent messages
+            return [summary_message] + to_preserve
+            
+        except Exception as e:
+            logger.error(f"Error summarizing conversation: {e}")
+            # Fallback to simple truncation
+            return messages[-preserve_recent:] if preserve_recent > 0 else messages
+    
+    async def _create_summary(self, messages: List[BaseMessage]) -> str:
+        """Create a summary of messages using the summarization model."""
+        if not self.model:
+            # Fallback summary
+            return f"Conversation with {len(messages)} messages about political and regulatory topics."
+        
+        try:
+            # Format messages for summarization
+            conversation_text = "\n".join([
+                f"{msg.role}: {msg.content}" for msg in messages
+            ])
+            
+            summary_prompt = f"""
+            Summarize this political/regulatory conversation, preserving:
+            - Key entities mentioned (companies, policies, politicians)
+            - Main topics and questions discussed
+            - Important facts or findings
+            - User preferences or interests shown
+            
+            Conversation:
+            {conversation_text}
+            
+            Summary:
+            """
+            
+            response = await self.model.ainvoke(summary_prompt)
+            return response.content[:self.max_summary_tokens]
+            
+        except Exception as e:
+            logger.error(f"Error creating AI summary: {e}")
+            return f"Conversation with {len(messages)} messages about political and regulatory topics."
