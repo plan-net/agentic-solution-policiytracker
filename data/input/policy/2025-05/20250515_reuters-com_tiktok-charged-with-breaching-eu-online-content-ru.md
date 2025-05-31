@@ -1,0 +1,20 @@
+---
+title: TikTok charged with breaching EU online content rules
+url: https://www.reuters.com/sustainability/boards-policy-regulation/tiktok-charged-with-breaching-eu-online-content-rules-2025-05-15/
+published_date: 2025-05-15T00:00:00
+collected_date: 2025-05-31T11:38:39.121191
+source: Reuters
+source_url: https://www.reuters.com
+author: Yun Chee Foo
+description: TikTok logo is pictured on the U.S. headquarters of the social media company in Culver City, California, U.S. January 18, 2025. REUTERS/Fred Greaves/File photo Purchase Licensing Rights, opens new tab Companies BRUSSELS, May 15 (Reuters) - Social media app TikTok was charged by EU tech regulators...
+language: en
+collection_type: policy_landscape
+---
+
+# TikTok charged with breaching EU online content rules
+
+*By Yun Chee Foo*
+
+TikTok logo is pictured on the U.S. headquarters of the social media company in Culver City, California, U.S. January 18, 2025. REUTERS/Fred Greaves/File photo Purchase Licensing Rights, opens new tab Companies BRUSSELS, May 15 (Reuters) - Social media app TikTok was charged by EU tech regulators...
+
+TikTok logo is pictured on the U.S. headquarters of the social media company in Culver City, California, U.S. January 18, 2025. REUTERS/Fred Greaves/File photo Purchase Licensing Rights, opens new tab Companies BRUSSELS, May 15 (Reuters) - Social media app TikTok was charged by EU tech regulators on Thursday with breaching EU online content rules, putting its owner ByteDance at risk of a fine of as much as 6% of its global turnover. The European Commission said it had sent its preliminary findings to TikTok following an investigation launched in February last year. Sign up here. The EU executive said TikTok has failed to comply with the Digital Services Act's obligation to publish an advertisement repository which allows researchers and users to detect scam advertisements. The DSA requires online platforms to do more to tackle illegal and harmful content as well as provide information on advertisements. The Commission said the company does not provide the necessary information about the content of advertisements, the targeted users and who paid for the advertisements. "Transparency in online advertising — who pays and how audiences are targeted — is essential to safeguarding the public interest," EU tech chief Henna Virkkunen said in a statement. TikTok, which also faces a second DSA investigation into its management of risks related to elections, pushed back against the Commission's findings. "While we support the goals of the regulation and continue to improve our ad transparency tools, we disagree with some of the Commission's interpretations and note that guidance is being delivered via preliminary findings rather than clear, public guidelines," a TikTok spokesperson said. "A level playing field and consistent enforcement are essential." The social media platform can be asked to see the Commission's documents and provide a written response before the watchdog issues a decision. Reporting by Foo Yun Chee, Editing by Louise Heavens and Tomasz Janowski Our Standards: The Thomson Reuters Trust Principles., opens new tab An agenda-setting and market-moving journalist, Foo Yun Chee is a 21-year veteran at Reuters. Her stories on high profile mergers have pushed up the European telecoms index, lifted companies' shares and helped investors decide on their next move. Her knowledge and experience of European antitrust laws and developments helped her break stories on Microsoft, Google, Amazon, Meta and Apple, numerous market-moving mergers and antitrust investigations. She has previously reported on Greek politics and companies, when Greece's entry into the eurozone meant it punched above its weight on the international stage, as well as on Dutch corporate giants and the quirks of Dutch society and culture that never fail to charm readers.

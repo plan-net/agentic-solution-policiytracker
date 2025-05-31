@@ -1,0 +1,29 @@
+---
+title: MercadoLibre's Q1 Earnings Beat Estimates, Revenues Rise Y/Y
+url: https://www.nasdaq.com/articles/mercadolibres-q1-earnings-beat-estimates-revenues-rise-y-y
+published_date: 2025-05-28T13:21:52.430786
+collected_date: 2025-05-28T13:21:52.430848
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: May 08, 2025 — 11:01 am EDT
+description: MercadoLibre MELI reported first-quarter 2025 earnings of $9.74 per share, which beat the Zacks Consensus Estimate by 26.99% and surged 43.7% year over year. Revenues rose 37% on a year-over-year basis (64% on an FX-neutral basis) to $5.9 billion. The top line surpassed the Zacks Consensus...
+language: en
+---
+
+# MercadoLibre's Q1 Earnings Beat Estimates, Revenues Rise Y/Y
+
+*By May 08, 2025 — 11:01 am EDT*
+
+MercadoLibre MELI reported first-quarter 2025 earnings of $9.74 per share, which beat the Zacks Consensus Estimate by 26.99% and surged 43.7% year over year. Revenues rose 37% on a year-over-year basis (64% on an FX-neutral basis) to $5.9 billion. The top line surpassed the Zacks Consensus...
+
+MercadoLibre MELI reported first-quarter 2025 earnings of $9.74 per share, which beat the Zacks Consensus Estimate by 26.99% and surged 43.7% year over year. Revenues rose 37% on a year-over-year basis (64% on an FX-neutral basis) to $5.9 billion. The top line surpassed the Zacks Consensus Estimate by 7.39%. See the Zacks Earnings Calendar to stay ahead of market-making news. Total revenues were driven by accelerating commerce and fintech revenues, which grew 32.3% and 43.3% year over year to $3.3 billion and $2.6 billion, respectively. In the commerce segment, strong momentum across Brazil (up 30% year over year) and Mexico (up 23% year over year) contributed well to the reported results. Trends in Argentina are encouraging. Items sold grew 52% year over year in the first quarter. Fintech Monthly Active Users rose 31% year over year to 64.3 million (with even faster growth among high-frequency users). Assets Under Management grew 103% year over year to $11.2 billion. Revenues from MELI’s advertising services grew 50% year over year on an FX-neutral basis. Increasing total payment volume (TPV), courtesy of the robust Mercado Pago, aided the company. MercadoLibre’s rising gross merchandise volume (GMV) was another positive. MercadoLibre, Inc. Price, Consensus and EPS Surprise 
+ MercadoLibre, Inc. price-consensus-eps-surprise-chart | MercadoLibre, Inc. Quote MELI’s Quarter in Detail Brazil: Net revenues in the first quarter came in at $3.08 billion (51.9% of the total revenues), up 19.9% year over year. Argentina: The market generated revenues of $1.38 billion (23.3% of the top line), which soared 124.7% year over year. Mexico: Net revenues in the reported quarter were $1.22 billion (20.6% of the total revenues), which grew 25.8% year over year. Other countries: The markets generated revenues of $249 million (4.2% of the total revenues), reflecting an increase of 41.5% on a year-over-year basis. Key Metrics for MELI GMV of $13.3 billion jumped 17% year over year and 40% on FX-neutral basis year over year. The figure beat the consensus mark by 2.95%. The number of successful items sold was 492 million, up 27.8% year over year.  TPV surged 43.2% year over year and 72% on an FX-neutral basis to $58.3 billion. The figure beat the Zacks Consensus Estimate by 11.26%. Total payment transactions increased 38.3% year over year to $3.34 billion. MercadoLibre’s Operating Details For the first quarter, the gross margin remained flat year over year at 46.7%. Operating expenses were approximately $2 billion, which increased 34.2% year over year. As a percentage of revenues, the figure contracted 70 basis points (bps) year over year to 33.8% in the reported quarter.  The operating margin expanded 70 bps from the year-ago period to 12.9%. Balance Sheet of MELI As of March 31, 2025, cash and cash equivalents were $2.98 billion, up from $2.63 billion as of Dec. 31, 2024. Short-term investments were $741 million as of March 31, 2025. Net debt was $2.77 billion at the end of the quarter. 
+ MELI Zacks Rank &amp; Stocks to Consider Currently, MercadoLibre carries a Zacks Rank #3 (Hold). Some better-ranked stocks in the broader Zacks Retail-Wholesale sector are Alibaba BABA, Costco Wholesale COST and Canada Goose GOOS, each carrying a Zacks Rank #2 (Buy) at present. You can see the complete list of today’s Zacks #1 Rank (Strong Buy) stocks here. Shares of Alibaba have gained 45.3% year to date. It is set to report fourth-quarter fiscal 2025 results on May 15. Shares of COST have gained 9.9% year to date. It is slated to report third-quarter fiscal 2025 results on May 29. Shares of GOOS have lost 17.3% year to date. It is set to report fourth-quarter fiscal 2025 results on May 21. 
+ 7 Best Stocks for the Next 30 Days 
+ 
+ Just released: Experts distill 7 elite stocks from the current list of 220 Zacks Rank #1 Strong Buys. They deem these tickers "Most Likely for Early Price Pops." 
+ 
+ Since 1988, the full list has beaten the market more than 2X over with an average gain of +23.9% per year. So be sure to give these hand picked 7 your immediate attention.  See them now &gt;&gt; Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report Costco Wholesale Corporation (COST) : Free Stock Analysis Report MercadoLibre, Inc. (MELI) : Free Stock Analysis Report Alibaba Group Holding Limited (BABA) : Free Stock Analysis Report 
+ Canada Goose Holdings Inc. (GOOS) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

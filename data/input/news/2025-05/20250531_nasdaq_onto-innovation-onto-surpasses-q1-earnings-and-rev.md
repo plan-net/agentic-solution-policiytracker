@@ -1,0 +1,30 @@
+---
+title: Onto Innovation (ONTO) Surpasses Q1 Earnings and Revenue Estimates
+url: https://www.nasdaq.com/articles/innovation-surpasses-q1-earnings-and-revenue-estimates-0
+published_date: 2025-05-31T00:00:18.910863
+collected_date: 2025-05-31T00:00:18.910953
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: Zacks
+description: Onto Innovation (ONTO) came out with quarterly earnings of $1.51 per share, beating the Zacks Consensus Estimate of $1.47 per share. This compares to earnings of $1.18 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings...
+language: en
+---
+
+# Onto Innovation (ONTO) Surpasses Q1 Earnings and Revenue Estimates
+
+*By Zacks*
+
+Onto Innovation (ONTO) came out with quarterly earnings of $1.51 per share, beating the Zacks Consensus Estimate of $1.47 per share. This compares to earnings of $1.18 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings...
+
+Onto Innovation (ONTO) came out with quarterly earnings of $1.51 per share, beating the Zacks Consensus Estimate of $1.47 per share. This compares to earnings of $1.18 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings surprise of 2.72%. A quarter ago, it was expected that this maker of semiconductor manufacturing equipment would post earnings of $1.39 per share when it actually produced earnings of $1.51, delivering a surprise of 8.63%. 
+ Over the last four quarters, the company has surpassed consensus EPS estimates four times. Onto Innovation, which belongs to the Zacks Nanotechnology industry, posted revenues of $266.61 million for the quarter ended March 2025, surpassing the Zacks Consensus Estimate by 0.62%. This compares to year-ago revenues of $228.85 million. The company has topped consensus revenue estimates four times over the last four quarters. The sustainability of the stock's immediate price movement based on the recently-released numbers and future earnings expectations will mostly depend on management's commentary on the earnings call. Onto Innovation shares have lost about 24.9% since the beginning of the year versus the S&amp;P 500's decline of -4.3%. What's Next for Onto Innovation? While Onto Innovation has underperformed the market so far this year, the question that comes to investors' minds is: what's next for the stock? 
+ There are no easy answers to this key question, but one reliable measure that can help investors address this is the company's earnings outlook. Not only does this include current consensus earnings expectations for the coming quarter(s), but also how these expectations have changed lately. Empirical research shows a strong correlation between near-term stock movements and trends in earnings estimate revisions. Investors can track such revisions by themselves or rely on a tried-and-tested rating tool like the Zacks Rank, which has an impressive track record of harnessing the power of earnings estimate revisions. Ahead of this earnings release, the estimate revisions trend for Onto Innovation: unfavorable. While the magnitude and direction of estimate revisions could change following the company's just-released earnings report, the current status translates into a Zacks Rank #4 (Sell) for the stock. So, the shares are expected to underperform the market in the near future. You can see the complete list of today's Zacks #1 Rank (Strong Buy) stocks here. It will be interesting to see how estimates for the coming quarters and current fiscal year change in the days ahead. The current consensus EPS estimate is $1.48 on $264.6 million in revenues for the coming quarter and $6.09 on $1.07 billion in revenues for the current fiscal year. Investors should be mindful of the fact that the outlook for the industry can have a material impact on the performance of the stock as well. In terms of the Zacks Industry Rank, Nanotechnology is currently in the bottom 6% of the 250 plus Zacks industries. Our research shows that the top 50% of the Zacks-ranked industries outperform the bottom 50% by a factor of more than 2 to 1. 
+ Another stock from the broader Zacks Computer and Technology sector, Endava PLC Sponsored ADR (DAVA), has yet to report results for the quarter ended March 2025. The results are expected to be released on May 14. This company is expected to post quarterly earnings of $0.38 per share in its upcoming report, which represents a year-over-year change of +35.7%. The consensus EPS estimate for the quarter has remained unchanged over the last 30 days. Endava PLC Sponsored ADR's revenues are expected to be $252.96 million, up 14.4% from the year-ago quarter. 
+ Should You Invest in Onto Innovation Inc. (ONTO)? 
+ 
+ Before you invest in Onto Innovation Inc. (ONTO), want to know the best stocks to buy for the next 30 days? Check out Zacks Investment Research for our free report on the 7 best stocks to buy. 
+ 
+ Zacks Investment Research has been committed to providing investors with tools and independent research since 1978. For more than a quarter century, the Zacks Rank stock-rating system has more than doubled the S&amp;P 500 with an average gain of +24.08% per year. (These returns cover a period from January 1, 1988 through May 6, 2024.) 
+ Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report Onto Innovation Inc. (ONTO) : Free Stock Analysis Report Endava PLC Sponsored ADR (DAVA) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

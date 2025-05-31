@@ -1,0 +1,29 @@
+---
+title: Stock Market News for May 9, 2025
+url: https://www.nasdaq.com/articles/stock-market-news-may-9-2025
+published_date: 2025-05-28T13:21:52.435143
+collected_date: 2025-05-28T13:21:52.435205
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: Zacks
+description: Wall Street closed higher on Thursday, driven by tech, energy and industrial stocks. Investor mood was upbeat on a U.S.-U.K trade deal finally being agreed upon, with Trump expecting positive results from upcoming talks with China. All three benchmark indexes closed the session in the green....
+language: en
+---
+
+# Stock Market News for May 9, 2025
+
+*By Zacks*
+
+Wall Street closed higher on Thursday, driven by tech, energy and industrial stocks. Investor mood was upbeat on a U.S.-U.K trade deal finally being agreed upon, with Trump expecting positive results from upcoming talks with China. All three benchmark indexes closed the session in the green....
+
+Wall Street closed higher on Thursday, driven by tech, energy and industrial stocks. Investor mood was upbeat on a U.S.-U.K trade deal finally being agreed upon, with Trump expecting positive results from upcoming talks with China. All three benchmark indexes closed the session in the green. How Did the Benchmarks Perform? The Dow Jones Industrial Average (DJI) gained 0.6%, or 254.48 points, to close at 41,368.45. Twenty components of the 30-stock index ended in positive territory, while 10 ended in negative. 
+ The tech-heavy Nasdaq Composite added 189.98 points, or 1.1%, to close at 17,928.14. The S&amp;P 500 added 32.66 points, or 0.6%, to close at 5,663.94. Seven of the 11 broad sectors of the benchmark index closed in the green. The Industrials Select Sector SPDR (XLI), the Materials Select Sector SPDR (XLU) and the Energy Select Sector SPDR (XLE) advanced 1.4%, 1.3% and 1.3%, respectively, while the Health Care Select Sector SPDR (XLV) declined 0.9%. The fear-gauge CBOE Volatility Index (VIX) decreased 4.5% to 22.48. A total of 16.85 billion shares were traded on Thursday, lower than the last 20-session average of 16.86 billion. Advancers outnumbered decliners by a 1.82-to-1 ratio on the NYSE, and by a 2.15-to-1 ratio on the Nasdaq. Trump and Starmer Announce Trade Deal On Thursday, U.S. President Donald Trump and British Prime Minister Keir Starmer jointly announced a bilateral trade agreement that expands agricultural access for both countries and brings down prohibitive U.S. duties on British car exports. However, the 10% tariff imposition on British exports remains in place. The agreement is being considered the first among dozens of tariff-lowering deals that the White House expects to land in coming weeks after shaking up the global trading system with steep new import taxes. 
+ "It opens up a tremendous market for us," Trump said, adding that he was yet to understand the restrictions that American firms face while conducting business in the United Kingdom. "This is a really fantastic, historic day," Starmer said, poignantly adding that the announcement of the deal comes almost at the same hour when World War Two ended in Europe in 1945. "This is going to boost trade between and across our countries, it's going to not only protect jobs, but create jobs, opening market access." Donald Trump also said that he expects there will be substantive negotiations between the United States and China on trade this weekend. He went on to predict that U.S. tariffs on Beijing would likely come down from 145%. Following these developments, there was a broad-based upward movement in stocks. Consequently, shares of The Boeing Company BA and Intel Corporation INTC rose 3.3% and 3.4%, respectively. Both currently carry a Zacks Rank #3 (Hold). You can see the complete list of today's Zacks #1 Rank (Strong Buy) stocks here. Economic Data The Department of Labor also reported that initial claims increased by 13,000 to 228,000 for the week ended May 3 from the previous week's unrevised level of 241,000. The 4-week moving average was 227,000, an increase of 1,000 from the previous week's unrevised average of 226,000. Continuing claims through the week ending April 26 were 1,879,000, a decrease of 29,000 from the prior week's revised level. Last week's level was revised down by 10,000 from 1,903,000 to 1,893,000. The previous week's level was revised down by 8,000 from 1,916,000 to 1,908,000. The 4-week moving average was 1,874,500, an increase of 8,750 from the previous week's revised average. The prior week's average was revised down by 2,000 from 1,867,750 to 1,865,750. 
+ Per the U.S. Census Bureau, Wholesale Inventories for March increased 0.4%. The number for Febriary was revised up to 0.5% from the previously reported 0.3%. 
+ Research Chief Names "Single Best Pick to Double" 
+ 
+ From thousands of stocks, 5 Zacks experts each have chosen their favorite to skyrocket +100% or more in months to come. From those 5, Director of Research Sheraz Mian hand-picks one to have the most explosive upside of all. 
+ 
+ This company targets millennial and Gen Z audiences, generating nearly $1 billion in revenue last quarter alone. A recent pullback makes now an ideal time to jump aboard. Of course, all our elite picks aren’t winners but this one could far surpass earlier Zacks’ Stocks Set to Double like Nano-X Imaging which shot up +129.6% in little more than 9 months. Free: See Our Top Stock And 4 Runners Up Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report The Boeing Company (BA) : Free Stock Analysis Report Intel Corporation (INTC) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

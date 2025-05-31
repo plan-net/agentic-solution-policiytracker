@@ -1,0 +1,21 @@
+---
+title: Pornhub, Stripchat, XNXX, XVideos investigated in EU over child protection
+url: https://www.reuters.com/technology/pornhub-stripchat-xnxx-xvideos-targeted-eu-investigation-2025-05-27/
+published_date: 2025-05-27T00:00:00
+collected_date: 2025-05-31T11:07:53.013576
+source: Reuters
+source_url: https://www.reuters.com
+author: Yun Chee Foo
+description: BRUSSELS, May 27 (Reuters) - Adult content platforms Pornhub, Stripchat, XNXX and XVideos will be investigated for failing to comply with rules to protect children, EU regulators said on Tuesday, in a move that could lead to fines of as much as 6% of their global annual turnover. The European...
+language: en
+collection_type: policy_landscape
+---
+
+# Pornhub, Stripchat, XNXX, XVideos investigated in EU over child protection
+
+*By Yun Chee Foo*
+
+BRUSSELS, May 27 (Reuters) - Adult content platforms Pornhub, Stripchat, XNXX and XVideos will be investigated for failing to comply with rules to protect children, EU regulators said on Tuesday, in a move that could lead to fines of as much as 6% of their global annual turnover. The European...
+
+BRUSSELS, May 27 (Reuters) - Adult content platforms Pornhub, Stripchat, XNXX and XVideos will be investigated for failing to comply with rules to protect children, EU regulators said on Tuesday, in a move that could lead to fines of as much as 6% of their global annual turnover. The European Commission said the companies had not complied with the Digital Services Act, which requires them to do more to tackle illegal and harmful content on their platforms following their designation as very large online platforms in 2023. Sign up here. They also breached rules obliging companies to take risk assessment and mitigation measures of the negative effects on the rights of children and to prevent them from accessing adult content via age verification tools, it said. "The online space should be a safe environment for children to learn and connect. Our priority is to protect minors and allow them to navigate safely online," EU tech chief Henna Virkkunen said in a statement. European Union flags flutter outside the EU Commission headquarters in Brussels, Belgium March 18, 2025. REUTERS/Yves Herman/File Photo Purchase Licensing Rights, opens new tab Pornhub owner and Cypriot group Aylo Freesites Ltd said its sites were RTA- (restricted to adults) compliant, as rated by the Association of Sites Advocating Child Protection, and were strictly reserved for those of legal age. "We believe that the real solution for protecting minors and adults alike is to verify users’ ages at the point of access - the users’ devices - and for websites to deny or permit access to age-restricted materials based on that verification," Aylo said in an email. Stripchat, which is a subsidiary of Cypriot company Technius Ltd, did not respond to an emailed request. XNXX is owned by Czech company NKL Associates and XVideos is part of WebGroup Czech Republic. It was not immediately possible to reach those two companies. The Commission said it would drop its designation of Stripchat as a very large online platform in four months' time after its average monthly number of users fell below the DSA user threshold. Separately, the EU executive said EU countries would coordinate actions against smaller pornographic platforms to protect children. Reporting by Foo Yun Chee;
+Editing by Alison Williams Our Standards: The Thomson Reuters Trust Principles., opens new tab An agenda-setting and market-moving journalist, Foo Yun Chee is a 21-year veteran at Reuters. Her stories on high profile mergers have pushed up the European telecoms index, lifted companies' shares and helped investors decide on their next move. Her knowledge and experience of European antitrust laws and developments helped her break stories on Microsoft, Google, Amazon, Meta and Apple, numerous market-moving mergers and antitrust investigations. She has previously reported on Greek politics and companies, when Greece's entry into the eurozone meant it punched above its weight on the international stage, as well as on Dutch corporate giants and the quirks of Dutch society and culture that never fail to charm readers.

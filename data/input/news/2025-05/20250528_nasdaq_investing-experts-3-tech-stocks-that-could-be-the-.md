@@ -1,0 +1,27 @@
+---
+title: Investing Experts: 3 Tech Stocks That Could Be the Next Apple
+url: https://www.nasdaq.com/articles/investing-experts-3-tech-stocks-could-be-next-apple
+published_date: 2025-05-28T13:21:52.431178
+collected_date: 2025-05-28T13:21:52.431237
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: GOBankingRates
+description: Apple has been among the most successful technology companies over the past two decades. With a market cap of more than $3.38 trillion, they’re also one of the most valuable publicly-traded companies. While there is still a lot of growth potential for those looking to invest in Apple, you might...
+language: en
+---
+
+# Investing Experts: 3 Tech Stocks That Could Be the Next Apple
+
+*By GOBankingRates*
+
+Apple has been among the most successful technology companies over the past two decades. With a market cap of more than $3.38 trillion, they’re also one of the most valuable publicly-traded companies. While there is still a lot of growth potential for those looking to invest in Apple, you might...
+
+Apple has been among the most successful technology companies over the past two decades. With a market cap of more than $3.38 trillion, they’re also one of the most valuable publicly-traded companies. While there is still a lot of growth potential for those looking to invest in Apple, you might wonder what companies could become the next Apple stock. 
+ Which company could have the same success and help investors see the same attractive returns over the next ten or 20 years? Consider This: 3 Undervalued Stocks To Buy Before 2025, According to Experts Find Out: 9 Things You Must Do To Grow Your Wealth in 2024 To find some possible companies that investors should keep an eye on, GOBankingRates spoke with Ulrich Ebensperger, co-founder and CEO of Ziggma. Here are three of the companies he said investors should pay close attention to. 
+ Meta Platforms, Inc. “I believe they are the leader in virtual reality (VR),” said Ebensperger. “VR devices are likely to be the interface that will replace the smartphone. “Meta’s fundamentals are stellar. It already has a full-blown ecosystem of social, software and cloud computing to support its VR hardware.” After a tough stretch toward the end of 2021 and throughout most of 2022, Meta Platforms has been a strong performer since. With revenue growth expected to be 20.6% in 2025 and earnings per share (EPS) growth expected to be roughly 48%, many analysts believe there is significant room for the stock to continue running higher over the long term. Read Next: I’m a Self-Made Millionaire — 5 Stocks You Shouldn’t Sell 
+ HP Inc. “In a similar vein, there is HPQ. HP has also successfully rolled out headsets, focusing at this stage on the enterprise and professional sectors,” said Ebensperger. “When looking at the Ziggma stock score, one can see that the company’s prospects are also very solid. Revenue growth is not exactly mind-blowing, but that could change quickly if VR headsets were to take off.” The last five years have been fairly choppy in terms of HPs stock price. However, the trend line is pointed up. Plus, with the launch of VR headsets, a new line of computers that integrate artificial intelligence (AI) and an attractive 3% dividend, this stock could be ready to take off to new highs. Immersion Corp “Since I was looking at the VR space, an interesting stock is IMMR (Immersion Corp),” said Ebensperger. “It’s a small cap, with the speculative nature that comes with it. But revenue estimates are through the roof (only by two analysts). “IMMR is a leader in haptic technology, which is a high-growth tech space.”  
+ Immersion Corp has had a rough time since the middle of the summer, but the stock price doesn’t exactly tell the entire story. While this small cap stock doesnt have a huge following from analysts, those that do cover the company feel that this could be the perfect time to buy the dip and hold for long-term growth. It’s revenue over the trailing 12 months has been $163.1 million, which is a significant increase over the $33.9 million in revenue generated in 2023. However, what’s impressive is the expected revenue growth for 2025. It’s expected that revenue could grow to $682 million. What’s even more impressive is that the stock price is cheap. It currently trades at a P/E of 3.9x while also offering a 2.48% dividend yield. The Bottom Line While it’s difficult to really know which companies could become the next Apple, we can use the data we have to make some pretty good predictions. Apple’s success has been built based on a strong product line and great management. For another company to replicate the same success, it’s going to take a lot of the same characteristics.  
+ More From GOBankingRates 6 Used Luxury SUVs That Are a Good Investment for Retirees How Middle-Class Earners Are Quietly Becoming Millionaires -- and How You Can, Too 7 Overpriced Grocery Items Frugal People Should Quit Buying in 2025 4 Low-Risk Ways To Build Your Savings in 2025 This article originally appeared on
+ GOBankingRates.com:
+ Investing Experts: 3 Tech Stocks That Could Be the Next Apple 
+ The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

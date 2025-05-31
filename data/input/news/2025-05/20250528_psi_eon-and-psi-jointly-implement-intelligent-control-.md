@@ -1,0 +1,28 @@
+---
+title: E.ON and PSI jointly implement intelligent control system for the distribution grid of the future
+url: https://www.psi.de/en/company/newsroom/press-releases/eon-and-psi-jointly-implement-intelligent-control-system-for-the-distribution-grid-of-the-future
+published_date: 2025-05-28T13:21:52.432729
+collected_date: 2025-05-28T13:21:52.432792
+source: Psi
+source_url: https://www.psi.de
+author: Harald Heß
+description: Berlin, February 11, 2025 – E.ON and PSI have concluded a long-term partnership on the implementation of a new and standardized network control system for the E.ON grid companies in Germany. Network control systems are used to control energy flows in the electricity and gas grid to ensure a...
+language: en
+---
+
+# E.ON and PSI jointly implement intelligent control system for the distribution grid of the future
+
+*By Harald Heß*
+
+Berlin, February 11, 2025 – E.ON and PSI have concluded a long-term partnership on the implementation of a new and standardized network control system for the E.ON grid companies in Germany. Network control systems are used to control energy flows in the electricity and gas grid to ensure a...
+
+Berlin, February 11, 2025 – E.ON and PSI have concluded a long-term partnership on the implementation of a new and standardized network control system for the E.ON grid companies in Germany. Network control systems are used to control energy flows in the electricity and gas grid to ensure a reliable and secure energy supply. By 2029, the control systems of the German distribution system operators are to be standardized. The modular PSI control system platform "Control System of the Future" (CSF) is used for this purpose. The new control system reduces operating and maintenance costs in the long term and thus makes grid operation more efficient. It also enables further automation, increases security standards and has a future-proof, open software architecture. 
+ In Germany, more than 95 percent of renewable energy such as wind or photovoltaics are connected to the distribution grids. With the heating and mobility transition, millions of electric vehicles and heat pumps will also have to be integrated into the grid in the coming years. To meet these challenges, E.ON is continuously developing its grids and system management. 
+ "As a playmaker of the energy transition, we are investing extensively in the digitization of our grids. The new, standardized network control system is an essential building block for this and an important step towards standardization. At the same time, a modular system is being created that can be expanded and thus react flexibly to the requirements of the future," explains Harald Heß, Senior Vice President Energy Networks Technology &amp; Innovation at E.ON. 
+ 
+ For the successful implementation of the project, PSI and E.ON rely on agile principles and cooperative partnership. PSI will set up its own customer unit, which will work closely with E.ON's key supplier management. The common goal is to make an important contribution to the reliable, economical and sustainable grid management of the future, with important topics such as sector coupling and holistic optimization of the energy system becoming more important. 
+ "We are very proud that E.ON is relying on its long-standing partner PSI for the implementation of a new and standardized network control system," says Robert Klaffus, CEO of PSI. “This confirms our strategy of technologically redefining the grid management of the future with the development of our new generation of control systems and at the same time relying on proven modules. In this way, we provide our customers with the best possible support in meeting the requirements of an increasingly dynamic market and energy system.” 
+ 
+ The development of the "Control System of the Future" is an important step in the implementation of the "PSI reloaded" strategy program. It underlines PSI's innovative strength, future orientation and competitiveness. The first pilot unit is to be equipped with the new system in the beginning of 2028. 
+ The PSI Group develops software products for optimizing the flow of energy and materials for utilities and industry. As an independent software producer with more than 2,300 employees, PSI has been a technology leader since 1969 for process control systems that ensure sustainable energy supply, production and logistics by combining AI methods with industrially proven optimization methods. The innovative industry products can be operated on-premises or in the cloud. 
+ People in the group photo, from left to right: André Korte, Strategic Buyer, Control Technology (E.ON) Dr. Simone Bauer, Executive Vice President, PSI Software SE Helge Born, Overall eNet Project Management (E.ON) Dirk Hahn, Project Manager, PSI Software SE Dr. Alexander Montebaur, Managing Director, Special Technology/Digitization Westnetz (E.ON) Lars Ramelow, Head of Group Purchasing Control Technology (E.ON) Harald Heß, Senior Vice President Energy Networks Technology &amp; Innovation (E.ON) Thomas Böhmer, Executive Vice President, PSI Software SE Robert Klaffus, CEO, PSI Software SE Dr. Christopher Breuer, eNet overall project management (E.ON) Wolfgang Fischer, Director Business Development, PSI Software SE Sonja Becker, Project Manager, PSI Software SE Ralf Heilemann, SCADA sub-project manager in the eNet project (E.ON) Svenja Wolz, Director Contract Management, PSI Software SE

@@ -1,0 +1,237 @@
+# Data Ingestion Report: {{ job_name }}
+
+**Generated:** {{ generation_timestamp.strftime('%Y-%m-%d %H:%M:%S') }} UTC  
+**Flow:** Data Ingestion (v0.2.0)  
+**Graph Group ID:** {{ graph_group_id }}
+
+---
+
+## Executive Summary
+
+**Documents Processed:** {{ executive_summary.total_documents }}  
+**Success Rate:** {{ "%.1f"|format(executive_summary.success_rate) }}%  
+**Processing Time:** {{ "%.1f"|format(executive_summary.processing_time_minutes) }} minutes
+
+### Knowledge Graph Growth
+- **Entities Created:** {{ executive_summary.total_entities }}
+- **Relationships Created:** {{ executive_summary.total_relationships }}
+- **Communities Built:** {{ executive_summary.community_count }}
+- **Average Entities per Document:** {{ "%.1f"|format(executive_summary.avg_entities_per_doc) }}
+
+### Key Statistics
+- **Documents Skipped:** {{ executive_summary.skipped_documents }} (already processed)
+- **Documents Failed:** {{ executive_summary.failed_documents }}
+- **Clear Data Mode:** {{ "✅ Enabled" if executive_summary.clear_data_used else "❌ Disabled" }}
+- **Source Path:** `{{ executive_summary.source_path }}`
+
+---
+
+## Processing Results
+
+{% if processing_results %}
+### Successful Documents ({{ successful_documents|length }})
+
+| Document | Entities | Relationships | Processing Time |
+|----------|----------|---------------|-----------------|
+{% for doc in successful_documents[:20] %}
+| {{ doc.path|basename|escape_md }} | {{ doc.entity_count }} | {{ doc.relationship_count }} | {{ "%.2f"|format(doc.processing_time) }}s |
+{% endfor %}
+{% if successful_documents|length > 20 %}
+*... and {{ successful_documents|length - 20 }} more successful documents*
+{% endif %}
+
+### Processing Breakdown
+
+| Status | Count | Percentage |
+|--------|-------|------------|
+| Processed | {{ processing_metrics.processed }} | {{ "%.1f"|format(processing_metrics.processed / processing_metrics.total_documents * 100) }}% |
+| Skipped | {{ processing_metrics.skipped }} | {{ "%.1f"|format(processing_metrics.skipped / processing_metrics.total_documents * 100) }}% |
+| Failed | {{ processing_metrics.failed }} | {{ "%.1f"|format(processing_metrics.failed / processing_metrics.total_documents * 100) }}% |
+
+{% else %}
+*No processing results available*
+{% endif %}
+
+---
+
+## Community Analysis
+
+{% if communities and communities|length > 0 %}
+### Document Communities ({{ communities|length }})
+
+Communities help identify thematic clusters and relationships within the political document corpus.
+
+{% for community in communities[:10] %}
+#### Community {{ loop.index }}
+- **Size:** {{ community.size if community.size else "Unknown" }} entities
+- **Key Topics:** {{ community.topics|join(", ") if community.topics else "Analyzing..." }}
+- **Relationships:** {{ community.relationships if community.relationships else "Complex network" }}
+
+{% endfor %}
+
+{% if communities|length > 10 %}
+*... and {{ communities|length - 10 }} more communities*
+{% endif %}
+
+### Community Statistics
+- **Total Communities:** {{ communities|length }}
+- **Average Community Size:** {{ "%.1f"|format(community_stats.avg_size) if community_stats else "N/A" }}
+- **Largest Community:** {{ community_stats.max_size if community_stats else "N/A" }} entities
+- **Community Detection Method:** Graphiti built-in algorithms
+
+{% else %}
+### No Communities Found
+
+{% if enable_communities %}
+This may indicate:
+- Documents are too diverse for automatic clustering
+- Not enough relationships between entities
+- Need for additional processing or different community parameters
+{% else %}
+Community creation was disabled for this run.
+{% endif %}
+
+{% endif %}
+
+---
+
+## Entity Breakdown
+
+{% if entity_breakdown %}
+### Entity Types Discovered
+
+| Entity Type | Count | Percentage |
+|-------------|-------|------------|
+{% for entity_type, count in entity_breakdown.items() %}
+| {{ entity_type }} | {{ count }} | {{ "%.1f"|format(count / entity_breakdown.values()|sum * 100) }}% |
+{% endfor %}
+
+### Top Political Entities
+
+{% if top_entities %}
+{% for entity in top_entities[:15] %}
+{{ loop.index }}. **{{ entity.name }}** ({{ entity.type }})
+   - Connections: {{ entity.relationship_count }}
+   - First mentioned: {{ entity.first_document }}
+{% endfor %}
+{% endif %}
+
+{% else %}
+*Entity breakdown not available for this run*
+{% endif %}
+
+---
+
+## Failed Documents
+
+{% if failed_documents and failed_documents|length > 0 %}
+### Processing Failures ({{ failed_documents|length }})
+
+| Document | Error | Timestamp |
+|----------|-------|-----------|
+{% for failed_doc in failed_documents %}
+| {{ failed_doc.path|basename|escape_md }} | {{ failed_doc.error|truncate_text(100)|escape_md }} | {{ failed_doc.processed_at }} |
+{% endfor %}
+
+### Common Failure Patterns
+{% set error_types = failed_documents|groupby('error')|list %}
+{% for error, docs in error_types %}
+- **{{ error.split(':')[0] }}**: {{ docs|list|length }} documents
+{% endfor %}
+
+### Recommendations
+1. Review document encoding (UTF-8 vs latin-1)
+2. Check for empty or corrupted files
+3. Verify network connectivity to Graphiti service
+4. Monitor memory usage during processing
+
+{% else %}
+✅ **No processing failures - all documents processed successfully!**
+{% endif %}
+
+---
+
+## Performance Metrics
+
+### Processing Performance
+- **Total Processing Time:** {{ "%.2f"|format(performance_metrics.total_processing_time) }} seconds
+- **Average per Document:** {{ "%.2f"|format(performance_metrics.avg_processing_time) }} seconds
+- **Documents per Minute:** {{ "%.1f"|format(60 / performance_metrics.avg_processing_time) if performance_metrics.avg_processing_time > 0 else "N/A" }}
+
+### Graph Database Performance
+- **Entity Creation Rate:** {{ "%.1f"|format(performance_metrics.total_entities / performance_metrics.total_processing_time) if performance_metrics.total_processing_time > 0 else "N/A" }} entities/second
+- **Relationship Creation Rate:** {{ "%.1f"|format(performance_metrics.total_relationships / performance_metrics.total_processing_time) if performance_metrics.total_processing_time > 0 else "N/A" }} relationships/second
+
+### System Resources
+- **Memory Usage:** Monitoring available in Ray dashboard
+- **Neo4j Connection:** {{ "✅ Healthy" if neo4j_healthy else "⚠️ Issues detected" }}
+- **Graphiti Service:** {{ "✅ Operational" if graphiti_healthy else "⚠️ Issues detected" }}
+
+---
+
+## Configuration Used
+
+### Input Parameters
+- **Source Path:** `{{ config_used.source_path }}`
+- **Document Limit:** {{ config_used.document_limit }}
+- **Clear Data Mode:** {{ "Yes" if config_used.clear_data else "No" }}
+- **Community Creation:** {{ "Yes" if config_used.enable_communities else "No" }}
+
+### System Configuration
+- **Graphiti Group ID:** `{{ config_used.graph_group_id }}`
+- **Neo4j URI:** `{{ config_used.neo4j_uri }}`
+- **Processing Mode:** {{ config_used.processing_mode }}
+- **Ray Actor Resources:** {{ config_used.ray_resources }}
+
+### Entity Types Configured
+{% for entity_type in config_used.entity_types %}
+- {{ entity_type }}
+{% endfor %}
+
+---
+
+## Next Steps
+
+### Immediate Actions
+1. **Verify Results:** Browse the knowledge graph at http://localhost:7474
+2. **Review Failed Documents:** Address any processing failures listed above
+3. **Community Analysis:** Explore document communities for insights
+
+### Recommended Workflows
+1. **Flow 2 (Company Context):** Add client-specific context to enhance relevance scoring
+2. **Flow 3 (Relevance Assessment):** Run temporal analysis on processed documents
+3. **Manual Review:** Spot-check entity extraction quality for important documents
+
+### Graph Exploration Queries
+```cypher
+// View all document episodes
+MATCH (e:Episode) RETURN e.name, e.created_at LIMIT 10;
+
+// Explore entity relationships  
+MATCH (n)-[r]->(m) RETURN type(r), count(*) ORDER BY count(*) DESC;
+
+// Find policy-related entities
+MATCH (n:Policy) RETURN n.policy_name, n.jurisdiction LIMIT 10;
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+1. **"No documents found"**: Check source path and file extensions (.txt, .md)
+2. **"Graph connection failed"**: Verify Neo4j is running on port 7687
+3. **"Entity extraction failed"**: Check OpenAI API key configuration
+4. **"Memory errors"**: Reduce document_limit or increase Ray actor memory
+
+### Support Resources
+- **Documentation:** `/docs/USER_GUIDE.md`
+- **Ray Dashboard:** http://localhost:8265
+- **Neo4j Browser:** http://localhost:7474
+- **Logs:** `just kodosumi-logs` for detailed error messages
+
+---
+
+*This report was generated by the Political Monitoring Agent v0.2.0 Data Ingestion Flow. The temporal knowledge graph is now ready for analysis and querying.*
+
+**End of Report**

@@ -1,0 +1,20 @@
+---
+title: Buyer’s Remorse Hits Finance Bosses Who ‘Overhired’ for ESG
+url: https://finance.yahoo.com/news/buyer-remorse-hits-finance-bosses-190000257.html
+published_date: 2025-04-30T00:00:00
+collected_date: 2025-05-28T13:24:31.065662
+source: Finance
+source_url: https://finance.yahoo.com
+author: Gautam Naik and Saijel Kishan Wed, Apr 30, 2025, 8:57 AM 5 min read
+description: In This Article: (Bloomberg) -- There’s a course-correction underway among financial firms that went all out on ESG hiring just a few years back, according to recruiters advising banks and money managers. Most Read from Bloomberg NYC Lost $9 Billion of Income to Miami, Palm Beach in Five Years New...
+language: en
+collection_type: policy_landscape
+---
+
+# Buyer’s Remorse Hits Finance Bosses Who ‘Overhired’ for ESG
+
+*By Gautam Naik and Saijel Kishan Wed, Apr 30, 2025, 8:57 AM 5 min read*
+
+In This Article: (Bloomberg) -- There’s a course-correction underway among financial firms that went all out on ESG hiring just a few years back, according to recruiters advising banks and money managers. Most Read from Bloomberg NYC Lost $9 Billion of Income to Miami, Palm Beach in Five Years New...
+
+In This Article: (Bloomberg) -- There’s a course-correction underway among financial firms that went all out on ESG hiring just a few years back, according to recruiters advising banks and money managers. Most Read from Bloomberg NYC Lost $9 Billion of Income to Miami, Palm Beach in Five Years New York City Transit System Chips Away at Subway Fare Evasion NYC’s Congestion Toll Raised $159 Million in the First Quarter The Last Thing US Transit Agencies Should Do Now At Bryn Mawr, a Monumental Plaza Traces the Steps of Black History Firms have had to acknowledge that the goal of generating the highest profits often “isn’t aligned with the social and environmental aspirations of the types of people they hired,” says Tom Strelczak, a London-based partner focused on sustainability at Madison Hunt, where he oversees the firm’s European business. After having “overhired in a very evangelical and philosophical way,” many financial companies are now avoiding some of the ESG (environmental, social and governance) profiles they targeted just a few years ago, he said in an interview. The pandemic-era, zero interest-rate environment in which ESG enjoyed its heyday drove a hiring boom across the finance industry less than half a decade ago. However, that sense of exuberance around ESG quickly faded when interest rates started to rise and green investment returns faltered. In the US, the Republican Party seized on the moment to launch a full-scale attack on ESG, characterizing it as a “woke” perversion of capitalism. The political backlash — which intensified after Donald Trump’s return to the White House — sent a chill through the US finance industry, where labels like ESG and DEI (diversity, equity and inclusion) are rapidly being jettisoned. Only a quarter of S&amp;P 100 companies published reports with “ESG” in the title last year, down from a peak of 40% in 2023, according to data provided by the Conference Board. So far in 2025, with nearly half of companies having reported, just 6% have used the term. In Europe, where ESG regulations are far more entrenched, the backlash has been less pronounced and more centered on implementation. But amid concerns that excessive ESG requirements were harming competitiveness in the bloc, European policymakers have agreed to wind back key planks of ESG corporate reporting requirements. The upshot is a broad-based retreat from the environmental and social principles that initially led financial firms to look for hires outside their usual stomping grounds. As a result, many of the climate scientists and campaigners from nonprofits who were hand-picked by financial firms just a few years back are now struggling to adapt to their employers’ renewed focus on financial profits, Strelczak said.
