@@ -2,7 +2,7 @@
 title: Commission seeks feedback on the guidelines on protection of minors online under the Digital Services Act
 url: https://digital-strategy.ec.europa.eu/en/library/commission-seeks-feedback-guidelines-protection-minors-online-under-digital-services-act
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-31T08:02:29.095311
+collected_date: 2025-05-31T08:33:45.435887
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: "The guidelines aim to support platforms accessible by minors in ensuring a high level of privacy, safety, and security for children, as required by DSA. 

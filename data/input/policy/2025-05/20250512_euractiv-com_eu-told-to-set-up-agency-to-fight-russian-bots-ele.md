@@ -2,7 +2,7 @@
 title: EU told to set up agency to fight Russian bots, election interference
 url: https://www.euractiv.com/section/tech/news/eu-told-to-set-up-agency-to-fight-russian-bots-election-interference/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-31T08:03:17.786820
+collected_date: 2025-05-31T08:34:01.738177
 source: Euractiv
 source_url: https://www.euractiv.com
 author: Anupriya Datta

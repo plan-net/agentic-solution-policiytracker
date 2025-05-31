@@ -2,7 +2,7 @@
 title: Meta's still violating GDPR rules with latest plan to train AI on EU user data, says noyb
 url: https://www.theregister.com/2025/05/14/metas_still_violating_gdpr_rules/
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-29T18:34:50.035615
+collected_date: 2025-05-31T08:33:35.930968
 source: Theregister
 source_url: https://www.theregister.com
 author: Brandon Vigliarolo

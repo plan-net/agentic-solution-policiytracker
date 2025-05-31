@@ -2,7 +2,7 @@
 title: Berlin drafts bill to tax digital platforms
 url: https://www.politico.eu/article/berlin-drafts-bill-to-tax-digital-platforms/
 published_date: 2025-05-29T00:00:00
-collected_date: 2025-05-31T08:03:24.313536
+collected_date: 2025-05-31T08:34:08.021557
 source: Politico
 source_url: https://www.politico.eu
 author: Nette Nöstlinger

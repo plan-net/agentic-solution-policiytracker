@@ -2,7 +2,7 @@
 title: EU Member States Face Funding Shortages to Enforce AI Act
 url: https://www.pymnts.com/artificial-intelligence-2/2025/eu-member-states-face-funding-shortages-to-enforce-ai-act/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-31T08:02:17.866549
+collected_date: 2025-05-31T08:33:32.059265
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS

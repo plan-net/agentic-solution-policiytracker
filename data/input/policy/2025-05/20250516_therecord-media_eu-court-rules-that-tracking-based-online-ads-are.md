@@ -2,7 +2,7 @@
 title: EU court rules that tracking-based online ads are illegal
 url: https://therecord.media/eu-court-rules-tracking-based-ads-illegal
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T08:02:17.866497
+collected_date: 2025-05-31T08:33:32.059004
 source: Therecord
 source_url: https://therecord.media
 author: Suzanne Smalley

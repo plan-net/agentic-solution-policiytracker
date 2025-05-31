@@ -2,7 +2,7 @@
 title: EU close to reaching climate goals despite green backlash
 url: https://www.ft.com/content/4abde860-5977-43f4-8d94-8bd3f013931b
 published_date: 2025-05-25T00:00:00
-collected_date: 2025-05-31T03:10:28.939283
+collected_date: 2025-05-31T08:34:05.086738
 source: Ft
 source_url: https://www.ft.com
 author: Alice Hancock

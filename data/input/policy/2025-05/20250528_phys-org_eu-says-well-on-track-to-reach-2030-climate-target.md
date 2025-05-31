@@ -2,7 +2,7 @@
 title: EU says 'well on track' to reach 2030 climate targets
 url: https://phys.org/news/2025-05-eu-track-climate.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-30T21:54:01.155149
+collected_date: 2025-05-31T08:34:05.086772
 source: Phys
 source_url: https://phys.org
 author: Adrien de Calan

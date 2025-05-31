@@ -2,7 +2,7 @@
 title: EU Set to Propose More Flexible 2040 Emissions Target
 url: https://oilprice.com/Latest-Energy-News/World-News/EU-Set-to-Propose-More-Flexible-2040-Emissions-Target.html
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-30T22:31:11.390439
+collected_date: 2025-05-31T08:34:05.086757
 source: Oilprice
 source_url: https://oilprice.com
 author: Tsvetana Paraskova
