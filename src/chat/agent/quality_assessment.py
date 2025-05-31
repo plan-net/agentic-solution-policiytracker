@@ -41,7 +41,7 @@ class QualityMetrics:
 class ResponseQualityAssessment:
     """Comprehensive response quality assessment system."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.quality_thresholds = {
             QualityDimension.COMPLETENESS: 0.75,
             QualityDimension.ACCURACY: 0.80,
@@ -666,7 +666,7 @@ class QualityOptimizer:
     ) -> dict[str, Any]:
         """Suggest specific optimizations based on quality assessment."""
 
-        optimizations = {
+        optimizations: dict[str, Any] = {
             "priority_improvements": [],
             "strategy_adjustments": {},
             "tool_recommendations": [],
@@ -702,7 +702,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response completeness."""
         return {
             "strategy": "expand_coverage",
@@ -719,7 +719,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response accuracy."""
         return {
             "strategy": "enhance_verification",
@@ -736,7 +736,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response relevance."""
         return {
             "strategy": "focus_intent",
@@ -753,7 +753,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response clarity."""
         return {
             "strategy": "improve_structure",
@@ -770,7 +770,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response coherence."""
         return {
             "strategy": "logical_flow",
@@ -787,7 +787,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response timeliness."""
         return {
             "strategy": "current_information",
@@ -804,7 +804,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize response actionability."""
         return {
             "strategy": "practical_guidance",
@@ -821,7 +821,7 @@ class QualityOptimizer:
         quality_metrics: QualityMetrics,
         query_analysis: dict[str, Any],
         tool_results: list[dict[str, Any]],
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """Optimize source quality."""
         return {
             "strategy": "authoritative_sources",

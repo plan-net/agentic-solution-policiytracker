@@ -18,7 +18,7 @@ class MultiAgentPromptLoader:
     - Memory context integration
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.agents_prompt_dir = Path(__file__).parent.parent.parent / "prompts" / "chat" / "agents"
         self.cache: dict[str, str] = {}
 
@@ -104,7 +104,7 @@ class MultiAgentPromptLoader:
         # Find all conditional blocks
         conditional_pattern = r"\{\{#if\s+([^}]+)\}\}(.*?)\{\{/if\}\}"
 
-        def replace_conditional(match):
+        def replace_conditional(match: re.Match[str]) -> str:
             condition = match.group(1).strip()
             content = match.group(2)
 
@@ -124,7 +124,7 @@ class MultiAgentPromptLoader:
             if condition in context:
                 value = context[condition]
                 # Check if value is truthy
-                if isinstance(value, (list, dict)):
+                if isinstance(value, list | dict):
                     return len(value) > 0
                 elif isinstance(value, str):
                     return value.strip() != ""
@@ -142,7 +142,7 @@ class MultiAgentPromptLoader:
                         return False
 
                 # Check if final value is truthy
-                if isinstance(value, (list, dict)):
+                if isinstance(value, list | dict):
                     return len(value) > 0
                 elif isinstance(value, str):
                     return value.strip() != ""
@@ -160,7 +160,7 @@ class MultiAgentPromptLoader:
         # Pattern to match {{variable}} or {{object.property}}
         variable_pattern = r"\{\{([^#/][^}]*)\}\}"
 
-        def replace_variable(match):
+        def replace_variable(match: re.Match[str]) -> str:
             variable_path = match.group(1).strip()
 
             try:
@@ -196,7 +196,7 @@ class MultiAgentPromptLoader:
             return ""
         elif isinstance(value, bool):
             return "true" if value else "false"
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, list | tuple):
             if len(value) == 0:
                 return ""
             # Format lists in a readable way
@@ -239,8 +239,8 @@ class MultiAgentPromptLoader:
 def build_agent_context(
     user_query: str,
     session_state: dict[str, Any],
-    memory_data: Optional[dict[str, Any]] = None,
-    previous_results: Optional[dict[str, Any]] = None,
+    memory_data: dict[str, Any] | None = None,
+    previous_results: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
     Build comprehensive context for agent prompt rendering.
