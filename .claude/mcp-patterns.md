@@ -36,7 +36,7 @@ For v0.2.0, we're using MCP servers to interact with Graphiti and Neo4j, avoidin
 
 ### Graphiti MCP Server
 **Purpose**: Temporal knowledge graph operations
-**Port**: 8765
+**Port**: 8000 (SSE transport)
 
 **Key Operations**:
 - `add_episode()` - Add documents/events with timestamps
@@ -47,10 +47,8 @@ For v0.2.0, we're using MCP servers to interact with Graphiti and Neo4j, avoidin
 
 **Example Usage**:
 ```python
-# Via LangChain MCP adapter
-from langchain_mcp_adapters import GraphitiMCPClient
-
-client = GraphitiMCPClient(host="localhost", port=8765)
+# Direct MCP communication (Claude Code)
+# MCP server accessible when Docker containers running
 
 # Add political document as episode
 await client.add_episode(
@@ -67,9 +65,9 @@ results = await client.search(
 )
 ```
 
-### Neo4j Memory MCP Server
+### Neo4j Memory MCP Server  
 **Purpose**: Entity tracking with observations
-**Installation**: Via uvx (mcp-neo4j-memory@0.1.3)
+**Deployment**: Docker container via docker-compose.yml
 
 **Key Operations**:
 - `create_entity()` - Create political entities
@@ -80,10 +78,8 @@ results = await client.search(
 
 **Example Usage**:
 ```python
-# Via LangChain MCP adapter
-from langchain_mcp_adapters import Neo4jMemoryMCPClient
-
-client = Neo4jMemoryMCPClient(host="localhost", port=8766)
+# Direct MCP communication (Claude Code)
+# Available when MCP servers running in Docker
 
 # Track policy evolution
 await client.create_entity(
