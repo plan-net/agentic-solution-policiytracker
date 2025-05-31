@@ -1,8 +1,8 @@
 ---
 title: EU to charge €2 fee for Temu, Shein packages
-url: https://www.politico.eu/article/commission-supports-handling-fee-on-small-packages/
+url: https://www.politico.eu/article/commission-supports-handling-fee-on-small-packages/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-28T20:15:18.630002
+collected_date: 2025-05-31T03:10:02.488257
 source: Politico
 source_url: https://www.politico.eu
 author: Koen Verhelst
@@ -27,7 +27,7 @@ EU ministers seal fresh sanctions package against Russia
  
  The package targets the Kremlin’s so-called shadow fleet. 
  
-17 HRS ago 
+3 HRS ago 
  
  2 mins read 
  
@@ -70,7 +70,7 @@ EU ministers seal fresh sanctions package against Russia
  
  The package targets the Kremlin’s so-called shadow fleet. 
  
-17 HRS ago 
+3 HRS ago 
  
  2 mins read 
  
@@ -93,7 +93,7 @@ EU ministers seal fresh sanctions package against Russia
  
  The package targets the Kremlin’s so-called shadow fleet. 
  
-17 HRS ago 
+3 HRS ago 
  
  2 mins read
 

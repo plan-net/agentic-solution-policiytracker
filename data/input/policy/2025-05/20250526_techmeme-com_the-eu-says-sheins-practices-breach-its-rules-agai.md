@@ -2,69 +2,77 @@
 title: The EU says Shein's practices breach its rules against false discounts, deceptive product labels, and more, and warns Shein may face fines if it doesn't comply
 url: https://www.techmeme.com/250526/p14
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-29T19:05:37.577452
+collected_date: 2025-05-31T08:02:20.856955
 source: Techmeme
 source_url: https://www.techmeme.com
-description: "May 27, 2025, 7:30 AM 
+description: "Sponsor Posts 
+ 
+ Google: 
+ Generate videos with Veo 3 in Google Gemini   —  Create high-quality, 8-second videos with Veo 3, our state-of-the-art AI video generator.  Try it with a Google AI Pro plan or get the highest access with the Ultra plan. 
  
  
- 
- 
- 
- Top News 
- 
- More:   CoinDesk, The Baltimore Banner, Bitcoinist.com, Google Online Security Blog, Benzinga, Cryptopolitan, BeInCrypto, COINOTAG NEWS, Cointelegraph, TechSpot, CSO, Motley Fool, and TipRanks Financial.  Forums:   Hacker News 
- 
- More:..."
+ UiPath: 
+ UiPath Unveils 10 Innovations..."
 language: en
 collection_type: policy_landscape
 ---
 
 # The EU says Shein's practices breach its rules against false discounts, deceptive product labels, and more, and warns Shein may face fines if it doesn't comply
 
-May 27, 2025, 7:30 AM 
+Sponsor Posts 
+ 
+ Google: 
+ Generate videos with Veo 3 in Google Gemini   —  Create high-quality, 8-second videos with Veo 3, our state-of-the-art AI video generator.  Try it with a Google AI Pro plan or get the highest access with the Ultra plan. 
  
  
- 
- 
- 
- Top News 
- 
- More:   CoinDesk, The Baltimore Banner, Bitcoinist.com, Google Online Security Blog, Benzinga, Cryptopolitan, BeInCrypto, COINOTAG NEWS, Cointelegraph, TechSpot, CSO, Motley Fool, and TipRanks Financial.  Forums:   Hacker News 
- 
- More:...
-
-May 27, 2025, 7:30 AM
-
-Top News 
- 
- More:   CoinDesk, The Baltimore Banner, Bitcoinist.com, Google Online Security Blog, Benzinga, Cryptopolitan, BeInCrypto, COINOTAG NEWS, Cointelegraph, TechSpot, CSO, Motley Fool, and TipRanks Financial.  Forums:   Hacker News 
- 
- More:   Silicon Republic, The Register, BBC, Business Insider, Tech in Asia, Bloomberg, Reuters, Euronews, The Irish Times, European Commission, DutchNews.nl, Euractiv, Irish Independent, The Independent, and The Standard
+ UiPath: 
+ UiPath Unveils 10 Innovations...
 
 Sponsor Posts 
  
- Zoho: 
- Pay bosses in units of purpose   —  On average, it takes just 14 seconds for candidates to decide whether to apply for a job.  How can you craft job descriptions that truly connect — from entry-level to C-suite?
+ Google: 
+ Generate videos with Veo 3 in Google Gemini   —  Create high-quality, 8-second videos with Veo 3, our state-of-the-art AI video generator.  Try it with a Google AI Pro plan or get the highest access with the Ultra plan.
+
+UiPath: 
+ UiPath Unveils 10 Innovations that Will Shape the Agentic Future   —  Orchestration engine, API workflows and agentic testing among key features of new UiPath Platform™ for agentic automation, launched at UiPath DevCon 2025
+
+Zoho: 
+ Sandbox testing: Create Mail Agents in sandbox mode   —  Email is considered the backbone for any organization's communication.  That's even more true for transactional emails, which are operation-critical for any business.
 
 IDrive: 
  Protecting your Cloud Applications Data   —  Backing up Office 365, Google Workspace, Dropbox &amp; Box data is critical to preventing data loss or corruption, complying with laws and avoiding critical downtime in case of a disaster.
 
-About This Page 
- This is a Techmeme archive page.
-It shows how the site appeared at 7:30 AM ET, May 27, 2025.
+Featured Podcasts 
  
- The most current version of the site as always is available at our home page.
-To view an earlier snapshot click here
-and then modify the date indicated.
-
-From Mediagazer 
- David Folkenflik / NPR: 
- Bloomberg: 
- Charlotte Tobitt / Press Gazette:
-
-Earlier Picks 
+ Techmeme Ride Home: 
+ Big Meta/Anduril Deal Is A Big Deal The day's tech news, every day at 5pm ET. Fifteen minutes and you're up to date. 
  
- More:   Ledger Insights, Reuters, Fortune, Cointelegraph, The Coin Republic, CoinJournal, NewsBTC, Bitcoin Insider, Benzinga, Proactive, Blockchain News, The Block, Tech in Asia, CoinDesk, Wccftech, PYMNTS.com, NFTgators, The Independent, Raw Story, ZyCrypto, BeInCrypto, The Wrap, crypto.news, Times of India, NewsMax.com, Decrypt, Bitcoin Magazine, Crypto Briefing, New York Post, CoinDesk, Jerusalem Post, CoinGape, and CryptoPotato
+Subscribe to Techmeme Ride Home.
+ Sponsor this podcast
 
-More:   The Overspill, Moneycontrol, Livemint, The Gateway Pundit, The Independent, BGR, WinBuzzer, Cyber Security News, Cryptopolitan, Tom's Hardware, Daily Mail, Hindustan Times, CryptoSlate, BetaNews, Digit, Neowin, and Telegraph
+The Social Radars: 
+ Ron Conway, Founder, SV Angel Part 4 (Bonus) Come be a fly on the wall as Y Combinator's Jessica Livingston and Carolynn Levy talk to some of the most successful founders in Silicon Valley about how they did it. 
+ 
+Subscribe to The Social Radars.
+
+Hard Fork: 
+ The A.I. Jobpocalypse + Building at Anthropic with Mike Krieger + Hard Fork Crimes Division The future is already here. Each week, journalists Kevin Roose and Casey Newton explore and make sense of the latest in the rapidly changing world of tech. 
+ 
+Subscribe to Hard Fork.
+
+The Logan Bartlett Show: 
+ Rick Smith (CEO, Axon): The Wild Ride From Near-Bankruptcy to $50B+ A podcast hosted by Logan Bartlett, an investor at Redpoint Ventures, covering tech with industry insiders. 
+ 
+Subscribe to The Logan Bartlett Show.
+
+The Talk Show With John Gruber: 
+ 'Sewing Machine Repair Shop', With Patrick McGee The director's commentary track for Daring Fireball. Long digressions on Apple, technology, design, movies, and more. 
+ 
+Subscribe to The Talk Show With John Gruber.
+
+Decoder with Nilay Patel: 
+ How private equity kills companies and communities A show from the Verge about big ideas - and other problems. 
+ 
+Subscribe to Decoder with Nilay Patel.
+
+Add your postcast here

@@ -1,8 +1,8 @@
 ---
 title: Online Retail Scheme
 url: https://www.gov.ie/en/department-of-enterprise-trade-and-employment/publications/online-retail-scheme/
-published_date: 2025-05-26T19:05:54.767000
-collected_date: 2025-05-29T19:05:55.950585
+published_date: 2025-05-26T19:38:35.980000
+collected_date: 2025-05-30T19:38:37.022623
 source: Gov
 source_url: https://www.gov.ie
 description: The following is a list of legislation relevant to the retail sector. This list is non-exhaustive and whilst every effort has been made to ensure the accuracy of the information provided, the department, its servants or agents assume no responsibility for and give no guarantees, undertakings or...

@@ -2,7 +2,7 @@
 title: The European Accessibility Act Is Here: Are Your Digital Experiences Compliant?
 url: https://www.cmswire.com/digital-marketing/the-european-accessibility-act-is-here-are-your-digital-experiences-compliant/?utm_source=cmswire.com&utm_medium=web&utm_campaign=cm&utm_content=all-articles-rss
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-28T15:41:24.229079
+collected_date: 2025-05-30T23:18:36.842754
 source: Cmswire
 source_url: https://www.cmswire.com
 author: Wanda Cadigan

@@ -2,7 +2,7 @@
 title: Verbraucherzentrale NRW requests Meta to cease and desist AI training in the EU
 url: https://noyb.eu/en/verbraucherzentrale-nrw-requests-meta-cease-and-desist-ai-training-eu
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-29T19:05:41.192606
+collected_date: 2025-05-31T02:33:35.429902
 source: Noyb
 source_url: https://noyb.eu
 description: On 14 April, Meta announced that it would use the personal data of European users for artificial intelligence (AI) training in the future. Starting on 27 May, the company will use all posts published on Instagram and Facebook for AI training. The company falsely claims to have a...

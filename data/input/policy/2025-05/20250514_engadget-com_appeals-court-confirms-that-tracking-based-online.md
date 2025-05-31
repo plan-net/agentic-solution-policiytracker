@@ -1,8 +1,8 @@
 ---
 title: Appeals court confirms that tracking-based online advertising is illegal in Europe
-url: https://www.engadget.com/big-tech/appeals-court-confirms-that-tracking-based-online-advertising-is-illegal-in-europe-223714124.html?src=rss
+url: https://www.engadget.com/big-tech/appeals-court-confirms-that-tracking-based-online-advertising-is-illegal-in-europe-223714124.html
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-29T19:05:37.577531
+collected_date: 2025-05-31T08:02:21.676053
 source: Engadget
 source_url: https://www.engadget.com
 author: Anna Washenko

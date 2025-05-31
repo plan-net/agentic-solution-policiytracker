@@ -1,0 +1,20 @@
+---
+title: Eleven countries demand EU weakens deforestation law further, document shows
+url: https://www.reuters.com/sustainability/climate-energy/eleven-countries-demand-eu-weakens-deforestation-law-further-document-shows-2025-05-26/
+published_date: 2025-05-25T23:18:57.912000
+collected_date: 2025-05-30T23:18:59.103990
+source: Reuters
+source_url: https://www.reuters.com
+author: Kate Abnett
+description: European Union flags flutter outside the European Commission headquarters, in Brussels, Belgium June 30, 2019. REUTERS/Yves Herman Purchase Licensing Rights, opens new tab BRUSSELS, May 26 - The European Union is facing further pressure from member countries to delay and weaken its upcoming law to...
+language: en
+collection_type: policy_landscape
+---
+
+# Eleven countries demand EU weakens deforestation law further, document shows
+
+*By Kate Abnett*
+
+European Union flags flutter outside the European Commission headquarters, in Brussels, Belgium June 30, 2019. REUTERS/Yves Herman Purchase Licensing Rights, opens new tab BRUSSELS, May 26 - The European Union is facing further pressure from member countries to delay and weaken its upcoming law to...
+
+European Union flags flutter outside the European Commission headquarters, in Brussels, Belgium June 30, 2019. REUTERS/Yves Herman Purchase Licensing Rights, opens new tab BRUSSELS, May 26 - The European Union is facing further pressure from member countries to delay and weaken its upcoming law to restrict deforestation, with 11 governments demanding changes, a document seen by Reuters showed. The world-first policy aims to end the 10% of global deforestation fuelled by EU consumption of imported soy, beef, palm oil and other products, but has become a politically contested part of Europe's green agenda. Sign up here. The EU already delayed its launch by a year to Dec. 2025, following complaints from trading partners including Brazil and the U.S., and cut back reporting rules after industry criticism. Last week, the Commission said it would spare the vast majority of countries the strictest checks. A group of 11 countries, led by Austria and Luxembourg, has demanded the European Commission simplify the rules further, and urged delaying its application date again. "The requirements imposed on farmers and foresters remain high, if not impossible to implement. They are disproportionate to the regulation's objective," the countries said in a paper, which EU agriculture ministers will discuss in Brussels on Monday. Bulgaria, Croatia, the Czech Republic, Finland, Italy, Latvia, Portugal, Romania and Slovenia also signed the paper. From December, the EU policy would require operators placing soy, beef, palm oil, cocoa, coffee and other goods onto the EU market, to provide due diligence statements proving the commodities did not fuel deforestation. Due diligence requirements would also apply to EU exports, making countries worried about the impact on their own industries. Companies could face penalties of up to 4% of their EU turnover for non-compliance. The governments proposed amendments including creating a new class of countries deemed to have very low risk of deforestation, which would be exempt from customs checks and tracking the origin of goods. A Commission spokesperson did not immediately respond to a request for comment. Reporting by Kate Abnett; Editing by Aidan Lewis Our Standards: The Thomson Reuters Trust Principles., opens new tab Kate Abnett covers EU climate and energy policy in Brussels, reporting on Europe’s green transition and how climate change is affecting people and ecosystems across the EU. Other areas of coverage include international climate diplomacy. Before joining Reuters, Kate covered emissions and energy markets for Argus Media in London. She is part of the teams whose reporting on Europe’s energy crisis won two Reuters journalist of the year awards in 2022.

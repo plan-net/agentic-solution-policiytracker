@@ -2,7 +2,7 @@
 title: European Commission: Proposal for simplification of GDPR record-keeping obligations of organisations with fewer than 750 employees
 url: https://www.noerr.com/en/insights/european-commission-proposal-for-simplification-of-gdpr-record-keeping-obligations-of-organisations-with-fewer-than-750-employees
 published_date: 2025-05-22T00:00:00
-collected_date: 2025-05-29T07:24:15.975923
+collected_date: 2025-05-30T21:21:15.343619
 source: Noerr
 source_url: https://www.noerr.com
 author: Noerr

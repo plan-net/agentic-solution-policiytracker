@@ -1,8 +1,8 @@
 ---
 title: Shein faces scrutiny over alleged consumer law violations in EU
 url: https://www.just-style.com/news/shein-eu-consumer-law/
-published_date: 2025-05-27T19:05:51.372000
-collected_date: 2025-05-29T19:05:52.533953
+published_date: 2025-05-27T08:02:58.546000
+collected_date: 2025-05-31T08:02:29.130636
 source: Just Style
 source_url: https://www.just-style.com
 author: Jangoulun Singsit

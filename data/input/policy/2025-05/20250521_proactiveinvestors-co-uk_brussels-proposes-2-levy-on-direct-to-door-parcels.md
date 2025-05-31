@@ -2,7 +2,7 @@
 title: Brussels proposes €2 levy on direct-to-door parcels amid China import surge
 url: https://www.proactiveinvestors.co.uk/companies/news/1071601/brussels-proposes-2-levy-on-direct-to-door-parcels-amid-china-import-surge-1071601.html
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T11:28:16.457940
+collected_date: 2025-05-30T22:30:45.545196
 source: Proactiveinvestors
 source_url: https://www.proactiveinvestors.co.uk
 author: Ian Lyall

@@ -2,7 +2,7 @@
 title: Transatlantic antitrust ties fray as US and EU regulators squabble
 url: https://www.ft.com/content/43491c6d-c6d7-40ae-827b-2fcd61b7ab89
 published_date: 2025-05-10T00:00:00
-collected_date: 2025-05-29T19:06:05.905524
+collected_date: 2025-05-30T07:51:28.987504
 source: Ft
 source_url: https://www.ft.com
 author: Stefania Palma, Barbara Moens, Suzi Ring, James Fontanella-Khan

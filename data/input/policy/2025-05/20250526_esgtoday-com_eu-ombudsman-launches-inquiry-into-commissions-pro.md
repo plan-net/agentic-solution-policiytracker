@@ -1,8 +1,8 @@
 ---
 title: EU Ombudsman Launches Inquiry into Commission’s Process to Reduce Sustainability Reporting, Due Diligence Requirements
 url: https://www.esgtoday.com/eu-ombudsman-launches-inquiry-into-commissions-process-to-reduce-sustainability-reporting-due-diligence-requirements/
-published_date: 2025-05-26T19:06:16.140000
-collected_date: 2025-05-29T19:06:17.695521
+published_date: 2025-05-26T23:18:57.912000
+collected_date: 2025-05-30T23:18:59.103958
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

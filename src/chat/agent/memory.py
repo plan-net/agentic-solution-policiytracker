@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
-from langchain_core.messages import BaseMessage, trim_messages, count_tokens_approximately
+from langchain_core.messages import BaseMessage
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.store.memory import InMemoryStore
 import logging
@@ -50,15 +50,11 @@ class MemoryManager:
             
             messages = checkpoint["messages"]
             
-            # Trim messages to fit token limit
-            trimmed_messages = trim_messages(
-                messages,
-                strategy="last",
-                token_counter=count_tokens_approximately,
-                max_tokens=max_tokens,
-                start_on="human",
-                end_on=("human", "tool")
-            )
+            # Simple message trimming - keep last N messages if too many
+            if len(messages) > 20:  # Simple heuristic instead of token counting
+                trimmed_messages = messages[-20:]
+            else:
+                trimmed_messages = messages
             
             return trimmed_messages
             
@@ -255,8 +251,9 @@ class ConversationSummarizer:
     
     async def should_summarize(self, messages: List[BaseMessage]) -> bool:
         """Check if conversation should be summarized."""
-        token_count = count_tokens_approximately(messages)
-        return token_count > self.max_tokens_before_summary
+        # Simple heuristic: estimate 50 tokens per message
+        estimated_tokens = len(messages) * 50
+        return estimated_tokens > self.max_tokens_before_summary
     
     async def summarize_conversation(
         self, 

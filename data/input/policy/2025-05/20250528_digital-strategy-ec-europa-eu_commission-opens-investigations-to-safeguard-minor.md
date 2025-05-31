@@ -1,8 +1,8 @@
 ---
 title: Commission opens investigations to safeguard minors from pornographic content under the Digital Services Act
 url: https://digital-strategy.ec.europa.eu/en/news/commission-opens-investigations-safeguard-minors-pornographic-content-under-digital-services-act
-published_date: 2025-05-28T07:24:21.799000
-collected_date: 2025-05-29T07:24:23.728065
+published_date: 2025-05-28T08:44:44.857000
+collected_date: 2025-05-30T08:44:45.854486
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: The DSA aims to ensure a safer environment online for minors, in this context, the Commission has opened formal proceedings against Pornhub, Stripchat, XNXX, and XVideos for suspected breaches of the Digital Services Act (DSA). In parallel, Member States, coming together in the European Board for...

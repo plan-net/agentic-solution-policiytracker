@@ -2,7 +2,7 @@
 title: ESMA Asks Firms and Trade Bodies: Are Rules Making It Harder for Retail Investment?
 url: https://www.financemagnates.com/forex/esma-asks-retail-investors-are-rules-making-it-harder-to-invest/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T14:35:59.319751
+collected_date: 2025-05-31T02:02:24.928146
 source: Financemagnates
 source_url: https://www.financemagnates.com
 author: Tareq Sikder
@@ -85,14 +85,62 @@ advice and portfolio management. Questions are also being raised about whether
 retail investors find post-sale reporting, such as quarterly statements or 10%
 loss alerts, helpful or excessive. The deadline for responses is 21 July 2025. According to
 ESMA, the feedback will be used to evaluate potential regulatory changes to
-make EU capital markets more accessible and relevant to retail investors. 1557 Articles 
+make EU capital markets more accessible and relevant to retail investors. 1562 Articles 
  26 Followers
  
  A Forex technical analyst and writer who has been engaged in financial writing for 12 years.
- 1557 Articles 
+ 1562 Articles 
  26 Followers
  
  More from the Author
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna 
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna 
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna 
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna 
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna 
+ Bybit Gains MiCAR License, Establishes European Headquarters in Vienna
+ 
+ Thursday, 29/05/2025 | 15:52 GMT
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success” 
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success”
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success” 
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success”
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success” 
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success”
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success” 
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success”
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success” 
+ FMAS:25 Kicks Off in Cape Town: “Building the Trust, Finding Success”
+ 
+ Thursday, 29/05/2025 | 08:09 GMT
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure 
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure 
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure 
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure 
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure 
+ iSAM Securities Opens Limassol Office to Support Retail Trading Infrastructure
+ 
+ Thursday, 29/05/2025 | 06:27 GMT
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal 
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal 
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal 
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal 
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal 
+ SEC Begins Review of First Spot XRP ETF Bid with WisdomTree Proposal
+ 
+ Wednesday, 28/05/2025 | 13:29 GMT
  ESMA Pushes Social Media Giants to Address Unauthorised Financial Ads 
  ESMA Pushes Social Media Giants to Address Unauthorised Financial Ads
  ESMA Pushes Social Media Giants to Address Unauthorised Financial Ads 
@@ -117,175 +165,205 @@ make EU capital markets more accessible and relevant to retail investors. 1557 A
  Finfluencers Telling You What to Trade? UAE Says Not Without a Licence
  
  Wednesday, 28/05/2025 | 10:18 GMT
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration 
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration 
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration 
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration 
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration 
- Traders Stay on Platform as Spotware Refines Referrals with cTrader Invite Integration
+ Retail FX FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
  
- Wednesday, 28/05/2025 | 09:55 GMT
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase 
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase 
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase 
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase 
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase 
- Moomoo Moves Beyond Stocks with US Crypto Launch Backed by Coinbase
+ Thursday, 29/05/2025 | 19:06 GMT
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
  
- Tuesday, 27/05/2025 | 14:20 GMT
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale 
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale 
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale 
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale 
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale 
- Circle Seeks $6.7 Billion Valuation in NYSE IPO with $624 Million Share Sale
+ Thursday, 29/05/2025 | 17:13 GMT
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
  
- Tuesday, 27/05/2025 | 11:55 GMT
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership 
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership 
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership 
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership 
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership 
- Tradu’s European Retail Traders Get Secure Authentication via Salt Edge Partnership
+ Thursday, 29/05/2025 | 13:51 GMT
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
  
- Tuesday, 27/05/2025 | 10:51 GMT
- Retail FX FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
+ Thursday, 29/05/2025 | 10:07 GMT
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets 
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets 
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets 
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets 
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets 
+ Futu’s Q1 Revenue Receives Massive Boost as Trading Volume Skyrockets
  
- Wednesday, 28/05/2025 | 09:30 GMT
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
+ Thursday, 29/05/2025 | 09:29 GMT
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase 
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase 
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase 
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase 
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase 
+ Interactive Brokers UK’s 2024 Revenue Pushed Higher with 142% Client Account Increase
  
- Wednesday, 28/05/2025 | 08:40 GMT
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
+ Thursday, 29/05/2025 | 07:18 GMT
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures 
+ FTMO-Owned OANDA Fined $600,000 by U.S. Regulator Over Compliance Failures
  
- Wednesday, 28/05/2025 | 08:26 GMT
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
+ Thursday, 29/05/2025 | 19:06 GMT
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist 
+ Why Over 40 Trading Platforms Have Found Themselves on America’s Derivatives Blacklist
  
- Wednesday, 28/05/2025 | 07:59 GMT
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker” 
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker”
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker” 
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker”
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker” 
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker”
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker” 
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker”
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker” 
- XTB UK Posts 120% Jump in Annual Profit Despite Revenue Decline: “Transition from a Pure CFD Broker”
+ Thursday, 29/05/2025 | 17:13 GMT
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing 
+ New CFD Brokerage ANAX Capital Launches in Dubai With Estimated $8 Million Backing
  
- Wednesday, 28/05/2025 | 05:06 GMT
- Exclusive: IG Group to Exit South Africa 
- Exclusive: IG Group to Exit South Africa
- Exclusive: IG Group to Exit South Africa 
- Exclusive: IG Group to Exit South Africa
- Exclusive: IG Group to Exit South Africa 
- Exclusive: IG Group to Exit South Africa
- Exclusive: IG Group to Exit South Africa 
- Exclusive: IG Group to Exit South Africa
- Exclusive: IG Group to Exit South Africa 
- Exclusive: IG Group to Exit South Africa
+ Thursday, 29/05/2025 | 13:51 GMT
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users 
+ New Details on MetaTrader Crash in China: Outage Lasted Over a Week, Affected New Users
  
- Tuesday, 27/05/2025 | 15:33 GMT
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch 
- FOREX.com Projects 100% Jump in New Accounts From Simple eKYC Switch
- 
- Wednesday, 28/05/2025 | 09:30 GMT
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential 
- NAGA Shares Hit 4-Month High as Analyst Predicts 130% Upside Potential
- 
- Wednesday, 28/05/2025 | 08:40 GMT
- cTrader Users Gain Access to Professional Money Management 
- cTrader Users Gain Access to Professional Money Management
- 
- Wednesday, 28/05/2025 | 08:26 GMT
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform 
- Robinhood Targets 11 Million UK Traders with Desktop Trading Platform
- 
- Wednesday, 28/05/2025 | 07:59 GMT
+ Thursday, 29/05/2025 | 10:07 GMT
  
  Featured Videos
  
- Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ Beyond Aggregation: Building the Liquidity Infrastructure with B2CONNECT
  
- Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ Beyond Aggregation: Building the Liquidity Infrastructure with B2CONNECT
  
- Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ Beyond Aggregation: Building the Liquidity Infrastructure with B2CONNECT
  
- Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ Beyond Aggregation: Building the Liquidity Infrastructure with B2CONNECT
  
- In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
-Watch the full video to get a detailed review and find out if XM is right for your trading style.
-👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
-#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ In this webinar, Nahum Greenberg, Product Manager of B2Connect at B2BROKER, presents B2Connect, a cryptonative liquidity hub. He discusses how it addresses challenges in fragmented liquidity and connectivity for both digital and traditional assets. The session includes a live demo of B2Connect's features, like margin account management and its synthetics engine for custom trading instruments. Greenberg explains how B2Connect offers competitive advantages to liquidity providers and trading venues through enhanced liquidity and unique instrument offerings.
+📣 Stay updated with the latest in finance and trading! 
+Follow Finance Magnates across our social media platforms for news, insights, and event updates. 
+Connect with us today:
+🔗 LinkedIn: / financemagnates 
+👍 Facebook: / financemagnates 
+📸 Instagram: / financemagnates_official 
+🐦 X: https://x.com/financemagnates?
+🎥 TikTok: https://www.tiktok.com/tag/financemag...
+▶️ YouTube: / @financemagnates_official 
+#B2Core #CRM #Fintech #B2Broker #ForexCRM #CryptoCRM #TradingPlatforms #KYC #Onboarding #CustomerManagement
+Don't miss out on our latest videos, interviews, and event coverage. 
+Subscribe to our YouTube channel for more!
  
- In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
-Watch the full video to get a detailed review and find out if XM is right for your trading style.
-👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
-#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ In this webinar, Nahum Greenberg, Product Manager of B2Connect at B2BROKER, presents B2Connect, a cryptonative liquidity hub. He discusses how it addresses challenges in fragmented liquidity and connectivity for both digital and traditional assets. The session includes a live demo of B2Connect's features, like margin account management and its synthetics engine for custom trading instruments. Greenberg explains how B2Connect offers competitive advantages to liquidity providers and trading venues through enhanced liquidity and unique instrument offerings.
+📣 Stay updated with the latest in finance and trading! 
+Follow Finance Magnates across our social media platforms for news, insights, and event updates. 
+Connect with us today:
+🔗 LinkedIn: / financemagnates 
+👍 Facebook: / financemagnates 
+📸 Instagram: / financemagnates_official 
+🐦 X: https://x.com/financemagnates?
+🎥 TikTok: https://www.tiktok.com/tag/financemag...
+▶️ YouTube: / @financemagnates_official 
+#B2Core #CRM #Fintech #B2Broker #ForexCRM #CryptoCRM #TradingPlatforms #KYC #Onboarding #CustomerManagement
+Don't miss out on our latest videos, interviews, and event coverage. 
+Subscribe to our YouTube channel for more!
  
- In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
-Watch the full video to get a detailed review and find out if XM is right for your trading style.
-👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
-#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ In this webinar, Nahum Greenberg, Product Manager of B2Connect at B2BROKER, presents B2Connect, a cryptonative liquidity hub. He discusses how it addresses challenges in fragmented liquidity and connectivity for both digital and traditional assets. The session includes a live demo of B2Connect's features, like margin account management and its synthetics engine for custom trading instruments. Greenberg explains how B2Connect offers competitive advantages to liquidity providers and trading venues through enhanced liquidity and unique instrument offerings.
+📣 Stay updated with the latest in finance and trading! 
+Follow Finance Magnates across our social media platforms for news, insights, and event updates. 
+Connect with us today:
+🔗 LinkedIn: / financemagnates 
+👍 Facebook: / financemagnates 
+📸 Instagram: / financemagnates_official 
+🐦 X: https://x.com/financemagnates?
+🎥 TikTok: https://www.tiktok.com/tag/financemag...
+▶️ YouTube: / @financemagnates_official 
+#B2Core #CRM #Fintech #B2Broker #ForexCRM #CryptoCRM #TradingPlatforms #KYC #Onboarding #CustomerManagement
+Don't miss out on our latest videos, interviews, and event coverage. 
+Subscribe to our YouTube channel for more!
  
- In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
-Watch the full video to get a detailed review and find out if XM is right for your trading style.
-👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
-#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ In this webinar, Nahum Greenberg, Product Manager of B2Connect at B2BROKER, presents B2Connect, a cryptonative liquidity hub. He discusses how it addresses challenges in fragmented liquidity and connectivity for both digital and traditional assets. The session includes a live demo of B2Connect's features, like margin account management and its synthetics engine for custom trading instruments. Greenberg explains how B2Connect offers competitive advantages to liquidity providers and trading venues through enhanced liquidity and unique instrument offerings.
+📣 Stay updated with the latest in finance and trading! 
+Follow Finance Magnates across our social media platforms for news, insights, and event updates. 
+Connect with us today:
+🔗 LinkedIn: / financemagnates 
+👍 Facebook: / financemagnates 
+📸 Instagram: / financemagnates_official 
+🐦 X: https://x.com/financemagnates?
+🎥 TikTok: https://www.tiktok.com/tag/financemag...
+▶️ YouTube: / @financemagnates_official 
+#B2Core #CRM #Fintech #B2Broker #ForexCRM #CryptoCRM #TradingPlatforms #KYC #Onboarding #CustomerManagement
+Don't miss out on our latest videos, interviews, and event coverage. 
+Subscribe to our YouTube channel for more!
  
  More Videos
  
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ Trading with XM: What You Need to Know | Full Review by Finance Magnates
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
+ In this video, we take a closer look at XM (@xmglobal ) a globally recognized online broker, serving over 15 million clients worldwide. We cover their trading model, account types, fees, and the different instruments available for trading. You’ll also learn about XM’s regulation, security, educational tools, and how their platforms work.
+Watch the full video to get a detailed review and find out if XM is right for your trading style.
+👉 Don't forget to check out the full XM Review Listing on the Finance Magnates Directory at: https://directory.financemagnates.com/forex-brokers/xmcom/ 
+#XM #XMReview #Forex #FinanceMagnates #ForexBroker #forexreview #xmbrokerreview
+ 
  Introducing iFX EXPO LATAM 2025
  
  Introducing iFX EXPO LATAM 2025
@@ -411,46 +489,4 @@ Connect with us today: 🔗 LinkedIn: / financemagnates
 🎥 TikTok: https://www.tiktok.com/tag/financemag...
 ▶️ YouTube: / @financemagnates_official #B2Core #IBProgram #Brokerage #FinTech #PartnerProgram #AffiliateMarketing #FinancialServices
 Don't miss out on our latest videos, interviews, and event coverage. Subscribe to our YouTube channel for more!
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- Elevate Your Visibility in Africa's Trading Hub
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
- 
- 🚀 Africa’s online trading industry is evolving fast—will you be at the forefront? 🌍
-FMAS:25 is where top industry leaders, fintech innovators, and traders connect.🔥Don’t miss the opportunity to showcase your brand in Africa’s trading hub. Secure your spot today! ⏳
-🔗 Exhibit Now 👉 https://events.financemagnates.com/event/FMAS25/exhibit-sponsor
-#fmas25 #fintech #onlinetrading #forextrading #networking #finance #capetown #southafrica #summit #exhibitors #may2025
  See all videos! " # $ % &amp; ' () * +, -. / 0 1 2 3 4 5 6 7 8 9:; &lt; = &gt;? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { |}! " # $ % &amp; ' () * +, -. / 0 1 2 3 4 5 6 7 8 9:; &lt; = &gt;? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { |}

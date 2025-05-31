@@ -2,7 +2,7 @@
 title: TikTok breached digital advertising rules, European Commission says
 url: https://www.politico.eu/article/commission-says-tiktok-breached-dsa-ad-rules/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-29T14:04:51.112266
+collected_date: 2025-05-30T23:18:37.719898
 source: Politico
 source_url: https://www.politico.eu
 author: Eliza Gkritsi

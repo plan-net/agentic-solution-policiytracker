@@ -2,7 +2,7 @@
 title: Italy Fines Replika €5 Million for Data Privacy Violations, Launches Further AI Probe
 url: https://babl.ai/italy-fines-replika-e5-million-for-data-privacy-violations-launches-further-ai-probe/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T19:05:37.242288
+collected_date: 2025-05-30T19:38:19.640206
 source: Babl
 source_url: https://babl.ai
 author: Jeremy Werner

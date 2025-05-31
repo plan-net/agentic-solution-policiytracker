@@ -1,8 +1,8 @@
 ---
 title: EU Warns Shein Over Systemic Consumer Rights Violations Across Europe
 url: https://impactpolicies.org/news/478/eu-warns-shein-over-systemic-consumer-rights-violations-across-europe
-published_date: 2025-05-28T12:57:05.912000
-collected_date: 2025-05-29T12:57:06.887992
+published_date: 2025-05-28T07:51:16.607000
+collected_date: 2025-05-30T07:51:17.766977
 source: Impactpolicies
 source_url: https://impactpolicies.org
 description: "EU Warns Shein Over Systemic Consumer Rights Violations Across Europe 

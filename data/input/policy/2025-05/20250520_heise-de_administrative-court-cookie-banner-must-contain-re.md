@@ -2,7 +2,7 @@
 title: "Administrative court: Cookie banner must contain \"Reject all\" button"
 url: https://www.heise.de/en/news/Administrative-court-Cookie-banner-must-contain-Reject-all-button-10390520.html
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T19:05:41.192734
+collected_date: 2025-05-31T08:03:24.313575
 source: Heise
 source_url: https://www.heise.de
 author: Stefan Krempl
