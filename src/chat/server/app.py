@@ -164,6 +164,52 @@ class ChatServer:
         """Health check endpoint."""
         return {"status": "healthy", "service": "chat-server"}
     
+    @app.get("/debug/test-stream")
+    async def debug_test_stream(self, query: str = "What is GDPR?"):
+        """Debug endpoint to test streaming without OpenAI compatibility layer."""
+        logger.info(f"Debug test stream with query: {query}")
+        
+        try:
+            streaming_orchestrator = await self._get_streaming_orchestrator()
+            session_id = f"debug_{uuid.uuid4().hex[:8]}"
+            
+            chunks = []
+            async for chunk in streaming_orchestrator.process_query_with_streaming(
+                query=query,
+                session_id=session_id,
+                user_id="debug_user"
+            ):
+                chunk_info = {
+                    "chunk_number": len(chunks) + 1,
+                    "type": chunk.get("type"),
+                    "timestamp": chunk.get("timestamp"),
+                    "data_type": type(chunk.get("data")).__name__ if "data" in chunk else "N/A",
+                    "data_keys": list(chunk.get("data", {}).keys()) if isinstance(chunk.get("data"), dict) else "N/A",
+                    "data_preview": str(chunk.get("data", ""))[:200] + "..." if chunk.get("data") else "None"
+                }
+                chunks.append(chunk_info)
+                logger.info(f"Debug chunk {len(chunks)}: {chunk_info}")
+            
+            return {
+                "status": "completed", 
+                "query": query,
+                "session_id": session_id,
+                "total_chunks": len(chunks),
+                "chunks": chunks
+            }
+            
+        except Exception as e:
+            logger.error(f"Debug stream error: {e}")
+            return {"status": "error", "error": str(e)}
+    
+    @app.post("/debug/simple-stream")
+    async def debug_simple_stream(self, query: str = "What is GDPR?"):
+        """Ultra-simple streaming test that bypasses multi-agent system."""
+        return StreamingResponse(
+            self._simple_test_stream("debug-model", query),
+            media_type="text/event-stream"
+        )
+    
     @app.get("/v1/models")
     async def list_models(self) -> ModelsResponse:
         """OpenAI-compatible models endpoint."""
@@ -192,8 +238,11 @@ class ChatServer:
         if not user_message:
             user_message = "Please provide a message."
         
+        logger.info(f"Chat request: stream={request.stream}, message='{user_message[:50]}...'")
+        
         # Handle streaming vs non-streaming properly
         if request.stream:
+            logger.info("Using streaming response")
             return StreamingResponse(
                 self._stream_chat_response(request.model, user_message),
                 media_type="text/event-stream",
@@ -203,6 +252,7 @@ class ChatServer:
                 }
             )
         else:
+            logger.info("Using non-streaming response")
             return await self._non_streaming_response(request.model, user_message)
     
     async def _non_streaming_response(self, model: str, user_message: str) -> ChatCompletionResponse:
@@ -248,57 +298,84 @@ class ChatServer:
         )
     
     async def _stream_chat_response(self, model: str, user_message: str) -> AsyncGenerator[str, None]:
-        """Stream chat response using multi-agent streaming orchestrator."""
+        """Stream chat response with proper single thinking block and reasoning."""
         chat_id = f"chatcmpl-{uuid.uuid4().hex[:29]}"
         created = int(time.time())
         
         try:
-            # Get streaming orchestrator for multi-agent processing
-            streaming_orchestrator = await self._get_streaming_orchestrator()
+            logger.info(f"Starting streaming response for message: {user_message[:50]}...")
             
-            # Generate unique session ID for this request
+            # Get streaming orchestrator
+            streaming_orchestrator = await self._get_streaming_orchestrator()
             session_id = f"session_{uuid.uuid4().hex[:16]}"
             
-            # Use streaming orchestrator's capability
-            async for chunk in streaming_orchestrator.process_query_with_streaming(
-                query=user_message,
-                session_id=session_id,
-                user_id="server_user"  # Could be extracted from auth headers
-            ):
-                # Extract content from streaming chunk
-                content = ""
-                if chunk.get("type") == "workflow_update":
-                    # Format workflow updates as thinking output
-                    content = f"<thinking>\n{chunk.get('data', {})}\n</thinking>\n"
-                elif chunk.get("type") == "final_result":
-                    # Extract final response content
-                    result = chunk.get("data", {})
-                    if result.get("success") and result.get("response"):
-                        content = result["response"]
-                    else:
-                        error_messages = "; ".join(result.get("errors", ["Unknown error"]))
-                        content = f"I encountered an issue: {error_messages}"
-                elif chunk.get("type") == "error":
-                    content = f"Error: {chunk.get('error', 'Unknown error')}"
-                else:
-                    # Handle other chunk types as thinking updates
-                    content = f"<thinking>\n{str(chunk)}\n</thinking>\n"
+            # Create initial state
+            initial_state = {
+                "original_query": user_message,
+                "processed_query": "",
+                "query_analysis": None,
+                "tool_plan": None,
+                "tool_results": [],
+                "final_response": "",
+                "current_agent": "query_understanding",
+                "agent_sequence": [],
+                "execution_metadata": {},
+                "session_id": session_id,
+                "conversation_history": [],
+                "user_preferences": {},
+                "learned_patterns": {},
+                "is_streaming": True,
+                "thinking_updates": [],
+                "progress_indicators": [],
+                "errors": [],
+                "warnings": [],
+                "messages": []
+            }
+            
+            # Start single thinking block
+            yield self._create_chunk(chat_id, created, model, f"<think>\nAnalyzing query: '{user_message}'\n\n")
+            
+            # Stream using LangGraph's native streaming
+            thread_config = {"configurable": {"thread_id": session_id}}
+            
+            async for chunk in streaming_orchestrator.graph.astream(initial_state, config=thread_config, stream_mode=["updates", "custom"]):
+                if isinstance(chunk, tuple) and len(chunk) == 2:
+                    mode, data = chunk
+                    
+                    if mode == "updates":
+                        # Convert LangGraph updates to reasoning
+                        reasoning = await self._convert_update_to_reasoning(data)
+                        if reasoning:
+                            yield self._create_chunk(chat_id, created, model, reasoning)
+                    
+                    elif mode == "custom":
+                        # Direct reasoning output from agents
+                        yield self._create_chunk(chat_id, created, model, data.get("reasoning", ""))
                 
-                # Only send non-empty content
-                if content:
-                    stream_chunk = StreamResponse(
-                        id=chat_id,
-                        created=created,
-                        model=model,
-                        choices=[
-                            StreamChoice(
-                                index=0,
-                                delta={"content": content},
-                                finish_reason=None
-                            )
-                        ]
-                    )
-                    yield f"data: {stream_chunk.model_dump_json()}\n\n"
+                else:
+                    # Handle single mode output
+                    reasoning = await self._convert_update_to_reasoning(chunk)
+                    if reasoning:
+                        yield self._create_chunk(chat_id, created, model, reasoning)
+            
+            # Get final state and close thinking
+            final_state = await streaming_orchestrator.graph.aget_state(thread_config)
+            final_response = final_state.values.get("final_response", "")
+            
+            # Close thinking and provide response
+            yield self._create_chunk(chat_id, created, model, "\nAnalysis complete.\n</think>\n\n")
+            
+            if final_response:
+                yield self._create_chunk(chat_id, created, model, final_response)
+            else:
+                errors = final_state.values.get("errors", [])
+                if errors:
+                    error_msg = "; ".join(errors)
+                    yield self._create_chunk(chat_id, created, model, f"I encountered an issue: {error_msg}")
+                else:
+                    yield self._create_chunk(chat_id, created, model, "I was unable to generate a response for your query.")
+            
+            logger.info(f"Streaming complete for session: {session_id}")
             
             # Send final chunk
             final_chunk = StreamResponse(
@@ -333,6 +410,67 @@ class ChatServer:
             )
             yield f"data: {error_chunk.model_dump_json()}\n\n"
             yield "data: [DONE]\n\n"
+    
+    def _create_chunk(self, chat_id: str, created: int, model: str, content: str) -> str:
+        """Create a streaming chunk in OpenAI format."""
+        chunk = StreamResponse(
+            id=chat_id,
+            created=created,
+            model=model,
+            choices=[
+                StreamChoice(
+                    index=0,
+                    delta={"content": content},
+                    finish_reason=None
+                )
+            ]
+        )
+        return f"data: {chunk.model_dump_json()}\n\n"
+    
+    async def _convert_update_to_reasoning(self, data: Dict[str, Any]) -> str:
+        """Convert LangGraph state updates to intelligent reasoning."""
+        if not isinstance(data, dict):
+            return ""
+        
+        reasoning_parts = []
+        
+        # Process each node update
+        for node_name, node_state in data.items():
+            if node_name == "query_understanding" and "query_analysis" in node_state:
+                analysis = node_state["query_analysis"]
+                reasoning_parts.append(
+                    f"🔍 Understanding Query: Identified '{analysis.get('intent', 'unknown')}' intent "
+                    f"with {analysis.get('confidence', 0):.0%} confidence. "
+                    f"Primary focus: {analysis.get('primary_entity', 'general inquiry')}. "
+                    f"Strategy: {analysis.get('analysis_strategy', 'exploratory')}.\n"
+                )
+            
+            elif node_name == "tool_planning" and "tool_plan" in node_state:
+                plan = node_state["tool_plan"]
+                tools = plan.get("tool_sequence", [])
+                reasoning_parts.append(
+                    f"📋 Planning Execution: Designed {plan.get('strategy_type', 'unknown')} strategy "
+                    f"with {len(tools)} tools. Estimated time: {plan.get('estimated_execution_time', 0):.1f}s. "
+                    f"Tools: {', '.join(t.get('tool_name', 'unknown') for t in tools)}.\n"
+                )
+            
+            elif node_name == "tool_execution" and "tool_results" in node_state:
+                results = node_state["tool_results"]
+                successful = sum(1 for r in results if r.get("success"))
+                reasoning_parts.append(
+                    f"⚡ Executing Tools: Completed {len(results)} tools ({successful} successful). "
+                    f"Retrieved comprehensive information from knowledge graph.\n"
+                )
+            
+            elif node_name == "response_synthesis" and "final_response" in node_state:
+                response = node_state["final_response"]
+                reasoning_parts.append(
+                    f"✨ Synthesizing Response: Generated comprehensive response "
+                    f"({len(response.split()) if response else 0} words). "
+                    f"Integrating insights from multiple sources.\n"
+                )
+        
+        return "".join(reasoning_parts)
     
     async def _simple_test_stream(self, model: str, user_message: str) -> AsyncGenerator[str, None]:
         """Simple test stream to understand thinking format."""

@@ -79,9 +79,14 @@ class ToolIntegrationManager:
         
         recommendations = []
         
+        # Normalize inputs for case-insensitive matching
+        intent_lower = intent.lower()
+        complexity_lower = complexity.lower()
+        strategy_lower = strategy_type.lower()
+        
         # Intent-based tool selection
-        if intent == "information_seeking":
-            if strategy_type == "focused":
+        if intent_lower == "information seeking" or intent_lower == "information_seeking":
+            if strategy_lower == "focused":
                 recommendations.extend([
                     {
                         "tool_name": "search",
@@ -101,7 +106,7 @@ class ToolIntegrationManager:
                         "estimated_time": 2.0
                     })
             
-            elif strategy_type == "comprehensive":
+            elif strategy_lower == "comprehensive":
                 recommendations.extend([
                     {
                         "tool_name": "search",
@@ -126,7 +131,7 @@ class ToolIntegrationManager:
                     }
                 ])
         
-        elif intent == "relationship_analysis":
+        elif intent_lower == "relationship_analysis" or intent_lower == "relationship analysis":
             if len(entities) >= 2:
                 recommendations.extend([
                     {
@@ -153,7 +158,7 @@ class ToolIntegrationManager:
                     "estimated_time": 3.5
                 })
         
-        elif intent == "temporal_analysis":
+        elif intent_lower == "temporal_analysis" or intent_lower == "temporal analysis":
             recommendations.extend([
                 {
                     "tool_name": "get_entity_timeline",
@@ -180,7 +185,7 @@ class ToolIntegrationManager:
                     "estimated_time": 5.0
                 })
         
-        elif intent == "impact_analysis":
+        elif intent_lower == "impact_analysis" or intent_lower == "impact analysis":
             recommendations.extend([
                 {
                     "tool_name": "analyze_entity_impact",
@@ -199,12 +204,12 @@ class ToolIntegrationManager:
             ])
         
         # Complexity adjustments
-        if complexity == "simple":
+        if complexity_lower == "simple":
             # Limit to top 2 recommendations for simple queries
             recommendations = recommendations[:2]
-        elif complexity == "complex":
+        elif complexity_lower == "complex":
             # Add more comprehensive tools for complex queries
-            if intent in ["information_seeking", "relationship_analysis"]:
+            if intent_lower in ["information_seeking", "information seeking", "relationship_analysis", "relationship analysis"]:
                 recommendations.append({
                     "tool_name": "get_policy_clusters",
                     "parameters": {"entity_name": entities[0] if entities else ""},

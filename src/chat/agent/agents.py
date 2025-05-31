@@ -1,6 +1,7 @@
 """Individual agent implementations for multi-agent political monitoring system."""
 
 import asyncio
+import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
@@ -8,9 +9,12 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.language_models import BaseLLM
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
+from langgraph.types import Command
 
 from .base import BaseAgent, AgentRole, AgentResult, MultiAgentState, StreamingMixin, MemoryMixin
 from .prompt_loader import multi_agent_prompt_loader, build_agent_context
+
+logger = logging.getLogger(__name__)
 
 
 class QueryAnalysis(BaseModel):
@@ -18,14 +22,14 @@ class QueryAnalysis(BaseModel):
     intent: str = Field(description="Primary intent of the query")
     confidence: float = Field(description="Confidence in analysis (0.0-1.0)")
     complexity: str = Field(description="Query complexity: simple, medium, complex")
-    primary_entity: str = Field(description="Main entity focus of the query")
-    secondary_entities: List[str] = Field(description="Additional entities mentioned")
-    key_relationships: List[str] = Field(description="Important relationship types to explore")
-    temporal_scope: str = Field(description="Time scope: current, historical, future, range")
-    analysis_strategy: str = Field(description="Recommended strategy: focused, comprehensive, temporal, network, comparative")
-    search_priorities: List[Dict[str, str]] = Field(description="Prioritized entities with reasoning")
-    expected_information_types: List[str] = Field(description="Types of information needed")
-    memory_insights: Dict[str, str] = Field(description="Insights from user memory and patterns")
+    primary_entity: Optional[str] = Field(description="Main entity focus of the query, or null if query is too general", default="general_inquiry")
+    secondary_entities: List[str] = Field(description="Additional entities mentioned", default=[])
+    key_relationships: List[str] = Field(description="Important relationship types to explore", default=[])
+    temporal_scope: str = Field(description="Time scope: current, historical, future, range", default="current")
+    analysis_strategy: str = Field(description="Recommended strategy: focused, comprehensive, temporal, network, comparative", default="exploratory")
+    search_priorities: List[Dict[str, str]] = Field(description="Prioritized entities with reasoning", default=[])
+    expected_information_types: List[str] = Field(description="Types of information needed", default=[])
+    memory_insights: Dict[str, str] = Field(description="Insights from user memory and patterns", default={})
 
 
 class ToolPlan(BaseModel):
@@ -105,10 +109,13 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
                 HumanMessage(content=f"Query to analyze: {state.get('original_query', '')}")
             ]
             
+            logger.info(f"QueryUnderstandingAgent: Processing query '{state.get('original_query', '')}'")
             response = await self.llm.ainvoke(messages)
+            logger.info(f"QueryUnderstandingAgent: LLM response length: {len(response.content)}")
             
             # Parse structured output
             analysis = self.output_parser.parse(response.content)
+            logger.info(f"QueryUnderstandingAgent: Parsed analysis - intent: {analysis.intent}, confidence: {analysis.confidence}")
             
             await self.stream_thinking("Query analysis complete. Identified intent and strategy.")
             
@@ -121,6 +128,8 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
             agent_sequence.append(self.agent_role.value)
             updated_state["agent_sequence"] = agent_sequence
             
+            logger.info(f"QueryUnderstandingAgent: Success - query_analysis added to state: {bool(updated_state.get('query_analysis'))}")
+            
             return AgentResult(
                 success=True,
                 updated_state=updated_state,
@@ -130,6 +139,7 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
             )
             
         except Exception as e:
+            logger.error(f"QueryUnderstandingAgent: Failed to process query: {str(e)}")
             await self.stream_custom({"error": f"Query analysis failed: {str(e)}", "agent": self.name})
             
             return AgentResult(
@@ -189,9 +199,15 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
         if self.tool_integration_manager:
             await self.stream_thinking("Using intelligent tool selection based on query analysis...")
             
+            # Combine primary and secondary entities
+            primary_entity = query_analysis.get("primary_entity")
+            secondary_entities = query_analysis.get("secondary_entities", [])
+            all_entities = [primary_entity] if primary_entity else []
+            all_entities.extend(secondary_entities)
+            
             recommendations = self.tool_integration_manager.get_tool_recommendations(
                 intent=query_analysis.get("intent", "information_seeking"),
-                entities=query_analysis.get("secondary_entities", []),
+                entities=all_entities,
                 complexity=query_analysis.get("complexity", "medium"),
                 strategy_type=query_analysis.get("analysis_strategy", "focused")
             )
@@ -214,7 +230,7 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
                     }],
                     optimization_notes={
                         "strategy": "AI-optimized based on query analysis",
-                        "confidence": query_analysis.get("confidence", 0.8)
+                        "confidence": str(query_analysis.get("confidence", 0.8))
                     }
                 )
                 
@@ -592,7 +608,7 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             context_parts.append(f"Tool Results: {len(tool_results)} tools executed")
             for result in tool_results:
                 if result["success"]:
-                    context_parts.append(f"- {result['tool_name']}: {result['output'][:200]}")
+                    context_parts.append(f"- {result['tool_name']}: {result['raw_output'][:200]}")
         
         # Add execution metadata
         execution_metadata = state.get("execution_metadata")
