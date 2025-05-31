@@ -1,111 +1,122 @@
-# Political Monitoring Agent - Task Runner
+# Political Monitoring Agent - Streamlined Task Runner
 
-# Default recipe to display available commands
+# Default recipe shows available commands
 default:
     @just --list
 
-# === Development Setup ===
+# === Setup & Installation ===
 
-# Install dependencies and setup development environment
+# Initial setup for development environment
 setup:
     @echo "🚀 Setting up development environment..."
     uv sync
     @if [ ! -f .env ]; then cp .env.template .env; echo "📝 Created .env from template"; fi
     @if [ ! -f config.yaml ]; then just sync-config; fi
-    @mkdir -p data/input
-    @mkdir -p data/output
-    @echo "✅ Setup complete. Next: 'just setup-context' then 'just first-run'"
+    @mkdir -p data/input data/output data/context
+    @echo "✅ Setup complete. Run 'just start' to launch services"
 
-# Setup client context (first-time setup helper)
-setup-context:
-    @echo "📝 Setting up client context..."
-    @echo "Edit data/context/client.yaml with your organization's information:"
-    @echo ""
-    @echo "Required sections to customize:"
-    @echo "  - company_terms: Your company names/brands"  
-    @echo "  - core_industries: Your business sectors"
-    @echo "  - primary_markets: Your main geographic markets"
-    @echo "  - strategic_themes: Your business priorities"
-    @echo ""
-    @echo "💡 The example context is already configured for an e-commerce company"
-    @echo "   You can test with it as-is, or customize for your organization"
-
-# === Configuration Management ===
-
-# Create or update config.yaml from template and .env variables
+# Sync config.yaml from .env variables
 sync-config:
     @echo "🔧 Syncing configuration..."
     uv run python scripts/sync_env_to_config.py
 
-# Validate config.yaml for placeholder values
-validate-config:
-    @echo "🔍 Validating configuration..."
-    @if [ ! -f config.yaml ]; then echo "❌ config.yaml not found. Run 'just sync-config' first"; exit 1; fi
-    @echo "✅ config.yaml exists"
-    @if grep -q "your-.*-key-here" config.yaml; then echo "⚠️  Found placeholder API keys in config.yaml"; echo "💡 Update your .env file with real API keys"; else echo "✅ No placeholder values detected"; fi
+# === Service Management ===
 
-# Reset config.yaml from template (for troubleshooting)
-reset-config:
-    @echo "🔄 Resetting config.yaml from template..."
-    @if [ -f config.yaml ]; then cp config.yaml config.yaml.backup; echo "📦 Backed up existing config.yaml"; fi
-    just sync-config
-    @echo "✅ config.yaml reset complete"
-    @echo ""
-    @echo "Next step: 'just first-run' to complete setup"
-
-# Complete first-time setup and run initial analysis
-first-run:
-    @echo "🎯 First-time setup and test run..."
-    @echo ""
-    @echo "Step 1: Starting services..."
-    @just services-up
-    @echo ""
-    @echo "Step 2: Setting up Langfuse..."
-    @just setup-langfuse
-    @echo ""
-    @echo "⏸️  Please complete Langfuse setup, then run 'just complete-setup'"
-
-# Complete the setup after Langfuse configuration
-complete-setup:
-    @echo "🎯 Completing first-time setup..."
-    @echo ""
-    @echo "Step 1: Uploading prompts to Langfuse..."
-    @just upload-prompts
-    @echo ""
-    @echo "Step 2: Importing sample data to Azurite..."
-    @just azure-import
-    @echo ""
-    @echo "Step 3: Starting development environment..."
-    @just dev
-    @echo ""
-    @echo "🎉 Setup complete! Ready for first analysis:"
-    @echo "   📊 Admin Panel: http://localhost:3370 (admin/admin)"
-    @echo "   🎯 Test with sample data in: data/input/examples/"
-    @echo ""
-    @echo "💡 Next: Visit the admin panel and run an analysis on the sample documents"
-
-# === Services ===
-
-# Start development services (Azurite, PostgreSQL, Langfuse)
-services-up:
-    @echo "🐳 Starting services..."
-    docker compose up -d
-    @echo "✅ Services started"
-    @just services-status
+# Start all services (Docker + Ray + Applications + Kodosumi)
+start: services-up
+    @echo "🚀 Starting Ray and deploying applications..."
+    -uv run --active ray stop 2>/dev/null || true
+    uv run --active ray start --head
+    @sleep 2
+    just deploy-all
+    @echo "🚀 Starting Kodosumi admin panel..."
+    -uv run --active koco stop 2>/dev/null || true
+    nohup uv run koco start --register http://localhost:8001/-/routes > logs/kodosumi.log 2>&1 &
+    @sleep 3
+    @echo "✅ All services started!"
+    @just status
 
 # Stop all services
-services-down:
+stop:
+    @echo "🛑 Stopping all services..."
+    -uv run --active koco stop 2>/dev/null || true
+    -uv run --active serve shutdown --yes 2>/dev/null || true
+    -uv run --active ray stop 2>/dev/null || true
     docker compose down
+    @echo "✅ All services stopped"
+
+# Restart all services
+restart: stop start
 
 # Show service status
-services-status:
-    @echo "📊 Services:"
+status:
+    @echo "📊 Service Status:"
+    @echo "=================="
+    @echo "🐳 Docker Services:"
     @docker compose ps
     @echo ""
-    @echo "🌐 URLs:"
-    @echo "  Azurite:     http://localhost:10000"
-    @echo "  PostgreSQL:  localhost:5432" 
-    @echo "  Langfuse:    http://localhost:3001"
+    @echo "🌟 Ray Status:"
+    @uv run --active ray status 2>/dev/null || echo "❌ Ray not running"
+    @echo ""
+    @echo "📦 Ray Applications:"
+    @uv run --active serve status 2>/dev/null || echo "❌ No applications deployed"
+    @echo ""
+    @echo "🌐 Service URLs:"
+    @echo "  🎛️  Kodosumi Admin: http://localhost:3370 (admin/admin)"
+    @echo "  📊 Ray Dashboard:  http://localhost:8265"
+    @echo "  💬 Open WebUI:     http://localhost:3000"
+    @echo "  🗄️  Neo4j Browser:  http://localhost:7474 (neo4j/password123)"
+    @echo "  🔍 Langfuse:       http://localhost:3001"
+    @echo "  ✈️  Airflow:        http://localhost:8080 (admin/admin)"
+    @echo "  ☁️  Azurite:        http://localhost:10000 (blob storage)"
+    @echo "  🤖 Graphiti MCP:   http://localhost:8000 (SSE endpoint)"
+    @echo ""
+    @echo "  📡 API Endpoints:"
+    @echo "  🗨️  Chat API:       http://localhost:8001/v1/chat/completions"
+    @echo "  📝 Data Ingestion: http://localhost:8001/data-ingestion"
+    @echo "  🔄 ETL Health:     http://localhost:8080/health"
+
+
+# === Application Deployment ===
+
+# Deploy all applications
+deploy-all: sync-config
+    @echo "📦 Deploying all applications..."
+    uv run --active serve deploy config.yaml
+    @echo "✅ All applications deployed"
+
+# Deploy only data ingestion flow
+deploy-data:
+    @echo "📦 Deploying data ingestion..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app flow1-data-ingestion
+    @echo "✅ Data ingestion deployed"
+
+# Deploy only chat server
+deploy-chat:
+    @echo "📦 Deploying chat server..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app chat-server
+    @echo "✅ Chat server deployed"
+
+# Quick redeploy (for development)
+redeploy: sync-config
+    @echo "🔄 Quick redeployment..."
+    -uv run --active serve shutdown --yes 2>/dev/null || true
+    uv run --active serve deploy config.yaml
+    @echo "✅ Applications redeployed"
+
+# === Docker Services ===
+
+# Start Docker services only
+services-up:
+    @echo "🐳 Starting Docker services..."
+    docker compose up -d
+    @echo "✅ Docker services started"
+
+# Stop Docker services
+services-down:
+    docker compose down
 
 # View service logs
 logs service="":
@@ -115,190 +126,73 @@ logs service="":
         docker compose logs -f {{service}}; \
     fi
 
-# === Kodosumi Deployment ===
+# === Data & Analysis ===
 
-# Start Ray and deploy to Kodosumi
-kodosumi-deploy:
-    @echo "🚀 Starting Ray cluster..."
-    uv run --active ray start --head
-    @echo "📝 Syncing environment variables to config.yaml..."
-    uv run python scripts/sync_env_to_config.py
-    @echo "📦 Deploying to Ray Serve..."
-    uv run --active serve deploy config.yaml
-    @echo "🎯 Starting Kodosumi server..."
-    uv run --active koco start --register http://localhost:8001/-/routes
-    @echo "✅ Kodosumi deployment complete!"
-    @echo "🌐 Admin Panel: http://localhost:3370 (admin/admin)"
-    @echo "📊 Ray Dashboard: http://localhost:8265"
+# Import sample data to Azurite
+import-data:
+    @echo "📤 Importing sample data..."
+    uv run python scripts/import_data_to_azurite.py
 
-# Stop Kodosumi and Ray
-kodosumi-stop:
-    @echo "🛑 Stopping Kodosumi services..."
-    -pkill -f "koco start"
-    -uv run --active serve shutdown --yes
-    -uv run --active ray stop
-    @echo "✅ All services stopped"
+# Build communities from knowledge graph
+build-communities:
+    @echo "🏘️ Building communities from graph..."
+    uv run python scripts/build_communities.py
 
-# Check Kodosumi deployment status
-kodosumi-status:
-    @echo "📊 Kodosumi Status:"
-    @uv run --active ray status || echo "❌ Ray not running"
-    @echo ""
-    @echo "🌐 Service URLs:"
-    @echo "  Kodosumi Admin: http://localhost:3370"
-    @echo "  Ray Dashboard:  http://localhost:8265"
-    @echo "  App Endpoint:   http://localhost:8001/political-analysis"
-
-# View Kodosumi logs
-kodosumi-logs:
-    @echo "📋 Recent Ray logs:"
-    uv run --active ray logs --follow
-
-# Restart entire Kodosumi stack
-kodosumi-restart: kodosumi-stop kodosumi-deploy
-
-# Quick Kodosumi development cycle (restart only app)
-dev-quick:
-    @echo "🔄 Quick Kodosumi restart..."
-    @echo "📝 Syncing environment variables to config.yaml..."
-    uv run python scripts/sync_env_to_config.py
-    -uv run --active serve shutdown --yes 2>/dev/null || true
-    uv run --active serve deploy config.yaml
-    @echo "✅ App redeployed to Kodosumi"
-
-# === Development ===
-
-# First-time setup helper
-setup-langfuse:
-    @echo "🔧 Setting up Langfuse for first time use..."
-    @echo ""
-    @echo "1. Starting services (if not already running)..."
-    @just services-up
-    @echo ""
-    @echo "2. 🌐 Open Langfuse: http://localhost:3001"
-    @echo ""
-    @echo "3. 📝 Complete Langfuse Setup:"
-    @echo "   • Sign up with new account"
-    @echo "   • Create organization (e.g., 'Political Monitoring')"
-    @echo "   • Create project (e.g., 'political-monitoring-agent')"
-    @echo ""
-    @echo "4. 🔑 Get your API keys:"
-    @echo "   • Go to Settings → API Keys (within your project)"
-    @echo "   • Click 'Create new API key'"
-    @echo "   • Copy both Public Key (pk-lf-...) and Secret Key (sk-lf-...)"
-    @echo ""
-    @echo "5. ✏️  Update your .env file with the real keys"
-    @echo "6. 🔄 Run: just kodosumi-restart"
-    @echo ""
-    @echo "💡 This setup is only needed once!"
-
-# Upload local prompts to Langfuse for centralized management
+# Upload prompts to Langfuse
 upload-prompts:
     @echo "📤 Uploading prompts to Langfuse..."
     uv run python scripts/upload_prompts_to_langfuse.py
 
-# Reset Langfuse data (useful if login issues occur)
-reset-langfuse:
-    @echo "🔄 Resetting Langfuse data..."
-    @echo "⚠️  This will delete all Langfuse data and reset to fresh state"
-    @read -p "Continue? (y/N) " -n 1 -r; \
-    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-        echo ""; \
-        docker compose stop langfuse-server; \
-        docker volume rm policiytracker_langfuse_data policiytracker_postgres_data 2>/dev/null || true; \
-        echo "✅ Langfuse data reset. Run 'just services-up' to restart with fresh installation"; \
-    else \
-        echo ""; \
-        echo "❌ Reset cancelled"; \
-    fi
+# Test ETL pipeline
+test-etl:
+    @echo "🧪 Testing ETL pipeline..."
+    uv run python scripts/test_policy_collection.py
 
-# Start full development environment (Kodosumi-first)
-dev: services-up kodosumi-deploy
+# Check ETL initialization status
+etl-status:
+    @echo "📊 ETL Initialization Status:"
+    uv run python scripts/etl_init_manager.py status
 
+# Reset specific ETL collector
+etl-reset collector:
+    @echo "🔄 Resetting ETL collector: {{collector}}"
+    uv run python scripts/etl_init_manager.py reset {{collector}}
 
-# Watch for changes and auto-redeploy (development workflow)
-dev-watch:
-    @echo "👀 Starting development with file watching..."
-    @echo "📝 Edit app.py or political_analyzer.py and run 'just dev-quick' to redeploy"
-    @echo "🌐 Kodosumi Admin: http://localhost:3370 (admin/admin)"
-    @echo "📊 Ray Dashboard: http://localhost:8265"
-    @echo "🎯 Your App: http://localhost:8001/political-analysis"
-    @echo ""
-    @echo "💡 Development Tips:"
-    @echo "  - Run 'just dev-quick' after code changes"
-    @echo "  - Run 'just kodosumi-logs' to view logs"
-    @echo "  - Run 'just kodosumi-status' to check health"
+# Reset all ETL collectors
+etl-reset-all:
+    @echo "🔄 Resetting ALL ETL collectors..."
+    uv run python scripts/etl_init_manager.py reset-all
 
+# === Development ===
 
-
-# === Testing ===
-
-# Run all tests
+# Run tests
 test:
     uv run pytest -v
-
-# Run tests with coverage
-test-coverage:
-    uv run pytest --cov=src --cov-report=html --cov-report=term
-
-# Run unit tests only
-test-unit:
-    uv run pytest tests/unit/ -v
-
-# Run integration tests only  
-test-integration:
-    uv run pytest tests/integration/ -v
-
-# Run Azure-specific tests
-test-azure:
-    uv run pytest -k "azure" -v
-
-# === Code Quality ===
 
 # Format and lint code
 format:
     uv run ruff format src tests
     uv run ruff check src tests --fix
 
-# Type check code
+# Type check
 typecheck:
     uv run mypy src
 
-# Run all quality checks
-check: format typecheck
-    @echo "✅ All checks passed"
+# Watch Ray logs
+ray-logs:
+    uv run --active ray logs cluster dashboard_ServeHead.out --tail 100 -f
 
-# === Azure Storage ===
 
-# Import local data to Azurite for development
-azure-import:
-    uv run python scripts/import_data_to_azurite.py
+# === Database Management ===
 
-# Import with custom job ID
-azure-import-job job_id:
-    uv run python scripts/import_data_to_azurite.py --job-id {{job_id}}
-
-# Dry run import (show what would be imported)
-azure-import-dry:
-    uv run python scripts/import_data_to_azurite.py --dry-run
-
-# Verify Azurite connection
-azure-verify:
-    uv run python scripts/import_data_to_azurite.py --verify-only
-
-# === Database ===
-
-# Connect to PostgreSQL
-db-connect:
-    docker compose exec postgres psql -U postgres -d policiytracker
-
-# Reset database
-db-reset:
-    @echo "⚠️  This will delete all data!"
+# Clear Neo4j database
+neo4j-clear:
+    @echo "⚠️  This will delete ALL graph data!"
     @read -p "Continue? (y/N) " -n 1 -r; \
     if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-        docker compose exec postgres psql -U postgres -c "DROP DATABASE IF EXISTS policiytracker; CREATE DATABASE policiytracker;"; \
-        echo "✅ Database reset"; \
+        echo ""; \
+        docker compose exec neo4j cypher-shell -u neo4j -p password123 "MATCH (n) DETACH DELETE n;"; \
+        echo "✅ Neo4j cleared"; \
     fi
 
 # === Cleanup ===
@@ -309,25 +203,29 @@ clean:
     find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
     find . -name "*.pyc" -delete 2>/dev/null || true
     find . -name ".pytest_cache" -type d -exec rm -rf {} + 2>/dev/null || true
-    rm -rf htmlcov .coverage 2>/dev/null || true
-    @echo "✅ Cleaned"
+    rm -rf htmlcov .coverage/* 2>/dev/null || true
 
-# Full cleanup (code + docker)
-clean-all: clean services-down
+# Full cleanup (including Docker volumes)
+clean-all: stop clean
     docker system prune -f
     @echo "✅ Full cleanup complete"
 
-# === Health Check ===
 
-# Check system health
-health:
-    @echo "🏥 System Health:"
-    @echo "=================="
-    @just services-status
-    @echo ""
-    @echo "Environment:"
-    @uv run python -c "from src.config import settings; print('✅ Config valid')" 2>/dev/null || echo "❌ Config invalid"
-    @echo ""
-    @echo "Dependencies:"
-    @uv --version | head -1
-    @docker --version | head -1
+# === Quick Access Commands ===
+
+# Quick development cycle
+dev: start
+    @echo "💡 Development environment ready!"
+    @echo "🔄 Use 'just redeploy' after code changes"
+
+# Test chat API
+test-chat:
+    @echo "🧪 Testing chat API..."
+    curl -X POST http://localhost:8001/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{"model": "political-monitoring-agent", "messages": [{"role": "user", "content": "What is the EU AI Act?"}]}'
+
+# Test data ingestion
+test-ingestion:
+    @echo "🧪 Testing data ingestion..."
+    curl http://localhost:8001/data-ingestion/health

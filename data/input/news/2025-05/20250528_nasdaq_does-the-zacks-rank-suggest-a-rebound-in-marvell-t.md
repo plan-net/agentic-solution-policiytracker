@@ -1,0 +1,30 @@
+---
+title: Does the Zacks Rank Suggest a Rebound in Marvell Technology (MRVL) Stock?
+url: https://www.nasdaq.com/articles/does-zacks-rank-suggest-rebound-marvell-technology-mrvl-stock
+published_date: 2025-05-28T13:21:52.433650
+collected_date: 2025-05-28T13:21:52.433708
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: Zacks
+description: Chip stocks have been very valuable to investors' portfolios, but many have continued to decline in recent months following the announcement of China-based DeepSeek’s advancement in artificial intelligence at a more affordable cost. The selloff has been compounded by ongoing tariff concerns,...
+language: en
+---
+
+# Does the Zacks Rank Suggest a Rebound in Marvell Technology (MRVL) Stock?
+
+*By Zacks*
+
+Chip stocks have been very valuable to investors' portfolios, but many have continued to decline in recent months following the announcement of China-based DeepSeek’s advancement in artificial intelligence at a more affordable cost. The selloff has been compounded by ongoing tariff concerns,...
+
+Chip stocks have been very valuable to investors' portfolios, but many have continued to decline in recent months following the announcement of China-based DeepSeek’s advancement in artificial intelligence at a more affordable cost. The selloff has been compounded by ongoing tariff concerns, with stocks like Marvell Technology  which will be featured in this article, having generated massive gains only to slump in a gut-wrenching fluctuation.   
+ However, AI chip leaders like Nvidia () and AMD () have been swooped into the downturn as well. That said, Marvell Technology is a prime example of a risk to reward play among the AI trade that investors are eying for a sharp rebound. To that point, MRVL has fallen 48% from its 52-week high of $127 a share, which it hit less than two months ago in January. Image Source: Zacks Investment Research Marvell Technology's AI Overview Headquartered in Wilmington, Delaware, Marvell Technology is a key player in the AI landscape, providing advanced semiconductor solutions for data infrastructure. The company’s AI offerings include custom AI chips, connectivity solutions, and data center innovations, which are crucial to handling the demands of AI applications.   Mad Money Take from CNBC’s Jim Cramer  Coming up as the topic of conversation in Jim Cramer’s Lighting Round on CNBC’s Mad Money, a viewer described his position in Marvell Technology and the broader market downturn as being in the “house of pain”. The investor had recently doubled positions in MRVL before its Q4 report last Wednesday, with Jim Cramer’s thoughts being he is a buyer, not a seller at current levels and would stay the course. Cramer has been very fond of Marvell Technology’s management, and its CEO Matt Murphy, previously stating the company is sitting on a "gold mine" as its semiconductors are essential to building out AI tech. 
+ Still, Marvell Technology has had investors on edge following a post-earnings selloff, despite exceeding top and bottom line expectations. Notably, Marvell Tech posted Q4 EPS of $0.60, spiking from $0.46 a share in the comparative quarter and topping the Zacks EPS Consensus of $0.59. Image Source: Zacks Investment Research What the Zacks Rank Suggests The Zacks Rank does agree with Jim Cramer’s take and the notion that investors may be rewarded for buying MRVL at current levels or staying the course. This is largely predicated on the trend of positive earnings estimate revisions. In fact, earnings estimate revisions are the most powerful force impacting stock prices and this emphasis has been developed by the Zacks Rank system which harnesses the power of earnings estimates. Based on Zacks estimates, Marvell Tech’s annual earnings are expected to increase 75% in its current fiscal 2026 to $2.75 per share versus EPS of $1.57 in FY25. Plus, FY27 EPS is projected to spike another 28% to $3.52. Most importantly, FY26 and FY27 EPS estimates have trended higher in the last week and are now up over 2% and 1% in the last 60 days respectively. Image Source: Zacks Investment Research 
+ Bottom Line Marvell Technology stock currently sports a Zacks Rank #1 (Strong Buy). Magnifying the trend of rising EPS estimates is that MRVL now trades at a far more reasonable 24.2X forward earnings multiple compared to its one year high of 151.4X and a median of 95.6X. It may be cliché but the pullback in MRVL appears to have been a healthy correction, especially for long-term investors, with the Average Zacks Price Target of $121.73 suggesting 85% upside. 
+ Zacks' Research Chief Names "Stock Most Likely to Double" 
+ 
+ Our team of experts has just released the 5 stocks with the greatest probability of gaining +100% or more in the coming months. Of those 5, Director of Research Sheraz Mian highlights the one stock set to climb highest. 
+ 
+ This top pick is among the most innovative financial firms. With a fast-growing customer base (already 50+ million) and a diverse set of cutting edge solutions, this stock is poised for big gains. Of course, all our elite picks aren’t winners but this one could far surpass earlier Zacks’ Stocks Set to Double like Nano-X Imaging which shot up +129.6% in little more than 9 months. Free: See Our Top Stock And 4 Runners Up Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report 
+ Marvell Technology, Inc. (MRVL) : Free Stock Analysis Report Advanced Micro Devices, Inc. (AMD) : Free Stock Analysis Report NVIDIA Corporation (NVDA) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

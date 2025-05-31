@@ -4,25 +4,24 @@ Upload local prompt files to Langfuse for centralized management.
 This script helps migrate prompts from local files to Langfuse.
 """
 
-import os
 import sys
 from pathlib import Path
-from typing import Dict, Any
+
 import yaml
 
 # Add src to path so we can import our modules
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from langfuse import Langfuse
 from config import settings
+from langfuse import Langfuse
 
 
 def upload_prompts_to_langfuse():
     """Upload all local prompt files to Langfuse."""
-    
+
     print("🚀 Uploading prompts to Langfuse...")
     print()
-    
+
     # Initialize official Langfuse client
     try:
         langfuse = Langfuse(
@@ -30,11 +29,11 @@ def upload_prompts_to_langfuse():
             public_key=settings.LANGFUSE_PUBLIC_KEY,
             host=settings.LANGFUSE_HOST,
         )
-        
+
         # Test connection
         langfuse.auth_check()
         print("✅ Langfuse connection verified")
-        
+
     except Exception as e:
         print("❌ Langfuse is not available. Please ensure:")
         print("   1. Services are running: just services-up")
@@ -43,33 +42,33 @@ def upload_prompts_to_langfuse():
         print(f"   Error: {e}")
         return False
     print()
-    
+
     # Get all prompt files
     prompts_dir = Path(__file__).parent.parent / "src" / "prompts"
     prompt_files = list(prompts_dir.glob("*.md"))
-    
+
     if not prompt_files:
         print("❌ No prompt files found in src/prompts/")
         return False
-    
+
     print(f"📄 Found {len(prompt_files)} prompt files:")
     for file in prompt_files:
         print(f"   • {file.name}")
     print()
-    
+
     # Upload each prompt
     uploaded_count = 0
-    
+
     for prompt_file in prompt_files:
         try:
             print(f"📤 Processing {prompt_file.name}...")
-            
+
             # Read file content
-            content = prompt_file.read_text(encoding='utf-8')
-            
+            content = prompt_file.read_text(encoding="utf-8")
+
             # Parse frontmatter and content
-            if content.startswith('---'):
-                parts = content.split('---', 2)
+            if content.startswith("---"):
+                parts = content.split("---", 2)
                 if len(parts) >= 3:
                     frontmatter = yaml.safe_load(parts[1])
                     prompt_content = parts[2].strip()
@@ -79,34 +78,38 @@ def upload_prompts_to_langfuse():
             else:
                 print(f"   ⚠️  No frontmatter found in {prompt_file.name}, skipping...")
                 continue
-            
+
             # Extract metadata
-            prompt_name = frontmatter.get('name', prompt_file.stem)
-            version = frontmatter.get('version', 1)
-            description = frontmatter.get('description', f'Prompt from {prompt_file.name}')
-            
+            prompt_name = frontmatter.get("name", prompt_file.stem)
+            version = frontmatter.get("version", 1)
+            description = frontmatter.get("description", f"Prompt from {prompt_file.name}")
+
             # Check if prompt already exists - but still upload if we want to add config
             try:
                 existing = langfuse.get_prompt(name=prompt_name, label="production")
                 if existing:
-                    print(f"   ℹ️  Prompt '{prompt_name}' exists, uploading new version with config...")
+                    print(
+                        f"   ℹ️  Prompt '{prompt_name}' exists, uploading new version with config..."
+                    )
                 else:
                     print(f"   📤 New prompt '{prompt_name}', uploading...")
             except Exception:
                 # Prompt doesn't exist, which is expected for new uploads
                 print(f"   📤 New prompt '{prompt_name}', uploading...")
-            
+
             # Determine the best model for this prompt
             # Use Anthropic for analysis tasks, OpenAI as fallback
-            model = settings.ANTHROPIC_MODEL if settings.ANTHROPIC_API_KEY else settings.OPENAI_MODEL
-            
+            model = (
+                settings.ANTHROPIC_MODEL if settings.ANTHROPIC_API_KEY else settings.OPENAI_MODEL
+            )
+
             # Create config for Langfuse prompt
             config = {
                 "model": model,
                 "temperature": settings.LLM_TEMPERATURE,
                 "max_tokens": settings.LLM_MAX_TOKENS,
             }
-            
+
             # Upload to Langfuse with production label and config
             try:
                 langfuse.create_prompt(
@@ -114,21 +117,21 @@ def upload_prompts_to_langfuse():
                     prompt=prompt_content,
                     config=config,  # Include model and temperature settings
                     labels=["production"],  # Use production label for active version
-                    tags=["political-monitoring", "uploaded-from-file"]
+                    tags=["political-monitoring", "uploaded-from-file"],
                 )
                 print(f"   ✅ Uploaded '{prompt_name}' with production label")
                 print(f"      Model: {model}, Temperature: {settings.LLM_TEMPERATURE}")
                 uploaded_count += 1
             except Exception as e:
                 print(f"   ❌ Failed to upload '{prompt_name}': {e}")
-                
+
         except Exception as e:
             print(f"   ❌ Error uploading {prompt_file.name}: {e}")
             continue
-    
+
     print()
     print(f"🎉 Upload complete! {uploaded_count}/{len(prompt_files)} prompts uploaded successfully")
-    
+
     if uploaded_count > 0:
         print()
         print("📋 Next steps:")
@@ -138,7 +141,7 @@ def upload_prompts_to_langfuse():
         print("   4. Create new versions for A/B testing")
         print()
         print("💡 The system will now prefer Langfuse prompts over local files")
-    
+
     return uploaded_count > 0
 
 
@@ -148,16 +151,16 @@ def main():
     print("Langfuse Prompt Upload Tool")
     print("=" * 60)
     print()
-    
+
     # Check if we're in the right directory
     if not Path("src/prompts").exists():
         print("❌ Please run this script from the project root directory")
         print("   Current directory should contain 'src/prompts/' folder")
         sys.exit(1)
-    
+
     # Run upload
     success = upload_prompts_to_langfuse()
-    
+
     if success:
         print("🎉 Prompt upload complete!")
     else:

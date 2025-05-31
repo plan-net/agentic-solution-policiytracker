@@ -1,0 +1,20 @@
+---
+title: EU to ban anonymous crypto accounts and privacy coins by 2027
+url: https://cointelegraph.com/news/eu-crypto-ban-anonymous-privacy-tokens-2027?utm_source=rss_feed&amp;utm_medium=rss&amp;utm_campaign=rss_partner_inbound
+published_date: 2025-05-02T00:00:00
+collected_date: 2025-05-31T11:08:17.427633
+source: Cointelegraph
+source_url: https://cointelegraph.com
+author: Zoltan Vardai
+description: The European Union is set to impose sweeping Anti-Money Laundering (AML) rules that will ban privacy-preserving tokens and anonymous cryptocurrency accounts from 2027. Under the new Anti-Money Laundering Regulation (AMLR), credit institutions, financial institutions and crypto asset service...
+language: en
+collection_type: policy_landscape
+---
+
+# EU to ban anonymous crypto accounts and privacy coins by 2027
+
+*By Zoltan Vardai*
+
+The European Union is set to impose sweeping Anti-Money Laundering (AML) rules that will ban privacy-preserving tokens and anonymous cryptocurrency accounts from 2027. Under the new Anti-Money Laundering Regulation (AMLR), credit institutions, financial institutions and crypto asset service...
+
+The European Union is set to impose sweeping Anti-Money Laundering (AML) rules that will ban privacy-preserving tokens and anonymous cryptocurrency accounts from 2027. Under the new Anti-Money Laundering Regulation (AMLR), credit institutions, financial institutions and crypto asset service providers (CASPs) will be prohibited from maintaining anonymous accounts or handling privacy-preserving cryptocurrencies, such as Monero and Zcash. “Article 79 of the AMLR establishes strict prohibitions on anonymous accounts [...]. Credit institutions, financial institutions, and crypto-asset service providers are prohibited from maintaining anonymous accounts,” according to the AML Handbook, published by European Crypto Initiative (EUCI). The AML Handbook. Source: EUCI The regulation is part of a broader AML framework that includes bank and payment accounts, passbooks and safe-deposit boxes, “crypto-asset accounts allowing anonymisation of transactions,” and “accounts using anonymity-enhancing coins.” Related: Eric Trump: USD1 will be used for $2B MGX investment in Binance “The regulations (the AMLR, AMLD and AMLAR) are final, and what remains is the ‘fine print’ — aka the interpretation of some of the requirements through the so-called implementing and delegated acts,” according to Vyara Savova, senior policy lead at the EUCI. She added that much of the implementation will come through so-called implementing and delegated acts, which are mostly handled by the European Banking Authority: “This means that the EUCI is still actively working on these level two acts by providing feedback to the public consultations, as some of the implementation details are yet to be finalized.” “However, the broader framework is final, so centralized crypto projects (CASPs under MiCA) need to keep it in mind when determining their internal processes and policies,” Savova said. Related: Bitcoin volatility lowest in 563 days, Hayes predicts $1M BTC by 2028 EU to increase oversight of crypto service providers Under the new regulatory framework, CASPs operating in at least six member states will be under direct AML supervision. In the initial stage, AMLA plans to select 40 entities, with at least one entity per member state, according to EUCI’s AML Handbook. The selection process is set to start on July 1, 2027. AMLA will use “materiality thresholds” to ensure that only firms with “substantial operations presence in multiple jurisdictions are considered for direct supervision.” The thresholds include a “minimum of 20,000 customers residing in the host member state,” or a total transaction volume of over 50 million euros ($56 million). Other notable measures include mandatory customer due diligence on transactions above 1,000 euros ($1,100). These updates come as the EU ramps up its regulatory oversight of the crypto industry, building on previous measures such as the Markets in Crypto-Assets Regulation (MiCA). Magazine: Bitcoin $100K hopes on ice, SBF’s mysterious prison move: Hodler’s Digest, April 20 – 26

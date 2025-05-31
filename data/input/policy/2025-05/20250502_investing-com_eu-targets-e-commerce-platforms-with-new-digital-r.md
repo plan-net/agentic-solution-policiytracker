@@ -1,0 +1,23 @@
+---
+title: EU targets e-commerce platforms with new digital regulations By Investing.com
+url: https://www.investing.com/news/world-news/eu-targets-ecommerce-platforms-with-new-digital-regulations-93CH-3850218
+published_date: 2025-05-02T00:00:00
+collected_date: 2025-05-31T11:38:30.725876
+source: Investing
+source_url: https://www.investing.com
+description: EU targets e-commerce platforms with new digital regulations Investing.com -- The European Commission is focusing on e-commerce platforms such as Shein with its new digital regulations, as concerns grow over potentially unsafe or unlawful cheap products entering the European Union (EU). On...
+language: en
+collection_type: policy_landscape
+---
+
+# EU targets e-commerce platforms with new digital regulations By Investing.com
+
+EU targets e-commerce platforms with new digital regulations Investing.com -- The European Commission is focusing on e-commerce platforms such as Shein with its new digital regulations, as concerns grow over potentially unsafe or unlawful cheap products entering the European Union (EU). On...
+
+EU targets e-commerce platforms with new digital regulations Investing.com -- The European Commission is focusing on e-commerce platforms such as Shein with its new digital regulations, as concerns grow over potentially unsafe or unlawful cheap products entering the European Union (EU). On Wednesday, the commission announced plans to introduce a customs reform. This reform would require platforms to provide data on the products they sell to the EU, enabling officials to have increased oversight of packages entering the region. In addition to this, the EU's executive arm also proposed more coordinated surveillance in collaboration with customs authorities in EU countries. The aim of this measure is to assist in the removal of non-compliant products from the market. These actions are part of the commission's effort to ensure that all products sold within the EU meet the region's safety and legal standards. This article was generated with the support of AI and reviewed by an editor. For more information see our T&amp;C. 3rd party Ad. Not an offer or recommendation by Investing.com. See disclosure here or remove ads. Which stock should you buy in your very next trade? With valuations skyrocketing in 2024, many investors are uneasy putting more money into stocks. Unsure where to invest next? Get access to our proven portfolios and discover high-potential opportunities. 
+In 2024 alone, ProPicks AI identified 2 stocks that surged over 150%, 4 additional stocks that leaped over 30%, and 3 more that climbed over 25%. That's an impressive track record. 
+With portfolios tailored for Dow stocks, S&amp;P stocks, Tech stocks, and Mid Cap stocks, you can explore various wealth-building strategies. Unlock ProPicks AI EU targets e-commerce platforms with new digital regulations Latest comments Risk Disclosure: Trading in financial instruments and/or cryptocurrencies involves high risks including the risk of losing some, or all, of your investment amount, and may not be suitable for all investors. Prices of cryptocurrencies are extremely volatile and may be affected by external factors such as financial, regulatory or political events. Trading on margin increases the financial risks. 
+Before deciding to trade in financial instrument or cryptocurrencies you should be fully informed of the risks and costs associated with trading the financial markets, carefully consider your investment objectives, level of experience, and risk appetite, and seek professional advice where needed. 
+ Fusion Media  would like to remind you that the data contained in this website is not necessarily real-time nor accurate. The data and prices on the website are not necessarily provided by any market or exchange, but may be provided by market makers, and so prices may not be accurate and may differ from the actual price at any given market, meaning prices are indicative and not appropriate for trading purposes.  Fusion Media  and any provider of the data contained in this website will not accept liability for any loss or damage as a result of your trading, or your reliance on the information contained within this website. 
+It is prohibited to use, store, reproduce, display, modify, transmit or distribute the data contained in this website without the explicit prior written permission of Fusion Media and/or the data provider. All intellectual property rights are reserved by the providers and/or the exchange providing the data contained in this website. 
+ Fusion Media may be compensated by the advertisers that appear on the website, based on your interaction with the advertisements or advertisers.

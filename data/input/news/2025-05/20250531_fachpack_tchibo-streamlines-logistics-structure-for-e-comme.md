@@ -1,0 +1,24 @@
+---
+title: Tchibo streamlines logistics structure for e-commerce
+url: https://www.fachpack.de/en/fachpack-360/2024-1/article/tchibo-streamlines-logistics-structure-for-e-commerce
+published_date: 2025-05-31T00:00:18.913104
+collected_date: 2025-05-31T00:00:18.913188
+source: Fachpack
+source_url: https://www.fachpack.de
+description: Tchibo’s goal is to only offer responsibly sourced coffee from 2027 onwards. However, the coffee roaster is also a non-food specialist and successful online retailer. In this role, the Hamburg-based company wants to make its supply chain more efficient. Therefore, Tchibo is in the midst of a...
+language: en
+---
+
+# Tchibo streamlines logistics structure for e-commerce
+
+Tchibo’s goal is to only offer responsibly sourced coffee from 2027 onwards. However, the coffee roaster is also a non-food specialist and successful online retailer. In this role, the Hamburg-based company wants to make its supply chain more efficient. Therefore, Tchibo is in the midst of a...
+
+Tchibo’s goal is to only offer responsibly sourced coffee from 2027 onwards. However, the coffee roaster is also a non-food specialist and successful online retailer. In this role, the Hamburg-based company wants to make its supply chain more efficient. Therefore, Tchibo is in the midst of a network restructuring and has already separated the B2B and B2C supply streams as part of this. 
+The Hamburg-based group is now consolidating its e-commerce fulfillment in Cheb in the Czech Republic, reports the Lebensmittelzeitung. At the site operated by DHL, it bundles the returns flows and links them directly to the forward process. This means that returned, popular items can be put back on sale more quickly. Tchibo relies on the goods-to-person principle and combines a pocket sorter system with a multi-shuttle carton system from Dematic, a pallet warehouse, and conveyor technology. The site was converted during ongoing operations.
+ 
+E-commerce Fit for the Future 
+“We wanted to take a closer look at complexity drivers and question whether we are properly positioned in logistics and fit for the future,” said Tchibo’'s Head of Logistics Jan Schneider at the Retail Logistics Congress. “We have made far-reaching strategic decisions and implemented them step by step over the past three years.” The e-commerce warehouse is now controlled directly by the incoming goods department, and centralized warehousing is history. 
+Tchibo has closed the warehouse in Gallin and expanded the other locations in Bremen, Minden and Neumarkt in terms of space, through-put, and operations level. New technologies and more automation are to be used. “We can already say that we have significantly less goods tourism in our network,” says Schneider. Employees now have to handle the same carton less often. However, the optimizations do not end there.  
+In future, Tchibo wants to use artificial intelligence to improve the sorting mix of small quantities that are stored in mixed containers. The roll-out of the transport management system by provider SAP is also on the agenda. According to Schneider, the company is already halfway through the implementation process. “We are integrating all transport processes, from sea freight to the last mile and, in between, long-distance sales by rail and road, into one system,” says the manager. This creates transparency and a high level of accuracy. 
+Tchibo operates around 900 stores in eight countries, over 24,200 retail outlets and national online stores. Through this multi-channel distribution system, the company offers not only coffee but also a weekly changing range of non-food products and services such as mobile telephony. 
+Tchibo has recently responded to higher world market prices and rising costs by increasing the price of roasted coffee. As of April 15, prices will have been increased by between 50 cents and 1 euro per pound, depending on the variety and country of origin, reports Food Service. As a rule, Tchibo is the only supplier to report on its pricing and is regarded as a signal provider in the industry. This is because the retail group sells its products directly to end consumers via its own stores and depots as well as online and can therefore also set its final prices. Other coffee roasters supply their products to food retailers, who in turn set the final prices. The industry expects competitors to keep a close eye on the market leader’s price increases this year and follow suit if necessary. However, retailers are reluctant to comment on their sales prices for coffee, and Tchibo’s competitors are also tight-lipped when it comes to prices.

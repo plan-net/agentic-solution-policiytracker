@@ -1,0 +1,30 @@
+---
+title: Dayforce (DAY) Surpasses Q1 Earnings and Revenue Estimates
+url: https://www.nasdaq.com/articles/dayforce-day-surpasses-q1-earnings-and-revenue-estimates
+published_date: 2025-05-28T13:21:52.433581
+collected_date: 2025-05-28T13:21:52.433639
+source: Nasdaq
+source_url: https://www.nasdaq.com
+author: May 07, 2025 — 08:15 am EDT
+description: Dayforce (DAY) came out with quarterly earnings of $0.58 per share, beating the Zacks Consensus Estimate of $0.56 per share. This compares to earnings of $0.43 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings surprise of...
+language: en
+---
+
+# Dayforce (DAY) Surpasses Q1 Earnings and Revenue Estimates
+
+*By May 07, 2025 — 08:15 am EDT*
+
+Dayforce (DAY) came out with quarterly earnings of $0.58 per share, beating the Zacks Consensus Estimate of $0.56 per share. This compares to earnings of $0.43 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings surprise of...
+
+Dayforce (DAY) came out with quarterly earnings of $0.58 per share, beating the Zacks Consensus Estimate of $0.56 per share. This compares to earnings of $0.43 per share a year ago. These figures are adjusted for non-recurring items. This quarterly report represents an earnings surprise of 3.57%. A quarter ago, it was expected that this provider of human-resources software and services would post earnings of $0.46 per share when it actually produced earnings of $0.60, delivering a surprise of 30.43%. 
+ Over the last four quarters, the company has surpassed consensus EPS estimates four times. Dayforce, which belongs to the Zacks Internet - Software industry, posted revenues of $481.8 million for the quarter ended March 2025, surpassing the Zacks Consensus Estimate by 0.87%. This compares to year-ago revenues of $431.5 million. The company has topped consensus revenue estimates four times over the last four quarters. The sustainability of the stock's immediate price movement based on the recently-released numbers and future earnings expectations will mostly depend on management's commentary on the earnings call. Dayforce shares have lost about 19.9% since the beginning of the year versus the S&amp;P 500's decline of -4.7%. What's Next for Dayforce? While Dayforce has underperformed the market so far this year, the question that comes to investors' minds is: what's next for the stock? 
+ There are no easy answers to this key question, but one reliable measure that can help investors address this is the company's earnings outlook. Not only does this include current consensus earnings expectations for the coming quarter(s), but also how these expectations have changed lately. Empirical research shows a strong correlation between near-term stock movements and trends in earnings estimate revisions. Investors can track such revisions by themselves or rely on a tried-and-tested rating tool like the Zacks Rank, which has an impressive track record of harnessing the power of earnings estimate revisions. Ahead of this earnings release, the estimate revisions trend for Dayforce: favorable. While the magnitude and direction of estimate revisions could change following the company's just-released earnings report, the current status translates into a Zacks Rank #2 (Buy) for the stock. So, the shares are expected to outperform the market in the near future. You can see the complete list of today's Zacks #1 Rank (Strong Buy) stocks here. It will be interesting to see how estimates for the coming quarters and current fiscal year change in the days ahead. The current consensus EPS estimate is $0.52 on $465.14 million in revenues for the coming quarter and $2.30 on $1.93 billion in revenues for the current fiscal year. Investors should be mindful of the fact that the outlook for the industry can have a material impact on the performance of the stock as well. In terms of the Zacks Industry Rank, Internet - Software is currently in the top 37% of the 250 plus Zacks industries. Our research shows that the top 50% of the Zacks-ranked industries outperform the bottom 50% by a factor of more than 2 to 1. 
+ Appian (APPN), another stock in the same industry, has yet to report results for the quarter ended March 2025. The results are expected to be released on May 8. This business process management software provider is expected to post quarterly earnings of $0.03 per share in its upcoming report, which represents a year-over-year change of +112.5%. The consensus EPS estimate for the quarter has been revised 6.8% lower over the last 30 days to the current level. Appian's revenues are expected to be $162.84 million, up 8.7% from the year-ago quarter. 
+ Should You Invest in Dayforce, Inc. (DAY)? 
+ 
+ Before you invest in Dayforce, Inc. (DAY), want to know the best stocks to buy for the next 30 days? Check out Zacks Investment Research for our free report on the 7 best stocks to buy. 
+ 
+ Zacks Investment Research has been committed to providing investors with tools and independent research since 1978. For more than a quarter century, the Zacks Rank stock-rating system has more than doubled the S&amp;P 500 with an average gain of +24.08% per year. (These returns cover a period from January 1, 1988 through May 6, 2024.) 
+ Want the latest recommendations from Zacks Investment Research? Today, you can download 7 Best Stocks for the Next 30 Days. Click to get this free report Dayforce, Inc. (DAY) : Free Stock Analysis Report Appian Corporation (APPN) : Free Stock Analysis Report This article originally published on Zacks Investment Research (zacks.com). Zacks Investment Research
+
+The views and opinions expressed herein are the views and opinions of the author and do not necessarily reflect those of Nasdaq, Inc.

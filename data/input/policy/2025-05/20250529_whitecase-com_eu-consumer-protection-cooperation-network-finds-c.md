@@ -1,0 +1,48 @@
+---
+title: EU Consumer Protection Cooperation Network finds consumer law breaches in the e-commerce sector | White & Case LLP
+url: https://www.whitecase.com/insight-alert/eu-consumer-protection-cooperation-network-finds-consumer-law-breaches-e-commerce
+published_date: 2025-05-29T11:38:40.899000
+collected_date: 2025-05-31T11:38:42.178510
+source: Whitecase
+source_url: https://www.whitecase.com
+description: "The Consumer Protection Cooperation Network (CPC) found that the online marketplace and fast fashion e-retailer SHEIN engaged in a range of practices that are in breach of EU consumer law. 
+ Scope of the CPC coordinated action and next steps 
+ On 26 May 2025, following a coordinated investigation..."
+language: en
+collection_type: policy_landscape
+---
+
+# EU Consumer Protection Cooperation Network finds consumer law breaches in the e-commerce sector | White & Case LLP
+
+The Consumer Protection Cooperation Network (CPC) found that the online marketplace and fast fashion e-retailer SHEIN engaged in a range of practices that are in breach of EU consumer law. 
+ Scope of the CPC coordinated action and next steps 
+ On 26 May 2025, following a coordinated investigation...
+
+The Consumer Protection Cooperation Network (CPC) found that the online marketplace and fast fashion e-retailer SHEIN engaged in a range of practices that are in breach of EU consumer law. 
+ Scope of the CPC coordinated action and next steps 
+ On 26 May 2025, following a coordinated investigation led by the competent national authorities of Belgium, France, Ireland and The Netherlands, the CPC notified SHEIN of a number of practices which infringe European Union (EU) consumer law. According to the European Commission's (EC) press release, the investigation included the following practices: 
+ 
+ Fake discounts: showing price reductions that are not based on the actual previous selling prices; 
+ Pressure selling: using tactics such as false deadlines to create urgency and compel consumers to make purchases quickly; 
+ Missing, incorrect and misleading information: providing inaccurate or incomplete details about consumers' rights regarding returns and refunds and not processing these properly; 
+ Deceptive product labels: using labels that imply a product has a special attribute when the characteristic is actually a legal requirement; 
+ Greenwashing: giving false or deceptive information about the sustainability benefits of products; and 
+ Hidden contact details: making it difficult for consumers to reach SHEIN with questions or complaints. 
+ 
+ The CPC also sent a request for information regarding SHEIN's compliance with other obligations, including making sure that product rankings, reviews, and ratings are not presented to consumers in a misleading manner. In addition, the CPC is currently investigating whether SHEIN informs consumers about how contractual obligations are divided between SHEIN and any third-party sellers, and whether it properly communicates that consumer rights do not apply when the third-party seller is not acting as a trader. 
+ Within one month, SHEIN must reply to the CPC's concerns and propose commitments to address them. Following SHEIN's reply, the CPC will either engage in a dialogue with the view of negotiating the final commitments, or, if necessary, the national authorities will initiate enforcement actions to ensure compliance. The national enforcement actions may include fines based on SHEIN's annual turnover in the relevant Member States. The penalties may be different depending on the Member State and the specific infringement, but these must be effective, proportionate and dissuasive. If these infringements result in consumer harm, they could also give rise to civil liability actions. 
+ Functioning of the CPC Network process 
+ While EU consumer protection legislation is enforced by the Member States' competent authorities, the CPC Regulation 1 establishes a framework to address, in a coordinated manner, practices affecting consumers in more than one Member State. The CPC's coordinated actions are led by one or more competent authorities,and coordinated by a competent authority or by the European Commission. 
+ The CPC can launch investigations, conduct inspections and gather all the necessary evidence and information in a coordinated manner. In the context of the CPC coordinated action, the competent authorities may adopt a common position and invite the trader concerned to propose commitments. Traders can also propose voluntary commitments on their own initiative. 
+ The CPC previous coordinated actions include, among many others, Booking.com's commitments regarding the presentation of offers discounts and prices 2, Airbnb's commitments in relation to the presentation of accommodation offers 3 and several airlines' commitments with regard to flight cancellations 4. 
+ Legal framework and interplay with other instruments 
+ In the present case, the practices assessed by the CPC during its investigation fall under the scope of the Unfair Commercial Practices Directive 5, the Consumer Rights Directive 6, the Price Indication Directive 7 and the e-Commerce Directive 8. 
+ It must be noted that, in parallel, the EC is investigating under the Digital Services Act (DSA) certain practices carried out by SHEIN. SHEIN is designated as a "very large online platform (VLOP)" by the EU. This designation means that SHEIN must comply with enhanced obligations aimed at increasing accountability and transparency. The current DSA investigation relates to the presence of illegal content on SHEIN's marketplace, the transparency of the recommender systems, and measures to mitigate risks relating to consumer protection, public health and users' wellbeing. While the DSA investigation will follow its own course, this is an example of how the EC and national competent authorities address their concerns in the e-commerce sector in a coordinated manner. 
+ The CPC coordinated action will not affect ongoing proceedings in Member States. Concretely, the Italian Competition Authority announced national proceedings into SHEIN's commercial practices in September 2024, which may have a separate outcome. 9 
+ Key aspects for traders 
+ Traders operating within several Member States must comply with the domestic rules on consumer protection and provide transparent and honest information. While navigating the EU consumer protection landscape is becoming increasingly complex, the EU provides for a partially harmonised framework, and coordinated EU action is becoming more frequent. Engaging with the CPC at an early stage may facilitate compliance in certain occasions, avoiding parallel investigations in multiple Member States. 
+ EU traders, especially those operating in the e-commerce sector, should closely monitor the outcome of the CPC's coordinated action against SHEIN, as any commitments resulting from the process may provide valuable guidance on compliance expectations. 
+ 1 Regulation (EU) 2017/2394 of the European Parliament and of the Council of 12 December 2017 on cooperation between national authorities responsible for the enforcement of consumer protection laws and repealing Regulation (EC) No 2006/2004, available here. 2 EC's statement available here. 3 EC's statement available here. 4 EC's statement available here. 5 Directive 2005/29/EC of the European Parliament and of the Council of 11 May 2005 concerning unfair business-to-consumer commercial practices in the internal market and amending Council Directive 84/450/EEC, Directives 97/7/EC, 98/27/EC and 2002/65/EC of the European Parliament and of the Council and Regulation (EC) No 2006/2004 of the European Parliament and of the Council (Unfair Commercial Practices Directive), available here. See also 6 Directive (EU) 2024/825 of the European Parliament and of the Council of 28 February 2024 amending Directives 2005/29/EC and 2011/83/EU as regards empowering consumers for the green transition through better protection against unfair practices and through better information, available here. 6 Directive 2011/83/EU of the European Parliament and of the Council of 25 October 2011 on consumer rights, amending Council Directive 93/13/EEC and Directive 1999/44/EC of the European Parliament and of the Council and repealing Council Directive 85/577/EEC and Directive 97/7/EC of the European Parliament and of the Council, available here. 7 Directive 98/6/EC of the European Parliament and of the Council of 16 February 1998 on consumer protection in the indication of the prices of products offered to consumers, available here. 8 Directive 2000/31/EC of the European Parliament and of the Council of 8 June 2000 on certain legal aspects of information society services, in particular electronic commerce, in the Internal Market ('Directive on electronic commerce'), available here. 9 Press release available here. 
+ White &amp; Case means the international legal practice comprising White &amp; Case LLP, a New York State registered limited liability partnership, White &amp; Case LLP, a limited liability partnership incorporated under English law and all other affiliated partnerships, companies and entities. 
+ This article is prepared for the general information of interested persons. It is not, and does not attempt to be, comprehensive in nature. Due to the general nature of its content, it should not be regarded as legal advice. 
+ © 2025 White &amp; Case LLP

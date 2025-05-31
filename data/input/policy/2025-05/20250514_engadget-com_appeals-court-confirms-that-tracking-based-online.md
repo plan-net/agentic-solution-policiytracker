@@ -1,0 +1,20 @@
+---
+title: Appeals court confirms that tracking-based online advertising is illegal in Europe
+url: https://www.engadget.com/big-tech/appeals-court-confirms-that-tracking-based-online-advertising-is-illegal-in-europe-223714124.html?src=rss
+published_date: 2025-05-14T00:00:00
+collected_date: 2025-05-31T10:36:58.087983
+source: Engadget
+source_url: https://www.engadget.com
+author: Anna Washenko
+description: The Belgian Court of Appeal ruled today that the Transparency and Consent Framework (TCF) currently used as the foundation for most online advertising is illegal in the EU. This decision upholds the findings of the Belgian Data Protection Authority from 2022 that the technology underpinning online...
+language: en
+collection_type: policy_landscape
+---
+
+# Appeals court confirms that tracking-based online advertising is illegal in Europe
+
+*By Anna Washenko*
+
+The Belgian Court of Appeal ruled today that the Transparency and Consent Framework (TCF) currently used as the foundation for most online advertising is illegal in the EU. This decision upholds the findings of the Belgian Data Protection Authority from 2022 that the technology underpinning online...
+
+The Belgian Court of Appeal ruled today that the Transparency and Consent Framework (TCF) currently used as the foundation for most online advertising is illegal in the EU. This decision upholds the findings of the Belgian Data Protection Authority from 2022 that the technology underpinning online ads violates several principles of the General Data Protection Regulations, an EU digital privacy law that took effect in 2018. Engadget's Daniel Cooper wrote a thorough explainer of the different systems that support the current online advertising ecosystem, which is valuable reading for anybody spending time online. The very simplified version is that advertisers participate in real-time bidding (RTB) to show their content online. Currently, those bids are based on information gathered from tracking individuals' activities online with cookies. The TCF was created by the Interactive Advertising Bureau as a way to standardize how websites ask users for permission to be tracked. The original 2022 decision determined that both the consent collected by the TCF and the data collected in the RTB process were illegal under the GDPR. "Today's court's decision shows that the consent system used by Google, Amazon, X, Microsoft, deceives hundreds of millions of Europeans," said Dr Johnny Ryan, director of Enforce at the Irish Council for Civil Liberties, who has been leading the legal charge against the current approach to ad tech. "The tech industry has sought to hide its vast data breach behind sham consent popups. Tech companies turned the GDPR into a daily nuisance rather than a shield for people." The reaction from IAB Europe, which filed the appeal, seems to mostly be relief that it hasn't been found responsible for the data collected by TCF. "The Market Court has rejected the APD’s view that IAB Europe is a joint controller together with TCF participants for their own respective processing of personal data, for instance for the purpose of digital advertising," the organization's statement says. IAB Europe notes that it has already suggested changes to the TCF that better reflect the "limited controllership" and submitted them to the Belgian Data Protection Authority. The group faced fines and was ordered to rebuild its current ad-tech framework as a result of the original decision. We've also reached out to some of the major advertisers that use the RTB technology for comment on the ruling. While this does seem like a big win for privacy advocates and internet users in the EU, it's unclear exactly what the next steps will be for advertisers and for ad tech systems. Most likely, regulators will oversee changes the IAB Europe makes to the TCF, so consent pop-ups may not yet be a thing of the past.

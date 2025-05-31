@@ -1,6 +1,5 @@
-# Kodosumi Configuration Template for Political Monitoring Agent
-# This file is safe to commit - it contains no secrets
-# Copy to config.yaml and update with real values from your .env file
+# Political Monitoring Agent - Ray Serve Configuration
+# This template is safe to commit - real values come from .env
 
 proxy_location: EveryNode
 http_options:
@@ -14,84 +13,65 @@ logging_config:
   log_level: INFO
   logs_dir: null
   enable_access_log: true
-  additional_log_standard_attrs: []
 
 applications:
-- name: political-monitoring-agent
-  route_prefix: /political-analysis
-  import_path: src.app:fast_app
+# Flow 1: Data Ingestion and Graph Building
+- name: flow1-data-ingestion
+  route_prefix: /data-ingestion
+  import_path: src.flows.data_ingestion.app:fast_app
   runtime_env:
     env_vars:
-      # === Core Configuration ===
       PYTHONPATH: .
       LOG_LEVEL: INFO
-      LOG_FORMAT: json
-      ENVIRONMENT: development
       
-      # === Ray Configuration ===
-      RAY_ADDRESS: auto
-      RAY_NUM_CPUS: '4'
-      
-      # === Storage Configuration ===
+      # Storage
       USE_AZURE_STORAGE: 'false'
       AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
       
-      # === LLM API Keys (replace with real values) ===
-      OPENAI_API_KEY: sk-your-openai-api-key-here
-      ANTHROPIC_API_KEY: sk-ant-your-anthropic-api-key-here
+      # Neo4j/Graphiti
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: password123
+      GRAPHITI_GROUP_ID: political_monitoring_v2
       
-      # === Langfuse Configuration (replace with real values) ===
-      LANGFUSE_PUBLIC_KEY: pk-lf-your-langfuse-public-key-here
-      LANGFUSE_SECRET_KEY: sk-lf-your-langfuse-secret-key-here
+      # API Keys (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
       LANGFUSE_HOST: http://localhost:3001
-      
-      # === Path Configuration ===
-      DEFAULT_OUTPUT_FOLDER: ./data/output
-      DEFAULT_INPUT_FOLDER: ./data/input
-      DEFAULT_CONTEXT_FOLDER: ./data/context
-      
-      # === Processing Configuration ===
-      MAX_BATCH_SIZE: '1000'
-      PROCESSING_TIMEOUT_SECONDS: '600'
-      MAX_DOCUMENT_SIZE_MB: '50'
-      CONFIDENCE_THRESHOLD: '0.7'
-      PRIORITY_THRESHOLD: '70.0'
-      
-      # === LLM Configuration ===
-      LLM_ENABLED: 'false'  # Set to true when you have API keys
-      LLM_PROVIDER: anthropic
-      LLM_MAX_CONCURRENT: '3'
-      LLM_TIMEOUT_SECONDS: '30'
-      LLM_FALLBACK_ENABLED: 'true'
-      
-      # === OpenAI Settings ===
-      OPENAI_MODEL: gpt-4
-      OPENAI_MAX_TOKENS: '2000'
-      OPENAI_TEMPERATURE: '0.1'
-      
-      # === Anthropic Settings ===
-      ANTHROPIC_MODEL: claude-3-5-sonnet-20241022
-      ANTHROPIC_MAX_TOKENS: '2000'
-      ANTHROPIC_TEMPERATURE: '0.1'
-      
-      # === Ray Task Configuration ===
-      RAY_TASK_MAX_RETRIES: '3'
-      RAY_TASK_TIMEOUT_SECONDS: '300'
-      
-      # === Performance ===
-      ENABLE_PERFORMANCE_LOGGING: 'true'
-      
-      # === Azure Job Configuration (auto-generated) ===
-      AZURE_JOB_ID: placeholder-job-id
-      AZURE_INPUT_PATH: jobs/placeholder-job-id/input
-      AZURE_CONTEXT_PATH: test-client/context.yaml
-      AZURE_OUTPUT_PATH: jobs/placeholder-job-id/output
       
   ray_actor_options:
     num_cpus: 2
     memory: 4000000000  # 4GB
-    
   autoscaling_config:
     min_replicas: 1
-    max_replicas: 10
+    max_replicas: 5
     target_num_ongoing_requests_per_replica: 2.0
+
+# Chat Server: LLM Interface for Knowledge Graph
+- name: chat-server
+  route_prefix: /chat
+  import_path: src.chat.server.app:chat_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+      
+      # Neo4j (required for Graphiti)
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: password123
+      
+      # API Key (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      
+  ray_actor_options:
+    num_cpus: 1
+    memory: 2000000000  # 2GB
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 3
+    target_num_ongoing_requests_per_replica: 5

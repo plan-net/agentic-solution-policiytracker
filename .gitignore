@@ -380,6 +380,9 @@ api_keys.txt
 private/
 confidential/
 
+# MCP configuration with secrets
+.mcp.json
+
 # =============================================================================
 # Temporary & Build Files
 # =============================================================================
@@ -476,3 +479,7 @@ sample_large_dataset/
 # Keep example data and configurations
 !data/context/client.yaml
 !data/input/examples/
+!.mcp.json.template
+# Kodosumi logs
+logs/kodosumi.log
+nohup.out

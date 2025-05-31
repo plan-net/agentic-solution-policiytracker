@@ -1,16 +1,18 @@
-# Political Monitoring Agent - User Guide
+# Political Monitoring Agent - User Guide v0.2.0
 
 *A comprehensive guide for business users, policy analysts, and decision makers*
 
 ## 📋 Table of Contents
 
 - [What This System Does](#what-this-system-does)
+- [🆕 Advanced Chat Interface Guide](#-advanced-chat-interface-guide)
 - [How It Works: The Complete Process](#how-it-works-the-complete-process)
 - [Starting Your First Analysis: Form Guide](#starting-your-first-analysis-form-guide)
 - [Understanding the Scoring System](#understanding-the-scoring-system)
 - [AI vs Rule-Based Analysis](#ai-vs-rule-based-analysis)
 - [Required Inputs](#required-inputs)
 - [Understanding Your Results](#understanding-your-results)
+- [Automated Data Collection (ETL) Guide](#automated-data-collection-etl-guide)
 - [Quality Assurance & Reliability](#quality-assurance--reliability)
 - [Customizing for Your Organization](#customizing-for-your-organization)
 - [Best Practices for Use](#best-practices-for-use)
@@ -47,15 +49,370 @@ The Political Monitoring Agent automatically analyzes political and regulatory d
 
 ---
 
+## 🆕 Advanced Chat Interface Guide
+
+### Introduction to Graph-Powered Political Analysis
+
+The Political Monitoring Agent v0.2.0 introduces a revolutionary **chat interface** that goes far beyond traditional search and LLM-based Q&A systems. Built on **Graphiti temporal knowledge graphs**, our chat interface provides unique capabilities for exploring political and regulatory information.
+
+### What Makes Our Chat Interface Different
+
+**Traditional Approach** (LLM + Web Search):
+- 🔍 Simple keyword search and retrieval
+- 📄 Text-based answers from individual documents
+- ⏱️ No temporal understanding or timeline analysis
+- 🚫 Limited ability to find indirect relationships
+- 📊 No network analysis or community detection
+
+**Our Graph-Powered Approach**:
+- 🧠 **Multi-hop reasoning** through relationship networks
+- ⏰ **Temporal intelligence** tracking changes over time
+- 🕸️ **Network analysis** revealing influence patterns and centrality
+- 👥 **Community detection** identifying natural groupings
+- 🔗 **Impact cascade analysis** showing how changes propagate
+- 📈 **Entity evolution tracking** across multiple time periods
+
+### Key Benefits for Different User Types
+
+#### For Policy Analysts
+**Traditional Tools**: Manual research through documents, basic keyword searches
+**Our Chat Interface**: 
+- "How has Meta's regulatory stance evolved since 2022?" → Timeline analysis + relationship changes
+- "What organizations influence EU AI policy?" → Network centrality + community detection
+- "Show me all policies that reference the Digital Services Act" → Multi-hop relationship discovery
+
+#### For Compliance Teams
+**Traditional Tools**: Checklist-based compliance tracking, static regulatory databases
+**Our Chat Interface**:
+- "What are all the compliance requirements affecting e-commerce in the EU?" → Comprehensive relationship mapping
+- "How do GDPR and DSA requirements overlap for our business?" → Multi-policy impact analysis
+- "What enforcement actions have happened in our industry this year?" → Temporal + industry filtering
+
+#### For Strategic Planning
+**Traditional Tools**: Separate research on markets, competitors, regulations
+**Our Chat Interface**:
+- "Which competitors are most affected by upcoming AI regulations?" → Competitive network analysis
+- "What regulatory trends threaten our expansion into Germany?" → Geographic + temporal analysis
+- "Who are the key influencers in sustainability policy?" → Influence network mapping
+
+### Comprehensive Tool Reference
+
+Our chat interface provides **16 specialized tools** organized into 5 categories:
+
+#### 🔍 Entity Analysis Tools (4 tools)
+
+**1. Get Entity Details**
+- **Purpose**: Comprehensive information about specific entities
+- **Use when**: You want to understand what an entity is and its basic context
+- **Example queries**: 
+  - "Tell me about the EU Digital Services Act"
+  - "What is Meta's role in privacy regulation?"
+- **Output**: Key facts, entity type, properties, source documents
+
+**2. Get Entity Relationships** 
+- **Purpose**: Explore what other entities are connected and how
+- **Use when**: You want to understand an entity's network of connections
+- **Example queries**:
+  - "What organizations are connected to GDPR enforcement?"
+  - "How is Apple related to antitrust regulation?"
+- **Output**: Relationship types, connected entities, connection strength
+
+**3. Get Entity Timeline**
+- **Purpose**: Track how an entity has evolved over time
+- **Use when**: You want to understand changes, developments, or trends
+- **Example queries**:
+  - "How has TikTok's regulatory situation changed this year?"
+  - "Show me the timeline of Brexit's impact on data protection"
+- **Output**: Chronological events, change analysis, trend identification
+
+**4. Find Similar Entities**
+- **Purpose**: Discover entities with similar characteristics or contexts
+- **Use when**: You want to find comparable cases or entities
+- **Example queries**:
+  - "What companies face similar regulatory challenges as Meta?"
+  - "Find policies similar to the California Privacy Act"
+- **Output**: Similar entities ranked by similarity, comparison context
+
+#### 🕸️ Network Traversal Tools (4 tools)
+
+**5. Traverse from Entity**
+- **Purpose**: Multi-hop exploration of relationship networks
+- **Use when**: You want to discover indirect connections and influence chains
+- **Example queries**:
+  - "Start from the European Commission and explore its policy influence network"
+  - "How does climate regulation connect to tech companies?"
+- **Output**: Multi-level relationship paths, network expansion visualization
+
+**6. Find Paths Between Entities**
+- **Purpose**: Discover connection routes between two specific entities
+- **Use when**: You want to understand how two entities are related
+- **Example queries**:
+  - "How is ByteDance connected to EU data protection law?"
+  - "What's the relationship between Airbnb and consumer protection regulation?"
+- **Output**: Connection paths, relationship chains, intermediary entities
+
+**7. Get Entity Neighbors**
+- **Purpose**: Immediate network neighborhood analysis
+- **Use when**: You want to see what's directly connected to an entity
+- **Example queries**:
+  - "Who are Google's regulatory neighbors?"
+  - "What policies directly connect to artificial intelligence regulation?"
+- **Output**: Direct connections, relationship types, network proximity
+
+**8. Analyze Entity Impact**
+- **Purpose**: Impact cascade analysis and influence patterns
+- **Use when**: You want to understand influence direction and impact scope
+- **Example queries**:
+  - "What is the impact network of the GDPR?"
+  - "How does Meta influence privacy policy development?"
+- **Output**: Impact direction, cascade analysis, influence measurement
+
+#### ⏰ Temporal Analysis Tools (4 tools)
+
+**9. Search by Date Range**
+- **Purpose**: Time-bounded content searches and filtering
+- **Use when**: You want to focus on specific time periods
+- **Example queries**:
+  - "What happened in EU tech regulation during Q1 2024?"
+  - "Show me privacy developments from the last 6 months"
+- **Output**: Time-filtered results, temporal context, date-specific insights
+
+**10. Get Entity History**
+- **Purpose**: Comprehensive entity evolution tracking
+- **Use when**: You want detailed historical analysis of an entity
+- **Example queries**:
+  - "Trace the complete history of Apple's antitrust cases"
+  - "How has the definition of 'personal data' evolved in EU law?"
+- **Output**: Historical timeline, evolution analysis, change patterns
+
+**11. Find Concurrent Events**
+- **Purpose**: Identify what happened simultaneously across entities
+- **Use when**: You want to understand parallel developments or coordinated actions
+- **Example queries**:
+  - "What else happened when the DSA was implemented?"
+  - "Show me concurrent privacy investigations in 2023"
+- **Output**: Simultaneous events, coordination analysis, parallel developments
+
+**12. Track Policy Evolution**
+- **Purpose**: Follow regulatory development and implementation over time
+- **Use when**: You want to understand policy development processes
+- **Example queries**:
+  - "How did the AI Act develop from proposal to implementation?"
+  - "Track the evolution of cookie consent requirements"
+- **Output**: Policy development stages, implementation timeline, change analysis
+
+#### 👥 Community Detection Tools (3 tools)
+
+**13. Detect Communities**
+- **Purpose**: Find natural groupings and clusters of entities
+- **Use when**: You want to understand ecosystem organization and groupings
+- **Example queries**:
+  - "What communities exist in EU tech regulation?"
+  - "Group organizations by their regulatory focus areas"
+- **Output**: Community clusters, group characteristics, membership analysis
+
+**14. Analyze Policy Clusters**
+- **Purpose**: Policy area relationships and thematic groupings
+- **Use when**: You want to understand policy relationships and themes
+- **Example queries**:
+  - "How do different privacy policies cluster together?"
+  - "Group AI regulations by their focus areas"
+- **Output**: Policy clusters, thematic relationships, regulatory families
+
+**15. Map Organization Networks**
+- **Purpose**: Organizational relationship patterns and influence networks
+- **Use when**: You want to understand organizational ecosystems
+- **Example queries**:
+  - "Map the network of organizations involved in antitrust regulation"
+  - "Show me how tech companies cluster in regulatory space"
+- **Output**: Organization networks, influence patterns, collaboration clusters
+
+#### 🔍 Advanced Search (1 tool)
+
+**16. Search Knowledge Graph**
+- **Purpose**: Sophisticated semantic search with advanced reranking
+- **Use when**: You want comprehensive search results with intelligent ranking
+- **Example queries**:
+  - "Find all content related to cross-border data transfers"
+  - "Search for enforcement actions involving social media platforms"
+- **Output**: Ranked search results, semantic matches, relevance scoring
+
+### Advanced Search Technologies
+
+Our chat interface leverages **Graphiti's cutting-edge search configurations**:
+
+#### Reranking Strategies
+- **RRF (Reciprocal Rank Fusion)**: Combines multiple ranking algorithms for better results
+- **MMR (Maximal Marginal Relevance)**: Balances relevance with result diversity
+- **Cross-encoder Reranking**: Deep semantic understanding for nuanced queries
+
+#### Search Optimization
+- **Entity-focused Search**: Optimized for entity queries vs. general content
+- **Edge-focused Search**: Optimized for relationship and connection queries
+- **Temporal Weighting**: Recent information receives higher relevance scores
+- **Context-aware Ranking**: Results ranked based on conversation context
+
+### Practical Usage Examples
+
+#### Example 1: Compliance Analysis
+**Query**: "What are all the compliance requirements for e-commerce platforms in the EU?"
+
+**System Response**:
+1. **Entity Details**: EU Digital Services Act, GDPR, e-commerce directive
+2. **Relationship Analysis**: How these regulations interconnect
+3. **Timeline**: Implementation dates and deadlines
+4. **Impact Analysis**: Specific requirements for e-commerce platforms
+5. **Source Citations**: Links to original regulatory documents
+
+#### Example 2: Competitive Intelligence
+**Query**: "How is TikTok's regulatory situation different from Meta's?"
+
+**System Response**:
+1. **Entity Comparison**: TikTok vs Meta regulatory profiles
+2. **Network Analysis**: Different regulatory relationships and challenges
+3. **Temporal Analysis**: How each company's situation has evolved
+4. **Impact Assessment**: Different regulatory pressures and responses
+5. **Community Analysis**: Different stakeholder ecosystems
+
+#### Example 3: Strategic Planning
+**Query**: "What emerging AI regulations should we monitor for our expansion into Europe?"
+
+**System Response**:
+1. **Community Detection**: AI regulation ecosystem in Europe
+2. **Temporal Analysis**: Recent and upcoming AI regulatory developments
+3. **Impact Cascades**: How AI regulations affect different business sectors
+4. **Network Traversal**: Key influencers and policy makers in AI regulation
+5. **Geographic Analysis**: Country-specific AI regulatory approaches
+
+### Conversation Context and Memory
+
+Our chat interface includes **sophisticated memory management**:
+
+#### Session Memory
+- **Entity Cache**: Remembers entities discussed in your session
+- **Query History**: Builds on previous questions and answers
+- **Context Stack**: Maintains conversation flow and reference points
+- **Tool Results**: Caches tool results to avoid redundant calls
+
+#### Context Awareness
+- **Reference Resolution**: "What about Apple?" after discussing Meta
+- **Progressive Depth**: Deeper analysis in follow-up questions
+- **Cross-Reference**: "How does this relate to what we discussed earlier?"
+- **Pattern Recognition**: Identifies your interests and adjusts responses
+
+### Source Attribution and Citations
+
+Every response includes **comprehensive source attribution**:
+
+#### Source Information
+- **Original URLs**: Direct links to source articles and documents
+- **Publication Dates**: Temporal context for all information
+- **Source Quality**: Reliability indicators for different sources
+- **Document Types**: Government documents, news articles, academic papers
+
+#### Citation Format
+- **In-line Citations**: Facts linked to specific sources
+- **Source Lists**: Complete bibliography for each response
+- **Confidence Indicators**: Reliability scoring for each piece of information
+- **Update Tracking**: When information was last updated or verified
+
+### Best Practices for Chat Usage
+
+#### Effective Query Strategies
+
+**Start Broad, Then Narrow**:
+```
+1. "Tell me about EU data protection regulation"
+2. "How does this affect social media companies?"
+3. "What specific compliance requirements apply to content moderation?"
+```
+
+**Use Entity Names for Precision**:
+```
+Good: "How is Meta affected by the Digital Services Act?"
+Better: "Show me Meta's relationship to DSA compliance requirements"
+```
+
+**Leverage Temporal Capabilities**:
+```
+"What has changed in privacy regulation since 2022?"
+"Track the evolution of AI governance policy"
+"What concurrent developments happened during GDPR implementation?"
+```
+
+#### Query Types and Optimal Tools
+
+**For Understanding Entities**:
+- Use entity detail and relationship tools
+- Ask for timelines to understand evolution
+- Request similar entities for comparison
+
+**For Exploring Networks**:
+- Use traversal tools for multi-hop exploration
+- Find paths between specific entities
+- Analyze impact cascades and influence patterns
+
+**For Temporal Analysis**:
+- Search by date ranges for time-specific insights
+- Track entity history for comprehensive evolution
+- Find concurrent events for contextual understanding
+
+**For Strategic Intelligence**:
+- Use community detection for ecosystem understanding
+- Map organization networks for influence analysis
+- Analyze policy clusters for thematic relationships
+
+### Integration with Document Analysis
+
+The chat interface seamlessly integrates with the document analysis pipeline:
+
+#### Knowledge Graph Population
+- **Automated Processing**: New documents automatically update the knowledge graph
+- **Entity Extraction**: Documents contribute entities and relationships
+- **Temporal Updates**: Timeline information updates automatically
+- **Relationship Discovery**: New connections discovered through document processing
+
+#### Unified Access
+- **Chat + Documents**: Query across both processed documents and graph knowledge
+- **Cross-Reference**: Link chat insights to specific document analysis results
+- **Temporal Consistency**: Timeline information consistent across both interfaces
+- **Source Traceability**: Chat responses link back to original documents
+
+### Privacy and Data Handling
+
+#### Data Processing
+- **Secure Processing**: All chat interactions processed securely
+- **No Permanent Storage**: Chat history not permanently stored
+- **Privacy by Design**: User data protected throughout the conversation
+- **Source Protection**: Sensitive document content appropriately protected
+
+#### User Control
+- **Session Management**: Users control session duration and memory
+- **Clear History**: Option to clear conversation context
+- **Selective Sharing**: Control over what information is referenced
+- **Audit Trail**: Complete record of queries and responses for review
+
+---
+
 ## How It Works: The Complete Process
 
-### Step 1: Document Collection
+### Step 1: Document Collection (Manual & Automated)
+
+**Manual Document Upload**:
 You provide documents in various formats:
 - **PDF files** (regulatory reports, policy papers)
 - **Word documents** (.docx format)
 - **Text files** (.txt format)
 - **Markdown files** (.md format)
 - **Web content** (HTML format)
+
+**Automated Data Collection** (ETL Pipeline):
+The system can automatically collect relevant news and regulatory updates:
+- **Daily news collection** from multiple sources via Apify API
+- **Smart filtering** based on your company terms and industry keywords
+- **Automatic deduplication** to avoid processing the same content multiple times
+- **Temporal organization** with files organized by date for easy tracking
+- **Seamless integration** with manual uploads for comprehensive coverage
 
 ### Step 2: Content Processing
 The system extracts and processes the text:
@@ -496,6 +853,287 @@ Related documents are grouped by theme:
 - Responsible teams and stakeholders
 - Suggested timelines for response
 - Monitoring and follow-up recommendations
+
+---
+
+## Automated Data Collection (ETL) Guide
+
+The Political Monitoring Agent includes a **dual-flow ETL pipeline** for comprehensive document collection. This reduces manual effort and ensures you don't miss important developments across both regulatory landscape and company-specific news.
+
+### 📊 Two Collection Flows
+
+**Flow 1: Policy Landscape Collection (Weekly)**
+- **Purpose**: Monitor broad regulatory environment affecting your industry
+- **Schedule**: Sundays at 2 AM UTC (weekly comprehensive scan)
+- **Scope**: EU regulations, policy changes, enforcement actions
+- **Sources**: Exa.ai with intelligent query generation
+- **Content**: GDPR updates, DSA/DMA developments, sustainability regulations, competition law
+
+**Flow 2: Client News Collection (Daily)**  
+- **Purpose**: Track company-specific news and developments
+- **Schedule**: Daily (configurable timing)
+- **Scope**: Your organization, competitors, industry developments
+- **Sources**: Exa.ai + Apify news aggregators
+- **Content**: Company announcements, market analysis, industry trends
+
+### What Gets Collected Automatically
+
+**Policy Documents (Flow 1)**:
+- Regulatory guidance and implementation documents
+- Enforcement actions and penalty announcements
+- Policy consultations and draft legislation
+- Court decisions affecting regulatory interpretation
+- Cross-border regulatory cooperation updates
+
+**News Articles (Flow 2)**:
+- Breaking news about your company or brands
+- Industry analysis and commentary
+- Market developments with regulatory implications
+- Competitor actions and market positioning
+- Technology and business model innovations
+
+**Smart Filtering for Both Flows**:
+- Content related to your industry sectors
+- News from your operational markets (EU focus)
+- Stories matching your strategic themes
+- Exclusion of irrelevant topics (sports, entertainment, etc.)
+- Deduplication across all sources
+
+### How Automated Collection Works
+
+**Collection Process**:
+1. **Smart Query Generation**: System uses your `client.yaml` to create targeted searches
+2. **Initialization Mode**: Historical data collection (30-90 days) on first run
+3. **Regular Collection**: Daily/weekly incremental updates
+4. **Content Gathering**: Exa.ai provides high-quality, full-text articles
+5. **Deduplication**: Removes duplicate content based on URL matching
+6. **Transformation**: Converts to structured markdown with metadata
+7. **Organization**: Files stored by flow and date for easy tracking
+8. **Integration**: New documents automatically trigger analysis workflows
+
+**File Organization**:
+```
+data/input/
+├── policy/              # Flow 1: Regulatory landscape
+│   ├── 2025-05/
+│   │   ├── 20250527_europa-eu_dsa-implementation-timeline.md
+│   │   ├── 20250527_edpb_gdpr-ai-guidance-update.md
+│   │   └── 20250528_competition-eu_digital-markets-enforcement.md
+│   └── 2025-04/...
+└── news/                # Flow 2: Client-specific news
+    ├── 2025-05/
+    │   ├── 20250527_techcrunch_zalando-ai-features.md
+    │   ├── 20250527_reuters_ecommerce-regulation-impact.md
+    │   └── 20250528_bloomberg_sustainable-fashion-trends.md
+    └── 2025-04/...
+```
+
+### Setting Up Automated Collection
+
+**Prerequisites**:
+- Exa.ai API account and key (primary, recommended)
+- Apify API account and token (optional fallback)
+- Properly configured `client.yaml` with company terms and topic patterns
+- ETL services running (handled automatically in development)
+
+**Configuration Steps**:
+
+1. **Add API Keys**: Update your `.env` file with credentials
+   ```bash
+   EXA_API_KEY=your_exa_api_key_here           # Primary source
+   APIFY_API_TOKEN=your_apify_api_token_here   # Optional fallback
+   ```
+
+2. **Review Configuration**: Ensure `client.yaml` includes:
+   - Company terms for news collection
+   - Topic patterns for policy collection  
+   - Geographic markets and industry focus
+
+3. **Test Collection**: Verify setup before automation
+   ```bash
+   just policy-test      # Test policy collection
+   just etl-status       # Check news collection status
+   ```
+
+4. **Start ETL Services**: Services start automatically with `just dev`
+5. **Monitor Collection**: Check Airflow UI at http://localhost:8080
+
+**Company Terms Configuration**:
+Your existing `client.yaml` drives what content gets collected:
+
+```yaml
+company_terms:        # Primary search terms
+  - your-company
+  - brand-name
+  - stock-ticker
+  
+core_industries:      # Industry-related content
+  - fintech
+  - digital-payments
+  
+exclusion_terms:      # Filter out irrelevant content
+  - sports
+  - entertainment
+  - celebrity
+```
+
+### Monitoring Automated Collection
+
+**Airflow Dashboard** (http://localhost:8080):
+- **DAG Status**: View success/failure of daily collection runs
+- **Execution Logs**: Detailed information about each collection attempt
+- **Manual Triggers**: Force collection runs when needed
+- **Schedule Management**: Adjust collection frequency and timing
+
+**Collection Metrics**:
+- Articles collected per day
+- Deduplication statistics
+- Processing success rates
+- Sources contributing content
+- Error rates and failure patterns
+
+**File Output Monitoring**:
+- Check `data/input/news/YYYY-MM/` for new files
+- Review file naming patterns for consistency
+- Validate markdown formatting and metadata
+- Monitor file sizes and content quality
+
+### Manual Control Options
+
+**Trigger Collection Manually**:
+```bash
+# Force immediate news collection
+just airflow-trigger-news
+
+# Process collected articles through analysis
+just airflow-trigger-flows
+```
+
+**Adjust Collection Frequency**:
+- Default: Daily at 8:00 AM
+- Modification: Edit `src/etl/dags/news_collection_dag.py`
+- Options: Hourly, twice daily, weekly, or custom schedules
+
+**Pause/Resume Collection**:
+- Use Airflow UI to pause DAGs during maintenance
+- Resume collection when ready
+- Backfill missed periods if needed
+
+### Integration with Analysis Workflows
+
+**Automatic Processing**:
+- New articles trigger Flow 1 (Data Ingestion) automatically
+- Collected content goes through same analysis as manual uploads
+- Results appear in regular analysis reports
+- No additional configuration needed
+
+**Combined Analysis**:
+- Automated and manual documents analyzed together
+- Topic clustering includes both sources
+- Priority scoring treats all content equally
+- Executive summaries combine insights from all sources
+
+### Content Quality and Limitations
+
+**What You Get**:
+- **Headlines and summaries**: Full article text often not available
+- **Source attribution**: Clear indication of where content originated
+- **Publication dates**: Accurate timestamps for temporal analysis
+- **Metadata extraction**: Key information for knowledge graph integration
+
+**Current Limitations**:
+- RSS feed content may be truncated (headlines and summaries only)
+- Full article text requires additional processing capabilities
+- Some sources may have rate limiting or access restrictions
+- Content quality varies by source and article type
+
+**Future Enhancements**:
+- Full content scraping capabilities
+- Additional source integration
+- Advanced content filtering
+- Real-time collection options
+
+### Troubleshooting ETL Issues
+
+**Common Problems**:
+
+1. **No Articles Collected**:
+   - Check Apify API token is valid
+   - Verify company terms are not too restrictive
+   - Review exclusion terms for over-filtering
+   - Check Airflow DAG execution logs
+
+2. **Duplicate Content**:
+   - System automatically deduplicates by URL
+   - Manual deduplication may be needed for similar content
+   - Review collection sources for overlap
+
+3. **Poor Content Quality**:
+   - Adjust company terms for better targeting
+   - Add more specific industry keywords
+   - Refine exclusion terms to filter noise
+   - Consider source quality in Apify configuration
+
+**Monitoring Commands**:
+```bash
+# Check ETL service status
+just services-status
+
+# View collection logs
+just airflow-logs
+
+# Test Apify connection
+just test-etl-connection  # (if available)
+
+# Review collected files
+ls -la data/input/news/$(date +%Y-%m)/
+```
+
+### Best Practices for ETL Usage
+
+**Configuration Optimization**:
+- Start with broad terms, then narrow based on results
+- Regular review of collected content quality
+- Seasonal adjustment of search terms for industry cycles
+- Geographic term adjustment for market expansion
+
+**Quality Management**:
+- Monthly review of collection accuracy
+- Feedback incorporation for search term refinement
+- Regular cleanup of low-quality sources
+- Performance monitoring and optimization
+
+**Integration Workflows**:
+- Combine automated collection with manual document uploads
+- Use both sources for comprehensive market monitoring
+- Regular analysis of automated vs manual content quality
+- Strategic planning based on combined insights
+
+**Cost Management**:
+- Monitor Apify API usage and costs
+- Optimize collection frequency based on business needs
+- Balance comprehensiveness with operational efficiency
+- Regular cost-benefit analysis of automated collection
+
+### Success Metrics for ETL
+
+**Collection Quality**:
+- Percentage of relevant articles collected
+- Coverage of important industry developments
+- Timeliness of content collection
+- Accuracy of metadata extraction
+
+**Business Value**:
+- Critical developments identified automatically
+- Time saved vs manual monitoring
+- Early warning effectiveness
+- Decision support quality improvement
+
+**Technical Performance**:
+- Collection reliability and uptime
+- Processing speed and efficiency
+- Error rates and failure recovery
+- System resource utilization
 
 ---
 
