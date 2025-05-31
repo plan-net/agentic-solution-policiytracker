@@ -2,7 +2,7 @@
 title: PayPal launches iPhone NFC payments in Germany after EU forced Apple to open up
 url: https://www.theverge.com/news/666009/paypal-tap-to-pay-nfc-iphone-eu-dma
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T19:06:21.847444
+collected_date: 2025-05-31T02:34:11.357301
 source: Theverge
 source_url: https://www.theverge.com
 author: Wes Davis

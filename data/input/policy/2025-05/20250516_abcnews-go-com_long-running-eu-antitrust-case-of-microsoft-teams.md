@@ -2,7 +2,7 @@
 title: Long-running EU antitrust case of Microsoft Teams appears to be nearing an end
 url: https://abcnews.go.com/Technology/wireStory/long-running-eu-antitrust-case-microsoft-teams-appears-121868919
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T16:49:24.361723
+collected_date: 2025-05-31T05:01:49.833082
 source: Abcnews
 source_url: https://abcnews.go.com
 author: ABC News

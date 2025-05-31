@@ -2,7 +2,7 @@
 title: Commission exempts 38,000 companies from 8 EU laws
 url: https://www.politico.eu/article/commission-exempts-38000-companies-from-8-eu-laws/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T19:06:17.695410
+collected_date: 2025-05-31T08:03:07.197429
 source: Politico
 source_url: https://www.politico.eu
 author: Aude van den Hove

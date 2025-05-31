@@ -1,8 +1,8 @@
 ---
 title: Navigating the Crossroads: EU Antitrust Scrutiny and the Strategic Future of Visa & Mastercard
 url: https://www.ainvest.com/news/navigating-crossroads-eu-antitrust-scrutiny-strategic-future-visa-mastercard-2505/
-published_date: 2025-05-23T19:06:04.741000
-collected_date: 2025-05-29T19:06:05.905541
+published_date: 2025-05-23T22:30:44.478000
+collected_date: 2025-05-30T22:30:45.544521
 source: Ainvest
 source_url: https://www.ainvest.com
 author: Rhys Northwood

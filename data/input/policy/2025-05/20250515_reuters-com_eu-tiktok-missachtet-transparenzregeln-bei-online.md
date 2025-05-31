@@ -2,7 +2,7 @@
 title: EU: TikTok missachtet Transparenzregeln bei Online-Werbung
 url: https://www.reuters.com/de/firma/eu-tiktok-missachtet-transparenzregeln-bei-online-werbung-2025-05-15/
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-28T14:38:36.454188
+collected_date: 2025-05-30T21:21:21.105873
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

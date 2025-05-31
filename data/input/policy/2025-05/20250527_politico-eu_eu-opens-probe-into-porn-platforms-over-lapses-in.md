@@ -2,7 +2,7 @@
 title: EU opens probe into porn platforms over lapses in minor protection
 url: https://www.politico.eu/article/eu-pornhub-stripchat-xnxx-xvideos-goes-after-porn-platforms/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-28T13:24:50.462394
+collected_date: 2025-05-31T02:02:37.974198
 source: Politico
 source_url: https://www.politico.eu
 author: Eliza Gkritsi

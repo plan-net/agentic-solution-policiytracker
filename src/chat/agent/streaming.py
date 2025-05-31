@@ -47,10 +47,19 @@ class StreamingManager:
         self._event_queue: asyncio.Queue = asyncio.Queue()
         self._active_streams: List[AsyncGenerator] = []
         self._stream_writer = None
+        self._stream_callback = None
     
     def set_stream_writer(self, writer):
         """Set LangGraph's stream writer."""
         self._stream_writer = writer
+    
+    def get_stream_writer(self):
+        """Get the current stream writer."""
+        return self._stream_writer
+    
+    def set_stream_callback(self, callback):
+        """Set a custom streaming callback."""
+        self._stream_callback = callback
     
     async def emit_thinking(
         self, 

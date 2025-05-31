@@ -2,7 +2,7 @@
 title: Microsoft makes Office-Teams offer to avert EU antitrust fine
 url: https://www.reuters.com/sustainability/boards-policy-regulation/microsoft-offers-sell-office-with-teams-lower-price-eu-antitrust-probe-2025-05-16/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T16:49:29.315996
+collected_date: 2025-05-31T03:10:17.687774
 source: Reuters
 source_url: https://www.reuters.com
 author: Yun Chee Foo

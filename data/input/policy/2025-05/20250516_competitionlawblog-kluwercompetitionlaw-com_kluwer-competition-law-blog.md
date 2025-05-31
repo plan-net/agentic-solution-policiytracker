@@ -2,56 +2,34 @@
 title: Kluwer Competition Law Blog
 url: https://competitionlawblog.kluwercompetitionlaw.com/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-29T18:35:16.824767
+collected_date: 2025-05-31T08:03:14.292442
 source: Competitionlawblog
 source_url: https://competitionlawblog.kluwercompetitionlaw.com
-description: [Skip to content](https://competitionlawblog.kluwercompetitionlaw.com/#content)
+description: 2024 marked the third year in which the Antimonopoly Committee of Ukraine (AMCU) exercised its statutory powers amid the challenges of the full-scale war. Yet, as of 2025, the regulator has demonstrated remarkable agility, remaining fully operational – reviewing merger control...
 language: en
 collection_type: policy_landscape
 ---
 
 # Kluwer Competition Law Blog
 
-[Skip to content](https://competitionlawblog.kluwercompetitionlaw.com/#content)
+2024 marked the third year in which the Antimonopoly Committee of Ukraine (AMCU) exercised its statutory powers amid the challenges of the full-scale war. Yet, as of 2025, the regulator has demonstrated remarkable agility, remaining fully operational – reviewing merger control...
 
-[Skip to content](https://competitionlawblog.kluwercompetitionlaw.com/#content)
+2024 marked the third year in which the Antimonopoly Committee of Ukraine (AMCU) exercised its statutory powers amid the challenges of the full-scale war. Yet, as of 2025, the regulator has demonstrated remarkable agility, remaining fully operational – reviewing merger control notifications, commencing investigations, issuing decisions, as well as dedicating significant efforts to aligning Ukrainian…
 
-The European Court of Justice has issued its judgment in Deutsche Telekom confirming that the European Commission must pay “a standard rate” of interest to companies that have been awarded a reduction or annulment of their antitrust fine on appeal. The European Commission must now apply this clear ruling to a number of claims for…
+Executive Vice President (EVP) Ribera is on a “mission impossible” to develop a “new approach to competition policy” “support[ing] European companies to innovate, compete and lead world-wide and contribut[ing] to our wider objectives on competitiveness and sustainability, social fairness and security.” EVP Ribera was particularly tasked with revising the European Commission’s (Commission’s) decades-old guidelines on…
 
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/13/no-interest-in-a-u-turn-ecj-affirms-the-right-to-interest-on-overpaid-antitrust-fines/)
+The proceedings against Vifor Pharma/HCI Solutions In December 2016, the Swiss Competition Commission (ComCo) fined HCl Solutions AG (HCI) around CHF 4.5 million for abuse of a dominant market position. HCI, a subsidiary of Vifor Pharma Participations AG (Vifor), operates, among other things, the “Compendium” of electronic drug information and user-specific INDEX databases (e.g. “medINDEX” for…
 
-On 4th of April 2024, Egypt’s Prime Minister issued a decree by which the Executive Regulations of Competition Law No. (3) of 2005 was amended to put in detail the changes that had been made to the said Law introducing Egypt’s first pre-merger control regime. This blog post sheds light on the role of the…
+Legal presumptions play an important role in competition enforcement. They can translate decades of judicial experience and economic learning into workable, practical tools for efficient enforcement of the competition laws and provide predictability and clarity to companies seeking to comply with those laws. In the past few years, presumptions have been increasingly introduced to streamline…
 
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/10/unveiling-flaws-of-egypts-vaunted-new-merger-control-regime/)
+Merger control has long been a cornerstone of competition enforcement in Germany, with the Federal Cartel Office (“FCO”) known for wielding its mandate decisively and not shying away from blocking notifiable deals if they are perceived to cause competitive harm. One example was the prohibition of CTS Eventim’s acquisition of the booking agency Four Artists…
 
-Introduction On April 23, 2024, the Canadian Competition Bureau (Bureau) issued its report (Report) on the proposed acquisition of Viterra Limited (Viterra) by Bunge Limited (Bunge), concluding that the transaction (Proposed Transaction) is likely to result in substantial anticompetitive effects in certain agricultural markets in Canada. Bunge and Viterra are both multinational agribusiness companies. In…
+The Swedish Competition Authority (“SCA”) is sharpening its tools for tackling harmful mergers. On 27 March 2025, the Authority adopted new regulations and general guidelines for merger notifications. The new regulations extend the list of documents and market data that must be included in the notification, increase the expectations for the parties to engage in…
 
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/06/small-interest-big-impact-competition-bureau-report-on-proposed-bunge-viterra-transaction-highlights-impact-of-minority-interests-in-canadian-merger-review/)
+This article makes a modest pitch: The Trump‑Vance Administration should hire venture capitalists (“VCs‑in‑Residence”) in antitrust agencies to help predict the trajectory of emerging technologies. Just as antitrust agencies enlisted technologists to understand the technology behind today’s challenges, they should now partner with VCs to anticipate the technology ahead. The Republican senator from Ohio declared:…
 
-In May 2024, the Danish Parliament adopted a major overhaul of the Danish Competition Act, including introducing higher fines, a new competition tool, and a merger call-in option, effective from 1 July 2024. In particular, the call-in option will have drastic consequences, and in the future all mergers involving Danish activities could potentially become notifiable….
+In March 2025, Meta rolled out its AI assistant in Europe, which is accessible through its WhatsApp Messenger and will soon be available on Instagram and Facebook Messenger, too. The feature grants users of its platforms access to a “reliable and intelligent assistant” via a “new blue circle icon” on the apps. Trans-Atlantic observers may…
 
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/05/significant-amendments-to-the-danish-competition-act/)
+Google’s ‘Be Evil’ transformation (if not merely a narrative) and the antitrust efforts to avenge it (if not exact revenge) are no longer novel. Most notably, following Judge Amit P. Mehta’s historic 2024 ruling from the U.S. District Court for the District of Columbia against Google’s exclusive agreements, including ISA (Internet Services Agreement), MADAs (Mobile…
 
-May 2nd, 2024 was the last day to submit comments to the Public Consultation (Economic and Competitive Aspects of Digital Platforms) held by the Brazilian Ministry of Finance. The Consultation, which was released on January 19, 2024 and had one deadline extension, was designed and organized by the Secretary for Economics Reforms – one of…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/04/some-remarks-on-the-comments-submitted-to-the-brazilian-public-consultation-on-economic-and-competitive-aspects-of-digital-platforms-held-by-the-ministry-of-finance/)
-
-Continuing with the trend from previous years, important competition law and policy developments emerged in the UK during 2023. Amongst other things, highly anticipated proposals for major legislative reform were finally introduced in the UK Parliament, the UK’s competition and sector authorities continued to handle a substantial enforcement caseload, whilst the UK government continued to…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/06/03/main-developments-in-competition-law-and-policy-2023-united-kingdom/)
-
-Introduction In April 2024, the President of the Office of Competition and Consumers Protection (the “PCA”) introduced new guidelines for setting fines in antitrust cases (the “Guidelines”). The Guidelines are the only document of this type issued by the PCA. Other fields of actions of the PCA, e.g. violations of consumer law, do not have…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/05/31/polish-competiton-authority-publishes-new-guidelines-on-setting-fines-more-understandable-consequences-of-the-ecn-directive/)
-
-The Brazilian Competition Authority – CADE – has just recently published its Guidelines for Non-Horizontal Merger Reviews, which consolidate and formalize the competition authority’s best practices in reviewing vertical and conglomerate mergers (the “V+ Guidelines”). The V+ Guidelines complement CADE’s 2016 Horizontal Mergers Guidelines and other relevant documents that have been published by the Brazilian…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/05/29/brazils-cade-new-guidelines-for-the-assessment-of-non-horizontal-mergers-background-and-main-aspects/)
-
-Many of the most challenging transactions reviewed under the EU Merger Regulation (EUMR) in recent years involved their likely effects on non-price competitive factors: innovation; quality and product differentiation; data protection and privacy; sustainability; and capacity and reliability of supply.  These topics are discussed briefly, or not at all, in the Commission’s guidelines on the…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/05/28/the-evolving-role-of-non-price-competitive-parameters-in-eu-merger-review/)
-
-Europe has been a frontrunner in the regulation of artificial intelligence on a global scale. The adoption of the Artificial Intelligence Act (AI Act) defines one – despite important – step of the puzzle of European policy on AI. After the adoption of the Council last week, such an ambitious approach is still surrounded by…
-
-[Continue reading](https://competitionlawblog.kluwercompetitionlaw.com/2024/05/27/competing-european-values-under-the-spotlight-of-the-ai-act/)
+Fast and furious: that was the premise that would make the DMA’s enforcement effective. Overcompensating for past grievances in the application of Article 102 TFEU in the digital markets in terms of speed and remedies justifies the DMA’s need for having regulatory teeth. And teeth it has. On 22 April 2025, the European Commission (EC)…

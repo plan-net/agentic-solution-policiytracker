@@ -1,0 +1,20 @@
+---
+title: Exclusive: Microsoft's Office-Teams offer will likely stave off EU antitrust fine, sources say
+url: https://www.reuters.com/sustainability/boards-policy-regulation/eu-antitrust-regulators-accept-microsofts-office-teams-offer-sources-say-2025-05-14/
+published_date: 2025-05-14T00:00:00
+collected_date: 2025-05-30T22:30:45.544441
+source: Reuters
+source_url: https://www.reuters.com
+author: Yun Chee Foo
+description: Item 1 of 2 A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/ File Photo [1/2] A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/...
+language: en
+collection_type: policy_landscape
+---
+
+# Exclusive: Microsoft's Office-Teams offer will likely stave off EU antitrust fine, sources say
+
+*By Yun Chee Foo*
+
+Item 1 of 2 A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/ File Photo [1/2] A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/...
+
+Item 1 of 2 A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/ File Photo [1/2] A view shows a Microsoft logo at Microsoft offices in Issy-les-Moulineaux near Paris, France, March 21, 2025. REUTERS/Gonzalo Fuentes/ File Photo Purchase Licensing Rights, opens new tab Companies BRUSSELS, May 14 (Reuters) - Microsoft (MSFT.O), opens new tab is set to stave off a possible hefty antitrust fine as EU regulators are likely to accept an offer on its Office and Teams products, three people familiar with the matter said on Wednesday, amid tensions with the United States over the EU's scrutiny of Big Tech. Microsoft found itself back in the EU antitrust crosshairs after Salesforce-owned (CRM.N), opens new tab Slack alleged in a 2020 complaint to the European Commission that Microsoft was getting an unfair advantage by bundling chat and video app Teams with its Office product. Sign up here. In 2023, German rival alfaview filed a similar complaint to the EU watchdog. Microsoft subsequently unbundled Teams from Office in 2023, selling Office without Teams for 2 euros ($2.24) less than Office with the video app, while Teams standalone would be sold for 5 euros a month. In February, it widened the price differential after rivals said the first offer was not sufficient. The European Commission will likely seek feedback from rivals and customers in the coming months before making a final decision and things could still change depending on the outcome of the market test and other factors, the people said. Microsoft's proposal includes better interoperability terms to make it easier for rivals to compete, they said. The EU competition enforcer declined to comment. Microsoft, which has been fined a total 2.2 billion euros ($2.5 billion) in past years for bundling two or more products together and other offences, did not respond to email and phone calls seeking comment. U.S. President Donald Trump has threatened to levy tariffs against countries that penalise U.S. companies. ($1 = 0.8941 euros) Reporting by Foo Yun Chee. Editing by David Goodman and Mark Potter Our Standards: The Thomson Reuters Trust Principles., opens new tab An agenda-setting and market-moving journalist, Foo Yun Chee is a 21-year veteran at Reuters. Her stories on high profile mergers have pushed up the European telecoms index, lifted companies' shares and helped investors decide on their next move. Her knowledge and experience of European antitrust laws and developments helped her break stories on Microsoft, Google, Amazon, Meta and Apple, numerous market-moving mergers and antitrust investigations. She has previously reported on Greek politics and companies, when Greece's entry into the eurozone meant it punched above its weight on the international stage, as well as on Dutch corporate giants and the quirks of Dutch society and culture that never fail to charm readers.

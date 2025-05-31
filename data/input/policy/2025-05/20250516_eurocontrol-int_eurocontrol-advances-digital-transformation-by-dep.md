@@ -2,7 +2,7 @@
 title: EUROCONTROL advances digital transformation by deploying enhanced European Aeronautical Information Services Database (eEAD)
 url: https://www.eurocontrol.int/news/eurocontrol-advances-digital-transformation-deploying-enhanced-european-aeronautical
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-28T15:10:22.006535
+collected_date: 2025-05-30T21:21:59.439216
 source: Eurocontrol
 source_url: https://www.eurocontrol.int
 description: EUROCONTROL has taken another major step forward in its digital transformation journey with the successful start of operations of the enhanced European Aeronautical Information Services Database (eEAD). eEAD is a state-of-the-art service that gives its users access to the most up-to-date...

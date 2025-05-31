@@ -2,7 +2,7 @@
 title: TikTok Fined €530 Million for Illegally Sending EU Data to China
 url: https://www.insurancejournal.com/news/international/2025/05/05/822471.htm
 published_date: 2025-05-05T00:00:00
-collected_date: 2025-05-29T18:03:53.459751
+collected_date: 2025-05-30T07:51:06.296639
 source: Insurancejournal
 source_url: https://www.insurancejournal.com
 author: Samuel Stolton

@@ -2,7 +2,7 @@
 title: EU launches plan to unify labelling and recycling rules
 url: https://finance.yahoo.com/news/eu-launches-plan-unify-labelling-000634636.html
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-29T19:06:01.566062
+collected_date: 2025-05-31T08:03:20.792100
 source: Finance
 source_url: https://finance.yahoo.com
 author: Mohamed Dabo Thu, May 22, 2025 at 5:06 PM PDT 3 min read

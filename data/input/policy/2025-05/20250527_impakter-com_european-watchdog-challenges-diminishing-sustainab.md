@@ -1,8 +1,8 @@
 ---
 title: European Watchdog Challenges Diminishing Sustainability Rules
 url: https://impakter.com/esg-news-eu-watchdog-decreased-sustainability-regulation/
-published_date: 2025-05-27T10:09:01.184000
-collected_date: 2025-05-29T10:09:02.387983
+published_date: 2025-05-27T12:03:01.210000
+collected_date: 2025-05-30T11:46:32.433461
 source: Impakter
 source_url: https://impakter.com
 author: Sarah Perras

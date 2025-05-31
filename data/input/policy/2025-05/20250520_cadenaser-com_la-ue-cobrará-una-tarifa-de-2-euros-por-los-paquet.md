@@ -2,7 +2,7 @@
 title: La UE cobrará una tarifa de 2 euros por los paquetes de Temu y Shein
 url: https://cadenaser.com/nacional/2025/05/20/la-comision-europea-quiere-cobrar-una-tasa-de-dos-euros-a-plataformas-como-temu-o-shein-cadena-ser/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T19:05:46.252486
+collected_date: 2025-05-31T00:00:22.409148
 source: Cadenaser
 source_url: https://cadenaser.com
 author: Victoria García

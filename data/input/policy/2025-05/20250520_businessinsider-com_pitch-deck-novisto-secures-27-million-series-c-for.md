@@ -2,7 +2,7 @@
 title: Pitch deck: Novisto secures $27 million Series C for ESG reporting
 url: https://www.businessinsider.com/pitch-deck-novisto-secures-27-million-series-c-esg-reporting-2025-5
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-28T14:38:51.126004
+collected_date: 2025-05-31T00:00:38.324139
 source: Businessinsider
 source_url: https://www.businessinsider.com
 author: Riddhi Kanetkar

@@ -2,7 +2,7 @@
 title: EU reviews TikTok’s ‘SkinnyTok’ content for risks to minors
 url: https://www.politico.eu/article/eu-tiktok-skinnytok-content-risks-minors-calories-fyp-algorithm-digital-services-act/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T16:18:39.498135
+collected_date: 2025-05-31T02:02:34.773427
 source: Politico
 source_url: https://www.politico.eu
 author: Šejla Ahmatović

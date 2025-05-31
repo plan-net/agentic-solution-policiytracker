@@ -1,0 +1,20 @@
+---
+title: EU plans new subsidies for farmers to save water, draft shows
+url: https://www.reuters.com/sustainability/climate-energy/eu-plans-new-subsidies-farmers-save-water-draft-shows-2025-05-15/
+published_date: 2025-05-15T00:00:00
+collected_date: 2025-05-31T01:17:46.894257
+source: Reuters
+source_url: https://www.reuters.com
+author: Kate Abnett
+description: Water is pumped from a well into a pond to irrigate Hamemi agricultural farm in Kasserine, Tunisia, October 6, 2022. REUTERS/Jihed Abidellaoui/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 15 (Reuters) - The European Commission has drafted plans to offer new subsidies to farmers...
+language: en
+collection_type: policy_landscape
+---
+
+# EU plans new subsidies for farmers to save water, draft shows
+
+*By Kate Abnett*
+
+Water is pumped from a well into a pond to irrigate Hamemi agricultural farm in Kasserine, Tunisia, October 6, 2022. REUTERS/Jihed Abidellaoui/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 15 (Reuters) - The European Commission has drafted plans to offer new subsidies to farmers...
+
+Water is pumped from a well into a pond to irrigate Hamemi agricultural farm in Kasserine, Tunisia, October 6, 2022. REUTERS/Jihed Abidellaoui/File Photo Purchase Licensing Rights, opens new tab BRUSSELS, May 15 (Reuters) - The European Commission has drafted plans to offer new subsidies to farmers who invest in wasting less water, when the bloc's huge farming subsidy programme is renewed, a draft Commission proposal, seen by Reuters, showed. The European Union's Common Agricultural Policy (CAP) of farming subsidies is worth around 387 billion euros, around about a third of the bloc's overall budget for 2021-2027. EU countries are preparing for tough negotiations, later this year, on their next budget for the post-2027 period. Sign up here. A draft EU policy proposal to address the intense pressure on Europe's water supplies from industry and climate change, said the next CAP would include new "transition packages" of advice and funding for farmers to improve their water management. "The Commission will include, under the future CAP, Transition Packages aiming to support and reward farmers engaging in transformational and structural changes to improve the environmental and climate performance of their holdings, including towards a better water management," the draft said. The subsidies could help farmers pay for more drought-resistant crops, or precision irrigation tools that waste less water than traditional irrigation systems. Agriculture is one of the sectors worst affected by climate change. Europe's farmers are already suffering under increasing drought and flooding, which has ravaged recent cereal and fruit crop yields. Yet at the same time, the EU has loosened other environmental measures on farming, in response to intense political pressure from farmers' protests over EU rules they say are too burdensome. The European Commission on Wednesday proposed weakening environmental conditions on existing EU farming subsidies, as part of plans to cut bureaucracy for farmers. The Commission's draft water strategy said the European Investment Bank will also increase its spending on water sector investments, including for restoring ecosystems like wetlands that can help buffer against floods. It did not specify the amount of EIB funding, which the EU is still discussing internally. A European Commission spokesperson did not immediately respond to a request for comment on the draft, which is due to be published in June. Reporting by Kate Abnett; Editing by Kirsten Donovan Our Standards: The Thomson Reuters Trust Principles., opens new tab Kate Abnett covers EU climate and energy policy in Brussels, reporting on Europe’s green transition and how climate change is affecting people and ecosystems across the EU. Other areas of coverage include international climate diplomacy. Before joining Reuters, Kate covered emissions and energy markets for Argus Media in London. She is part of the teams whose reporting on Europe’s energy crisis won two Reuters journalist of the year awards in 2022.

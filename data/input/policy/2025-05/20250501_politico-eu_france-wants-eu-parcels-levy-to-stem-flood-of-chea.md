@@ -2,7 +2,7 @@
 title: France wants EU parcels levy to stem flood of cheap Chinese fast fashion imports
 url: https://www.politico.eu/article/france-eu-parcels-china-flood-fashion-imports-customs/
 published_date: 2025-05-01T00:00:00
-collected_date: 2025-05-29T12:26:32.342069
+collected_date: 2025-05-30T20:40:30.412225
 source: Politico
 source_url: https://www.politico.eu
 author: Marianne Gros, Klara Durand

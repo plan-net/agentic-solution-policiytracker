@@ -2,7 +2,7 @@
 title: Brussels tries (again) to build its elusive single market
 url: https://www.politico.eu/article/brussels-belgium-europe-single-market-china-european-union-regulations/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-29T12:57:18.409214
+collected_date: 2025-05-31T00:46:49.800709
 source: Politico
 source_url: https://www.politico.eu
 author: Carlo Martuscelli

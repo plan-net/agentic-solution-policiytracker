@@ -2,7 +2,7 @@
 title: EU targets business barriers to enhance competitiveness amid US tariffs
 url: https://www.reuters.com/business/eu-targets-business-barriers-enhance-competitiveness-amid-us-tariffs-2025-05-21/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-29T12:57:18.409159
+collected_date: 2025-05-30T21:53:36.259148
 source: Reuters
 source_url: https://www.reuters.com
 author: Philip Blenkinsop

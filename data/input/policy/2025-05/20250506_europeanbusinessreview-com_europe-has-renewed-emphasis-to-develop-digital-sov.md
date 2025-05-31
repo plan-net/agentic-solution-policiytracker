@@ -2,7 +2,7 @@
 title: Europe Has Renewed Emphasis to Develop Digital Sovereignty
 url: https://www.europeanbusinessreview.com/europe-has-renewed-emphasis-to-develop-digital-sovereignty/
 published_date: 2025-05-06T00:00:00
-collected_date: 2025-05-28T18:31:35.852218
+collected_date: 2025-05-30T23:18:55.830134
 source: Europeanbusinessreview
 source_url: https://www.europeanbusinessreview.com
 author: Editor R

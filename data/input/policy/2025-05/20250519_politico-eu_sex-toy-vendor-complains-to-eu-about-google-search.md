@@ -2,7 +2,7 @@
 title: Sex toy vendor complains to EU about Google search rules
 url: https://www.politico.eu/article/lovehoney-sex-toys-google-safe-search-european-commission-complaint-digital-markets-act/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-29T16:49:24.361777
+collected_date: 2025-05-30T18:36:49.673658
 source: Politico
 source_url: https://www.politico.eu
 author: Jacob Parry

@@ -2,7 +2,7 @@
 title: EU is ‘well on track’ for 2030 climate targets
 url: https://www.taipeitimes.com/News/world/archives/2025/05/29/2003837707
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-29T19:06:17.918281
+collected_date: 2025-05-30T08:44:54.509164
 source: Taipeitimes
 source_url: https://www.taipeitimes.com
 author: 台北時報

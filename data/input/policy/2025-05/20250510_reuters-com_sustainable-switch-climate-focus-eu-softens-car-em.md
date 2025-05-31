@@ -2,7 +2,7 @@
 title: Sustainable Switch Climate Focus: EU softens car emissions targets
 url: https://www.reuters.com/sustainability/sustainable-switch-climate-focus-eu-softens-car-emissions-targets-2025-05-10/
 published_date: 2025-05-10T00:00:00
-collected_date: 2025-05-29T12:57:30.313076
+collected_date: 2025-05-30T21:54:01.155067
 source: Reuters
 source_url: https://www.reuters.com
 author: Sharon Kimathi

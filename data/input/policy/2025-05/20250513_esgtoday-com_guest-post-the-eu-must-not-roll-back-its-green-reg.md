@@ -2,7 +2,7 @@
 title: Guest Post: The EU Must Not Roll Back Its Green Regulations
 url: https://www.esgtoday.com/guest-post-the-eu-must-not-roll-back-its-green-regulations/
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T03:40:35.829481
+collected_date: 2025-05-31T08:03:20.791829
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: ESG Today Guest Post

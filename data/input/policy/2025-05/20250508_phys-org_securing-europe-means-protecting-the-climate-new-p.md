@@ -2,7 +2,7 @@
 title: Securing Europe means protecting the climate: New policy brief charts path for 1.5° lifestyles
 url: https://phys.org/news/2025-05-europe-climate-policy-path-lifestyles.html
 published_date: 2025-05-08T00:00:00
-collected_date: 2025-05-28T13:24:47.069827
+collected_date: 2025-05-31T03:53:08.232361
 source: Phys
 source_url: https://phys.org
 author: Bianca Schröder

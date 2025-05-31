@@ -2,7 +2,7 @@
 title: Analysis: Google faces €12B+ in damage claims from dozens of EU price comparison websites that allege it stole their customers, after a €2.4B EU fine in 2017
 url: https://www.techmeme.com/250513/p8
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-29T19:06:13.428619
+collected_date: 2025-05-31T08:03:10.715030
 source: Techmeme
 source_url: https://www.techmeme.com
 description: "May 13, 2025, 9:50 AM 
@@ -68,10 +68,7 @@ More:   T3, SPACE.com, CNET, Engadget, DJI on YouTube, TechRadar, DroneXL.co, T
 
 Sponsor Posts 
  
- Zoho: 
- Pay bosses in units of purpose   —  On average, it takes just 14 seconds for candidates to decide whether to apply for a job.  How can you craft job descriptions that truly connect — from entry-level to C-suite?
-
-IDrive: 
+ IDrive: 
  Protecting your Cloud Applications Data   —  Backing up Office 365, Google Workspace, Dropbox &amp; Box data is critical to preventing data loss or corruption, complying with laws and avoiding critical downtime in case of a disaster.
 
 About This Page 
@@ -83,9 +80,9 @@ To view an earlier snapshot click here
 and then modify the date indicated.
 
 From Mediagazer 
- David Folkenflik / NPR: 
- Charlotte Tobitt / Press Gazette: 
- Bloomberg:
+ Sara Fischer / Axios: 
+ The Bookseller: 
+ Max Tani / Semafor:
 
 Earlier Picks 
  
