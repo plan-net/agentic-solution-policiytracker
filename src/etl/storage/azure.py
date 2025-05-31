@@ -2,7 +2,7 @@
 Azure Blob Storage implementation (mocked for future implementation).
 """
 
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 import structlog
 
@@ -22,7 +22,7 @@ class AzureStorage(BaseStorage):
         )
 
     async def save_document(
-        self, content: str, path: str, metadata: Optional[dict[str, Any]] = None
+        self, content: str, path: str, metadata: Optional[Dict[str, Any]] = None
     ) -> bool:
         """Save a document to Azure Blob Storage."""
         logger.info(f"[MOCK] Would save document to Azure: {path}")
@@ -39,7 +39,7 @@ class AzureStorage(BaseStorage):
         # TODO: Implement blob existence check
         return False
 
-    async def list_documents(self, prefix: str = "") -> list[str]:
+    async def list_documents(self, prefix: str = "") -> List[str]:
         """List all documents with optional prefix filter."""
         logger.info(f"[MOCK] Would list documents in Azure with prefix: {prefix}")
         # TODO: Implement using container_client.list_blobs(name_starts_with=prefix)
@@ -57,7 +57,7 @@ class AzureStorage(BaseStorage):
         # TODO: Implement blob deletion
         return True
 
-    async def get_metadata(self, path: str) -> Optional[dict[str, Any]]:
+    async def get_metadata(self, path: str) -> Optional[Dict[str, Any]]:
         """Get metadata for a document."""
         logger.info(f"[MOCK] Would get metadata from Azure: {path}")
         # TODO: Implement blob properties/metadata retrieval

@@ -8,7 +8,7 @@ using targeted search queries derived from client context.
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Dict, List
 
 from ..storage import get_storage
 from ..transformers.markdown_transformer import MarkdownTransformer
@@ -42,7 +42,7 @@ class PolicyLandscapeCollector:
 
     async def collect_policy_documents(
         self, days_back: int = 7, max_results_per_query: int = 10, max_concurrent_queries: int = 3
-    ) -> dict[str, Any]:
+    ) -> Dict[str, Any]:
         """
         Collect policy documents using generated queries.
 
@@ -109,8 +109,8 @@ class PolicyLandscapeCollector:
         return summary
 
     async def _process_query_batch(
-        self, queries: list[dict[str, str]], days_back: int, max_results_per_query: int
-    ) -> list[dict[str, Any]]:
+        self, queries: List[Dict[str, str]], days_back: int, max_results_per_query: int
+    ) -> List[Dict[str, Any]]:
         """Process a batch of queries concurrently."""
         tasks = []
 
@@ -122,8 +122,8 @@ class PolicyLandscapeCollector:
         return [r for r in results if isinstance(r, dict)]
 
     async def _execute_single_query(
-        self, query_info: dict[str, str], days_back: int, max_results_per_query: int
-    ) -> dict[str, Any]:
+        self, query_info: Dict[str, str], days_back: int, max_results_per_query: int
+    ) -> Dict[str, Any]:
         """Execute a single search query."""
         try:
             # Use the same date range logic as news collection
@@ -157,7 +157,7 @@ class PolicyLandscapeCollector:
                 "error": str(e),
             }
 
-    async def _save_policy_documents(self, articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    async def _save_policy_documents(self, articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Transform and save policy documents."""
         saved_documents = []
 
@@ -227,7 +227,7 @@ class PolicyLandscapeCollector:
 
         return saved_documents
 
-    def _generate_policy_filename(self, article: dict[str, Any], published_date: datetime) -> str:
+    def _generate_policy_filename(self, article: Dict[str, Any], published_date: datetime) -> str:
         """Generate standardized filename for policy documents."""
         # Extract domain from URL for source identification
         url = article.get("url", "")
@@ -263,15 +263,15 @@ class PolicyLandscapeCollector:
 
         return cleaned
 
-    def _get_categories_summary(self, queries: list[dict[str, str]]) -> dict[str, int]:
+    def _get_categories_summary(self, queries: List[Dict[str, str]]) -> Dict[str, int]:
         """Get summary of categories covered."""
-        summary: dict[str, int] = {}
+        summary: Dict[str, int] = {}
         for query in queries:
             category = query["category"]
             summary[category] = summary.get(category, 0) + 1
         return summary
 
-    async def get_collection_stats(self) -> dict[str, Any]:
+    async def get_collection_stats(self) -> Dict[str, Any]:
         """Get statistics about policy collection configuration."""
         queries = self.query_generator.generate_policy_queries()
         query_summary = self.query_generator.get_query_summary()

@@ -4,7 +4,7 @@ Transform news articles to markdown format with metadata.
 
 import re
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, Tuple
 
 import structlog
 
@@ -17,7 +17,7 @@ class MarkdownTransformer:
     def __init__(self) -> None:
         logger.info("Initialized MarkdownTransformer")
 
-    def transform_article(self, article: dict[str, Any]) -> tuple[str, str]:
+    def transform_article(self, article: Dict[str, Any]) -> Tuple[str, str]:
         """
         Transform article data to markdown format.
 
@@ -46,7 +46,7 @@ class MarkdownTransformer:
             logger.error(f"Failed to transform article: {e}")
             raise
 
-    def _generate_frontmatter(self, article: dict[str, Any]) -> str:
+    def _generate_frontmatter(self, article: Dict[str, Any]) -> str:
         """Generate YAML frontmatter with article metadata."""
         # Key temporal fields for Graphiti
         frontmatter_data = {
@@ -90,7 +90,7 @@ class MarkdownTransformer:
 
         return "\n".join(lines)
 
-    def _generate_body(self, article: dict[str, Any]) -> str:
+    def _generate_body(self, article: Dict[str, Any]) -> str:
         """Generate clean markdown body with minimal redundancy."""
         parts = []
 
@@ -152,7 +152,7 @@ class MarkdownTransformer:
 
         return "\n\n".join(cleaned_paragraphs)
 
-    def _generate_filename(self, article: dict[str, Any]) -> str:
+    def _generate_filename(self, article: Dict[str, Any]) -> str:
         """Generate a safe filename for the article."""
         # Use published date for chronological ordering
         date_str = "unknown_date"

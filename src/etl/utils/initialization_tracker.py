@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Union
 
 import structlog
 
@@ -85,7 +85,7 @@ class ETLInitializationTracker:
             logger.error(f"Failed to mark collector as initialized: {e}")
             raise
 
-    def get_initialization_info(self, collector_type: str) -> Optional[dict[str, Any]]:
+    def get_initialization_info(self, collector_type: str) -> Optional[Dict[str, Any]]:
         """Get initialization information for a collector."""
         try:
             if not self.tracker_file.exists():
@@ -143,7 +143,7 @@ class ETLInitializationTracker:
             )
             return initialization_days
 
-    def get_tracker_status(self) -> dict[str, Any]:
+    def get_tracker_status(self) -> Dict[str, Any]:
         """Get complete tracker status for monitoring."""
         try:
             if not self.tracker_file.exists():
