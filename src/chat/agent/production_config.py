@@ -65,7 +65,7 @@ class MonitoringConfig:
 class ProductionConfig:
     """Centralized production configuration management."""
 
-    def __init__(self, deployment_mode: DeploymentMode = None):
+    def __init__(self, deployment_mode: DeploymentMode | None = None):
         self.deployment_mode = deployment_mode or self._detect_deployment_mode()
         self.performance_level = self._determine_performance_level()
 
@@ -241,7 +241,7 @@ class ProductionConfig:
 
     def get_llm_config(self) -> dict[str, Any]:
         """Get LLM configuration optimized for deployment mode."""
-        base_config = self.integration_settings["openai"].copy()
+        base_config: dict[str, Any] = self.integration_settings["openai"].copy()
 
         if self.deployment_mode == DeploymentMode.PRODUCTION:
             base_config.update(
@@ -294,31 +294,33 @@ class ProductionConfig:
 
     def validate_configuration(self) -> dict[str, Any]:
         """Validate configuration and return validation results."""
-        validation_results = {"valid": True, "warnings": [], "errors": []}
+        validation_results: dict[str, Any] = {"valid": True, "warnings": [], "errors": []}
+        warnings: list[str] = validation_results["warnings"]
+        errors: list[str] = validation_results["errors"]
 
         # Check required environment variables for production
         if self.deployment_mode == DeploymentMode.PRODUCTION:
             required_vars = ["OPENAI_API_KEY"]
             for var in required_vars:
                 if not os.getenv(var):
-                    validation_results["errors"].append(
+                    errors.append(
                         f"Missing required environment variable: {var}"
                     )
                     validation_results["valid"] = False
 
         # Check resource limits
         if self.resource_limits.max_memory_mb < 512:
-            validation_results["warnings"].append(
+            warnings.append(
                 "Memory limit may be too low for optimal performance"
             )
 
         # Check quality thresholds
         if self.quality_thresholds.minimum_response_quality > 0.9:
-            validation_results["warnings"].append("Quality threshold may be too strict")
+            warnings.append("Quality threshold may be too strict")
 
         # Check integration settings
         if not self.integration_settings["graphiti"]["enabled"]:
-            validation_results["warnings"].append(
+            warnings.append(
                 "Graphiti integration disabled - tool intelligence limited"
             )
 
@@ -330,7 +332,7 @@ class PerformanceOptimizer:
 
     def __init__(self, config: ProductionConfig):
         self.config = config
-        self.performance_metrics = {
+        self.performance_metrics: dict[str, Any] = {
             "request_count": 0,
             "total_execution_time": 0.0,
             "error_count": 0,
@@ -382,35 +384,44 @@ class PerformanceOptimizer:
         return optimizations
 
     def update_performance_metrics(
-        self, execution_time: float, success: bool, quality_score: Optional[float] = None
+        self, execution_time: float, success: bool, quality_score: float | None = None
     ) -> None:
         """Update performance metrics."""
-        self.performance_metrics["request_count"] += 1
-        self.performance_metrics["total_execution_time"] += execution_time
+        request_count: int = self.performance_metrics["request_count"]
+        total_execution_time: float = self.performance_metrics["total_execution_time"]
+        error_count: int = self.performance_metrics["error_count"]
+        quality_scores: list[float] = self.performance_metrics["quality_scores"]
+
+        self.performance_metrics["request_count"] = request_count + 1
+        self.performance_metrics["total_execution_time"] = total_execution_time + execution_time
 
         if not success:
-            self.performance_metrics["error_count"] += 1
+            self.performance_metrics["error_count"] = error_count + 1
 
         if quality_score is not None:
-            self.performance_metrics["quality_scores"].append(quality_score)
+            quality_scores.append(quality_score)
 
     def get_performance_summary(self) -> dict[str, Any]:
         """Get performance summary and recommendations."""
-        total_requests = self.performance_metrics["request_count"]
+        total_requests: int = self.performance_metrics["request_count"]
 
         if total_requests == 0:
             return {"status": "no_data"}
 
-        avg_execution_time = self.performance_metrics["total_execution_time"] / total_requests
-        error_rate = self.performance_metrics["error_count"] / total_requests
+        total_execution_time: float = self.performance_metrics["total_execution_time"]
+        error_count: int = self.performance_metrics["error_count"]
+        quality_scores: list[float] = self.performance_metrics["quality_scores"]
+
+        avg_execution_time = total_execution_time / total_requests
+        error_rate = error_count / total_requests
         avg_quality = (
-            sum(self.performance_metrics["quality_scores"])
-            / len(self.performance_metrics["quality_scores"])
-            if self.performance_metrics["quality_scores"]
+            sum(quality_scores)
+            / len(quality_scores)
+            if quality_scores
             else 0.0
         )
 
-        summary = {
+        summary: dict[str, Any] = {
             "total_requests": total_requests,
             "avg_execution_time": avg_execution_time,
             "error_rate": error_rate,
@@ -418,24 +429,25 @@ class PerformanceOptimizer:
             "performance_status": "good",
             "recommendations": [],
         }
+        recommendations: list[str] = summary["recommendations"]
 
         # Generate recommendations
         if avg_execution_time > self.config.resource_limits.max_execution_time_seconds * 0.8:
             summary["performance_status"] = "slow"
-            summary["recommendations"].append("Consider enabling parallel tool execution")
+            recommendations.append("Consider enabling parallel tool execution")
 
         if error_rate > self.config.quality_thresholds.maximum_error_rate:
             summary["performance_status"] = "unstable"
-            summary["recommendations"].append("Review error patterns and improve error handling")
+            recommendations.append("Review error patterns and improve error handling")
 
         if avg_quality < self.config.quality_thresholds.minimum_response_quality:
-            summary["recommendations"].append("Enable quality optimization features")
+            recommendations.append("Enable quality optimization features")
 
         return summary
 
 
 # Global configuration instance
-_global_config: Optional[ProductionConfig] = None
+_global_config: ProductionConfig | None = None
 
 
 def get_production_config() -> ProductionConfig:
@@ -446,7 +458,7 @@ def get_production_config() -> ProductionConfig:
     return _global_config
 
 
-def initialize_production_config(deployment_mode: DeploymentMode = None) -> ProductionConfig:
+def initialize_production_config(deployment_mode: DeploymentMode | None = None) -> ProductionConfig:
     """Initialize production configuration with specific deployment mode."""
     global _global_config
     _global_config = ProductionConfig(deployment_mode)
