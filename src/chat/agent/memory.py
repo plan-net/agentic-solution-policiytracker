@@ -78,8 +78,8 @@ class MemoryManager:
     async def get_user_preferences(self, user_id: str) -> Dict[str, Any]:
         """Get user preferences from long-term memory."""
         try:
-            prefs = await self.store.aget(f"user_prefs_{user_id}")
-            return prefs or {}
+            item = await self.store.aget(("user_prefs",), user_id)
+            return item.value if item else {}
         except Exception as e:
             logger.error(f"Error getting user preferences: {e}")
             return {}
@@ -94,15 +94,15 @@ class MemoryManager:
         try:
             prefs = await self.get_user_preferences(user_id)
             prefs[key] = value
-            await self.store.aput(f"user_prefs_{user_id}", prefs)
+            await self.store.aput(("user_prefs",), user_id, prefs)
         except Exception as e:
             logger.error(f"Error updating user preference: {e}")
     
     async def get_learned_patterns(self, pattern_type: str) -> List[Dict[str, Any]]:
         """Get learned patterns for optimization."""
         try:
-            patterns = await self.store.aget(f"patterns_{pattern_type}")
-            return patterns or []
+            item = await self.store.aget(("patterns",), pattern_type)
+            return item.value if item else []
         except Exception as e:
             logger.error(f"Error getting learned patterns: {e}")
             return []
@@ -121,15 +121,14 @@ class MemoryManager:
             if len(patterns) > 100:
                 patterns = patterns[-100:]
             
-            await self.store.aput(f"patterns_{pattern_type}", patterns)
+            await self.store.aput(("patterns",), pattern_type, patterns)
         except Exception as e:
             logger.error(f"Error saving learned pattern: {e}")
     
     async def analyze_user_conversation_patterns(self, user_id: str) -> Dict[str, Any]:
         """Analyze user conversation patterns for personalization."""
         try:
-            patterns = await self.store.aget(f"user_conversation_patterns_{user_id}")
-            return patterns or {
+            default_patterns = {
                 "common_intents": {},
                 "preferred_detail_level": "medium",
                 "response_format_preference": "structured",
@@ -138,9 +137,19 @@ class MemoryManager:
                 "interaction_time_patterns": {},
                 "feedback_patterns": {"positive": 0, "negative": 0}
             }
+            item = await self.store.aget(("user_conversation_patterns",), user_id)
+            return item.value if item else default_patterns
         except Exception as e:
             logger.error(f"Error analyzing conversation patterns: {e}")
-            return {}
+            return {
+                "common_intents": {},
+                "preferred_detail_level": "medium",
+                "response_format_preference": "structured",
+                "question_complexity_distribution": {"simple": 0.4, "medium": 0.5, "complex": 0.1},
+                "topic_interests": {},
+                "interaction_time_patterns": {},
+                "feedback_patterns": {"positive": 0, "negative": 0}
+            }
     
     async def update_user_conversation_patterns(
         self, 
@@ -182,7 +191,7 @@ class MemoryManager:
                 # Moving average
                 time_patterns["preferred_response_time"] = (time_patterns["preferred_response_time"] * 0.8 + response_time * 0.2)
             
-            await self.store.aput(f"user_conversation_patterns_{user_id}", patterns)
+            await self.store.aput(("user_conversation_patterns",), user_id, patterns)
             
         except Exception as e:
             logger.error(f"Error updating conversation patterns: {e}")
@@ -228,16 +237,22 @@ class MemoryManager:
     async def get_tool_performance_history(self, tool_name: str) -> Dict[str, Any]:
         """Get historical performance data for a tool."""
         try:
-            history = await self.store.aget(f"tool_perf_{tool_name}")
-            return history or {
+            default_history = {
                 "total_executions": 0,
                 "success_rate": 0.0,
                 "avg_execution_time": 0.0,
                 "common_errors": []
             }
+            item = await self.store.aget(("tool_perf",), tool_name)
+            return item.value if item else default_history
         except Exception as e:
             logger.error(f"Error getting tool performance history: {e}")
-            return {}
+            return {
+                "total_executions": 0,
+                "success_rate": 0.0,
+                "avg_execution_time": 0.0,
+                "common_errors": []
+            }
     
     async def update_tool_performance(
         self, 
@@ -272,7 +287,7 @@ class MemoryManager:
                 if len(history["common_errors"]) > 10:
                     history["common_errors"] = history["common_errors"][-10:]
             
-            await self.store.aput(f"tool_perf_{tool_name}", history)
+            await self.store.aput(("tool_perf",), tool_name, history)
             
         except Exception as e:
             logger.error(f"Error updating tool performance: {e}")
@@ -280,16 +295,22 @@ class MemoryManager:
     async def get_query_insights(self, user_id: str) -> Dict[str, Any]:
         """Get insights about user's query patterns."""
         try:
-            insights = await self.store.aget(f"query_insights_{user_id}")
-            return insights or {
+            default_insights = {
                 "common_intents": [],
                 "frequent_entities": [],
                 "preferred_detail_level": "medium",
                 "typical_query_complexity": "medium"
             }
+            item = await self.store.aget(("query_insights",), user_id)
+            return item.value if item else default_insights
         except Exception as e:
             logger.error(f"Error getting query insights: {e}")
-            return {}
+            return {
+                "common_intents": [],
+                "frequent_entities": [],
+                "preferred_detail_level": "medium",
+                "typical_query_complexity": "medium"
+            }
     
     async def learn_from_query(
         self, 
@@ -318,7 +339,7 @@ class MemoryManager:
             if satisfaction_rating is not None:
                 insights["last_satisfaction"] = satisfaction_rating
             
-            await self.store.aput(f"query_insights_{user_id}", insights)
+            await self.store.aput(("query_insights",), user_id, insights)
             
         except Exception as e:
             logger.error(f"Error learning from query: {e}")
@@ -327,13 +348,14 @@ class MemoryManager:
         """Clear all user data (GDPR compliance)."""
         try:
             keys_to_clear = [
-                f"user_prefs_{user_id}",
-                f"query_insights_{user_id}"
+                ("user_prefs", user_id),
+                ("query_insights", user_id),
+                ("user_conversation_patterns", user_id)
             ]
             
-            for key in keys_to_clear:
+            for namespace, key in keys_to_clear:
                 try:
-                    await self.store.adelete(key)
+                    await self.store.adelete((namespace,), key)
                 except:
                     pass  # Key might not exist
                     

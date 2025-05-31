@@ -19,6 +19,7 @@ from .agents import (
 from .base import MultiAgentState, AgentRole, AgentResult
 from .memory import MemoryManager
 from .streaming import StreamingManager
+from .quality_assessment import ResponseQualityAssessment, QualityOptimizer
 
 
 class MultiAgentOrchestrator:
@@ -47,6 +48,10 @@ class MultiAgentOrchestrator:
         # Import here to avoid circular imports
         from .streaming import StreamingThinkingGenerator
         self.thinking_generator = StreamingThinkingGenerator(self.streaming_manager)
+        
+        # Initialize quality assessment system
+        self.quality_assessor = ResponseQualityAssessment()
+        self.quality_optimizer = QualityOptimizer(self.quality_assessor)
         
         # Initialize tool integration manager if Graphiti client available
         self.tool_integration_manager = None
@@ -221,15 +226,19 @@ class MultiAgentOrchestrator:
         
         # Check for errors - if too many errors, end
         if len(state.get("errors", [])) >= 3:
+            logger.debug(f"Too many errors ({len(state.get('errors', []))}), ending workflow")
             return "end"
         
         # Determine next based on current agent and state
         current = state.get("current_agent", "")
+        logger.debug(f"Current agent: {current}, query_analysis exists: {state.get('query_analysis') is not None}")
         
         if current == "query_understanding":
             if state.get("query_analysis"):
+                logger.debug("Routing from query_understanding to tool_planning")
                 return "tool_planning"
             else:
+                logger.debug("Query analysis failed, ending workflow")
                 return "end"  # Query analysis failed
         
         elif current == "tool_planning":
@@ -319,7 +328,7 @@ class MultiAgentOrchestrator:
                 
                 # Update final state
                 for node_name, node_state in chunk.items():
-                    if isinstance(node_state, MultiAgentState):
+                    if isinstance(node_state, dict) and "original_query" in node_state:
                         final_state = node_state
             
             # If we don't have a final state, get it from the graph
@@ -328,6 +337,39 @@ class MultiAgentOrchestrator:
                 final_state = final_state.values
             
             await self.streaming_manager.emit_thinking("orchestrator", "Multi-agent analysis complete!")
+            
+            # Assess response quality
+            quality_metrics = None
+            if final_state.get("final_response"):
+                try:
+                    await self.streaming_manager.emit_thinking("orchestrator", "Assessing response quality...")
+                    quality_metrics = await self.quality_assessor.assess_response_quality(
+                        response=final_state.get("final_response", ""),
+                        query=query,
+                        query_analysis=final_state.get("query_analysis", {}),
+                        tool_results=final_state.get("tool_results", []),
+                        execution_metadata=final_state.get("execution_metadata", {}),
+                        response_metadata=final_state.get("response_metadata", {})
+                    )
+                    
+                    if quality_metrics.overall_score < 0.7:
+                        await self.streaming_manager.emit_thinking(
+                            "orchestrator", 
+                            f"Quality score {quality_metrics.overall_score:.2f} - considering improvements..."
+                        )
+                        
+                        # Generate optimization suggestions
+                        optimizations = await self.quality_optimizer.suggest_optimizations(
+                            quality_metrics,
+                            final_state.get("query_analysis", {}),
+                            final_state.get("tool_results", [])
+                        )
+                        
+                        # Log optimization suggestions for future improvement
+                        logger.info(f"Quality optimizations suggested: {optimizations}")
+                    
+                except Exception as e:
+                    logger.warning(f"Quality assessment failed: {e}")
             
             # Learn from this interaction
             if user_id and final_state.get("query_analysis"):
@@ -346,7 +388,8 @@ class MultiAgentOrchestrator:
                     "query_analysis": final_state.get("query_analysis"),
                     "tool_plan": final_state.get("tool_plan"),
                     "execution_metadata": final_state.get("execution_metadata"),
-                    "response_metadata": final_state.get("response_metadata")
+                    "response_metadata": final_state.get("response_metadata"),
+                    "quality_metrics": quality_metrics.__dict__ if quality_metrics else None
                 }
             }
             

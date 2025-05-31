@@ -102,7 +102,7 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
             # Get LLM response
             messages = [
                 SystemMessage(content=populated_prompt),
-                HumanMessage(content=f"Query to analyze: {state.original_query}")
+                HumanMessage(content=f"Query to analyze: {state.get('original_query', '')}")
             ]
             
             response = await self.llm.ainvoke(messages)
