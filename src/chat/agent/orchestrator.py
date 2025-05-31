@@ -110,15 +110,19 @@ class MultiAgentOrchestrator:
         result = await self.query_agent.process(state)
         
         if result.success:
+            query_analysis = result.updated_state.get("query_analysis", {})
+            confidence = query_analysis.get("confidence", 0)
             await self.streaming_manager.emit_progress(
                 "query_understanding", 
-                f"Query analyzed with {result.updated_state.query_analysis.get('confidence', 0):.0%} confidence"
+                f"Query analyzed with {confidence:.0%} confidence"
             )
             return result.updated_state
         else:
             # Handle error - add to state errors
-            error_state = state.copy()
-            error_state.errors.append(f"Query understanding failed: {result.message}")
+            error_state = dict(state)
+            errors = error_state.get("errors", [])
+            errors.append(f"Query understanding failed: {result.message}")
+            error_state["errors"] = errors
             return error_state
     
     async def _tool_planning_node(self, state: MultiAgentState) -> MultiAgentState:
@@ -128,15 +132,17 @@ class MultiAgentOrchestrator:
         result = await self.planning_agent.process(state)
         
         if result.success:
-            plan = result.updated_state.tool_plan
+            plan = result.updated_state.get("tool_plan", {})
             await self.streaming_manager.emit_progress(
                 "tool_planning",
                 f"Plan ready: {plan.get('strategy_type', 'unknown')} strategy with {len(plan.get('tool_sequence', []))} tools"
             )
             return result.updated_state
         else:
-            error_state = state.copy()
-            error_state.errors.append(f"Tool planning failed: {result.message}")
+            error_state = dict(state)
+            errors = error_state.get("errors", [])
+            errors.append(f"Tool planning failed: {result.message}")
+            error_state["errors"] = errors
             return error_state
     
     async def _tool_execution_node(self, state: MultiAgentState) -> MultiAgentState:
@@ -146,15 +152,17 @@ class MultiAgentOrchestrator:
         result = await self.execution_agent.process(state)
         
         if result.success:
-            metadata = result.updated_state.execution_metadata or {}
+            metadata = result.updated_state.get("execution_metadata", {})
             await self.streaming_manager.emit_progress(
                 "tool_execution",
                 f"Execution complete: {metadata.get('tools_successful', 0)} tools succeeded"
             )
             return result.updated_state
         else:
-            error_state = state.copy()
-            error_state.errors.append(f"Tool execution failed: {result.message}")
+            error_state = dict(state)
+            errors = error_state.get("errors", [])
+            errors.append(f"Tool execution failed: {result.message}")
+            error_state["errors"] = errors
             return error_state
     
     async def _response_synthesis_node(self, state: MultiAgentState) -> MultiAgentState:
@@ -164,14 +172,18 @@ class MultiAgentOrchestrator:
         result = await self.synthesis_agent.process(state)
         
         if result.success:
+            response_metadata = result.updated_state.get("response_metadata", {})
+            confidence = response_metadata.get("confidence_level", 0)
             await self.streaming_manager.emit_progress(
                 "response_synthesis",
-                f"Response complete with {result.updated_state.response_metadata.get('confidence_level', 0):.0%} confidence"
+                f"Response complete with {confidence:.0%} confidence"
             )
             return result.updated_state
         else:
-            error_state = state.copy()
-            error_state.errors.append(f"Response synthesis failed: {result.message}")
+            error_state = dict(state)
+            errors = error_state.get("errors", [])
+            errors.append(f"Response synthesis failed: {result.message}")
+            error_state["errors"] = errors
             return error_state
     
     async def _route_next_agent(self, state: MultiAgentState) -> MultiAgentState:
@@ -227,12 +239,26 @@ class MultiAgentOrchestrator:
         if stream_callback:
             self.streaming_manager.set_stream_callback(stream_callback)
         
-        # Create initial state
+        # Create initial state with all required defaults
         initial_state = MultiAgentState(
             original_query=query,
+            processed_query="",
+            query_analysis=None,
+            tool_plan=None,
+            tool_results=[],
+            final_response="",
             current_agent="query_understanding",
+            agent_sequence=[],
+            execution_metadata={},
             session_id=session_id or f"session_{datetime.now().timestamp()}",
+            conversation_history=[],
+            user_preferences={},
+            learned_patterns={},
             is_streaming=stream_callback is not None,
+            thinking_updates=[],
+            progress_indicators=[],
+            errors=[],
+            warnings=[],
             messages=[HumanMessage(content=query)]
         )
         

@@ -19,18 +19,28 @@ class AgentRole(Enum):
 @dataclass
 class AgentResult:
     """Standard result structure for inter-agent communication."""
-    agent_role: AgentRole
     success: bool
+    updated_state: "MultiAgentState"
     data: Dict[str, Any]
-    metadata: Dict[str, Any]
-    errors: List[str]
+    message: str = ""
+    next_agent: Optional[str] = None
+    agent_role: Optional[AgentRole] = None
+    metadata: Dict[str, Any] = None
+    errors: List[str] = None
     thinking_output: Optional[str] = None
+    
+    def __post_init__(self):
+        if self.metadata is None:
+            self.metadata = {}
+        if self.errors is None:
+            self.errors = []
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for state management."""
         return {
             "agent_role": self.agent_role.value,
             "success": self.success,
+            "updated_state": self.updated_state,
             "data": self.data,
             "metadata": self.metadata,
             "errors": self.errors,
@@ -43,6 +53,7 @@ class AgentResult:
         return cls(
             agent_role=AgentRole(data["agent_role"]),
             success=data["success"],
+            updated_state=data["updated_state"],
             data=data["data"],
             metadata=data["metadata"], 
             errors=data["errors"],
@@ -126,22 +137,24 @@ class BaseAgent(ABC):
             yield thought
         self._thinking_buffer.clear()
     
-    def create_success_result(self, data: Dict[str, Any], metadata: Dict[str, Any] = None) -> AgentResult:
+    def create_success_result(self, updated_state: "MultiAgentState", data: Dict[str, Any], metadata: Dict[str, Any] = None) -> AgentResult:
         """Helper to create successful result."""
         return AgentResult(
             agent_role=self.agent_role,
             success=True,
+            updated_state=updated_state,
             data=data,
             metadata=metadata or {},
             errors=[],
             thinking_output=self.get_thinking_output()
         )
     
-    def create_error_result(self, errors: List[str], data: Dict[str, Any] = None) -> AgentResult:
+    def create_error_result(self, updated_state: "MultiAgentState", errors: List[str], data: Dict[str, Any] = None) -> AgentResult:
         """Helper to create error result."""
         return AgentResult(
             agent_role=self.agent_role,
             success=False,
+            updated_state=updated_state,
             data=data or {},
             metadata={},
             errors=errors,
