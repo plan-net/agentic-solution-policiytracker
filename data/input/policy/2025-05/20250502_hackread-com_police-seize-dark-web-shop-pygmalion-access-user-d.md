@@ -2,7 +2,7 @@
 title: Police Seize Dark Web Shop Pygmalion, Access User Data from 7K Orders
 url: https://hackread.com/police-seize-dark-web-shop-pygmalion-user-data-orders/
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-31T03:53:11.794287
+collected_date: 2025-05-31T11:08:17.869363
 source: Hackread
 source_url: https://hackread.com
 author: Waqas

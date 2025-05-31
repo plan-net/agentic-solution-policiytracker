@@ -2,7 +2,7 @@
 title: Commission publishes draft guidelines on protection of minors online under the Digital Services Act
 url: https://digital-strategy.ec.europa.eu/en/news/commission-publishes-draft-guidelines-protection-minors-online-under-digital-services-act
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-31T09:04:26.249934
+collected_date: 2025-05-31T11:07:52.643570
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: The Commission has launched a public consultation on draft guidelines for the protection of minors online under the Digital Services Act (DSA). With this step, the Commission aims to create a safer online environment for children by supporting online platforms accessible to minors to ensure a high...

@@ -2,7 +2,7 @@
 title: The EU says Shein's practices breach its rules against false discounts, deceptive product labels, and more, and warns Shein may face fines if it doesn't comply
 url: https://www.techmeme.com/250526/p14
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T09:04:15.051188
+collected_date: 2025-05-31T11:07:45.398898
 source: Techmeme
 source_url: https://www.techmeme.com
 description: "Sponsor Posts 

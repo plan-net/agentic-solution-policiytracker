@@ -2,7 +2,7 @@
 title: Report: European Commission Looking Into Visa and Mastercard Fees
 url: https://www.pymnts.com/news/regulation/2025/report-european-commission-looking-into-visa-and-mastercard-fees/
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-31T09:04:41.326162
+collected_date: 2025-05-31T11:08:06.699377
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS

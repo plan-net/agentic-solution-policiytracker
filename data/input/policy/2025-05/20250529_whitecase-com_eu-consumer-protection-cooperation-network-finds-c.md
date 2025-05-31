@@ -1,8 +1,8 @@
 ---
 title: EU Consumer Protection Cooperation Network finds consumer law breaches in the e-commerce sector | White & Case LLP
 url: https://www.whitecase.com/insight-alert/eu-consumer-protection-cooperation-network-finds-consumer-law-breaches-e-commerce
-published_date: 2025-05-29T09:04:27.940000
-collected_date: 2025-05-31T09:04:29.063780
+published_date: 2025-05-29T11:07:55.089000
+collected_date: 2025-05-31T11:07:56.794256
 source: Whitecase
 source_url: https://www.whitecase.com
 description: "The Consumer Protection Cooperation Network (CPC) found that the online marketplace and fast fashion e-retailer SHEIN engaged in a range of practices that are in breach of EU consumer law. 

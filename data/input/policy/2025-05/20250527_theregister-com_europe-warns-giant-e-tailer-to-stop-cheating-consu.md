@@ -2,7 +2,7 @@
 title: Europe warns giant e-tailer to stop cheating consumers or face its wrath
 url: https://www.theregister.com/2025/05/27/eu_shein_warning/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T09:04:15.050635
+collected_date: 2025-05-31T11:07:41.681103
 source: Theregister
 source_url: https://www.theregister.com
 author: Simon Sharwood

@@ -2,7 +2,7 @@
 title: EU regulators are investigating Pornhub and three other sites
 url: https://www.engadget.com/entertainment/streaming/eu-regulators-are-investigating-pornhub-and-three-other-sites-194234570.html?src=rss
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T08:03:03.379430
+collected_date: 2025-05-31T10:37:09.849669
 source: Engadget
 source_url: https://www.engadget.com
 author: Will Shanklin

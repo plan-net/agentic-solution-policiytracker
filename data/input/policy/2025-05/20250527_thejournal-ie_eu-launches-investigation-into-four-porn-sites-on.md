@@ -2,7 +2,7 @@
 title: EU launches investigation into four porn sites on suspicion they fail to prevent children's access
 url: https://www.thejournal.ie/eu-launches-investigation-into-four-porn-sites-on-suspicion-they-fail-to-prevent-childrens-access-6715856-May2025/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T09:04:25.860416
+collected_date: 2025-05-31T10:06:23.847407
 source: Thejournal
 source_url: https://www.thejournal.ie
 author: AFP

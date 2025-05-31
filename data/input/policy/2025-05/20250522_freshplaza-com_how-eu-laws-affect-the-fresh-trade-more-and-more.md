@@ -2,7 +2,7 @@
 title: How EU laws affect the fresh trade more and more
 url: https://www.freshplaza.com/north-america/article/9657771/how-eu-laws-affect-the-fresh-trade-more-and-more/
 published_date: 2025-05-22T00:00:00
-collected_date: 2025-05-31T09:04:37.141144
+collected_date: 2025-05-31T11:08:03.631052
 source: Freshplaza
 source_url: https://www.freshplaza.com
 description: Laws significantly impact the trade of fresh produce. The European Union (EU) is recognized for having some of the most stringent food safety standards worldwide. Additionally, suppliers are now required to comply with new regulations aimed at ensuring sustainable import practices. Many of these...

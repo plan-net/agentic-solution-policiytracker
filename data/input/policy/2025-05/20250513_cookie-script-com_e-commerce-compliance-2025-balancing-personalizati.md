@@ -2,7 +2,7 @@
 title: E-Commerce Compliance 2025: Balancing Personalization, Tracking & Privacy Regulations
 url: https://cookie-script.com/guides/e-commerce-compliance-2025
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-31T08:02:16.841346
+collected_date: 2025-05-31T11:07:42.062562
 source: Cookie Script
 source_url: https://cookie-script.com
 author: CookieScript

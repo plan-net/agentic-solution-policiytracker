@@ -2,7 +2,7 @@
 title: EU ruling: tracking-based advertising [...] across Europe has no legal basis
 url: https://news.ycombinator.com/item?id=43992444
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-31T08:02:21.676087
+collected_date: 2025-05-31T10:37:03.172646
 source: News
 source_url: https://news.ycombinator.com
 description: "EU ruling: tracking-based advertising [...] across Europe has no legal basis ( iccl.ie) 

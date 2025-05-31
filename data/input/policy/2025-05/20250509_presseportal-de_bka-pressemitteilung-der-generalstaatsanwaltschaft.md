@@ -2,7 +2,7 @@
 title: BKA: PRESSEMITTEILUNG der Generalstaatsanwaltschaft Frankfurt am Main -ZIT- und des Bundeskriminalamtes
 url: https://www.presseportal.de/blaulicht/pm/7/6029813
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-31T09:04:51.474984
+collected_date: 2025-05-31T11:08:17.869247
 source: Presseportal
 source_url: https://www.presseportal.de
 author: Bundeskriminalamt

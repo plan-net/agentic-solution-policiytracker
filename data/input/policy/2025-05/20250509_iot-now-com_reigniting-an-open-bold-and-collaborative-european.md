@@ -2,7 +2,7 @@
 title: Reigniting an open, bold and collaborative European Digital Economy amidst €200bn AI ambitions | IoT Now News & Reports
 url: https://www.iot-now.com/2025/05/09/151413-reigniting-an-open-bold-and-collaborative-european-digital-economy-amidst-e200bn-ai-ambitions/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-31T09:04:44.404391
+collected_date: 2025-05-31T11:08:11.135544
 source: Iot Now
 source_url: https://www.iot-now.com
 author: Marion Webber

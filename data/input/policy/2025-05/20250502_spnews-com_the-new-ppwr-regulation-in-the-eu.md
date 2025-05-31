@@ -2,7 +2,7 @@
 title: The new PPWR Regulation in the EU
 url: https://spnews.com/the-new-ppwr-regulation-in-the-eu/
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-30T21:53:36.917964
+collected_date: 2025-05-31T11:08:03.868423
 source: Spnews
 source_url: https://spnews.com
 author: Sustainable Packaging News

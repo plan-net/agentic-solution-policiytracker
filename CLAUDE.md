@@ -28,6 +28,7 @@ AI-powered document analysis system for political and regulatory monitoring.
 @.claude/graphrag-patterns.md
 @.claude/mcp-patterns.md
 @.claude/graphiti-patterns.md
+@.claude/langgraph-patterns.md
 
 ## Project-Specific Details
 @.claude/project-architecture.md

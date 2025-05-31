@@ -2,7 +2,7 @@
 title: EU to Limit PFAS in Food Packaging by 2026: What You Need to Know
 url: https://www.pressebox.com/pressrelease/tentamus-group-gmbh/eu-to-limit-pfas-in-food-packaging-by-2026-what-you-need-to-know/boxid/1248234
 published_date: 2025-05-08T00:00:00
-collected_date: 2025-05-29T18:35:27.194435
+collected_date: 2025-05-31T10:06:44.978468
 source: Pressebox
 source_url: https://www.pressebox.com
 author: Tentamus Group GmbH
