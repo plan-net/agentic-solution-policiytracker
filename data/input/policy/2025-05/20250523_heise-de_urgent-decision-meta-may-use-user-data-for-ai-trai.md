@@ -2,7 +2,7 @@
 title: Urgent decision: Meta may use user data for AI training
 url: https://www.heise.de/en/news/Urgent-decision-Meta-may-use-user-data-for-AI-training-10395290.html
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-31T08:02:17.866580
+collected_date: 2025-05-31T09:04:15.600130
 source: Heise
 source_url: https://www.heise.de
 author: Stefan Krempl

@@ -2,7 +2,7 @@
 title: Digitisation fronts new Commission strategy to boost EU single market
 url: https://www.euronews.com/my-europe/2025/05/19/digitisation-underpins-new-commission-strategy-to-boost-eu-single-market
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-31T08:34:01.737385
+collected_date: 2025-05-31T09:04:44.403754
 source: Euronews
 source_url: https://www.euronews.com
 description: "By  Cynthia Kroet 

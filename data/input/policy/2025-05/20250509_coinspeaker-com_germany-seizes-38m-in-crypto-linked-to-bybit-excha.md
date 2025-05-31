@@ -2,7 +2,7 @@
 title: Germany Seizes $38M in Crypto Linked to Bybit Exchange Hack
 url: https://www.coinspeaker.com/german-authorities-confiscate-38-million-crypto-bybit-hack/
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-31T08:34:08.021512
+collected_date: 2025-05-31T09:04:51.475226
 source: Coinspeaker
 source_url: https://www.coinspeaker.com
 author: Rose Nnamdi

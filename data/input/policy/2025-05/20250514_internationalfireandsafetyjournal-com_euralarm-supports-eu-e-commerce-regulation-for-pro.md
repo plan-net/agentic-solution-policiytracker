@@ -2,7 +2,7 @@
 title: Euralarm supports EU e-commerce regulation for product compliance
 url: https://internationalfireandsafetyjournal.com/euralarm-supports-eu-e-commerce-regulation-for-product-compliance/
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-31T08:33:42.479659
+collected_date: 2025-05-31T09:04:26.059374
 source: Internationalfireandsafetyjournal
 source_url: https://internationalfireandsafetyjournal.com
 author: Iain Hoey

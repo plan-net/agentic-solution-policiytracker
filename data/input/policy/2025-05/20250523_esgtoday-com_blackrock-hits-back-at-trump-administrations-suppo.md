@@ -2,7 +2,7 @@
 title: BlackRock Hits Back at Trump Administration’s Support for Case Accusing Asset Managers of Using Net Zero to Manipulate Energy Prices
 url: https://www.esgtoday.com/blackrock-hits-back-at-trump-administrations-support-for-case-accusing-asset-managers-of-using-net-zero-to-manipulate-energy-prices/
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-30T23:18:48.199285
+collected_date: 2025-05-31T09:04:34.263604
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

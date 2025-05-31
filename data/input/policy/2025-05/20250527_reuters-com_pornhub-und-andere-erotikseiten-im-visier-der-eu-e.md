@@ -2,7 +2,7 @@
 title: Pornhub und andere Erotikseiten im Visier der EU-Ermittler
 url: https://www.reuters.com/de/firma/pornhub-und-andere-erotikseiten-im-visier-der-eu-ermittler-2025-05-27/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T08:33:42.452192
+collected_date: 2025-05-31T09:04:25.860359
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

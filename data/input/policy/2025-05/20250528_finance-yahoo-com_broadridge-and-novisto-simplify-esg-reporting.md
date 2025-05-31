@@ -2,7 +2,7 @@
 title: Broadridge and Novisto simplify ESG reporting
 url: https://finance.yahoo.com/news/broadridge-novisto-simplify-esg-reporting-100541856.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-31T08:33:54.959790
+collected_date: 2025-05-31T09:04:34.263390
 source: Finance
 source_url: https://finance.yahoo.com
 author: Anika Sidhika Wed, May 28, 2025 at 3:05 AM PDT 2 min read

@@ -2,7 +2,7 @@
 title: Fake discounts on Shein 'breach law', EU says
 url: https://www.bbc.com/news/articles/c62vq1mnndno
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T08:33:32.484194
+collected_date: 2025-05-31T09:04:15.050709
 source: Bbc
 source_url: https://www.bbc.com
 author: Mitchell Labiak

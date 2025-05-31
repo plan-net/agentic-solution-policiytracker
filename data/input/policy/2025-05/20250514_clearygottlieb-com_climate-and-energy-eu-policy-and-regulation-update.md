@@ -2,7 +2,7 @@
 title: Climate and Energy: EU Policy and Regulation Update for 14 May 2025
 url: https://www.clearygottlieb.com/news-and-insights/publication-listing/climate-energy-eu-policy-regulation-update-2025-05-14
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-31T08:34:05.086701
+collected_date: 2025-05-31T09:04:47.995505
 source: Clearygottlieb
 source_url: https://www.clearygottlieb.com
 author: Cleary Gottlieb

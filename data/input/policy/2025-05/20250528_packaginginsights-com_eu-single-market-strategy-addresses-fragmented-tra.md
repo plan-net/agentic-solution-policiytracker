@@ -2,7 +2,7 @@
 title: EU Single Market Strategy addresses fragmented trade rules for packaging and labels
 url: https://www.packaginginsights.com/news/eu-single-market-packaging-labeling-waste.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-31T08:33:54.966062
+collected_date: 2025-05-31T09:04:37.141196
 source: Packaginginsights
 source_url: https://www.packaginginsights.com
 author: Milana Nikolova

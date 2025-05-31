@@ -2,7 +2,7 @@
 title: In the right circles: Europe's cities and regions lead the green transition
 url: https://phys.org/news/2025-05-circles-europe-cities-regions-green.html
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T08:03:21.095567
+collected_date: 2025-05-31T09:04:37.141223
 source: Phys
 source_url: https://phys.org
 author: Michaela Nesvarova

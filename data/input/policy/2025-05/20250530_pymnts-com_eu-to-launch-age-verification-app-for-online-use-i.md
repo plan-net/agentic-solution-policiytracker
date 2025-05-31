@@ -2,7 +2,7 @@
 title: EU to Launch Age Verification App for Online Use in July
 url: https://www.pymnts.com/mobile-applications/2025/european-union-launch-age-verification-app-online-use-july/
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T08:33:45.435928
+collected_date: 2025-05-31T09:04:26.250014
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS

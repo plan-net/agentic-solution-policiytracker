@@ -2,7 +2,7 @@
 title: Europe wants fee on small e-commerce parcels
 url: https://www.retaildetail.eu/news/general/europe-wants-fee-on-small-e-commerce-parcels/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T08:33:52.077920
+collected_date: 2025-05-31T09:04:26.059708
 source: Retaildetail
 source_url: https://www.retaildetail.eu
 author: Stefan Van Rompaey

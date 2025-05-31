@@ -2,7 +2,7 @@
 title: Europe tries to force age verification onto Pornhub and other adult sites
 url: https://arstechnica.com/tech-policy/2025/05/europe-tries-to-force-age-verification-onto-pornhub-and-other-adult-sites/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T08:33:45.435707
+collected_date: 2025-05-31T09:04:26.249751
 source: Arstechnica
 source_url: https://arstechnica.com
 author: Jon Brodkin
