@@ -2,7 +2,7 @@
 title: "German court rules cookie banners must offer \"reject all\" button"
 url: https://www.techspot.com/news/108043-german-court-takes-stand-against-manipulative-cookie-banners.html
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-31T10:06:12.585013
+collected_date: 2025-05-31T11:38:29.940463
 source: Techspot
 source_url: https://www.techspot.com
 author: Skye Jacobs

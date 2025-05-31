@@ -1,8 +1,8 @@
 ---
 title: EU Omnibus Tracker: simplification of sustainability rules
 url: https://sustainablefutures.linklaters.com/post/102kb4l/eu-omnibus-tracker-simplification-of-sustainability-rules
-published_date: 2025-05-28T08:03:19.895000
-collected_date: 2025-05-31T08:03:21.095407
+published_date: 2025-05-28T11:38:58.760000
+collected_date: 2025-05-31T11:39:00.286072
 source: Sustainablefutures
 source_url: https://sustainablefutures.linklaters.com
 author: Sara Feijao, Julia Voskoboinikova, Claudia Skibniewski Alvarez, Clelia Felix

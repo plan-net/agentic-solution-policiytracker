@@ -2,7 +2,7 @@
 title: European Commission Proposes Expansion to Records of Processing Derogation
 url: https://www.hunton.com/privacy-and-information-security-law/european-commission-proposes-expansion-to-records-of-processing-derogation
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T09:04:15.600149
+collected_date: 2025-05-31T11:38:26.614623
 source: Hunton
 source_url: https://www.hunton.com
 description: On May 21, 2025, the European Commission published a proposal for a new regulation simplifying certain regulatory requirements for “small mid-cap enterprises” (the “Simplification Regulation Proposal”). Small mid-caps will be companies with fewer than 750 employees and either up to €150 million in...

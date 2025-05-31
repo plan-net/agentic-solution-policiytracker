@@ -2,7 +2,7 @@
 title: French, German leaders call on EU to scrap supply chain audit law
 url: https://www.reuters.com/sustainability/society-equity/french-german-leaders-call-eu-scrap-supply-chain-audit-law-2025-05-20/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-31T11:08:14.646739
+collected_date: 2025-05-31T11:39:00.684127
 source: Reuters
 source_url: https://www.reuters.com
 author: Andreas Rinke, Sarah Marsh, Kate Abnett

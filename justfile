@@ -150,9 +150,18 @@ test-etl:
 
 # Check ETL initialization status
 etl-status:
-    @echo "📊 ETL Status:"
-    @curl -s http://localhost:8080/health || echo "❌ Airflow not running"
-    @echo ""
+    @echo "📊 ETL Initialization Status:"
+    uv run python scripts/etl_init_manager.py status
+
+# Reset specific ETL collector
+etl-reset collector:
+    @echo "🔄 Resetting ETL collector: {{collector}}"
+    uv run python scripts/etl_init_manager.py reset {{collector}}
+
+# Reset all ETL collectors
+etl-reset-all:
+    @echo "🔄 Resetting ALL ETL collectors..."
+    uv run python scripts/etl_init_manager.py reset-all
 
 # === Development ===
 
@@ -194,7 +203,7 @@ clean:
     find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
     find . -name "*.pyc" -delete 2>/dev/null || true
     find . -name ".pytest_cache" -type d -exec rm -rf {} + 2>/dev/null || true
-    rm -rf htmlcov .coverage 2>/dev/null || true
+    rm -rf htmlcov .coverage/* 2>/dev/null || true
 
 # Full cleanup (including Docker volumes)
 clean-all: stop clean

@@ -2,7 +2,7 @@
 title: Amazon Rolls Out Automated Packaging Across Europe to Cut Waste and Emissions
 url: https://esgnews.com/amazon-rolls-out-automated-packaging-across-europe-to-cut-waste-and-emissions/
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-31T11:08:03.868296
+collected_date: 2025-05-31T11:38:49.553156
 source: Esgnews
 source_url: https://esgnews.com
 author: ESG News

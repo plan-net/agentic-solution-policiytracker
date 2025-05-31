@@ -2,7 +2,7 @@
 title: EU warns Shein of fines in consumer protection probe
 url: https://www.reuters.com/sustainability/boards-policy-regulation/eu-urges-retailer-shein-respect-laws-warns-fines-2025-05-26/
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T11:07:45.398885
+collected_date: 2025-05-31T11:38:29.940419
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

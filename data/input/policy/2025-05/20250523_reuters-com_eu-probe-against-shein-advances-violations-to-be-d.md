@@ -2,7 +2,7 @@
 title: EU probe against Shein advances, violations to be detailed soon, Bloomberg reports
 url: https://www.reuters.com/sustainability/eu-probe-against-shein-advances-violations-be-detailed-soon-bloomberg-reports-2025-05-23/
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-31T11:07:49.216413
+collected_date: 2025-05-31T11:38:46.388539
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

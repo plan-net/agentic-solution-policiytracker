@@ -89,7 +89,6 @@ kill -9 <PID>      # Kill the process
 
 ## 📚 More Information
 
-- Full docs: `/docs/USER_GUIDE.md`
-- Architecture: `/docs/specs/architecture.md`
-- Deployment: `/DEPLOYMENT_UPDATE.md`
-- Open WebUI Setup: `/docs/OPEN_WEBUI_SETUP.md`
+- **User Guide**: `/docs/USER_GUIDE.md` - Comprehensive guide for business users
+- **Setup Guide**: `/docs/SETUP.md` - Complete installation and configuration
+- **Development**: See pattern files in `/.claude/` for development standards

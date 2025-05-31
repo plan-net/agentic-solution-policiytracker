@@ -10,8 +10,7 @@ import pytest
 import ray
 from langgraph.checkpoint.memory import MemorySaver
 
-from src.models.job import JobRequest
-from src.workflow.state import WorkflowState
+# Legacy imports removed - src.models and src.workflow directories were cleaned up
 
 
 def pytest_configure(config):
@@ -53,27 +52,27 @@ def ray_local_mode(ray_cluster):
 @pytest.fixture
 def test_config():
     """Standard test configuration for Political Monitoring Agent."""
-    return JobRequest(
-        job_name="TestJob",
-        input_folder="/tmp/test_documents",
-        context_file="/tmp/test_context.yaml",
-        priority_threshold=70.0,
-        include_low_confidence=False,
-        clustering_enabled=True,
-    )
+    return {
+        "job_name": "TestJob",
+        "input_folder": "/tmp/test_documents",
+        "context_file": "/tmp/test_context.yaml",
+        "priority_threshold": 70.0,
+        "include_low_confidence": False,
+        "clustering_enabled": True,
+    }
 
 
 @pytest.fixture
 def minimal_config():
     """Minimal test configuration for simple tests."""
-    return JobRequest(
-        job_name="MinimalTestJob",
-        input_folder="/tmp/minimal_test",
-        context_file="/tmp/minimal_context.yaml",
-        priority_threshold=80.0,
-        include_low_confidence=True,
-        clustering_enabled=False,
-    )
+    return {
+        "job_name": "MinimalTestJob",
+        "input_folder": "/tmp/minimal_test",
+        "context_file": "/tmp/minimal_context.yaml",
+        "priority_threshold": 80.0,
+        "include_low_confidence": True,
+        "clustering_enabled": False,
+    }
 
 
 @pytest.fixture
@@ -133,21 +132,21 @@ def empty_documents_dir(tmp_path) -> str:
 def basic_workflow_state(test_config, test_documents_dir):
     """Basic workflow state for testing."""
     # Update the job_request to use the test documents directory
-    test_config.input_folder = test_documents_dir
+    test_config["input_folder"] = test_documents_dir
 
-    return WorkflowState(
-        job_id="test_job_001",
-        job_request=test_config,
-        documents=[],
-        scoring_results=[],
-        report_data=None,
-        context={},
-        errors=[],
-        current_progress={},
-        file_paths=[],
-        failed_documents=[],
-        report_file_path=None,
-    )
+    return {
+        "job_id": "test_job_001",
+        "job_request": test_config,
+        "documents": [],
+        "scoring_results": [],
+        "report_data": None,
+        "context": {},
+        "errors": [],
+        "current_progress": {},
+        "file_paths": [],
+        "failed_documents": [],
+        "report_file_path": None,
+    }
 
 
 @pytest.fixture
@@ -197,28 +196,27 @@ def mock_ray_tasks():
 @pytest.fixture
 def mock_llm_service():
     """Mock LLM service for testing without external API calls."""
-    with patch("src.llm.langchain_service.LangChainLLMService") as mock_service:
-        # Create mock instance
-        mock_instance = AsyncMock()
-        mock_instance.is_enabled.return_value = True
-        mock_instance.generate_analysis = AsyncMock(
-            return_value={
-                "summary": "Test analysis summary",
-                "key_points": ["Point 1", "Point 2"],
-                "sentiment": "neutral",
-                "confidence": 0.85,
-            }
-        )
-        mock_instance.generate_score_rationale = AsyncMock(
-            return_value={
-                "reasoning": "Test scoring rationale",
-                "confidence": 0.8,
-                "key_factors": ["Factor 1", "Factor 2"],
-            }
-        )
+    # Note: src.llm module was removed in v0.2.0 cleanup
+    # This fixture now provides a generic mock for LLM-related testing
+    mock_instance = AsyncMock()
+    mock_instance.is_enabled.return_value = True
+    mock_instance.generate_analysis = AsyncMock(
+        return_value={
+            "summary": "Test analysis summary",
+            "key_points": ["Point 1", "Point 2"],
+            "sentiment": "neutral",
+            "confidence": 0.85,
+        }
+    )
+    mock_instance.generate_score_rationale = AsyncMock(
+        return_value={
+            "reasoning": "Test scoring rationale",
+            "confidence": 0.8,
+            "key_factors": ["Factor 1", "Factor 2"],
+        }
+    )
 
-        mock_service.return_value = mock_instance
-        yield mock_instance
+    yield mock_instance
 
 
 @pytest.fixture
@@ -342,14 +340,14 @@ def concurrent_test_configs():
     """Generate multiple test configurations for concurrent testing."""
     configs = []
     for i in range(5):
-        config = JobRequest(
-            job_name=f"ConcurrentJob{i}",
-            input_folder=f"/tmp/concurrent_test_{i}",
-            context_file=f"/tmp/concurrent_context_{i}.yaml",
-            priority_threshold=70.0 + (i * 5),
-            include_low_confidence=i % 2 == 0,
-            clustering_enabled=i % 3 == 0,
-        )
+        config = {
+            "job_name": f"ConcurrentJob{i}",
+            "input_folder": f"/tmp/concurrent_test_{i}",
+            "context_file": f"/tmp/concurrent_context_{i}.yaml",
+            "priority_threshold": 70.0 + (i * 5),
+            "include_low_confidence": i % 2 == 0,
+            "clustering_enabled": i % 3 == 0,
+        }
         configs.append(config)
     return configs
 
@@ -376,14 +374,14 @@ def pytest_collection_modifyitems(config, items):
 def validate_test_outputs():
     """Helper to validate test outputs meet CLAUDE.md requirements."""
 
-    def _validate(state: WorkflowState):
+    def _validate(state: dict):
         """Validate workflow state meets requirements."""
         validations = {
-            "has_documents": len(state.documents) >= 0,
-            "config_present": state.job_request is not None,
-            "no_critical_errors": len(state.errors) == 0
-            or all("critical" not in str(e).lower() for e in state.errors),
-            "job_id_present": state.job_id is not None and state.job_id != "",
+            "has_documents": len(state.get("documents", [])) >= 0,
+            "config_present": state.get("job_request") is not None,
+            "no_critical_errors": len(state.get("errors", [])) == 0
+            or all("critical" not in str(e).lower() for e in state.get("errors", [])),
+            "job_id_present": state.get("job_id") is not None and state.get("job_id") != "",
         }
         return validations
 

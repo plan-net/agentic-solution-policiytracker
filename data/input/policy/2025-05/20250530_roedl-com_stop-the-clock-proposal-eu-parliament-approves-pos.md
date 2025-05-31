@@ -2,7 +2,7 @@
 title: “Stop-the-clock” proposal: EU Parliament approves postponement of...
 url: https://www.roedl.com/insights/esg-news/breaking-news/stop-the-clock-proposal-eu-parlament-postponement-sustainability-reporting-due-diligence-rules-omnibus
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T10:06:33.081045
+collected_date: 2025-05-31T11:38:49.553127
 source: Roedl
 source_url: https://www.roedl.com
 description: ​​​​​​​​published on 3 April 2025 | reading time approx. 2 minutes On April 3, 2025, the European Parliament approved the postponement of EU regulations on sustainability reporting and corporate due diligence. The aim of the postponement is to give companies in the user group of the Corporate...

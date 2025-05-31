@@ -2,7 +2,7 @@
 title: Are we criticizing GDPR for all the wrong reasons?
 url: https://phys.org/news/2025-05-criticizing-gdpr-wrong.html
 published_date: 2025-05-28T00:00:00
-collected_date: 2025-05-31T11:07:42.062781
+collected_date: 2025-05-31T11:38:26.614685
 source: Phys
 source_url: https://phys.org
 author: Antonio Aloisi

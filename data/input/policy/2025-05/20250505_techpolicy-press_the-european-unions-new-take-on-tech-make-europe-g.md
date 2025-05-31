@@ -2,7 +2,7 @@
 title: The European Union’s New Take on Tech: Make Europe Great Again
 url: https://www.techpolicy.press/the-european-unions-new-take-on-tech-make-europe-great-again/
 published_date: 2025-05-05T00:00:00
-collected_date: 2025-05-31T11:08:11.135236
+collected_date: 2025-05-31T11:38:57.036642
 source: Techpolicy
 source_url: https://www.techpolicy.press
 author: Mark Scott

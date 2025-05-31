@@ -2,7 +2,7 @@
 title: The GDPR Shake-Up: What You Need to Know
 url: https://www.techpolicy.press/the-gdpr-shakeup-what-you-need-to-know/
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T09:04:18.917572
+collected_date: 2025-05-31T11:38:31.216652
 source: Techpolicy
 source_url: https://www.techpolicy.press
 author: Ramsha Jahangir

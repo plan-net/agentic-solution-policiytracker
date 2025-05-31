@@ -2,7 +2,7 @@
 title: Why ESG in Supply Chains Is Now a Competitive Advantage, Not Just a Compliance Requirement
 url: https://www.supplychain247.com/article/why-esg-in-supply-chains-is-now-a-competitive-advantage-not-just-a-compliance-requirement
 published_date: 2025-05-08T00:00:00
-collected_date: 2025-05-31T11:08:03.868250
+collected_date: 2025-05-31T11:38:49.552956
 source: Supplychain247
 source_url: https://www.supplychain247.com
 author: Coupa

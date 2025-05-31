@@ -50,10 +50,10 @@ def substitute_env_vars(value):
     """Substitute ${VAR_NAME} placeholders with environment variable values."""
     if not isinstance(value, str):
         return value
-    
+
     # Find all ${VAR_NAME} patterns
-    pattern = re.compile(r'\$\{([^}]+)\}')
-    
+    pattern = re.compile(r"\$\{([^}]+)\}")
+
     def replacer(match):
         var_name = match.group(1)
         env_value = os.getenv(var_name)
@@ -61,7 +61,7 @@ def substitute_env_vars(value):
             print(f"⚠️  Warning: Environment variable {var_name} not found")
             return match.group(0)  # Keep the placeholder
         return env_value
-    
+
     return pattern.sub(replacer, value)
 
 
@@ -86,8 +86,10 @@ def validate_config_values(config):
                 # Check for unsubstituted placeholders
                 for key, value in env_vars.items():
                     if isinstance(value, str) and "${" in value:
-                        warnings.append(f"⚠️  {app_name}: {key} contains unresolved placeholder: {value}")
-                    
+                        warnings.append(
+                            f"⚠️  {app_name}: {key} contains unresolved placeholder: {value}"
+                        )
+
                     # Check for common placeholder patterns
                     placeholder_patterns = [
                         "your-api-key-here",
@@ -96,7 +98,7 @@ def validate_config_values(config):
                         "your-langfuse-public-key-here",
                         "your-langfuse-secret-key-here",
                     ]
-                    
+
                     if any(pattern in str(value) for pattern in placeholder_patterns):
                         warnings.append(f"⚠️  {app_name}: {key} contains placeholder value")
 
@@ -123,7 +125,7 @@ def update_config_yaml():
     if "applications" in config and config["applications"]:
         for app in config["applications"]:
             app_name = app.get("name", "unknown")
-            
+
             # Process environment variables
             if "runtime_env" in app and "env_vars" in app["runtime_env"]:
                 app["runtime_env"]["env_vars"] = process_env_vars(app["runtime_env"]["env_vars"])
@@ -149,12 +151,12 @@ def check_critical_env_vars():
         "NEO4J_URI": "Neo4j database connection",
         "NEO4J_PASSWORD": "Neo4j authentication",
     }
-    
+
     missing = []
     for var, description in critical_vars.items():
         if not os.getenv(var):
             missing.append(f"  - {var}: {description}")
-    
+
     if missing:
         print("\n⚠️  Missing critical environment variables:")
         for item in missing:

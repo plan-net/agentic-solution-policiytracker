@@ -2,7 +2,7 @@
 title: Kluwer Competition Law Blog
 url: https://competitionlawblog.kluwercompetitionlaw.com/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T10:37:23.164961
+collected_date: 2025-05-31T11:38:53.334461
 source: Competitionlawblog
 source_url: https://competitionlawblog.kluwercompetitionlaw.com
 description: 2024 marked the third year in which the Antimonopoly Committee of Ukraine (AMCU) exercised its statutory powers amid the challenges of the full-scale war. Yet, as of 2025, the regulator has demonstrated remarkable agility, remaining fully operational – reviewing merger control...
