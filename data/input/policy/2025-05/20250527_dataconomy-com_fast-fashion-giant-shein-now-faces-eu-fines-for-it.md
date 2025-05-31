@@ -2,7 +2,7 @@
 title: Fast-fashion Giant Shein Now Faces EU Fines For Its Deceptive Sales Practices - Dataconomy
 url: https://dataconomy.com/2025/05/27/fast-fashion-giant-shein-now-faces-eu-fines-for-its-deceptive-sales-practices/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T11:07:41.767488
+collected_date: 2025-05-31T11:38:26.000056
 source: Dataconomy
 source_url: https://dataconomy.com
 author: Aytun Çelebi

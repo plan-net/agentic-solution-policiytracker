@@ -2,7 +2,7 @@
 title: German Chancellor Pushes EU to Scrap Corporate Sustainability Due Diligence Law
 url: https://esgnews.com/german-chancellor-pushes-eu-to-scrap-corporate-sustainability-due-diligence-law/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-31T10:06:33.081103
+collected_date: 2025-05-31T11:38:46.544906
 source: Esgnews
 source_url: https://esgnews.com
 author: ESG News

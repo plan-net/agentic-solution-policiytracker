@@ -2,7 +2,7 @@
 title: EU Antitrust Regulators To Decide On Mars' Kellanova Deal By 25 June
 url: https://www.esmmagazine.com/a-brands/eu-antitrust-regulators-to-decide-on-mars-kellanova-deal-by-25-june-288676
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-29T12:26:38.708406
+collected_date: 2025-05-31T11:38:50.314466
 source: Esmmagazine
 source_url: https://www.esmmagazine.com
 author: Reuters

@@ -2,7 +2,7 @@
 title: Retailers urge European Commission to crack down on Visa, Mastercard
 url: https://finance.yahoo.com/news/retailers-urge-european-commission-crack-173230347.html
 published_date: 2025-05-14T00:00:00
-collected_date: 2025-05-31T10:37:20.386921
+collected_date: 2025-05-31T11:38:50.314287
 source: Finance
 source_url: https://finance.yahoo.com
 author: Foo Yun Chee Wed, May 14, 2025, 10:32 AM 2 min read

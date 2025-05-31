@@ -125,7 +125,7 @@ addopts = [
     "--strict-config",
     "--cov=src",
     "--cov-report=term-missing",
-    "--cov-report=html",
+    "--cov-report=html:htmlcov",
     "--cov-fail-under=90",
 ]
 markers = [
@@ -133,3 +133,22 @@ markers = [
     "integration: Integration tests",
     "slow: Slow running tests",
 ]
+
+[tool.coverage.run]
+source = ["src"]
+data_file = ".coverage/.coverage"
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "@abstract"
+]
+show_missing = true
+
+[tool.coverage.html]
+directory = "htmlcov"

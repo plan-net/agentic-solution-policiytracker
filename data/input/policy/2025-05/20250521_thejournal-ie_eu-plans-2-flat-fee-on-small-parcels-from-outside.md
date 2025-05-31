@@ -2,7 +2,7 @@
 title: EU plans €2 flat fee on small parcels from outside bloc as Fine Gael TD warns of 'fast fashion wave'
 url: https://www.thejournal.ie/eu-plans-e2-flat-fee-on-small-parcels-from-outside-bloc-6710453-May2025/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T01:17:32.253829
+collected_date: 2025-05-31T11:38:46.388693
 source: Thejournal
 source_url: https://www.thejournal.ie
 author: Diarmuid Pepper

@@ -29,17 +29,8 @@ just sync-config
 Import local data to Azurite (Azure Storage Emulator) for development.
 
 ```bash
-# Import all data
-just azure-import
-
-# Import with custom job ID
-just azure-import-job my_job_123
-
-# Dry run (preview)
-just azure-import-dry
-
-# Verify connection
-just azure-verify
+# Import sample data to Azurite
+just import-data
 ```
 
 ### **ETL Pipeline Management**
@@ -47,13 +38,13 @@ just azure-verify
 Manage ETL initialization tracking for historical data collection.
 
 ```bash
-# Check ETL status
+# Check ETL initialization status (shows collector states and configuration)
 just etl-status
 
-# Reset specific collector
+# Reset specific collector (available: exa_direct, apify_news, policy_landscape)
 just etl-reset exa_direct
 
-# Reset all collectors
+# Reset all collectors (forces re-initialization)
 just etl-reset-all
 ```
 
@@ -71,24 +62,10 @@ just upload-prompts
 Test complete policy collection system with full features.
 
 ```bash
-# Test policy collection (requires EXA_API_KEY)
-just policy-test
-
-# Test basic policy components (no API needed)
-just policy-test-simple
+# Test policy collection pipeline (requires EXA_API_KEY)
+just test-etl
 ```
 
-## 🧪 **Development Testing Scripts**
-
-Located in `_dev_testing/` - these are ad-hoc scripts created during development for testing specific features:
-
-- **ETL Testing**: `etl_test_summary.py`, `test_etl_*` files
-- **News Collection**: `compare_news_collectors.py`, `test_exa_*` files  
-- **Document Processing**: `full_document_processing.py`, `process_*` files
-- **GraphRAG**: `test_graphrag_langfuse.py`, `explore_graphiti_mcp_search.py`
-- **Validation**: `validate_*`, `verify_*`, `inspect_*` files
-
-These scripts are preserved for reference but not part of the main workflow.
 
 ## Quick Reference
 
@@ -96,20 +73,21 @@ These scripts are preserved for reference but not part of the main workflow.
 # Start all services
 just services-up
 
-# Deploy Flow1 with config sync
+# Deploy with config sync
 just dev
 
-# Build communities manually
-just build-communities
+# ETL management
+just etl-status              # Check initialization status
+just etl-reset exa_direct    # Reset specific collector
+just etl-reset-all          # Reset all collectors
+just test-etl               # Test policy collection
 
-# Test policy collection
-just policy-test
+# Knowledge graph operations
+just build-communities      # Build document communities
 
-# Import sample data
-just azure-import
-
-# Upload prompts
-just upload-prompts
+# Data operations
+just import-data           # Import sample data to Azurite
+just upload-prompts        # Upload prompts to Langfuse
 ```
 
 ## Prerequisites

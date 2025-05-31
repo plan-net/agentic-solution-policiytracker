@@ -2,7 +2,7 @@
 title: EU eyes 2 euro handling fee for online parcels in customs reform
 url: https://www.reuters.com/business/retail-consumer/eu-eyes-2-euro-handling-fee-online-parcels-customs-reform-2025-05-21/
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T11:07:48.428665
+collected_date: 2025-05-31T11:38:34.845470
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

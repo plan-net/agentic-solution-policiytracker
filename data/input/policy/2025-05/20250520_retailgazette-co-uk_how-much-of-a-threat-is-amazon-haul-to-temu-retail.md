@@ -2,7 +2,7 @@
 title: How much of a threat is Amazon Haul to Temu? - Retail Gazette
 url: https://www.retailgazette.co.uk/blog/2025/05/amazon-haul-temu-shein/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-31T11:08:06.763226
+collected_date: 2025-05-31T11:38:53.196010
 source: Retailgazette
 source_url: https://www.retailgazette.co.uk
 author: Eloise Hill

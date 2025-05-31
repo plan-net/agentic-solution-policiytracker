@@ -2,7 +2,7 @@
 title: Sustainable finance
 url: https://finance.ec.europa.eu/news/sustainable-finance-2025-05-21_en
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T11:08:14.624254
+collected_date: 2025-05-31T11:38:49.553063
 source: Finance
 source_url: https://finance.ec.europa.eu
 description: Since the beginning of the current mandate, the European Commission has been moving ahead with multiple initiatives to improve and simplify the EU sustainable finance framework. These efforts aim to make the framework clearer, more effective and more usable. We take a look at the main ongoing...

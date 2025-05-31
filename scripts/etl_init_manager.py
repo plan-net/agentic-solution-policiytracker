@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from src.etl.utils.initialization_tracker import ETLInitializationTracker
@@ -23,22 +24,22 @@ def show_status():
     """Show current initialization status."""
     print("🔍 ETL Initialization Status")
     print("=" * 40)
-    
+
     tracker = ETLInitializationTracker()
     status = tracker.get_tracker_status()
-    
+
     print(f"Status: {status['status']}")
     print(f"Tracker file: {status.get('tracker_file', 'N/A')}")
-    
+
     if "configuration" in status:
         config = status["configuration"]
         print(f"\nConfiguration:")
         print(f"  Initialization days: {config['initialization_days']}")
         print(f"  Daily collection days: {config['daily_collection_days']}")
-    
+
     available_collectors = get_available_collectors()
     print(f"\nAvailable collectors: {available_collectors}")
-    
+
     collectors = status.get("collectors", {})
     if collectors:
         print(f"\nCollector Status:")
@@ -52,7 +53,7 @@ def show_status():
                 print(f"  ❌ {collector_type}: Not initialized")
     else:
         print(f"\nNo collectors initialized yet.")
-    
+
     print(f"\nNext collection will be:")
     for collector in available_collectors:
         days = tracker.get_collection_days(collector)
@@ -63,11 +64,11 @@ def show_status():
 def reset_collector(collector_type: str):
     """Reset initialization for a specific collector."""
     tracker = ETLInitializationTracker()
-    
+
     if not tracker.is_initialized(collector_type):
         print(f"❌ Collector {collector_type} is not initialized, nothing to reset")
         return
-    
+
     tracker.reset_initialization(collector_type)
     print(f"✅ Reset initialization for {collector_type}")
     print(f"   Next collection will be INITIALIZATION mode")
@@ -77,14 +78,14 @@ def reset_all():
     """Reset initialization for all collectors."""
     available_collectors = get_available_collectors()
     tracker = ETLInitializationTracker()
-    
+
     reset_count = 0
     for collector_type in available_collectors:
         if tracker.is_initialized(collector_type):
             tracker.reset_initialization(collector_type)
             reset_count += 1
             print(f"✅ Reset {collector_type}")
-    
+
     if reset_count == 0:
         print("❌ No collectors were initialized, nothing to reset")
     else:
@@ -103,9 +104,9 @@ def main():
         print("")
         print("Available collectors:", get_available_collectors())
         sys.exit(1)
-    
+
     command = sys.argv[1].lower()
-    
+
     if command == "status":
         show_status()
     elif command == "reset" and len(sys.argv) == 3:

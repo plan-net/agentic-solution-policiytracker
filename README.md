@@ -80,13 +80,12 @@ graph TB
 
 ### **Supporting Components**
 - **[Scoring Engine](src/scoring/README.md)** - 5-dimensional intelligence assessment framework
-- **[Data Models](src/models/README.md)** - Pydantic schemas and validation systems
 - **[Testing Suite](tests/README.md)** - Comprehensive testing strategy and execution
 
 ### **Documentation**
 - **[User Guide](docs/USER_GUIDE.md)** - Business user instructions and workflows
-- **[API Reference](docs/API_REFERENCE.md)** - Developer API documentation  
-- **[Technical Specifications](docs/specs/)** - Detailed system architecture and requirements
+- **[Setup Guide](docs/SETUP.md)** - Complete installation and configuration
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Commands, URLs, and troubleshooting
 
 ## 🛠️ Development
 

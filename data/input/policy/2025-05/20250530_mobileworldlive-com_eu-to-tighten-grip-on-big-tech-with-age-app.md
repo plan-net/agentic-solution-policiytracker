@@ -2,7 +2,7 @@
 title: EU to tighten grip on big tech with age app
 url: https://www.mobileworldlive.com/europe/eu-to-tighten-grip-on-big-tech-with-age-app/
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T10:37:10.021953
+collected_date: 2025-05-31T11:38:39.121347
 source: Mobileworldlive
 source_url: https://www.mobileworldlive.com
 author: Amiya Johar

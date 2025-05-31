@@ -2,7 +2,7 @@
 title: Germany Shuts Down eXch Over $1.9B Laundering, Seizes €34M in Crypto and 8TB of Data
 url: https://thehackernews.com/2025/05/germany-shuts-down-exch-over-19b.html
 published_date: 2025-05-10T00:00:00
-collected_date: 2025-05-31T11:08:17.869184
+collected_date: 2025-05-31T11:39:03.745292
 source: Thehackernews
 source_url: https://thehackernews.com
 author: The Hacker News

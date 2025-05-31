@@ -2,7 +2,7 @@
 title: EU farm plan: More cash for disaster relief and looser green rules
 url: https://www.politico.eu/article/eu-farm-green-rules-enviornment-green-deal/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-31T08:34:04.954505
+collected_date: 2025-05-31T11:39:00.286092
 source: Politico
 source_url: https://www.politico.eu
 author: Louise Guillot, Lucia Mackenzie, Jakob Weizman
