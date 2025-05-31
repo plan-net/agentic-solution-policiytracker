@@ -2,7 +2,7 @@
 title: EU to probe gaps in protection of minors on porn websites - UPI.com
 url: https://www.upi.com/Top_News/World-News/2025/05/27/Belgium-EU-European-Commission-porn-minor-investigation/9841748360688/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T08:33:42.452231
+collected_date: 2025-05-31T09:04:25.860447
 source: Upi
 source_url: https://www.upi.com
 author: By Chris Benson

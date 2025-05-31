@@ -2,7 +2,7 @@
 title: EU to impose flat tax on small items ordered online, FT reports
 url: https://www.reuters.com/world/china/eu-impose-flat-tax-small-items-ordered-online-ft-reports-2025-05-20/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-31T08:02:26.039586
+collected_date: 2025-05-31T09:04:22.296801
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

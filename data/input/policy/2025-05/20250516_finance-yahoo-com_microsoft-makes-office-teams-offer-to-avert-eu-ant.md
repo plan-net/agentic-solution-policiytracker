@@ -2,7 +2,7 @@
 title: Microsoft makes Office-Teams offer to avert EU antitrust fine
 url: https://finance.yahoo.com/news/microsoft-offers-sell-office-teams-095401808.html
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-30T22:30:45.544537
+collected_date: 2025-05-31T09:04:37.124302
 source: Finance
 source_url: https://finance.yahoo.com
 author: Foo Yun Chee Fri, May 16, 2025, 3:54 AM 2 min read

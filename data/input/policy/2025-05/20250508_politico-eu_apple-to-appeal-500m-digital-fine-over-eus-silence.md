@@ -2,7 +2,7 @@
 title: Apple to appeal €500M digital fine over EU’s silence in compliance talks
 url: https://www.politico.eu/article/apple-to-appeal-e500m-digital-fine-over-eus-silence-in-compliance-talks/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-08T00:00:00
-collected_date: 2025-05-31T08:34:07.860264
+collected_date: 2025-05-31T09:04:51.110552
 source: Politico
 source_url: https://www.politico.eu
 author: Jacob Parry

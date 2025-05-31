@@ -2,7 +2,7 @@
 title: EU Commission opens door for ‘targeted changes’ to AI Act
 url: https://www.politico.eu/article/gpai-code-of-practice-to-come-in-weeks-ai-office-says/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-31T08:34:01.738084
+collected_date: 2025-05-31T09:04:44.404440
 source: Politico
 source_url: https://www.politico.eu
 author: Eliza Gkritsi, Pieter Haeck

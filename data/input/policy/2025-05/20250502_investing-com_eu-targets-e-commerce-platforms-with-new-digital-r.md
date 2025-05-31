@@ -2,7 +2,7 @@
 title: EU targets e-commerce platforms with new digital regulations By Investing.com
 url: https://www.investing.com/news/world-news/eu-targets-ecommerce-platforms-with-new-digital-regulations-93CH-3850218
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-31T08:33:36.205291
+collected_date: 2025-05-31T09:04:19.494764
 source: Investing
 source_url: https://www.investing.com
 description: EU targets e-commerce platforms with new digital regulations Investing.com -- The European Commission is focusing on e-commerce platforms such as Shein with its new digital regulations, as concerns grow over potentially unsafe or unlawful cheap products entering the European Union (EU). On...

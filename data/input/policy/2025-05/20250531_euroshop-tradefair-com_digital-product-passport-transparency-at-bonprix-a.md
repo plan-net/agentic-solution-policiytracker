@@ -1,8 +1,8 @@
 ---
 title: Digital product passport: transparency at bonprix and s.Oliver
 url: https://www.euroshop-tradefair.com/en/euroshopmag/digital-product-passport-transparency-at-bonprix-and-s-Oliver
-published_date: 2025-05-31T08:33:54.965811
-collected_date: 2025-05-31T08:33:54.965991
+published_date: 2025-05-31T09:04:37.140904
+collected_date: 2025-05-31T09:04:37.141106
 source: Euroshop Tradefair
 source_url: https://www.euroshop-tradefair.com
 description: "The fashion company s.Oliver has initially focused on its own online shop for product transparency. Since May 2024, there has been a tracing function for selected products and collections that can be used via the browser. This allows customers to track the origin of their clothing. 

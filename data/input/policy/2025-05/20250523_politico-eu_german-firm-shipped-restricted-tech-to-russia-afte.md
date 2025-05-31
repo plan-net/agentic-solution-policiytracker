@@ -2,7 +2,7 @@
 title: German firm shipped restricted tech to Russia — after EU sanctions kicked in
 url: https://www.politico.eu/article/german-firm-sanctions-eu-tech-ukraine-russia/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-23T00:00:00
-collected_date: 2025-05-31T05:02:00.313524
+collected_date: 2025-05-31T09:04:51.475603
 source: Politico
 source_url: https://www.politico.eu
 author: Mason Boycott-Owen

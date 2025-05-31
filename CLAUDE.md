@@ -9,6 +9,7 @@ AI-powered document analysis system for political and regulatory monitoring.
 - **v0.2.0**: Migrating to Graphiti temporal knowledge graph via MCP
 
 ## Key Instructions
+0. NEVER forget to work with uv and the correct venv
 1. Read specifications in `/docs/specs/` before making changes
 2. Follow two-file Kodosumi pattern: `src/app.py` + `src/political_analyzer.py`
 3. Check existing code patterns before creating new files

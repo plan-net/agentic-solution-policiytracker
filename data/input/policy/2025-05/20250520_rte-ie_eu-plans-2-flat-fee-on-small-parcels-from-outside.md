@@ -2,7 +2,7 @@
 title: EU plans €2 flat fee on small parcels from outside bloc
 url: https://www.rte.ie/news/business/2025/0520/1513944-eu-plans-2-flat-fee-on-small-parcels-from-outside-bloc/
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-31T08:33:39.218783
+collected_date: 2025-05-31T09:04:22.379430
 source: Rte
 source_url: https://www.rte.ie
 description: "Updated / Tuesday, 20 May 2025 20:47

@@ -2,7 +2,7 @@
 title: German Chancellor Merz Calls for EU to Scrap Supply Chain Sustainability Due Diligence Law
 url: https://www.esgtoday.com/german-chancellor-merz-calls-for-eu-to-scrap-supply-chain-sustainability-due-diligence-law/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-31T08:34:05.086784
+collected_date: 2025-05-31T09:04:47.995539
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

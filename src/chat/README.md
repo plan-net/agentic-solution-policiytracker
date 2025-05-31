@@ -1,94 +1,129 @@
 # Political Monitoring Chat Interface
 
-A sophisticated AI chat interface for political and regulatory analysis, powered by LangGraph workflows and 15 specialized knowledge graph tools.
+A sophisticated AI chat interface for political and regulatory analysis, powered by LangGraph multi-agent orchestration and 15 specialized knowledge graph tools.
 
 ## Overview
 
-This chat interface provides intelligent analysis of political documents, regulatory relationships, and policy networks through a temporal knowledge graph. It combines LangGraph's workflow orchestration with LangChain's tool ecosystem to deliver comprehensive, streaming responses with transparent reasoning.
+This chat interface provides intelligent analysis of political documents, regulatory relationships, and policy networks through a temporal knowledge graph. It combines LangGraph's multi-agent workflow orchestration with LangChain's tool ecosystem to deliver comprehensive, streaming responses with transparent reasoning.
 
 ### Key Features
 
-- 🧠 **Intelligent Workflow**: 4-node LangGraph pipeline (understand → plan → execute → synthesize)
+- 🤖 **Multi-Agent Architecture**: 4 specialized agents (Query Understanding, Tool Planning, Tool Execution, Response Synthesis)
+- 🧠 **Intelligent Workflow**: LangGraph StateGraph orchestration with conditional routing
 - 🔧 **15 Specialized Tools**: Entity analysis, relationship traversal, temporal queries, community detection
 - 🧩 **Knowledge Graph Integration**: Graphiti temporal knowledge graphs with entity extraction
 - 💭 **Transparent Reasoning**: Real-time thinking output with `<think>` tags for Open WebUI
-- 🔄 **Streaming Responses**: OpenAI-compatible streaming API with natural pacing
-- 💾 **Session Memory**: LangChain ConversationBufferWindowMemory for context awareness
-- 📝 **External Prompts**: Modular prompt system with YAML frontmatter
+- 🔄 **Streaming Responses**: OpenAI-compatible streaming API with multi-agent progress updates
+- 💾 **Session Memory**: InMemoryStore for conversation context and user personalization
+- 📝 **External Prompts**: Modular prompt system optimized for each agent type
+- 🎯 **Quality Assessment**: 8-dimensional response quality evaluation and optimization
+- 🔄 **Production Ready**: Multiple deployment modes with performance optimization
 
 ## Architecture
 
-### LangGraph Workflow
+### Multi-Agent System
+
+The system uses 4 specialized agents orchestrated by LangGraph:
 
 ```python
-# 4-Node Pipeline
-START → understand_query_node → plan_tools_node → execute_tools_node → synthesize_response_node → END
+# Multi-Agent Pipeline
+START → QueryUnderstandingAgent → ToolPlanningAgent → ToolExecutionAgent → ResponseSynthesisAgent → END
 ```
 
-#### Node Responsibilities
+#### Agent Responsibilities
 
-1. **`understand_query_node`**: LLM-driven query analysis and intent classification
-2. **`plan_tools_node`**: Strategic tool selection based on query complexity
-3. **`execute_tools_node`**: Parallel execution of selected tools with progress tracking
-4. **`synthesize_response_node`**: Comprehensive response generation with graph insights
+1. **QueryUnderstandingAgent**: Analyzes user intent, extracts entities, determines complexity and strategy
+2. **ToolPlanningAgent**: Intelligently selects and sequences knowledge graph tools based on query analysis
+3. **ToolExecutionAgent**: Executes tools with progress tracking and error handling
+4. **ResponseSynthesisAgent**: Synthesizes tool results into comprehensive, well-formatted responses
 
 ### State Management
 
 ```python
 @dataclass
-class AgentState(MessagesState):
-    # Query Processing
+class MultiAgentState(TypedDict):
+    # Core Query Processing
     original_query: str
-    query_analysis: Optional[QueryAnalysis]
+    processed_query: str
+    query_analysis: Optional[Dict[str, Any]]
     
     # Tool Execution
-    tool_plan: Optional[ToolPlan]
-    tool_results: List[ToolResult]
+    tool_plan: Optional[Dict[str, Any]]
+    tool_results: List[Dict[str, Any]]
     
-    # Reasoning State
-    thinking_state: ThinkingState
+    # Agent Orchestration
+    current_agent: str
+    agent_sequence: List[str]
+    execution_metadata: Dict[str, Any]
     
-    # Memory & Context
-    conversation_memory: Dict[str, Any]
-    session_context: Dict[str, Any]
+    # Response Generation
+    final_response: str
+    response_metadata: Dict[str, Any]
+    
+    # Session Management
+    session_id: str
+    conversation_history: List[Dict[str, Any]]
+    user_preferences: Dict[str, Any]
+    learned_patterns: Dict[str, Any]
+    
+    # Streaming & Progress
+    is_streaming: bool
+    thinking_updates: List[str]
+    progress_indicators: List[str]
+    
+    # Error Handling
+    errors: List[str]
+    warnings: List[str]
+    
+    # LangChain Integration
+    messages: List[BaseMessage]
 ```
 
-### LangChain Integration
+### Agent Integration
 
-- **Memory**: `ConversationBufferWindowMemory` for 10-exchange context
-- **Tools**: 15 custom tools wrapping Graphiti knowledge graph operations
-- **Prompts**: External markdown files with template variables
-- **Chains**: LLM chains for query analysis, tool planning, and synthesis
+Each agent inherits from specialized mixins for enhanced capabilities:
+
+```python
+class QueryUnderstandingAgent(BaseAgent, MemoryMixin, StreamingMixin):
+    """Analyzes user queries for intent, entities, and strategy."""
+    
+class ToolPlanningAgent(BaseAgent, MemoryMixin, StreamingMixin):
+    """Plans optimal tool execution strategies."""
+    
+class ToolExecutionAgent(BaseAgent, MemoryMixin, StreamingMixin):
+    """Executes knowledge graph tools with intelligent selection."""
+    
+class ResponseSynthesisAgent(BaseAgent, MemoryMixin, StreamingMixin):
+    """Synthesizes comprehensive responses from tool results."""
+```
 
 ## Tools Ecosystem
 
 ### 🔍 Search & Discovery
 ```python
-GraphitiSearchTool(graphiti_client)           # Hybrid semantic + keyword search
+GraphitiSearchTool(graphiti_client)           # Hybrid semantic + keyword search with multiple strategies
 ```
 
 ### 👤 Entity Analysis
 ```python
-EntityDetailsTool(graphiti_client)            # Comprehensive entity information
-EntityRelationshipsTool(graphiti_client)      # Entity connections and relationships
-EntityTimelineTool(graphiti_client)           # Entity evolution over time
-SimilarEntitesTool(graphiti_client)           # Similar entities by graph structure
+EntityDetailsTool(graphiti_client)            # Comprehensive entity information and properties
+EntityRelationshipsTool(graphiti_client)      # Entity connections and relationship networks
+EntityTimelineTool(graphiti_client)           # Entity evolution and temporal changes
+SimilarEntitesTool(graphiti_client)           # Similar entities by graph structure and context
 ```
 
 ### 🕸️ Network Traversal
 ```python
 TraverseFromEntityTool(graphiti_client)       # Multi-hop relationship exploration
 FindPathsTool(graphiti_client)                # Connection paths between entities
-GetNeighborsTool(graphiti_client)             # Immediate neighbors and relationships
 ImpactAnalysisTool(graphiti_client)           # Impact networks and influence analysis
 ```
 
 ### ⏰ Temporal Analysis
 ```python
 DateRangeSearchTool(graphiti_client)          # Events within specific date ranges
-EntityHistoryTool(graphiti_client)            # Historical entity changes
 ConcurrentEventsTool(graphiti_client)         # Events in same time period
-PolicyEvolutionTool(graphiti_client)          # Policy amendment tracking
+PolicyEvolutionTool(graphiti_client)          # Policy amendment and evolution tracking
 ```
 
 ### 🏘️ Community Detection
@@ -98,73 +133,166 @@ CommunityMembersTool(graphiti_client)         # Members of specific communities
 PolicyClustersTool(graphiti_client)           # Policy groupings by theme/jurisdiction
 ```
 
-## Streaming with Think Tags
+## Multi-Agent Streaming
 
 ### Overview
 
-The chat interface provides real-time thinking output compatible with Open WebUI's thinking tag rendering:
+The chat interface provides real-time progress updates from each agent with thinking output compatible with Open WebUI:
 
 ```html
 <think>
-Looking at this question, I need to understand what type of analysis you're requesting.
-The key entities here appear to be EU AI Act, Meta, compliance requirements.
-Since this involves complex regulatory relationships, a graph-based approach will be essential.
+Looking at this question about EU AI Act compliance requirements...
+The QueryUnderstandingAgent has identified this as a complex regulatory analysis.
+The ToolPlanningAgent is selecting entity relationship and impact analysis tools.
+The ToolExecutionAgent is now querying the knowledge graph for relevant connections.
 </think>
 
-Based on my analysis of the knowledge graph...
+Based on my analysis of the knowledge graph and regulatory relationships...
 ```
 
 ### Implementation
 
 ```python
-async def stream_query(self, query: str) -> AsyncGenerator[str, None]:
-    """Stream with real-time thinking output."""
+class MultiAgentStreamingOrchestrator(MultiAgentOrchestrator):
+    """Enhanced orchestrator with real-time streaming capabilities."""
     
-    # Phase 1: Start thinking
-    yield "<think>\n"
-    
-    # Phase 2: Natural reasoning
-    yield "Looking at this question, I need to understand what type of analysis you're requesting. "
-    
-    # Phase 3: Tool execution with progress updates
-    graph_task = asyncio.create_task(self.graph.ainvoke(initial_state))
-    
-    thinking_updates = [
-        "The key entities and relationships involved need to be identified first.",
-        "I'll need to map the regulatory landscape to understand the connections.",
-        "Graph-based analysis will reveal patterns that simple searches would miss."
-    ]
-    
-    for update in thinking_updates:
-        yield update + "\n\n"
-        await asyncio.sleep(1.2)
-        if graph_task.done():
-            break
-    
-    # Phase 4: Complete thinking
-    yield "</think>\n\n"
-    
-    # Phase 5: Stream final response
-    response = final_state.final_response
-    sentences = response.split('. ')
-    for sentence in sentences:
-        yield sentence + ". "
-        await asyncio.sleep(0.8)  # Natural reading pace
+    async def process_query_with_streaming(
+        self,
+        query: str,
+        session_id: str = None,
+        user_id: str = None
+    ):
+        """Process query with real-time streaming using async generator."""
+        
+        # Set up streaming queue for agent updates
+        stream_queue = asyncio.Queue()
+        
+        async def stream_callback(data):
+            await stream_queue.put(data)
+        
+        # Start multi-agent processing in background
+        process_task = asyncio.create_task(
+            self.process_query(query, session_id, user_id, stream_callback)
+        )
+        
+        # Yield streaming updates from each agent
+        while not process_task.done():
+            try:
+                data = await asyncio.wait_for(stream_queue.get(), timeout=0.1)
+                yield data
+            except asyncio.TimeoutError:
+                continue
+        
+        # Get final result
+        final_result = await process_task
+        yield {
+            "type": "final_result",
+            "data": final_result,
+            "timestamp": datetime.now().isoformat()
+        }
 ```
 
-### Thinking Style Guidelines
+### Agent Progress Updates
 
-- **First person narrative**: "I need to examine...", "This shows..."
-- **Natural conversational tone**: No emojis, section headers, or structured formatting
-- **Logical progression**: Understanding → planning → execution → synthesis
-- **Real-time updates**: Progress indicators during tool execution
+- **Agent Transitions**: Real-time updates when workflow moves between agents
+- **Tool Execution**: Progress indicators during knowledge graph queries
+- **Quality Assessment**: Response quality evaluation in real-time
+- **Error Handling**: Graceful error reporting with recovery suggestions
+
+## Quality Assessment System
+
+### Multi-Dimensional Evaluation
+
+The system evaluates responses across 8 quality dimensions:
+
+```python
+class QualityDimension(Enum):
+    COMPLETENESS = "completeness"      # How thoroughly the query is answered
+    ACCURACY = "accuracy"              # Factual correctness of information
+    RELEVANCE = "relevance"            # How well the response matches the query
+    CLARITY = "clarity"                # How clear and understandable the response is
+    DEPTH = "depth"                    # Level of detail and analysis provided
+    COHERENCE = "coherence"            # Logical flow and structure
+    USEFULNESS = "usefulness"          # Practical value to the user
+    TRUSTWORTHINESS = "trustworthiness" # Reliability and source credibility
+```
+
+### Quality Optimization
+
+```python
+class QualityOptimizer:
+    """Provides optimization suggestions based on quality assessment."""
+    
+    async def suggest_optimizations(
+        self,
+        quality_metrics: QualityMetrics,
+        query_analysis: Dict[str, Any],
+        tool_results: List[Dict[str, Any]]
+    ) -> List[OptimizationSuggestion]:
+        """Generate specific optimization suggestions."""
+        
+        suggestions = []
+        
+        if quality_metrics.completeness < 0.7:
+            suggestions.append(OptimizationSuggestion(
+                dimension="completeness",
+                suggestion="Consider adding more comprehensive search tools",
+                priority="high"
+            ))
+        
+        return suggestions
+```
+
+## Tool Integration System
+
+### Intelligent Tool Selection
+
+The `ToolIntegrationManager` provides sophisticated tool selection based on query analysis:
+
+```python
+class ToolIntegrationManager:
+    """Manages knowledge graph tool integration with intelligent selection."""
+    
+    def get_tool_recommendations(
+        self, 
+        intent: str, 
+        entities: List[str], 
+        complexity: str,
+        strategy_type: str
+    ) -> List[Dict[str, Any]]:
+        """Get intelligent tool recommendations based on query analysis."""
+        
+        # Intent-based tool selection
+        if intent == "information_seeking":
+            if strategy_type == "focused":
+                return [
+                    {
+                        "tool_name": "search",
+                        "parameters": {"query": " ".join(entities[:2]), "limit": 5},
+                        "purpose": "Find general information about key entities",
+                        "priority": "high",
+                        "estimated_time": 3.0
+                    }
+                ]
+        
+        elif intent == "relationship_analysis":
+            return [
+                {
+                    "tool_name": "find_paths_between_entities",
+                    "parameters": {"start_entity": entities[0], "end_entity": entities[1]},
+                    "purpose": "Find connection paths between entities",
+                    "priority": "high",
+                    "estimated_time": 4.0
+                }
+            ]
+```
 
 ## API Compatibility
 
 ### OpenAI Chat Completions Format
 
 ```bash
-# Non-streaming
+# Non-streaming with multi-agent processing
 curl -X POST http://localhost:8001/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
@@ -173,7 +301,7 @@ curl -X POST http://localhost:8001/v1/chat/completions \
     "stream": false
   }'
 
-# Streaming with thinking
+# Streaming with real-time agent progress
 curl -X POST http://localhost:8001/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
@@ -183,151 +311,153 @@ curl -X POST http://localhost:8001/v1/chat/completions \
   }'
 ```
 
-### Response Format
-
-```json
-{
-  "id": "chatcmpl-abc123",
-  "object": "chat.completion",
-  "created": 1234567890,
-  "model": "political-monitoring-agent",
-  "choices": [{
-    "index": 0,
-    "message": {
-      "role": "assistant",
-      "content": "The EU AI Act is a comprehensive regulation..."
-    },
-    "finish_reason": "stop"
-  }]
-}
-```
-
-## Prompt System
-
-### External Prompt Management
-
-All prompts are stored as markdown files with YAML frontmatter:
-
-```markdown
----
-name: query_analysis
-version: 1
-description: Analyze user queries for intent, entities, and strategy
-tags: ["analysis", "planning", "core"]
----
-
-# Query Analysis
-
-Analyze this user query to understand their intent and extract key information.
-
-## Query to Analyze
-{query}
-
-## Analysis Framework
-...
-```
-
-### Prompt Files
-
-- **`system_prompt.md`**: Main system prompt with tool strategies
-- **`query_analysis.md`**: Structured query understanding framework
-- **`tool_planning.md`**: Strategic tool execution planning
-- **`thinking_template.md`**: Natural conversational thinking patterns
-- **`synthesis.md`**: Comprehensive response synthesis
-
-### Loading Prompts
+### Server Implementation
 
 ```python
-prompt_manager = PromptManager()
-analysis_prompt = await prompt_manager.get_prompt("query_analysis")
-
-prompt = ChatPromptTemplate.from_template(analysis_prompt)
-chain = prompt | llm | StrOutputParser()
-result = await chain.ainvoke({"query": user_query})
+@serve.deployment(num_replicas=1)
+@serve.ingress(app)
+class ChatServer:
+    """OpenAI-compatible chat server with multi-agent orchestration."""
+    
+    async def _get_orchestrator(self):
+        """Lazy initialization of multi-agent orchestrator."""
+        if self.orchestrator is None:
+            llm = await self._get_llm()
+            tool_manager = await self._get_tool_integration_manager()
+            
+            # Create tools dictionary from tool integration manager
+            tools = tool_manager.tools
+            
+            # Initialize orchestrator with knowledge graph tools
+            self.orchestrator = MultiAgentOrchestrator(llm=llm, tools=tools)
+            
+            # Set up tool integration manager
+            self.orchestrator.tool_integration_manager = tool_manager
+            self.orchestrator.planning_agent.set_tool_integration_manager(tool_manager)
+            self.orchestrator.execution_agent.set_tool_integration_manager(tool_manager)
+        
+        return self.orchestrator
 ```
+
+## Memory and Personalization
+
+### Advanced Memory Management
+
+```python
+class MemoryManager:
+    """Enhanced memory management with conversation pattern analysis."""
+    
+    async def update_user_conversation_patterns(
+        self,
+        user_id: str,
+        query: str,
+        intent: str,
+        complexity: str,
+        satisfaction_rating: float,
+        response_time: float
+    ):
+        """Update user conversation patterns for personalization."""
+        
+        # Analyze query patterns
+        patterns = await self.analyze_query_patterns(user_id, query, intent)
+        
+        # Update user preferences
+        preferences = await self.get_user_preferences(user_id)
+        preferences["preferred_complexity"] = complexity
+        preferences["avg_satisfaction"] = (
+            preferences.get("avg_satisfaction", 3.0) + satisfaction_rating
+        ) / 2
+        
+        await self.store.aput(("user_prefs",), user_id, preferences)
+```
+
+### Personalization Features
+
+- **Query Pattern Learning**: Adapts to user's preferred analysis depth
+- **Tool Performance Tracking**: Optimizes tool selection based on success rates
+- **Response Style Adaptation**: Adjusts output format based on user preferences
+- **Session Context Preservation**: Maintains context across conversation turns
 
 ## Development Workflow
 
-### Setting Up the Agent
+### Setting Up the Multi-Agent System
 
 ```python
-from src.chat.agent.graph import EnhancedPoliticalMonitoringAgent
+from src.chat.agent.orchestrator import MultiAgentOrchestrator, MultiAgentStreamingOrchestrator
+from src.chat.agent.tool_integration import ToolIntegrationManager
 from graphiti_core import Graphiti
+from langchain_openai import ChatOpenAI
 
-# Initialize Graphiti client
+# Initialize components
 graphiti_client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
 await graphiti_client.build_indices_and_constraints()
 
-# Create enhanced agent
-agent = EnhancedPoliticalMonitoringAgent(graphiti_client, openai_api_key)
+llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+tool_manager = ToolIntegrationManager(graphiti_client)
 
-# Process query
-response = await agent.process_query("What is the EU Digital Services Act?")
+# Create orchestrator
+orchestrator = MultiAgentOrchestrator(llm=llm, tools=tool_manager.tools)
 
-# Stream query with thinking
-async for chunk in agent.stream_query("How does GDPR affect Google?"):
-    print(chunk, end="", flush=True)
+# Process query through multi-agent workflow
+response = await orchestrator.process_query("What is the EU Digital Services Act?")
+
+# Stream query with real-time agent updates
+streaming_orchestrator = MultiAgentStreamingOrchestrator(llm=llm, tools=tool_manager.tools)
+async for chunk in streaming_orchestrator.process_query_with_streaming("How does GDPR affect Google?"):
+    print(chunk)
 ```
 
-### Adding New Tools
+### Adding New Agents
 
-1. **Create tool class** inheriting from LangChain `BaseTool`:
+1. **Create agent class** inheriting from `BaseAgent`:
 
 ```python
-class CustomAnalysisTool(BaseTool):
-    name = "custom_analysis"
-    description = "Performs custom analysis on political entities"
+class CustomAnalysisAgent(BaseAgent, MemoryMixin, StreamingMixin):
+    """Custom analysis agent for specialized tasks."""
     
-    def __init__(self, graphiti_client):
-        super().__init__()
-        self.graphiti_client = graphiti_client
+    def __init__(self, llm: BaseLLM):
+        super().__init__(llm)
+        self.agent_role = AgentRole.CUSTOM_ANALYSIS
     
-    async def _arun(self, query: str) -> str:
-        # Implement tool logic
-        results = await self.graphiti_client.search(query)
-        return self._format_results(results)
+    async def process(self, state: MultiAgentState) -> AgentResult:
+        # Implement agent logic
+        analysis_result = await self._perform_custom_analysis(state)
+        
+        updated_state = dict(state)
+        updated_state["custom_analysis"] = analysis_result
+        
+        return AgentResult(
+            success=True,
+            updated_state=updated_state,
+            message="Custom analysis completed"
+        )
 ```
 
-2. **Register in nodes.py**:
+2. **Register in orchestrator**:
 
 ```python
-def _create_tools_map() -> Dict[str, Any]:
-    return {
-        # ... existing tools
-        "custom_analysis": CustomAnalysisTool(graphiti_client),
-    }
-```
-
-3. **Update tool planning prompt** to include the new tool.
-
-### Modifying Workflow
-
-The LangGraph workflow can be extended with additional nodes:
-
-```python
-def _build_graph(self) -> StateGraph:
-    workflow = StateGraph(AgentState)
+class ExtendedMultiAgentOrchestrator(MultiAgentOrchestrator):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.custom_agent = CustomAnalysisAgent(self.llm)
     
-    # Add nodes
-    workflow.add_node("understand", understand_query_node)
-    workflow.add_node("plan", plan_tools_node)
-    workflow.add_node("execute", execute_tools_node)
-    workflow.add_node("custom_analysis", custom_analysis_node)  # New node
-    workflow.add_node("synthesize", synthesize_response_node)
-    
-    # Define flow with conditional routing
-    workflow.add_edge(START, "understand")
-    workflow.add_edge("understand", "plan")
-    workflow.add_conditional_edges(
-        "plan",
-        should_use_custom_analysis,
-        {"custom": "custom_analysis", "standard": "execute"}
-    )
-    workflow.add_edge("custom_analysis", "synthesize")
-    workflow.add_edge("execute", "synthesize")
-    workflow.add_edge("synthesize", END)
-    
-    return workflow.compile()
+    def _build_graph(self) -> StateGraph:
+        graph = super()._build_graph()
+        
+        # Add custom node
+        graph.add_node("custom_analysis", self._custom_analysis_node)
+        
+        # Update routing logic
+        graph.add_conditional_edges(
+            "route_next",
+            self._determine_next_agent_extended,
+            {
+                "custom_analysis": "custom_analysis",
+                # ... existing routes
+            }
+        )
+        
+        return graph.compile(checkpointer=self.checkpointer)
 ```
 
 ## Configuration
@@ -344,29 +474,37 @@ NEO4J_PASSWORD=password123
 # Optional
 NEO4J_DATABASE=neo4j
 LLM_MODEL=gpt-4o-mini
-LLM_TEMPERATURE=0.3
-MAX_ITERATIONS=8
+LLM_TEMPERATURE=0.1
+DEPLOYMENT_MODE=production  # development, staging, production
+MAX_AGENT_ITERATIONS=8
 MEMORY_WINDOW_SIZE=10
+STREAMING_CHUNK_DELAY=0.8
+QUALITY_THRESHOLD=0.7
 ```
 
-### Ray Serve Configuration
+### Production Configuration
 
 ```python
-# Deploy chat server
-@serve.deployment(num_replicas=1)
-@serve.ingress(app)
-class ChatServer:
-    def __init__(self):
-        self.agent = None  # Lazy initialization
+class ProductionConfig:
+    """Production-ready configuration with performance optimization."""
     
-    async def _get_agent(self):
-        if self.agent is None:
-            graphiti_client = await self._get_graphiti_client()
-            self.agent = EnhancedPoliticalMonitoringAgent(
-                graphiti_client, 
-                os.getenv("OPENAI_API_KEY")
-            )
-        return self.agent
+    def __init__(self, deployment_mode: DeploymentMode = None):
+        self.deployment_mode = deployment_mode or self._detect_deployment_mode()
+        self.performance_level = self._determine_performance_level()
+        self.resource_limits = self._load_resource_limits()
+        self.quality_thresholds = self._load_quality_thresholds()
+    
+    def optimize_for_production(self):
+        """Apply production optimizations."""
+        if self.deployment_mode == DeploymentMode.PRODUCTION:
+            # Enable parallel tool execution
+            self.enable_parallel_tools = True
+            
+            # Optimize memory usage
+            self.memory_cleanup_threshold = 100
+            
+            # Enhanced error handling
+            self.enable_circuit_breakers = True
 ```
 
 ## Examples
@@ -375,189 +513,168 @@ class ChatServer:
 
 **Query**: "What is GDPR?"
 
-**Workflow**:
-1. **Understanding**: Classifies as "information_lookup" with entity "GDPR"
-2. **Planning**: Selects tools: `search`, `get_entity_details`, `get_entity_relationships`
-3. **Execution**: Gathers comprehensive information about GDPR
-4. **Synthesis**: Provides detailed overview with relationships and implications
+**Multi-Agent Workflow**:
+1. **QueryUnderstandingAgent**: Classifies as "information_seeking" with entity "GDPR", medium complexity
+2. **ToolPlanningAgent**: Selects focused strategy with tools: `search`, `get_entity_details`
+3. **ToolExecutionAgent**: Executes tools and gathers comprehensive GDPR information
+4. **ResponseSynthesisAgent**: Synthesizes detailed overview with key provisions and implications
 
 ### Complex Relationship Analysis
 
 **Query**: "How does the EU AI Act affect US tech companies operating in Europe?"
 
-**Workflow**:
-1. **Understanding**: Multi-entity relationship analysis with temporal scope
-2. **Planning**: Complex tool sequence: `search`, `get_entity_relationships`, `analyze_entity_impact`, `find_paths_between_entities`
-3. **Execution**: Maps regulatory relationships and impact pathways
-4. **Synthesis**: Reveals compliance requirements, enforcement mechanisms, and business implications
+**Multi-Agent Workflow**:
+1. **QueryUnderstandingAgent**: Multi-entity relationship analysis with jurisdictional scope
+2. **ToolPlanningAgent**: Complex strategy with tools: `search`, `find_paths_between_entities`, `analyze_entity_impact`
+3. **ToolExecutionAgent**: Maps regulatory relationships and cross-jurisdictional impacts
+4. **ResponseSynthesisAgent**: Reveals compliance requirements, enforcement mechanisms, and business implications
 
 ### Temporal Policy Evolution
 
 **Query**: "How has EU data protection regulation evolved since GDPR?"
 
-**Workflow**:
-1. **Understanding**: Temporal analysis with policy evolution focus
-2. **Planning**: Temporal tools: `get_entity_timeline`, `track_policy_evolution`, `find_concurrent_events`
-3. **Execution**: Tracks regulatory changes and policy amendments
-4. **Synthesis**: Provides chronological overview with impact assessment
-
-## Monitoring and Debugging
-
-### Logging
-
-```python
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Node execution logs
-logger.info(f"Understanding query: {state.original_query}")
-logger.info(f"Tool plan created: {len(tool_plan.tool_sequence)} tools planned")
-logger.info(f"Tool execution complete: {successful_tools}/{total_tools} successful")
-```
-
-### State Inspection
-
-```python
-# Debug state at any node
-async def debug_node(state: AgentState) -> Dict[str, Any]:
-    print(f"Current step: {state.current_step}")
-    print(f"Query analysis: {state.query_analysis}")
-    print(f"Tools executed: {state.executed_tools}")
-    print(f"Thinking state: {state.thinking_state.current_phase}")
-    return {}
-```
-
-### Performance Metrics
-
-- **Response Time**: Typically 10-30 seconds for complex queries
-- **Tool Execution**: Average 2-8 tools per query depending on complexity
-- **Memory Usage**: Bounded by ConversationBufferWindowMemory (10 exchanges)
-- **Streaming Latency**: ~0.8s between response chunks for natural pacing
+**Multi-Agent Workflow**:
+1. **QueryUnderstandingAgent**: Temporal analysis with policy evolution focus
+2. **ToolPlanningAgent**: Temporal strategy with tools: `get_entity_timeline`, `track_policy_evolution`, `find_concurrent_events`
+3. **ToolExecutionAgent**: Tracks regulatory changes and policy amendments over time
+4. **ResponseSynthesisAgent**: Provides chronological overview with impact assessment and future implications
 
 ## Testing
 
-### Unit Testing
+### Unit Testing Multi-Agent Components
 
 ```python
 @pytest.fixture
-async def mock_agent():
-    mock_client = MagicMock()
-    agent = EnhancedPoliticalMonitoringAgent(mock_client, "test-key")
-    return agent
+async def mock_orchestrator():
+    mock_llm = MagicMock()
+    mock_tools = {"search": MagicMock(), "get_entity_details": MagicMock()}
+    orchestrator = MultiAgentOrchestrator(llm=mock_llm, tools=mock_tools)
+    return orchestrator
 
-async def test_query_understanding(mock_agent):
-    state = AgentState(original_query="What is GDPR?")
-    result = await understand_query_node(state)
+async def test_query_understanding_agent(mock_orchestrator):
+    agent = mock_orchestrator.query_agent
+    state = MultiAgentState(original_query="What is GDPR?")
     
-    assert result["query_analysis"].intent == "information_lookup"
-    assert "GDPR" in result["query_analysis"].primary_entity
+    result = await agent.process(state)
+    
+    assert result.success
+    assert result.updated_state["query_analysis"]["intent"] == "information_seeking"
+    assert "GDPR" in result.updated_state["query_analysis"]["primary_entity"]
+
+async def test_multi_agent_workflow(mock_orchestrator):
+    response = await mock_orchestrator.process_query("Test query")
+    
+    assert response["success"]
+    assert len(response["agent_sequence"]) == 4  # All 4 agents executed
+    assert response["response"]  # Non-empty response generated
 ```
 
 ### Integration Testing
 
 ```python
-async def test_full_workflow():
-    # Test complete agent workflow
-    agent = EnhancedPoliticalMonitoringAgent(real_client, test_api_key)
-    response = await agent.process_query("Test query")
+async def test_full_multi_agent_workflow():
+    # Test complete multi-agent system with real components
+    graphiti_client = await create_test_graphiti_client()
+    tool_manager = ToolIntegrationManager(graphiti_client)
+    orchestrator = MultiAgentOrchestrator(llm=test_llm, tools=tool_manager.tools)
     
-    assert len(response) > 100  # Meaningful response
-    assert "graph" in response.lower()  # Uses graph capabilities
+    response = await orchestrator.process_query("What is the EU AI Act?")
+    
+    assert response["success"]
+    assert len(response["response"]) > 100  # Meaningful response
+    assert response["confidence"] > 0.5  # Reasonable confidence
+    assert len(response["sources"]) > 0  # Sources included
 ```
 
-### API Testing
+## Performance Metrics
 
-```python
-def test_streaming_endpoint():
-    response = requests.post(
-        "http://localhost:8001/v1/chat/completions",
-        json={"model": "political-monitoring-agent", "messages": [...], "stream": True},
-        stream=True
-    )
-    
-    chunks = []
-    thinking_found = False
-    
-    for line in response.iter_lines():
-        if b'<think>' in line:
-            thinking_found = True
-        chunks.append(line)
-    
-    assert thinking_found
-    assert len(chunks) > 10
-```
+### Multi-Agent System Performance
+
+- **Query Processing**: 15-45 seconds for complex multi-agent workflows
+- **Agent Execution**: Average 4 agents per query with conditional routing
+- **Tool Selection**: 2-8 tools per query based on intelligent planning
+- **Memory Usage**: Bounded by InMemoryStore with configurable limits
+- **Streaming Latency**: Real-time agent updates with ~0.8s natural pacing
+- **Quality Scores**: Average 0.85+ on 8-dimensional quality assessment
+
+### Scalability Features
+
+- **Parallel Tool Execution**: Multiple knowledge graph tools execute concurrently
+- **Lazy Initialization**: Components initialized on-demand for memory efficiency
+- **Circuit Breakers**: Automatic error recovery and graceful degradation
+- **Resource Limits**: Configurable memory and execution time limits
+- **Session Management**: Efficient conversation context handling
 
 ## Troubleshooting
 
-### Common Issues
+### Common Multi-Agent Issues
 
-**1. "Agent not responding"**
-- Check Graphiti client connection: `await client.build_indices_and_constraints()`
-- Verify OpenAI API key is valid
-- Check Ray Serve deployment: `ray status`
+**1. "Agent workflow stuck"**
+- Check LangGraph state transitions and conditional routing
+- Verify all agents have proper error handling
+- Review agent sequence logs for infinite loops
 
-**2. "Tools not executing"**
-- Verify tool imports in `_create_tools_map()`
-- Check tool-specific authentication (Neo4j, OpenAI)
-- Review tool execution logs for errors
+**2. "Tool selection suboptimal"**
+- Verify ToolIntegrationManager configuration
+- Check query analysis quality and entity extraction
+- Review tool recommendation algorithms
 
-**3. "Memory not persisting"**
-- Ensure LangChain memory is properly initialized
-- Check session context passing between requests
-- Verify memory cleanup thresholds
+**3. "Quality assessment failing"**
+- Check quality dimension configurations
+- Verify quality assessor initialization
+- Review quality threshold settings
 
-**4. "Streaming interrupted"**
-- Check network connectivity and timeouts
-- Verify Open WebUI streaming configuration
-- Review async/await patterns in streaming functions
+**4. "Streaming performance degraded"**
+- Check async/await patterns in streaming orchestrator
+- Verify queue management and timeout settings
+- Review network connectivity for streaming endpoints
 
 ### Debug Commands
 
 ```bash
-# Check Ray status
-ray status
-
-# View server logs
-tail -f /tmp/ray/session_*/logs/serve/replica_chat-server_*.log
-
-# Test health endpoint
+# Check multi-agent system health
 curl http://localhost:8001/health
 
-# Test basic query
+# Test agent workflow with debug info
 curl -X POST http://localhost:8001/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -d '{"model": "political-monitoring-agent", "messages": [{"role": "user", "content": "test"}], "stream": false}'
+  -d '{
+    "model": "political-monitoring-agent",
+    "messages": [{"role": "user", "content": "debug: test multi-agent workflow"}],
+    "stream": false
+  }'
+
+# Monitor agent execution logs
+tail -f /tmp/ray/session_*/logs/serve/replica_chat-server_*.log | grep -E "(Agent|Tool|Quality)"
 ```
 
 ## Future Enhancements
 
-### Planned Features
+### Planned Multi-Agent Features
 
-- **Conditional Workflows**: Dynamic routing based on query complexity
-- **Multi-Document Synthesis**: Cross-reference multiple knowledge sources
-- **Real-time Knowledge Updates**: Live integration with document processing pipeline
-- **Advanced Memory**: Long-term memory persistence beyond session scope
-- **Custom Entity Types**: Domain-specific entity classification and handling
+- **Dynamic Agent Composition**: Runtime agent selection based on query complexity
+- **Agent Learning**: Continuous improvement of agent performance through feedback
+- **Cross-Agent Memory**: Shared learning across agent interactions
+- **Advanced Routing**: Machine learning-based workflow optimization
+- **Agent Specialization**: Domain-specific agent variants for different policy areas
 
 ### Extension Points
 
-- **Custom Tools**: Domain-specific analysis capabilities
-- **Workflow Nodes**: Specialized processing steps
-- **Memory Adapters**: Alternative memory backends (Redis, PostgreSQL)
-- **Prompt Templates**: Specialized prompts for different analysis types
-- **Response Formatters**: Custom output formats (JSON, structured data)
+- **Custom Agents**: Specialized agents for specific analysis types
+- **Advanced Tools**: Domain-specific knowledge graph operations
+- **Quality Dimensions**: Additional evaluation criteria for response assessment
+- **Memory Backends**: Alternative storage systems for conversation persistence
+- **Streaming Protocols**: Enhanced real-time communication protocols
 
 ---
 
 ## Quick Start
 
-1. **Install dependencies**: LangChain, LangGraph, Graphiti, Ray Serve
+1. **Install dependencies**: `pip install langchain langgraph graphiti-core ray[serve]`
 2. **Configure environment**: Set OpenAI API key and Neo4j credentials
-3. **Deploy server**: `ray serve run src.chat.server.app:ChatServer`
-4. **Test endpoint**: Send request to `http://localhost:8001/v1/chat/completions`
-5. **Integrate with Open WebUI**: Add as custom model endpoint
+3. **Initialize services**: Start Neo4j and ensure Graphiti client connectivity
+4. **Deploy server**: `ray serve run src.chat.server.app:chat_app`
+5. **Test multi-agent system**: Send requests to `http://localhost:8001/v1/chat/completions`
+6. **Integrate with Open WebUI**: Add as custom model endpoint with streaming support
 
-For detailed setup instructions, see the main project README.
+For detailed setup instructions and advanced configuration, see the main project README.

@@ -2,7 +2,7 @@
 title: Germany Walks Back Call to Scrap the EU’s Supply Chain Sustainability Law
 url: https://www.esgtoday.com/germany-walks-back-call-to-scrap-the-eus-supply-chain-sustainability-law/
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T08:33:52.077943
+collected_date: 2025-05-31T09:04:34.263498
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

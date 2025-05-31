@@ -2,7 +2,7 @@
 title: Europe: Brussels court ruling on tracking-based ads a major win for right to privacy
 url: https://www.amnesty.org/en/latest/news/2025/05/brussels-court-ruling-on-tracking-based-ads-a-victory-privacy-rights/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T08:33:35.930890
+collected_date: 2025-05-31T09:04:18.917468
 source: Amnesty
 source_url: https://www.amnesty.org
 description: Responding to the Brussels Court of Appeal ruling establishing that the consent model underpinning tracking-based advertising by Big Tech companies such as Google, Microsoft, Amazon and X in Europe is incompatible with EU privacy data law, Hannah Storey, Amnesty International Policy Advisor on...

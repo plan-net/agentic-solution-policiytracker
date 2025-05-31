@@ -2,7 +2,7 @@
 title: Why China's Temu and Shein are Europe's new trade threat
 url: https://timesofindia.indiatimes.com/world/europe/why-chinas-temu-and-shein-are-europes-new-trade-threat/articleshow/120991025.cms
 published_date: 2025-05-08T00:00:00
-collected_date: 2025-05-31T08:33:39.416051
+collected_date: 2025-05-31T09:04:23.036731
 source: Timesofindia
 source_url: https://timesofindia.indiatimes.com
 author: Deutsche Welle
