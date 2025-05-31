@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
+from langgraph.types import Command
 from langchain_core.language_models import BaseLLM
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -97,44 +98,25 @@ class MultiAgentOrchestrator:
                 agent.set_stream_writer(self.streaming_manager.get_stream_writer())
     
     def _build_graph(self) -> StateGraph:
-        """Build the LangGraph workflow graph."""
+        """Build the LangGraph workflow graph with proper handoffs."""
         
         # Create the state graph
         graph = StateGraph(MultiAgentState)
         
-        # Add nodes for each agent
+        # Add nodes for each agent - they now return Commands for handoffs
         graph.add_node("query_understanding", self._query_understanding_node)
         graph.add_node("tool_planning", self._tool_planning_node)
         graph.add_node("tool_execution", self._tool_execution_node)
         graph.add_node("response_synthesis", self._response_synthesis_node)
         
-        # Add conditional routing node
-        graph.add_node("route_next", self._route_next_agent)
-        
-        # Define the workflow edges
+        # Start with query understanding - no fixed routing after that
         graph.add_edge(START, "query_understanding")
-        graph.add_edge("query_understanding", "route_next")
-        graph.add_edge("tool_planning", "route_next")
-        graph.add_edge("tool_execution", "route_next")
-        graph.add_edge("response_synthesis", END)
         
-        # Add conditional edges from router
-        graph.add_conditional_edges(
-            "route_next",
-            self._determine_next_agent,
-            {
-                "tool_planning": "tool_planning",
-                "tool_execution": "tool_execution", 
-                "response_synthesis": "response_synthesis",
-                "end": END
-            }
-        )
-        
-        # Compile the graph
+        # Compile the graph - agents control flow with Command returns
         return graph.compile(checkpointer=self.checkpointer)
     
-    async def _query_understanding_node(self, state: MultiAgentState) -> MultiAgentState:
-        """Process query understanding."""
+    async def _query_understanding_node(self, state: MultiAgentState):
+        """Process query understanding and hand off to next agent."""
         await self.streaming_manager.emit_agent_transition("", "query_understanding", "Starting query analysis")
         
         result = await self.query_agent.process(state)
@@ -146,17 +128,26 @@ class MultiAgentOrchestrator:
                 "query_understanding", 
                 f"Query analyzed with {confidence:.0%} confidence"
             )
-            return result.updated_state
+            
+            # Hand off to tool planning with updated state
+            return Command(
+                goto="tool_planning",
+                update=result.updated_state
+            )
         else:
-            # Handle error - add to state errors
             error_state = dict(state)
             errors = error_state.get("errors", [])
             errors.append(f"Query understanding failed: {result.message}")
             error_state["errors"] = errors
-            return error_state
+            
+            # End workflow on failure
+            return Command(
+                goto=END,
+                update=error_state
+            )
     
-    async def _tool_planning_node(self, state: MultiAgentState) -> MultiAgentState:
-        """Process tool planning."""
+    async def _tool_planning_node(self, state: MultiAgentState):
+        """Process tool planning and hand off to execution."""
         await self.streaming_manager.emit_agent_transition("query_understanding", "tool_planning", "Creating execution plan")
         
         result = await self.planning_agent.process(state)
@@ -167,16 +158,26 @@ class MultiAgentOrchestrator:
                 "tool_planning",
                 f"Plan ready: {plan.get('strategy_type', 'unknown')} strategy with {len(plan.get('tool_sequence', []))} tools"
             )
-            return result.updated_state
+            
+            # Hand off to tool execution
+            return Command(
+                goto="tool_execution",
+                update=result.updated_state
+            )
         else:
             error_state = dict(state)
             errors = error_state.get("errors", [])
             errors.append(f"Tool planning failed: {result.message}")
             error_state["errors"] = errors
-            return error_state
+            
+            # End workflow on planning failure
+            return Command(
+                goto=END,
+                update=error_state
+            )
     
-    async def _tool_execution_node(self, state: MultiAgentState) -> MultiAgentState:
-        """Process tool execution."""
+    async def _tool_execution_node(self, state: MultiAgentState):
+        """Process tool execution and hand off to synthesis."""
         await self.streaming_manager.emit_agent_transition("tool_planning", "tool_execution", "Executing knowledge graph queries")
         
         result = await self.execution_agent.process(state)
@@ -187,16 +188,26 @@ class MultiAgentOrchestrator:
                 "tool_execution",
                 f"Execution complete: {metadata.get('tools_successful', 0)} tools succeeded"
             )
-            return result.updated_state
+            
+            # Hand off to response synthesis
+            return Command(
+                goto="response_synthesis",
+                update=result.updated_state
+            )
         else:
             error_state = dict(state)
             errors = error_state.get("errors", [])
             errors.append(f"Tool execution failed: {result.message}")
             error_state["errors"] = errors
-            return error_state
+            
+            # End workflow on execution failure
+            return Command(
+                goto=END,
+                update=error_state
+            )
     
-    async def _response_synthesis_node(self, state: MultiAgentState) -> MultiAgentState:
-        """Process response synthesis."""
+    async def _response_synthesis_node(self, state: MultiAgentState):
+        """Process response synthesis and end workflow."""
         await self.streaming_manager.emit_agent_transition("tool_execution", "response_synthesis", "Synthesizing comprehensive response")
         
         result = await self.synthesis_agent.process(state)
@@ -208,57 +219,25 @@ class MultiAgentOrchestrator:
                 "response_synthesis",
                 f"Response complete with {confidence:.0%} confidence"
             )
-            return result.updated_state
+            
+            # End workflow - synthesis is the final step
+            return Command(
+                goto=END,
+                update=result.updated_state
+            )
         else:
             error_state = dict(state)
             errors = error_state.get("errors", [])
             errors.append(f"Response synthesis failed: {result.message}")
             error_state["errors"] = errors
-            return error_state
+            
+            # End workflow on synthesis failure
+            return Command(
+                goto=END,
+                update=error_state
+            )
     
-    async def _route_next_agent(self, state: MultiAgentState) -> MultiAgentState:
-        """Route to next agent based on current state."""
-        # This is just a pass-through node for routing logic
-        return state
-    
-    def _determine_next_agent(self, state: MultiAgentState) -> str:
-        """Determine the next agent to execute based on current state."""
-        
-        # Check for errors - if too many errors, end
-        if len(state.get("errors", [])) >= 3:
-            logger.debug(f"Too many errors ({len(state.get('errors', []))}), ending workflow")
-            return "end"
-        
-        # Determine next based on current agent and state
-        current = state.get("current_agent", "")
-        logger.debug(f"Current agent: {current}, query_analysis exists: {state.get('query_analysis') is not None}")
-        
-        if current == "query_understanding":
-            if state.get("query_analysis"):
-                logger.debug("Routing from query_understanding to tool_planning")
-                return "tool_planning"
-            else:
-                logger.debug("Query analysis failed, ending workflow")
-                return "end"  # Query analysis failed
-        
-        elif current == "tool_planning":
-            if state.get("tool_plan"):
-                return "tool_execution"
-            else:
-                return "end"  # Planning failed
-        
-        elif current == "tool_execution":
-            if state.get("tool_results"):
-                return "response_synthesis"
-            else:
-                return "end"  # Execution failed
-        
-        elif current == "response_synthesis":
-            return "end"  # Workflow complete
-        
-        else:
-            # Default to starting the workflow
-            return "tool_planning" if state.get("query_analysis") else "end"
+    # Old routing functions removed - agents now use Command handoffs
     
     async def process_query(
         self,
