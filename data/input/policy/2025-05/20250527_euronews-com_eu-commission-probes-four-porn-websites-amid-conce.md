@@ -2,7 +2,7 @@
 title: EU Commission probes four porn websites amid concern for minors
 url: https://www.euronews.com/next/2025/05/27/eu-commission-probes-four-porn-websites-amid-concern-for-minors
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T05:01:33.671824
+collected_date: 2025-05-31T08:33:42.452206
 source: Euronews
 source_url: https://www.euronews.com
 description: "Published on 27/05/2025 - 11:45 GMT+2 • Updated

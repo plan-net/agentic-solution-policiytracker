@@ -125,6 +125,106 @@ class MemoryManager:
         except Exception as e:
             logger.error(f"Error saving learned pattern: {e}")
     
+    async def analyze_user_conversation_patterns(self, user_id: str) -> Dict[str, Any]:
+        """Analyze user conversation patterns for personalization."""
+        try:
+            patterns = await self.store.aget(f"user_conversation_patterns_{user_id}")
+            return patterns or {
+                "common_intents": {},
+                "preferred_detail_level": "medium",
+                "response_format_preference": "structured",
+                "question_complexity_distribution": {"simple": 0.4, "medium": 0.5, "complex": 0.1},
+                "topic_interests": {},
+                "interaction_time_patterns": {},
+                "feedback_patterns": {"positive": 0, "negative": 0}
+            }
+        except Exception as e:
+            logger.error(f"Error analyzing conversation patterns: {e}")
+            return {}
+    
+    async def update_user_conversation_patterns(
+        self, 
+        user_id: str, 
+        query: str, 
+        intent: str,
+        complexity: str,
+        satisfaction_rating: float,
+        response_time: float
+    ) -> None:
+        """Update user conversation patterns based on interaction."""
+        try:
+            patterns = await self.analyze_user_conversation_patterns(user_id)
+            
+            # Update intent frequency
+            intents = patterns["common_intents"]
+            intents[intent] = intents.get(intent, 0) + 1
+            
+            # Update complexity distribution
+            complexity_dist = patterns["question_complexity_distribution"]
+            total_questions = sum(complexity_dist.values()) + 1
+            
+            for level in complexity_dist:
+                if level == complexity:
+                    complexity_dist[level] = (complexity_dist[level] * (total_questions - 1) + 1) / total_questions
+                else:
+                    complexity_dist[level] = complexity_dist[level] * (total_questions - 1) / total_questions
+            
+            # Update satisfaction feedback
+            if satisfaction_rating >= 3.5:
+                patterns["feedback_patterns"]["positive"] += 1
+            else:
+                patterns["feedback_patterns"]["negative"] += 1
+            
+            # Analyze response time patterns
+            time_patterns = patterns["interaction_time_patterns"]
+            if satisfaction_rating >= 4.0:
+                time_patterns["preferred_response_time"] = time_patterns.get("preferred_response_time", response_time)
+                # Moving average
+                time_patterns["preferred_response_time"] = (time_patterns["preferred_response_time"] * 0.8 + response_time * 0.2)
+            
+            await self.store.aput(f"user_conversation_patterns_{user_id}", patterns)
+            
+        except Exception as e:
+            logger.error(f"Error updating conversation patterns: {e}")
+    
+    async def get_personalization_recommendations(self, user_id: str) -> Dict[str, Any]:
+        """Get personalization recommendations based on user patterns."""
+        try:
+            patterns = await self.analyze_user_conversation_patterns(user_id)
+            
+            # Determine preferred thinking speed
+            feedback_ratio = patterns["feedback_patterns"]["positive"] / max(1, 
+                patterns["feedback_patterns"]["positive"] + patterns["feedback_patterns"]["negative"])
+            
+            thinking_speed = "normal"
+            if feedback_ratio > 0.8:
+                thinking_speed = "fast"  # User is satisfied, can go faster
+            elif feedback_ratio < 0.6:
+                thinking_speed = "detailed"  # User needs more explanation
+            
+            # Determine preferred response format
+            most_common_intent = max(patterns["common_intents"].items(), 
+                                   key=lambda x: x[1], default=("information_seeking", 0))[0]
+            
+            response_format = "structured"
+            if most_common_intent in ["troubleshooting", "how_to"]:
+                response_format = "step_by_step"
+            elif most_common_intent in ["research", "analysis"]:
+                response_format = "comprehensive"
+            
+            return {
+                "thinking_speed": thinking_speed,
+                "response_format": response_format,
+                "detail_level": patterns.get("preferred_detail_level", "medium"),
+                "complexity_comfort": max(patterns["question_complexity_distribution"].items(), 
+                                        key=lambda x: x[1])[0] if patterns["question_complexity_distribution"] else "medium",
+                "satisfaction_trend": "improving" if feedback_ratio > 0.7 else "needs_attention"
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting personalization recommendations: {e}")
+            return {"thinking_speed": "normal", "response_format": "structured"}
+    
     async def get_tool_performance_history(self, tool_name: str) -> Dict[str, Any]:
         """Get historical performance data for a tool."""
         try:

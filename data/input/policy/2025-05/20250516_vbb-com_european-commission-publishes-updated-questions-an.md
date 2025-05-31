@@ -2,7 +2,7 @@
 title: European Commission Publishes Updated Questions and Answers on EU Foreign Direct Investment Screenin
 url: https://www.vbb.com/insights/european-commission-publishes-updated-questions-and-answers-on-eu-foreign-direct-investment-screenin
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T08:03:14.292705
+collected_date: 2025-05-31T08:33:58.597978
 source: Vbb
 source_url: https://www.vbb.com
 description: "European Commission Publishes Updated Questions and Answers on EU Foreign Direct Investment Screening Regulation – A Belgian Perspective 

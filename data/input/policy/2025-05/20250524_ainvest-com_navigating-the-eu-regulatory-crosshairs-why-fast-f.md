@@ -1,8 +1,8 @@
 ---
 title: Navigating the EU Regulatory Crosshairs: Why Fast Fashion's Future Lies in Compliance and Sustainability
 url: https://www.ainvest.com/news/navigating-eu-regulatory-crosshairs-fast-fashion-future-lies-compliance-sustainability-2505/
-published_date: 2025-05-24T08:03:05.851000
-collected_date: 2025-05-31T08:03:06.963222
+published_date: 2025-05-24T08:33:50.498000
+collected_date: 2025-05-31T08:33:51.637168
 source: Ainvest
 source_url: https://www.ainvest.com
 author: Clyde Morgan

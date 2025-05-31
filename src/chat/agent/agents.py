@@ -159,6 +159,11 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
         super().__init__(AgentRole.TOOL_PLANNING, name)
         self.llm = llm
         self.output_parser = PydanticOutputParser(pydantic_object=ToolPlan)
+        self.tool_integration_manager = None
+    
+    def set_tool_integration_manager(self, manager):
+        """Set the tool integration manager for intelligent tool planning."""
+        self.tool_integration_manager = manager
     
     def get_prompt_template(self) -> str:
         """Get the prompt template for tool planning."""
@@ -177,6 +182,62 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
                 message="No query analysis available for planning",
                 next_agent=None
             )
+        
+        query_analysis = state.get("query_analysis", {})
+        
+        # Get intelligent tool recommendations if available
+        if self.tool_integration_manager:
+            await self.stream_thinking("Using intelligent tool selection based on query analysis...")
+            
+            recommendations = self.tool_integration_manager.get_tool_recommendations(
+                intent=query_analysis.get("intent", "information_seeking"),
+                entities=query_analysis.get("secondary_entities", []),
+                complexity=query_analysis.get("complexity", "medium"),
+                strategy_type=query_analysis.get("analysis_strategy", "focused")
+            )
+            
+            if recommendations:
+                # Use AI-generated recommendations as the tool sequence
+                plan = ToolPlan(
+                    strategy_type=query_analysis.get("analysis_strategy", "focused"),
+                    estimated_execution_time=sum(r["estimated_time"] for r in recommendations),
+                    tool_sequence=recommendations,
+                    success_criteria={
+                        "primary": f"Complete {query_analysis.get('intent', 'analysis')} for {query_analysis.get('primary_entity', 'entities')}",
+                        "secondary": "Gather comprehensive context and relationships", 
+                        "minimum": "At least one successful tool execution"
+                    },
+                    backup_strategies=[{
+                        "name": "fallback_search",
+                        "description": "Use basic search if specific tools fail",
+                        "tools": ["search"]
+                    }],
+                    optimization_notes={
+                        "strategy": "AI-optimized based on query analysis",
+                        "confidence": query_analysis.get("confidence", 0.8)
+                    }
+                )
+                
+                await self.stream_thinking(f"Generated {len(recommendations)} tool recommendations using AI analysis")
+                
+                # Update state with plan
+                updated_state = dict(state)
+                updated_state["tool_plan"] = plan.dict()
+                updated_state["current_agent"] = "tool_execution"
+                agent_sequence = updated_state.get("agent_sequence", [])
+                agent_sequence.append(self.agent_role.value)
+                updated_state["agent_sequence"] = agent_sequence
+                
+                return AgentResult(
+                    success=True,
+                    updated_state=updated_state,
+                    data=plan.dict(),
+                    message=f"AI-optimized execution plan ready: {plan.strategy_type} strategy with {len(plan.tool_sequence)} tools",
+                    next_agent="tool_execution"
+                )
+        
+        # Fallback to LLM-based planning
+        await self.stream_thinking("Using LLM-based tool planning...")
         
         # Build context with query analysis and memory
         context = build_agent_context(
@@ -252,6 +313,11 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
     def __init__(self, tools: Dict[str, Any], name: str = "ToolExecution"):
         super().__init__(AgentRole.TOOL_EXECUTION, name)
         self.tools = tools
+        self.tool_integration_manager = None
+    
+    def set_tool_integration_manager(self, manager):
+        """Set the tool integration manager for enhanced tool execution."""
+        self.tool_integration_manager = manager
     
     def get_prompt_template(self) -> str:
         """Get the prompt template for tool execution."""
@@ -277,58 +343,78 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
         total_execution_time = 0.0
         
         try:
-            for step in tool_plan["tool_sequence"]:
-                tool_name = step["tool_name"]
-                parameters = step["parameters"]
+            # Use enhanced tool integration if available
+            if self.tool_integration_manager:
+                await self.stream_thinking("Using enhanced tool integration for intelligent execution...")
                 
-                await self.stream_custom({"tool_execution": f"Executing {tool_name}...", "agent": self.name, "tool_name": tool_name})
+                async def tool_progress_callback(data):
+                    await self.stream_custom(data)
                 
-                start_time = datetime.now()
-                
-                # Execute tool
-                if tool_name in self.tools:
-                    tool_func = self.tools[tool_name]
-                    raw_result = await tool_func(**parameters)
-                    success = True
-                    error = None
-                else:
-                    raw_result = {}
-                    success = False
-                    error = f"Tool {tool_name} not available"
-                
-                execution_time = (datetime.now() - start_time).total_seconds()
-                total_execution_time += execution_time
-                
-                # Structure the result
-                tool_result = ToolResult(
-                    tool_name=tool_name,
-                    success=success,
-                    execution_time=execution_time,
-                    parameters_used=parameters,
-                    output=str(raw_result),
-                    insights=self._extract_insights(raw_result, tool_name),
-                    entities_found=self._extract_entities(raw_result),
-                    relationships_discovered=self._extract_relationships(raw_result),
-                    source_citations=self._extract_citations(raw_result),
-                    temporal_aspects=self._extract_temporal_info(raw_result),
-                    quality_score=self._assess_quality(raw_result, success),
-                    error=error
+                enhanced_results = await self.tool_integration_manager.execute_tool_sequence(
+                    tool_plan["tool_sequence"],
+                    progress_callback=tool_progress_callback
                 )
                 
-                tool_results.append(tool_result.dict())
-                executed_tools.append(tool_name)
+                tool_results = enhanced_results
+                executed_tools = [result["tool_name"] for result in enhanced_results]
+                total_execution_time = sum(result["execution_time"] for result in enhanced_results)
                 
-                await self.stream_custom({
-                    "tool_execution": f"Completed {tool_name}: {'✓' if success else '✗'}",
-                    "agent": self.name,
-                    "tool_name": tool_name,
-                    "success": success
-                })
+            else:
+                # Fallback to basic tool execution
+                await self.stream_thinking("Using basic tool execution (enhanced integration not available)...")
                 
-                # Break if critical tool fails and no backup strategy
-                if not success and step.get("critical", False):
-                    await self.stream_custom({"error": f"Critical tool {tool_name} failed, stopping execution", "agent": self.name})
-                    break
+                for step in tool_plan["tool_sequence"]:
+                    tool_name = step["tool_name"]
+                    parameters = step["parameters"]
+                    
+                    await self.stream_custom({"tool_execution": f"Executing {tool_name}...", "agent": self.name, "tool_name": tool_name})
+                    
+                    start_time = datetime.now()
+                    
+                    # Execute tool
+                    if tool_name in self.tools:
+                        tool_func = self.tools[tool_name]
+                        raw_result = await tool_func(**parameters)
+                        success = True
+                        error = None
+                    else:
+                        raw_result = {}
+                        success = False
+                        error = f"Tool {tool_name} not available"
+                    
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    total_execution_time += execution_time
+                    
+                    # Structure the result
+                    tool_result = ToolResult(
+                        tool_name=tool_name,
+                        success=success,
+                        execution_time=execution_time,
+                        parameters_used=parameters,
+                        output=str(raw_result),
+                        insights=self._extract_insights(raw_result, tool_name),
+                        entities_found=self._extract_entities(raw_result),
+                        relationships_discovered=self._extract_relationships(raw_result),
+                        source_citations=self._extract_citations(raw_result),
+                        temporal_aspects=self._extract_temporal_info(raw_result),
+                        quality_score=self._assess_quality(raw_result, success),
+                        error=error
+                    )
+                    
+                    tool_results.append(tool_result.dict())
+                    executed_tools.append(tool_name)
+                    
+                    await self.stream_custom({
+                        "tool_execution": f"Completed {tool_name}: {'✓' if success else '✗'}",
+                        "agent": self.name,
+                        "tool_name": tool_name,
+                        "success": success
+                    })
+                    
+                    # Break if critical tool fails and no backup strategy
+                    if not success and step.get("critical", False):
+                        await self.stream_custom({"error": f"Critical tool {tool_name} failed, stopping execution", "agent": self.name})
+                        break
             
             await self.stream_thinking("Tool execution complete. Processing results...")
             

@@ -2,7 +2,7 @@
 title: Germany considers 10% tax on internet giants
 url: https://www.france24.com/en/live-news/20250530-germany-considers-10-tax-on-internet-giants
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T08:03:24.313462
+collected_date: 2025-05-31T08:34:08.021528
 source: France24
 source_url: https://www.france24.com
 description: "\"This is a question of tax justice,\" parliamentary state secretary in the digital ministry Philip Amthor told Die Welt newspaper. \"Large digital corporations in particular are cleverly engaging in tax avoidance\" while German businesses are \"treated with no mercy, everything is taxed.\" \"A fairer..."

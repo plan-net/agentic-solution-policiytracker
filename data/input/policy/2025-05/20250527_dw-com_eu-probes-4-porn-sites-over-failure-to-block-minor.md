@@ -2,7 +2,7 @@
 title: EU probes 4 porn sites over failure to block minors
 url: https://www.dw.com/en/eu-probes-4-porn-sites-over-failure-to-block-minors/a-72691167
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T02:02:37.974162
+collected_date: 2025-05-31T08:34:05.145823
 source: Dw
 source_url: https://www.dw.com
 author: Richard Connor

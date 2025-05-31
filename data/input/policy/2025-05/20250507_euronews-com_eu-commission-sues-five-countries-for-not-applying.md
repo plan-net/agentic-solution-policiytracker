@@ -2,7 +2,7 @@
 title: EU Commission sues five countries for not applying platform rules
 url: https://www.euronews.com/next/2025/05/07/european-commission-sues-five-countries-for-not-applying-digital-platform-rules
 published_date: 2025-05-07T00:00:00
-collected_date: 2025-05-31T08:03:00.338437
+collected_date: 2025-05-31T08:33:42.452141
 source: Euronews
 source_url: https://www.euronews.com
 description: "Published on

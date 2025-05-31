@@ -2,7 +2,7 @@
 title: ‘Time to sober up’: Europe should be realistic on tech sovereignty, lawmaker says
 url: https://www.politico.eu/article/its-time-to-sober-up-on-the-eus-efforts-for-digital-sovereignty-eu-lawmaker-says/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-13T00:00:00
-collected_date: 2025-05-31T08:03:17.452083
+collected_date: 2025-05-31T08:34:01.901884
 source: Politico
 source_url: https://www.politico.eu
 author: Eliza Gkritsi, Mathieu Pollet, Pieter Haeck

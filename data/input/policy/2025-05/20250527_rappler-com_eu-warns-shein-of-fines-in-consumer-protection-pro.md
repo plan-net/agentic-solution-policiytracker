@@ -2,7 +2,7 @@
 title: EU warns Shein of fines in consumer protection probe
 url: https://www.rappler.com/business/european-union-warns-shein-fines-consumer-protection-probe/
 published_date: 2025-05-27T00:00:00
-collected_date: 2025-05-31T08:02:17.336789
+collected_date: 2025-05-31T08:33:32.753777
 source: Rappler
 source_url: https://www.rappler.com
 author: Victor Barreiro Jr.

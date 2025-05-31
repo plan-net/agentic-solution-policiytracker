@@ -2,7 +2,7 @@
 title: ECB Warns EU Against Removing 80% of Companies from Mandatory Sustainability Reporting
 url: https://www.esgtoday.com/ecb-warns-eu-against-removing-80-of-companies-from-mandatory-sustainability-reporting/
 published_date: 2025-05-12T00:00:00
-collected_date: 2025-05-31T08:03:07.197342
+collected_date: 2025-05-31T08:33:54.959861
 source: Esgtoday
 source_url: https://www.esgtoday.com
 author: Mark Segal

@@ -189,11 +189,72 @@ class ThinkingTemplates:
 
 
 class StreamingThinkingGenerator:
-    """Generates natural thinking output for agents."""
+    """Enhanced generator for natural thinking output with dynamic adaptation."""
     
     def __init__(self, streaming_manager: StreamingManager):
         self.streaming_manager = streaming_manager
         self.templates = ThinkingTemplates()
+        self.user_preferences = {}
+        self.thinking_history = []
+        self.adaptive_timing = True
+        self.context_aware = True
+    
+    def set_user_preferences(self, preferences: Dict[str, Any]) -> None:
+        """Set user preferences for thinking output customization."""
+        self.user_preferences = preferences
+    
+    def get_adaptive_delay(self, content_complexity: str, user_speed_pref: str = "normal") -> float:
+        """Calculate adaptive delay based on content complexity and user preferences."""
+        base_delays = {
+            "simple": 0.3,
+            "normal": 0.6,
+            "complex": 1.0
+        }
+        
+        speed_multipliers = {
+            "fast": 0.5,
+            "normal": 1.0,
+            "slow": 1.5,
+            "detailed": 2.0
+        }
+        
+        base_delay = base_delays.get(content_complexity, 0.6)
+        speed_mult = speed_multipliers.get(user_speed_pref, 1.0)
+        
+        return base_delay * speed_mult if self.adaptive_timing else 0.5
+    
+    async def emit_contextual_thinking(
+        self, 
+        agent_name: str, 
+        template_key: str, 
+        context: Dict[str, Any],
+        complexity: str = "normal"
+    ) -> None:
+        """Emit thinking with contextual adaptation and user preferences."""
+        template_dict = getattr(self.templates, agent_name.upper(), {})
+        template = template_dict.get(template_key, "Processing...")
+        
+        # Format template with context
+        try:
+            formatted_text = template.format(**context)
+        except KeyError:
+            formatted_text = template
+        
+        # Record thinking for learning
+        self.thinking_history.append({
+            "agent": agent_name,
+            "template_key": template_key,
+            "context": context,
+            "timestamp": asyncio.get_event_loop().time()
+        })
+        
+        await self.streaming_manager.emit_thinking(agent_name, formatted_text)
+        
+        # Adaptive delay
+        user_speed = self.user_preferences.get("thinking_speed", "normal")
+        delay = self.get_adaptive_delay(complexity, user_speed)
+        if delay > 0:
+            await asyncio.sleep(delay)
     
     async def generate_query_understanding_thinking(
         self, 

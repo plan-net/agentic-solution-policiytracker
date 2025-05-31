@@ -1,8 +1,11 @@
 """Multi-agent orchestration using LangGraph for political monitoring system."""
 
 import asyncio
+import logging
 from typing import Dict, Any, List, Optional, Callable, Union
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -38,8 +41,25 @@ class MultiAgentOrchestrator:
         self.memory_manager.store = self.memory_store
         self.memory_manager.checkpointer = self.checkpointer
         
-        # Initialize streaming
+        # Initialize streaming with enhanced capabilities
         self.streaming_manager = StreamingManager()
+        
+        # Import here to avoid circular imports
+        from .streaming import StreamingThinkingGenerator
+        self.thinking_generator = StreamingThinkingGenerator(self.streaming_manager)
+        
+        # Initialize tool integration manager if Graphiti client available
+        self.tool_integration_manager = None
+        try:
+            from .tool_integration import ToolIntegrationManager
+            from graphiti_core import Graphiti
+            
+            # Try to initialize Graphiti client for tool integration
+            # In production, this would come from configuration
+            # For now, we'll set it up when tools are available
+            self.tool_integration_manager = None  # Will be set up later if needed
+        except ImportError:
+            logger.warning("Tool integration not available - some tools may not work optimally")
         
         # Initialize agents
         self.query_agent = QueryUnderstandingAgent(llm=llm)
@@ -49,6 +69,11 @@ class MultiAgentOrchestrator:
         
         # Set up agent memory and streaming
         self._setup_agent_capabilities()
+        
+        # Set up tool integration for planning and execution agents
+        if self.tool_integration_manager:
+            self.planning_agent.set_tool_integration_manager(self.tool_integration_manager)
+            self.execution_agent.set_tool_integration_manager(self.tool_integration_manager)
         
         # Build the graph
         self.graph = self._build_graph()
@@ -239,6 +264,15 @@ class MultiAgentOrchestrator:
         if stream_callback:
             self.streaming_manager.set_stream_callback(stream_callback)
         
+        # Set up personalization if user_id provided
+        if user_id:
+            try:
+                personalization = await self.memory_manager.get_personalization_recommendations(user_id)
+                self.thinking_generator.set_user_preferences(personalization)
+            except Exception as e:
+                # Personalization failure shouldn't break the workflow
+                await self.streaming_manager.emit_thinking("orchestrator", f"Personalization setup failed: {str(e)}")
+        
         # Create initial state with all required defaults
         initial_state = MultiAgentState(
             original_query=query,
@@ -331,18 +365,30 @@ class MultiAgentOrchestrator:
             }
     
     async def _learn_from_interaction(self, user_id: str, query: str, final_state: MultiAgentState):
-        """Learn from the interaction for future optimization."""
+        """Enhanced learning from interaction with advanced pattern recognition."""
         try:
             # Extract learning data
             analysis = final_state.get("query_analysis", {})
             intent = analysis.get("intent", "unknown")
+            complexity = analysis.get("complexity", "medium")
             entities = analysis.get("secondary_entities", [])
             
-            # Calculate satisfaction (mock - would be user feedback in real system)
+            # Calculate satisfaction and response time
             confidence = self._calculate_overall_confidence(final_state)
             satisfaction = min(4.5, confidence * 4.5)  # Scale to 4.5 max
+            response_time = self._calculate_execution_time(final_state)
             
-            # Learn from the query
+            # Enhanced learning with conversation patterns
+            await self.memory_manager.update_user_conversation_patterns(
+                user_id=user_id,
+                query=query,
+                intent=intent,
+                complexity=complexity,
+                satisfaction_rating=satisfaction,
+                response_time=response_time
+            )
+            
+            # Traditional query learning
             await self.memory_manager.learn_from_query(
                 user_id=user_id,
                 query=query,
@@ -351,7 +397,7 @@ class MultiAgentOrchestrator:
                 satisfaction_rating=satisfaction
             )
             
-            # Learn tool performance
+            # Learn tool and agent performance
             execution_meta = final_state.get("execution_metadata", {})
             if "agent_execution_times" in execution_meta:
                 for agent, time in execution_meta["agent_execution_times"].items():
@@ -361,6 +407,10 @@ class MultiAgentOrchestrator:
                         execution_time=time,
                         error=None
                     )
+            
+            # Update thinking generator preferences
+            personalization = await self.memory_manager.get_personalization_recommendations(user_id)
+            self.thinking_generator.set_user_preferences(personalization)
             
         except Exception as e:
             # Learning failure shouldn't break the workflow
