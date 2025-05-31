@@ -3,8 +3,8 @@ Base storage interface for ETL pipeline.
 """
 
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any, Optional
+
 import structlog
 
 logger = structlog.get_logger()
@@ -15,7 +15,7 @@ class BaseStorage(ABC):
 
     @abstractmethod
     async def save_document(
-        self, content: str, path: str, metadata: Optional[Dict[str, Any]] = None
+        self, content: str, path: str, metadata: Optional[dict[str, Any]] = None
     ) -> bool:
         """Save a document to storage."""
         pass
@@ -26,7 +26,7 @@ class BaseStorage(ABC):
         pass
 
     @abstractmethod
-    async def list_documents(self, prefix: str = "") -> List[str]:
+    async def list_documents(self, prefix: str = "") -> list[str]:
         """List all documents with optional prefix filter."""
         pass
 
@@ -41,6 +41,6 @@ class BaseStorage(ABC):
         pass
 
     @abstractmethod
-    async def get_metadata(self, path: str) -> Optional[Dict[str, Any]]:
+    async def get_metadata(self, path: str) -> Optional[dict[str, Any]]:
         """Get metadata for a document."""
         pass

@@ -4,10 +4,10 @@ Local file system storage implementation.
 
 import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Any, Optional
+
 import aiofiles
 import structlog
-from datetime import datetime
 
 from .base import BaseStorage
 
@@ -24,7 +24,7 @@ class LocalStorage(BaseStorage):
         logger.info(f"Initialized LocalStorage with base path: {self.base_path}")
 
     async def save_document(
-        self, content: str, path: str, metadata: Optional[Dict[str, Any]] = None
+        self, content: str, path: str, metadata: Optional[dict[str, Any]] = None
     ) -> bool:
         """Save a document to local storage (markdown only, no metadata files)."""
         try:
@@ -48,7 +48,7 @@ class LocalStorage(BaseStorage):
         file_path = self.base_path / path
         return file_path.exists()
 
-    async def list_documents(self, prefix: str = "") -> List[str]:
+    async def list_documents(self, prefix: str = "") -> list[str]:
         """List all documents with optional prefix filter."""
         try:
             search_path = self.base_path / prefix if prefix else self.base_path
@@ -107,7 +107,7 @@ class LocalStorage(BaseStorage):
             logger.error(f"Failed to delete document {path}: {e}")
             return False
 
-    async def get_metadata(self, path: str) -> Optional[Dict[str, Any]]:
+    async def get_metadata(self, path: str) -> Optional[dict[str, Any]]:
         """Get metadata for a document."""
         try:
             file_path = self.base_path / path

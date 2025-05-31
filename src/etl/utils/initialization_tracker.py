@@ -2,11 +2,12 @@
 ETL initialization tracking for managing first-time vs regular collection runs.
 """
 
-import os
 import json
-from pathlib import Path
+import os
 from datetime import datetime
-from typing import Dict, Any, Optional
+from pathlib import Path
+from typing import Any, Optional
+
 import structlog
 
 logger = structlog.get_logger()
@@ -40,7 +41,7 @@ class ETLInitializationTracker:
             if not self.tracker_file.exists():
                 return False
 
-            with open(self.tracker_file, "r") as f:
+            with open(self.tracker_file) as f:
                 data = json.load(f)
 
             return data.get("collectors", {}).get(collector_type, {}).get("initialized", False)
@@ -57,7 +58,7 @@ class ETLInitializationTracker:
             # Load existing data
             data = {}
             if self.tracker_file.exists():
-                with open(self.tracker_file, "r") as f:
+                with open(self.tracker_file) as f:
                     data = json.load(f)
 
             # Update initialization data
@@ -84,13 +85,13 @@ class ETLInitializationTracker:
             logger.error(f"Failed to mark collector as initialized: {e}")
             raise
 
-    def get_initialization_info(self, collector_type: str) -> Optional[Dict[str, Any]]:
+    def get_initialization_info(self, collector_type: str) -> Optional[dict[str, Any]]:
         """Get initialization information for a collector."""
         try:
             if not self.tracker_file.exists():
                 return None
 
-            with open(self.tracker_file, "r") as f:
+            with open(self.tracker_file) as f:
                 data = json.load(f)
 
             return data.get("collectors", {}).get(collector_type)
@@ -105,7 +106,7 @@ class ETLInitializationTracker:
             if not self.tracker_file.exists():
                 return
 
-            with open(self.tracker_file, "r") as f:
+            with open(self.tracker_file) as f:
                 data = json.load(f)
 
             if "collectors" in data and collector_type in data["collectors"]:
@@ -142,13 +143,13 @@ class ETLInitializationTracker:
             )
             return initialization_days
 
-    def get_tracker_status(self) -> Dict[str, Any]:
+    def get_tracker_status(self) -> dict[str, Any]:
         """Get complete tracker status for monitoring."""
         try:
             if not self.tracker_file.exists():
                 return {"status": "no_tracker_file", "collectors": {}}
 
-            with open(self.tracker_file, "r") as f:
+            with open(self.tracker_file) as f:
                 data = json.load(f)
 
             return {

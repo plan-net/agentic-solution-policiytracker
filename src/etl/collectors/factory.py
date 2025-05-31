@@ -4,11 +4,12 @@ Factory for creating news collectors.
 
 import os
 from typing import Union
+
 import structlog
 
 from .apify_news import ApifyNewsCollector
-from .exa_news import ExaNewsCollector
 from .exa_direct import ExaDirectCollector
+from .exa_news import ExaNewsCollector
 
 logger = structlog.get_logger()
 
