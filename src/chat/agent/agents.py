@@ -85,15 +85,14 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         # Build context with memory and state
         context = build_agent_context(
-            user_query=state.original_query,
+            user_query=state.get("original_query", ""),
             session_state=state,
-            memory_data=await self._get_memory_context(state.session_id)
+            memory_data=await self._get_memory_context(state.get("session_id"))
         )
         
         # Load and populate prompt template
-        prompt_template = await multi_agent_prompt_loader.get_prompt("query_understanding")
-        populated_prompt = await multi_agent_prompt_loader.populate_template(
-            prompt_template, 
+        populated_prompt = await multi_agent_prompt_loader.get_agent_prompt(
+            "query_understanding", 
             context
         )
         
@@ -114,11 +113,13 @@ class QueryUnderstandingAgent(BaseAgent, StreamingMixin, MemoryMixin):
             await self.stream_thinking("Query analysis complete. Identified intent and strategy.")
             
             # Update state with analysis
-            updated_state = state.copy()
-            updated_state.query_analysis = analysis.dict()
-            updated_state.processed_query = state.original_query  # May be refined later
-            updated_state.current_agent = "tool_planning"
-            updated_state.agent_sequence.append(self.agent_role.value)
+            updated_state = dict(state)
+            updated_state["query_analysis"] = analysis.dict()
+            updated_state["processed_query"] = state.get("original_query", "")  # May be refined later
+            updated_state["current_agent"] = "tool_planning"
+            agent_sequence = updated_state.get("agent_sequence", [])
+            agent_sequence.append(self.agent_role.value)
+            updated_state["agent_sequence"] = agent_sequence
             
             return AgentResult(
                 success=True,
@@ -168,7 +169,7 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         await self.stream_thinking("Designing optimal tool execution sequence...")
         
-        if not state.query_analysis:
+        if not state.get("query_analysis"):
             return AgentResult(
                 success=False,
                 updated_state=state,
@@ -179,15 +180,14 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         # Build context with query analysis and memory
         context = build_agent_context(
-            user_query=state.original_query,
+            user_query=state.get("original_query", ""),
             session_state=state,
-            memory_data=await self._get_memory_context(state.session_id)
+            memory_data=await self._get_memory_context(state.get("session_id"))
         )
         
         # Load and populate prompt template
-        prompt_template = await multi_agent_prompt_loader.get_prompt("tool_planning")
-        populated_prompt = await multi_agent_prompt_loader.populate_template(
-            prompt_template,
+        populated_prompt = await multi_agent_prompt_loader.get_agent_prompt(
+            "tool_planning",
             context
         )
         
@@ -197,7 +197,7 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
             # Get LLM response
             messages = [
                 SystemMessage(content=populated_prompt),
-                HumanMessage(content=f"Create execution plan for: {state.original_query}")
+                HumanMessage(content=f"Create execution plan for: {state.get('original_query', '')}")
             ]
             
             response = await self.llm.ainvoke(messages)
@@ -208,10 +208,12 @@ class ToolPlanningAgent(BaseAgent, StreamingMixin, MemoryMixin):
             await self.stream_thinking(f"Execution plan ready. Strategy: {plan.strategy_type}, estimated time: {plan.estimated_execution_time}s")
             
             # Update state with plan
-            updated_state = state.copy()
-            updated_state.tool_plan = plan.dict()
-            updated_state.current_agent = "tool_execution"
-            updated_state.agent_sequence.append(self.agent_role.value)
+            updated_state = dict(state)
+            updated_state["tool_plan"] = plan.dict()
+            updated_state["current_agent"] = "tool_execution"
+            agent_sequence = updated_state.get("agent_sequence", [])
+            agent_sequence.append(self.agent_role.value)
+            updated_state["agent_sequence"] = agent_sequence
             
             return AgentResult(
                 success=True,
@@ -260,7 +262,7 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         await self.stream_thinking("Beginning tool execution sequence...")
         
-        if not state.tool_plan:
+        if not state.get("tool_plan"):
             return AgentResult(
                 success=False,
                 updated_state=state,
@@ -269,7 +271,7 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
                 next_agent=None
             )
         
-        tool_plan = state.tool_plan
+        tool_plan = state.get("tool_plan", {})
         tool_results = []
         executed_tools = []
         total_execution_time = 0.0
@@ -331,12 +333,14 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
             await self.stream_thinking("Tool execution complete. Processing results...")
             
             # Update state with execution results
-            updated_state = state.copy()
-            updated_state.tool_results = tool_results
-            updated_state.executed_tools = executed_tools
-            updated_state.current_agent = "response_synthesis"
-            updated_state.agent_sequence.append(self.agent_role.value)
-            updated_state.execution_metadata = {
+            updated_state = dict(state)
+            updated_state["tool_results"] = tool_results
+            updated_state["executed_tools"] = executed_tools
+            updated_state["current_agent"] = "response_synthesis"
+            agent_sequence = updated_state.get("agent_sequence", [])
+            agent_sequence.append(self.agent_role.value)
+            updated_state["agent_sequence"] = agent_sequence
+            updated_state["execution_metadata"] = {
                 "total_execution_time": total_execution_time,
                 "tools_successful": sum(1 for r in tool_results if r["success"]),
                 "tools_failed": sum(1 for r in tool_results if not r["success"]),
@@ -417,7 +421,7 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         await self.stream_thinking("Synthesizing findings into comprehensive response...")
         
-        if not state.tool_results:
+        if not state.get("tool_results"):
             return AgentResult(
                 success=False,
                 updated_state=state,
@@ -428,15 +432,14 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
         
         # Build context with all collected information
         context = build_agent_context(
-            user_query=state.original_query,
+            user_query=state.get("original_query", ""),
             session_state=state,
-            memory_data=await self._get_memory_context(state.session_id)
+            memory_data=await self._get_memory_context(state.get("session_id"))
         )
         
         # Load and populate prompt template
-        prompt_template = await multi_agent_prompt_loader.get_prompt("response_synthesis")
-        populated_prompt = await multi_agent_prompt_loader.populate_template(
-            prompt_template,
+        populated_prompt = await multi_agent_prompt_loader.get_agent_prompt(
+            "response_synthesis",
             context
         )
         
@@ -449,7 +452,7 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             # Get LLM response
             messages = [
                 SystemMessage(content=populated_prompt),
-                HumanMessage(content=f"Synthesize response for: {state.original_query}\n\nContext: {synthesis_context}")
+                HumanMessage(content=f"Synthesize response for: {state.get('original_query', '')}\n\nContext: {synthesis_context}")
             ]
             
             response = await self.llm.ainvoke(messages)
@@ -460,12 +463,14 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             await self.stream_thinking("Response synthesis complete. Final answer ready.")
             
             # Update state with final response
-            updated_state = state.copy()
-            updated_state.synthesis_complete = True
-            updated_state.final_response = synthesis.response_text
-            updated_state.response_metadata = synthesis.response_metadata
-            updated_state.current_agent = "response_synthesis"  # Mark as complete
-            updated_state.agent_sequence.append(self.agent_role.value)
+            updated_state = dict(state)
+            updated_state["synthesis_complete"] = True
+            updated_state["final_response"] = synthesis.response_text
+            updated_state["response_metadata"] = synthesis.response_metadata
+            updated_state["current_agent"] = "response_synthesis"  # Mark as complete
+            agent_sequence = updated_state.get("agent_sequence", [])
+            agent_sequence.append(self.agent_role.value)
+            updated_state["agent_sequence"] = agent_sequence
             
             return AgentResult(
                 success=True,
@@ -491,19 +496,22 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
         context_parts = []
         
         # Add query analysis
-        if state.query_analysis:
-            context_parts.append(f"Query Analysis: {state.query_analysis}")
+        query_analysis = state.get("query_analysis")
+        if query_analysis:
+            context_parts.append(f"Query Analysis: {query_analysis}")
         
         # Add tool results summary
-        if state.tool_results:
-            context_parts.append(f"Tool Results: {len(state.tool_results)} tools executed")
-            for result in state.tool_results:
+        tool_results = state.get("tool_results", [])
+        if tool_results:
+            context_parts.append(f"Tool Results: {len(tool_results)} tools executed")
+            for result in tool_results:
                 if result["success"]:
                     context_parts.append(f"- {result['tool_name']}: {result['output'][:200]}")
         
         # Add execution metadata
-        if state.execution_metadata:
-            context_parts.append(f"Execution Metadata: {state.execution_metadata}")
+        execution_metadata = state.get("execution_metadata")
+        if execution_metadata:
+            context_parts.append(f"Execution Metadata: {execution_metadata}")
         
         return "\n".join(context_parts)
     
