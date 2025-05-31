@@ -4,7 +4,7 @@ Apify news collector for political monitoring.
 
 import os
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 import structlog
 from apify_client import ApifyClient
@@ -33,7 +33,7 @@ class ApifyNewsCollector:
         max_items: int = DEFAULT_MAX_ITEMS,
         days_back: int = 1,
         language: str = DEFAULT_LANGUAGE,
-    ) -> list[dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:
         """
         Collect news articles from Apify.
 
@@ -146,7 +146,7 @@ class ApifyNewsCollector:
 
         return parsed_date.isoformat()
 
-    def _normalize_article(self, raw_article: dict[str, Any]) -> dict[str, Any]:
+    def _normalize_article(self, raw_article: Dict[str, Any]) -> Dict[str, Any]:
         """Normalize article data from Apify to our standard format."""
         # Handle both the actual Apify response format and any fallbacks
         return {
@@ -180,8 +180,8 @@ class ApifyNewsCollector:
         }
 
     async def deduplicate_articles(
-        self, articles: list[dict[str, Any]], existing_urls: list[str]
-    ) -> list[dict[str, Any]]:
+        self, articles: List[Dict[str, Any]], existing_urls: List[str]
+    ) -> List[Dict[str, Any]]:
         """Remove articles that have already been collected based on URL."""
         existing_set = set(existing_urls)
         deduplicated = []
