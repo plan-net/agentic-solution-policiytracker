@@ -8,22 +8,18 @@ Schedule: Weekly (Sundays at 2 AM UTC)
 Purpose: Flow 1 - Policy Landscape Analysis
 """
 
-import os
-import json
 import logging
+import os
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Any
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.models import Variable
 
 # ETL imports
 from src.etl.collectors.policy_landscape import PolicyLandscapeCollector
-from src.etl.storage.local import LocalStorage
-from src.etl.storage.azure import AzureStorage
-from src.etl.utils.initialization_tracker import ETLInitializationTracker
 from src.etl.utils.config_loader import ClientConfigLoader
+from src.etl.utils.initialization_tracker import ETLInitializationTracker
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +50,7 @@ dag = DAG(
 )
 
 
-def load_policy_config() -> Dict[str, Any]:
+def load_policy_config() -> dict[str, Any]:
     """Load and validate policy collection configuration."""
     try:
         # Load base ETL config
@@ -89,7 +85,7 @@ def load_policy_config() -> Dict[str, Any]:
         raise
 
 
-def check_policy_initialization(**context) -> Dict[str, Any]:
+def check_policy_initialization(**context) -> dict[str, Any]:
     """Check if policy collection has been initialized."""
     try:
         config = load_policy_config()
@@ -120,7 +116,7 @@ def check_policy_initialization(**context) -> Dict[str, Any]:
         raise
 
 
-def collect_policy_documents(**context) -> Dict[str, Any]:
+def collect_policy_documents(**context) -> dict[str, Any]:
     """Main policy collection task."""
     try:
         # Get initialization info from upstream task
@@ -184,7 +180,7 @@ def collect_policy_documents(**context) -> Dict[str, Any]:
         raise
 
 
-def mark_policy_initialization_complete(**context) -> Dict[str, Any]:
+def mark_policy_initialization_complete(**context) -> dict[str, Any]:
     """Mark policy collection as initialized if this was the first run."""
     try:
         # Get collection result
@@ -222,7 +218,7 @@ def mark_policy_initialization_complete(**context) -> Dict[str, Any]:
         raise
 
 
-def generate_policy_collection_summary(**context) -> Dict[str, Any]:
+def generate_policy_collection_summary(**context) -> dict[str, Any]:
     """Generate summary of policy collection run."""
     try:
         # Get all task results
@@ -279,7 +275,7 @@ def generate_policy_collection_summary(**context) -> Dict[str, Any]:
         }
 
         # Log summary
-        logger.info(f"📊 Policy Collection Summary:")
+        logger.info("📊 Policy Collection Summary:")
         logger.info(f"  • Documents saved: {summary['collection_metrics']['documents_saved']}")
         logger.info(f"  • Success rate: {summary['quality_indicators']['success_rate']:.1%}")
         logger.info(
@@ -296,7 +292,7 @@ def generate_policy_collection_summary(**context) -> Dict[str, Any]:
         raise
 
 
-def _get_recommended_actions(collection_result: Dict[str, Any]) -> list:
+def _get_recommended_actions(collection_result: dict[str, Any]) -> list:
     """Generate recommended actions based on collection results."""
     actions = []
 
@@ -338,7 +334,7 @@ check_initialization_task = PythonOperator(
     dag=dag,
     doc_md="""
     **Check Policy Collection Initialization**
-    
+
     Determines if this is the first run (initialization) or regular collection.
     Sets collection timeframe accordingly.
     """,
@@ -350,7 +346,7 @@ collect_documents_task = PythonOperator(
     dag=dag,
     doc_md="""
     **Collect Policy Documents**
-    
+
     Main collection task that:
     1. Generates targeted policy search queries from client context
     2. Executes searches via Exa API
@@ -364,7 +360,7 @@ mark_initialization_task = PythonOperator(
     dag=dag,
     doc_md="""
     **Mark Initialization Complete**
-    
+
     Marks the policy collector as initialized if this was the first run.
     Subsequent runs will use daily collection timeframe.
     """,
@@ -376,7 +372,7 @@ generate_summary_task = PythonOperator(
     dag=dag,
     doc_md="""
     **Generate Collection Summary**
-    
+
     Creates comprehensive summary of the collection run including:
     - Collection metrics and success rates
     - Quality indicators and recommendations

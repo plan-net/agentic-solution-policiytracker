@@ -58,6 +58,9 @@ status:
     @echo "🌟 Ray Status:"
     @uv run --active ray status 2>/dev/null || echo "❌ Ray not running"
     @echo ""
+    @echo "📦 Ray Applications:"
+    @uv run --active serve status 2>/dev/null || echo "❌ No applications deployed"
+    @echo ""
     @echo "🌐 Service URLs:"
     @echo "  🎛️  Kodosumi Admin: http://localhost:3370 (admin/admin)"
     @echo "  📊 Ray Dashboard:  http://localhost:8265"
@@ -69,9 +72,10 @@ status:
     @echo "  🤖 Graphiti MCP:   http://localhost:8000 (SSE endpoint)"
     @echo ""
     @echo "  📡 API Endpoints:"
-    @echo "  🗨️  Chat API:       http://localhost:8001/chat/v1/chat/completions"
+    @echo "  🗨️  Chat API:       http://localhost:8001/v1/chat/completions"
     @echo "  📝 Data Ingestion: http://localhost:8001/data-ingestion"
     @echo "  🔄 ETL Health:     http://localhost:8080/health"
+
 
 # === Application Deployment ===
 
@@ -139,6 +143,17 @@ upload-prompts:
     @echo "📤 Uploading prompts to Langfuse..."
     uv run python scripts/upload_prompts_to_langfuse.py
 
+# Test ETL pipeline
+test-etl:
+    @echo "🧪 Testing ETL pipeline..."
+    uv run python scripts/test_policy_collection.py
+
+# Check ETL initialization status
+etl-status:
+    @echo "📊 ETL Status:"
+    @curl -s http://localhost:8080/health || echo "❌ Airflow not running"
+    @echo ""
+
 # === Development ===
 
 # Run tests
@@ -157,6 +172,7 @@ typecheck:
 # Watch Ray logs
 ray-logs:
     uv run --active ray logs cluster dashboard_ServeHead.out --tail 100 -f
+
 
 # === Database Management ===
 
@@ -184,6 +200,7 @@ clean:
 clean-all: stop clean
     docker system prune -f
     @echo "✅ Full cleanup complete"
+
 
 # === Quick Access Commands ===
 

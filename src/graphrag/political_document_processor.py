@@ -20,8 +20,7 @@ from graphiti_core.nodes import EpisodeType
 from pydantic import BaseModel, Field
 
 from src.llm.base_client import BaseLLMClient
-from src.models.content import DocumentMetadata
-from src.processors.document_reader import DocumentReader
+from src.models.content import DocumentMetadata, DocumentType
 from src.utils.exceptions import ConfigurationError, DocumentProcessingError
 
 from .political_schema_v2 import (
@@ -36,14 +35,18 @@ logger = logging.getLogger(__name__)
 # Custom Entity Types for Graphiti (following documentation pattern)
 class Policy(BaseModel):
     """High-level laws, acts, directives, and policy frameworks that establish regulatory requirements"""
+
     policy_name: str = Field(..., description="The name of the policy")
     jurisdiction: str | None = Field(None, description="Primary jurisdiction where policy applies")
-    status: str | None = Field(None, description="Current status (draft, enacted, implemented, etc.)")
+    status: str | None = Field(
+        None, description="Current status (draft, enacted, implemented, etc.)"
+    )
     effective_date: str | None = Field(None, description="When the policy becomes effective")
 
 
 class Company(BaseModel):
     """Business entities, corporations, and commercial organizations affected by regulations"""
+
     company_name: str = Field(..., description="The company name")
     sector: str | None = Field(None, description="Industry sector (technology, finance, etc.)")
     jurisdiction: str | None = Field(None, description="Primary jurisdiction of operations")
@@ -52,6 +55,7 @@ class Company(BaseModel):
 
 class Politician(BaseModel):
     """Individual political figures, elected officials, and government representatives"""
+
     politician_name: str = Field(..., description="The politician's name")
     position: str | None = Field(None, description="Current political position or title")
     party: str | None = Field(None, description="Political party affiliation")
@@ -60,14 +64,20 @@ class Politician(BaseModel):
 
 class GovernmentAgency(BaseModel):
     """Government departments, regulatory bodies, and enforcement agencies"""
+
     agency_name: str = Field(..., description="The agency name")
     jurisdiction: str | None = Field(None, description="Jurisdiction of authority")
-    authority_type: str | None = Field(None, description="Type of authority (regulatory, enforcement, advisory)")
-    parent_department: str | None = Field(None, description="Parent government department if applicable")
+    authority_type: str | None = Field(
+        None, description="Type of authority (regulatory, enforcement, advisory)"
+    )
+    parent_department: str | None = Field(
+        None, description="Parent government department if applicable"
+    )
 
 
 class Regulation(BaseModel):
     """Implementing rules, technical standards, and detailed regulatory requirements"""
+
     regulation_name: str = Field(..., description="The regulation name")
     regulation_number: str | None = Field(None, description="Official regulation number or code")
     parent_policy: str | None = Field(None, description="Parent policy or act this implements")
@@ -76,18 +86,24 @@ class Regulation(BaseModel):
 
 class LobbyGroup(BaseModel):
     """Industry associations, advocacy groups, and lobbying organizations"""
+
     organization_name: str = Field(..., description="The organization name")
     industry_focus: str | None = Field(None, description="Primary industry focus")
-    advocacy_position: str | None = Field(None, description="General advocacy position (pro/against regulation)")
+    advocacy_position: str | None = Field(
+        None, description="General advocacy position (pro/against regulation)"
+    )
     jurisdiction: str | None = Field(None, description="Primary jurisdiction of operations")
 
 
 class LegalFramework(BaseModel):
     """Constitutional provisions, treaties, and foundational legal structures"""
+
     framework_name: str = Field(..., description="The legal framework name")
     framework_type: str | None = Field(None, description="Type (constitution, treaty, convention)")
     jurisdiction: str | None = Field(None, description="Applicable jurisdiction")
-    binding_level: str | None = Field(None, description="Binding level (constitutional, statutory, regulatory)")
+    binding_level: str | None = Field(
+        None, description="Binding level (constitutional, statutory, regulatory)"
+    )
 
 
 class ProcessingResult(BaseModel):
@@ -136,7 +152,6 @@ class PoliticalDocumentProcessor:
         self.llm_client = llm_client
         self.graphiti_config = graphiti_config
         self.prompts_dir = prompts_dir or Path(__file__).parent.parent / "prompts"
-        self.document_reader = DocumentReader()
         self.graphiti_client: Optional[Graphiti] = None
 
         # Load prompts
@@ -273,11 +288,51 @@ class PoliticalDocumentProcessor:
 
         return result
 
+    async def _read_document_content(self, document_path: Path) -> str:
+        """Simple document content reader."""
+        try:
+            # For now, only support text-based files (markdown, txt)
+            with open(document_path, encoding="utf-8") as f:
+                return f.read()
+        except Exception as e:
+            raise DocumentProcessingError(
+                str(document_path), f"Failed to read document content: {e}"
+            )
+
+    def _create_document_metadata(self, document_path: Path) -> DocumentMetadata:
+        """Create document metadata."""
+        stat = document_path.stat()
+
+        # Determine document type from extension
+        suffix = document_path.suffix.lower()
+        if suffix == ".md":
+            doc_type = DocumentType.MARKDOWN
+        elif suffix == ".txt":
+            doc_type = DocumentType.TXT
+        elif suffix == ".pdf":
+            doc_type = DocumentType.PDF
+        elif suffix == ".docx":
+            doc_type = DocumentType.DOCX
+        elif suffix == ".html":
+            doc_type = DocumentType.HTML
+        else:
+            doc_type = DocumentType.TXT  # default
+
+        return DocumentMetadata(
+            source=str(document_path),
+            type=doc_type,
+            file_path=str(document_path),
+            file_size_bytes=stat.st_size,
+            created_at=datetime.fromtimestamp(stat.st_ctime, UTC),
+            modified_at=datetime.fromtimestamp(stat.st_mtime, UTC),
+        )
+
     async def _extract_document_content(self, document_path: Path) -> tuple[str, DocumentMetadata]:
         """Extract text content and metadata from document."""
         try:
-            # Read document content and metadata
-            content, metadata = await self.document_reader.read_document(str(document_path))
+            # Simple document reading (replacement for DocumentReader)
+            content = await self._read_document_content(document_path)
+            metadata = self._create_document_metadata(document_path)
 
             return content, metadata
 
@@ -373,16 +428,19 @@ class PoliticalDocumentProcessor:
             raise DocumentProcessingError(metadata.source, f"Entity extraction failed: {e}")
 
     async def _create_episode_content(
-        self, content: str, metadata: DocumentMetadata, extraction_result: Optional[ExtractionResult]
+        self,
+        content: str,
+        metadata: DocumentMetadata,
+        extraction_result: Optional[ExtractionResult],
     ) -> str:
         """Create episode content with full document for Graphiti's custom entity extraction."""
         try:
             # For Approach A: Send full document content to Graphiti
             # Let Graphiti do the chunking, embedding, and extraction with our custom entity types
-            
+
             # Add minimal metadata header to help with context
             doc_date = metadata.modified_at or datetime.now()
-            
+
             episode_content = f"""POLITICAL DOCUMENT: {metadata.source}
 Date: {doc_date.strftime('%Y-%m-%d')}
 Type: Political/Regulatory Document
@@ -442,7 +500,9 @@ Type: Political/Regulatory Document
                 entity_types=entity_types,
             )
 
-            logger.info(f"Created Graphiti episode with custom entity types: {episode_name} (ID: {result.episode.uuid})")
+            logger.info(
+                f"Created Graphiti episode with custom entity types: {episode_name} (ID: {result.episode.uuid})"
+            )
             return result
 
         except Exception as e:

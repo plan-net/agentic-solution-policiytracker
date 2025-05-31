@@ -3,9 +3,10 @@ Configuration loader for ETL pipeline.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
-import yaml
+from typing import Any
+
 import structlog
+import yaml
 
 logger = structlog.get_logger()
 
@@ -18,14 +19,14 @@ class ClientConfigLoader:
         self.config = self._load_config()
         logger.info(f"Loaded client config from: {self.config_path}")
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> dict[str, Any]:
         """Load client configuration from YAML file."""
         try:
             if not self.config_path.exists():
                 logger.warning(f"Client config not found at {self.config_path}, using defaults")
                 return self._get_default_config()
 
-            with open(self.config_path, "r") as f:
+            with open(self.config_path) as f:
                 config = yaml.safe_load(f)
 
             return config
@@ -34,7 +35,7 @@ class ClientConfigLoader:
             logger.error(f"Failed to load client config: {e}")
             return self._get_default_config()
 
-    def _get_default_config(self) -> Dict[str, Any]:
+    def _get_default_config(self) -> dict[str, Any]:
         """Return default configuration if file not found."""
         return {
             "company_terms": ["example_company"],
@@ -47,7 +48,7 @@ class ClientConfigLoader:
             "exclusion_terms": [],
         }
 
-    def get_company_names(self) -> List[str]:
+    def get_company_names(self) -> list[str]:
         """Get list of company names/terms to search for."""
         return self.config.get("company_terms", [])
 
@@ -56,7 +57,7 @@ class ClientConfigLoader:
         company_terms = self.get_company_names()
         return company_terms[0] if company_terms else "unknown_company"
 
-    def get_search_queries(self) -> List[str]:
+    def get_search_queries(self) -> list[str]:
         """Generate search queries based on client configuration."""
         queries = []
 
@@ -69,11 +70,11 @@ class ClientConfigLoader:
 
         return queries
 
-    def get_exclusion_terms(self) -> List[str]:
+    def get_exclusion_terms(self) -> list[str]:
         """Get terms to exclude from search results."""
         return self.config.get("exclusion_terms", [])
 
-    def should_exclude_article(self, article: Dict[str, Any]) -> bool:
+    def should_exclude_article(self, article: dict[str, Any]) -> bool:
         """Check if an article should be excluded based on exclusion terms."""
         exclusion_terms = self.get_exclusion_terms()
         if not exclusion_terms:

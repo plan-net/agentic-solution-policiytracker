@@ -4,9 +4,8 @@ Airflow DAG for collecting news articles using configurable collectors.
 
 import asyncio
 import os
-from datetime import datetime, timedelta
-from pathlib import Path
 import sys
+from datetime import datetime, timedelta
 
 # Add project root to path for imports - Airflow container paths
 sys.path.insert(0, "/opt/airflow")
@@ -15,10 +14,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
-from src.etl.collectors.exa_direct import ExaDirectCollector
 from src.etl.collectors.factory import create_news_collector, get_available_collectors
-from src.etl.transformers.markdown_transformer import MarkdownTransformer
 from src.etl.storage import get_storage
+from src.etl.transformers.markdown_transformer import MarkdownTransformer
 from src.etl.utils.config_loader import ClientConfigLoader
 from src.etl.utils.initialization_tracker import ETLInitializationTracker
 
@@ -216,7 +214,7 @@ def mark_initialization_complete(**context):
             f"✅ Marked {collector_used} as initialized with {saved_count} articles from {days_back_used} days"
         )
     else:
-        print(f"ℹ️  Regular daily collection, no initialization marking needed")
+        print("ℹ️  Regular daily collection, no initialization marking needed")
 
     return was_initialization
 

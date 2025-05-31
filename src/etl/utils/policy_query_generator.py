@@ -5,10 +5,11 @@ Generates targeted search queries for policy landscape collection
 by parsing client context YAML and creating strategic combinations.
 """
 
-import yaml
-from typing import List, Dict, Any, Tuple
-from pathlib import Path
 import logging
+from pathlib import Path
+from typing import Any
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -19,20 +20,20 @@ class PolicyQueryGenerator:
     def __init__(self, client_context_path: str = "data/context/client.yaml"):
         """Initialize with path to client context YAML."""
         self.context_path = Path(client_context_path)
-        self.context_data: Dict[str, Any] = {}
+        self.context_data: dict[str, Any] = {}
         self._load_context()
 
     def _load_context(self) -> None:
         """Load and parse client context YAML file."""
         try:
-            with open(self.context_path, "r", encoding="utf-8") as f:
+            with open(self.context_path, encoding="utf-8") as f:
                 self.context_data = yaml.safe_load(f)
             logger.info(f"Loaded client context from {self.context_path}")
         except Exception as e:
             logger.error(f"Failed to load client context: {e}")
             raise
 
-    def generate_policy_queries(self) -> List[Dict[str, str]]:
+    def generate_policy_queries(self) -> list[dict[str, str]]:
         """
         Generate comprehensive policy search queries.
 
@@ -65,8 +66,8 @@ class PolicyQueryGenerator:
         return queries
 
     def _generate_category_queries(
-        self, category: str, terms: List[str], markets: List[str], industries: List[str]
-    ) -> List[Dict[str, str]]:
+        self, category: str, terms: list[str], markets: list[str], industries: list[str]
+    ) -> list[dict[str, str]]:
         """Generate queries for a specific topic category."""
         queries = []
 
@@ -112,8 +113,8 @@ class PolicyQueryGenerator:
         return queries
 
     def _generate_strategic_queries(
-        self, markets: List[str], industries: List[str]
-    ) -> List[Dict[str, str]]:
+        self, markets: list[str], industries: list[str]
+    ) -> list[dict[str, str]]:
         """Generate queries for strategic themes."""
         queries = []
         strategic_themes = self.context_data.get("strategic_themes", [])
@@ -141,7 +142,7 @@ class PolicyQueryGenerator:
 
         return queries
 
-    def _generate_enforcement_queries(self, markets: List[str]) -> List[Dict[str, str]]:
+    def _generate_enforcement_queries(self, markets: list[str]) -> list[dict[str, str]]:
         """Generate queries focused on enforcement and compliance actions."""
         queries = []
         impact_keywords = self.context_data.get("direct_impact_keywords", [])
@@ -162,7 +163,7 @@ class PolicyQueryGenerator:
 
         return queries
 
-    def _generate_temporal_queries(self) -> List[Dict[str, str]]:
+    def _generate_temporal_queries(self) -> list[dict[str, str]]:
         """Generate time-sensitive policy queries."""
         queries = []
 
@@ -189,7 +190,7 @@ class PolicyQueryGenerator:
 
         return queries
 
-    def get_query_summary(self) -> Dict[str, int]:
+    def get_query_summary(self) -> dict[str, int]:
         """Get summary of query categories and counts."""
         queries = self.generate_policy_queries()
 
@@ -200,7 +201,7 @@ class PolicyQueryGenerator:
 
         return summary
 
-    def validate_queries(self) -> Tuple[bool, List[str]]:
+    def validate_queries(self) -> tuple[bool, list[str]]:
         """Validate generated queries for quality and completeness."""
         errors = []
 

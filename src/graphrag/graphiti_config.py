@@ -164,25 +164,25 @@ class GraphitiClientManager:
     async def clear_graph(self) -> bool:
         """
         Clear all data from the Graphiti knowledge graph.
-        
+
         Warning: This will delete ALL data in the Neo4j database.
-        
+
         Returns:
             True if successful, False otherwise
         """
         try:
             client = await self.get_client()
-            
+
             # Clear all data using Cypher queries
             async with client._driver.session() as session:
                 # Delete all nodes and relationships
                 await session.run("MATCH (n) DETACH DELETE n")
-                
+
             # Rebuild indices and constraints
             await client.build_indices_and_constraints()
-            
+
             return True
-            
+
         except Exception as e:
             # Use a basic print since logger may not be configured
             print(f"Failed to clear graph: {e}")

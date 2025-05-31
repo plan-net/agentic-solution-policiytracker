@@ -1,52 +1,44 @@
 """Integration tests for multi-agent workflow and handoffs."""
 
-import pytest
-import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
-from typing import Dict, Any
 
-from src.chat.agent.base import AgentRole, AgentResult, MultiAgentState
-from src.chat.agent.prompt_loader import multi_agent_prompt_loader, build_agent_context
+import pytest
+
+from src.chat.agent.base import MultiAgentState
+from src.chat.agent.prompt_loader import build_agent_context
 from tests.fixtures.agent_test_data import AgentTestHelpers
-from tests.mocks.knowledge_graph_tools import MockKnowledgeGraphTools
-from tests.mocks.memory_components import MockMemoryManager, MockStreamingManager
 
 
 class TestMultiAgentWorkflowIntegration:
     """Integration tests for complete multi-agent workflows."""
-    
+
     @pytest.mark.asyncio
     async def test_complete_workflow_simple_query(
-        self, 
-        sample_queries,
-        mock_kg_tools, 
-        mock_memory_manager,
-        mock_streaming_manager
+        self, sample_queries, mock_kg_tools, mock_memory_manager, mock_streaming_manager
     ):
         """Test complete workflow from query to response for simple query."""
-        
+
         # Get test data
         query_data = sample_queries["simple_information_seeking"]
         user_query = query_data["query"]
-        
+
         # Initialize workflow state
         initial_state = MultiAgentState(
             original_query=user_query,
             current_agent="query_understanding",
             session_id="test_workflow_123",
-            is_streaming=True
+            is_streaming=True,
         )
-        
+
         # Step 1: Query Understanding Agent simulation
         query_context = build_agent_context(
             user_query=user_query,
             session_state=initial_state,
             memory_data={
                 "user_preferences": {"detail_level": "high"},
-                "learned_patterns": {"common_intent": "information_seeking"}
-            }
+                "learned_patterns": {"common_intent": "information_seeking"},
+            },
         )
-        
+
         # Simulate query understanding result
         query_analysis = {
             "intent": "information_seeking",
@@ -58,26 +50,19 @@ class TestMultiAgentWorkflowIntegration:
             "temporal_scope": "current",
             "analysis_strategy": "focused",
             "search_priorities": [
-                {
-                    "entity": "EU AI Act",
-                    "priority": "high",
-                    "reasoning": "Primary subject of query"
-                }
+                {"entity": "EU AI Act", "priority": "high", "reasoning": "Primary subject of query"}
             ],
-            "expected_information_types": [
-                "regulatory_framework",
-                "policy_details"
-            ],
+            "expected_information_types": ["regulatory_framework", "policy_details"],
             "memory_insights": {
                 "user_pattern_match": "information_seeking",
                 "preference_alignment": "high_detail",
-                "context_relevance": "new_topic"
-            }
+                "context_relevance": "new_topic",
+            },
         }
-        
+
         # Validate query analysis
         AgentTestHelpers.assert_valid_query_analysis(query_analysis)
-        
+
         # Update state after query understanding
         post_query_state = MultiAgentState(
             original_query=user_query,
@@ -86,16 +71,16 @@ class TestMultiAgentWorkflowIntegration:
             current_agent="tool_planning",
             agent_sequence=["query_understanding"],
             session_id="test_workflow_123",
-            is_streaming=True
+            is_streaming=True,
         )
-        
+
         # Step 2: Tool Planning Agent simulation
         planning_context = build_agent_context(
             user_query=user_query,
             session_state=post_query_state,
-            memory_data={"tool_performance_history": {"search": {"success_rate": 0.94}}}
+            memory_data={"tool_performance_history": {"search": {"success_rate": 0.94}}},
         )
-        
+
         # Simulate tool planning result
         tool_plan = {
             "strategy_type": "focused",
@@ -108,7 +93,7 @@ class TestMultiAgentWorkflowIntegration:
                     "purpose": "Get comprehensive information about the primary entity",
                     "expected_insights": "Regulatory framework details",
                     "estimated_time": 5,
-                    "dependency": None
+                    "dependency": None,
                 },
                 {
                     "step": 2,
@@ -117,31 +102,31 @@ class TestMultiAgentWorkflowIntegration:
                     "purpose": "Find implementation details",
                     "expected_insights": "Implementation requirements",
                     "estimated_time": 10,
-                    "dependency": "step_1"
-                }
+                    "dependency": "step_1",
+                },
             ],
             "success_criteria": {
                 "primary": "Complete overview of EU AI Act",
                 "secondary": "Implementation context",
-                "minimum_threshold": "Basic regulation description"
+                "minimum_threshold": "Basic regulation description",
             },
             "backup_strategies": [
                 {
                     "trigger_condition": "entity_lookup fails",
                     "alternative_tools": ["search"],
-                    "modified_approach": "Use search to establish context"
+                    "modified_approach": "Use search to establish context",
                 }
             ],
             "optimization_notes": {
                 "parallel_opportunities": "none for this simple sequence",
                 "performance_priorities": "accuracy over speed",
-                "user_preference_alignment": "high detail preference"
-            }
+                "user_preference_alignment": "high detail preference",
+            },
         }
-        
+
         # Validate tool plan
         AgentTestHelpers.assert_valid_tool_plan(tool_plan)
-        
+
         # Update state after tool planning
         post_planning_state = MultiAgentState(
             original_query=user_query,
@@ -151,18 +136,17 @@ class TestMultiAgentWorkflowIntegration:
             current_agent="tool_execution",
             agent_sequence=["query_understanding", "tool_planning"],
             session_id="test_workflow_123",
-            is_streaming=True
+            is_streaming=True,
         )
-        
+
         # Step 3: Tool Execution Agent simulation
         execution_context = build_agent_context(
-            user_query=user_query,
-            session_state=post_planning_state
+            user_query=user_query, session_state=post_planning_state
         )
-        
+
         # Execute tools using mock
         tool_results = []
-        
+
         # Execute entity_lookup
         lookup_result = await mock_kg_tools.entity_lookup("EU AI Act")
         tool_result_1 = {
@@ -173,20 +157,18 @@ class TestMultiAgentWorkflowIntegration:
             "output": "Found comprehensive entity information",
             "insights": [
                 "EU AI Act is a comprehensive regulation addressing AI system risks",
-                "Applies risk-based approach with different requirements"
+                "Applies risk-based approach with different requirements",
             ],
-            "entities_found": [
-                {"name": "EU AI Act", "type": "Policy", "relevance": "high"}
-            ],
+            "entities_found": [{"name": "EU AI Act", "type": "Policy", "relevance": "high"}],
             "relationships_discovered": lookup_result.get("entity", {}).get("related_entities", []),
             "source_citations": ["Official EU AI Act text"],
             "temporal_aspects": ["Entered into force: August 1, 2024"],
             "quality_score": 0.95,
-            "error": None
+            "error": None,
         }
         AgentTestHelpers.assert_valid_tool_result(tool_result_1)
         tool_results.append(tool_result_1)
-        
+
         # Execute search
         search_result = await mock_kg_tools.search("EU AI Act implementation", limit=10)
         tool_result_2 = {
@@ -197,18 +179,18 @@ class TestMultiAgentWorkflowIntegration:
             "output": f"Found {len(search_result['facts'])} relevant facts",
             "insights": [
                 "Implementation follows phased approach",
-                "Different requirements for different risk categories"
+                "Different requirements for different risk categories",
             ],
             "entities_found": search_result["entities"],
             "relationships_discovered": [],
             "source_citations": [f["source"] for f in search_result["facts"]],
             "temporal_aspects": [],
             "quality_score": 0.88,
-            "error": None
+            "error": None,
         }
         AgentTestHelpers.assert_valid_tool_result(tool_result_2)
         tool_results.append(tool_result_2)
-        
+
         # Update state after tool execution
         post_execution_state = MultiAgentState(
             original_query=user_query,
@@ -225,22 +207,22 @@ class TestMultiAgentWorkflowIntegration:
                 "total_execution_time": 18.2,
                 "tools_successful": 2,
                 "information_quality": "high",
-                "confidence_level": 0.91
-            }
+                "confidence_level": 0.91,
+            },
         )
-        
+
         # Step 4: Response Synthesis Agent simulation
         synthesis_context = build_agent_context(
             user_query=user_query,
             session_state=post_execution_state,
-            memory_data={"user_preferences": {"citation_style": "academic"}}
+            memory_data={"user_preferences": {"citation_style": "academic"}},
         )
-        
+
         # Simulate response synthesis
         final_response = {
             "response_text": """# EU AI Act Overview
 
-The EU AI Act is a comprehensive regulation that addresses artificial intelligence system risks through a risk-based approach. 
+The EU AI Act is a comprehensive regulation that addresses artificial intelligence system risks through a risk-based approach.
 
 ## Key Findings:
 - Comprehensive regulatory framework for AI systems in the European Union
@@ -267,25 +249,25 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                 "citation_count": 2,
                 "jurisdictions_covered": ["EU"],
                 "temporal_scope": "2024",
-                "complexity_level": "simple"
+                "complexity_level": "simple",
             },
             "follow_up_suggestions": [
                 {
                     "question": "What specific requirements does the AI Act impose on high-risk AI systems?",
-                    "reasoning": "Would provide more detailed implementation guidance"
+                    "reasoning": "Would provide more detailed implementation guidance",
                 },
                 {
                     "question": "How does the AI Act interact with existing EU regulations like GDPR?",
-                    "reasoning": "Would clarify regulatory landscape interactions"
-                }
+                    "reasoning": "Would clarify regulatory landscape interactions",
+                },
             ],
             "synthesis_notes": {
                 "information_quality": "high",
                 "coverage_assessment": "comprehensive for introductory query",
-                "user_satisfaction_prediction": "high"
-            }
+                "user_satisfaction_prediction": "high",
+            },
         }
-        
+
         # Final state update
         final_state = MultiAgentState(
             original_query=user_query,
@@ -298,7 +280,12 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
             final_response=final_response["response_text"],
             response_metadata=final_response["response_metadata"],
             current_agent="response_synthesis",
-            agent_sequence=["query_understanding", "tool_planning", "tool_execution", "response_synthesis"],
+            agent_sequence=[
+                "query_understanding",
+                "tool_planning",
+                "tool_execution",
+                "response_synthesis",
+            ],
             session_id="test_workflow_123",
             is_streaming=True,
             execution_metadata={
@@ -307,11 +294,11 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                     "query_understanding": 1.2,
                     "tool_planning": 2.1,
                     "tool_execution": 15.1,
-                    "response_synthesis": 4.1
-                }
-            }
+                    "response_synthesis": 4.1,
+                },
+            },
         )
-        
+
         # Assertions for complete workflow
         assert final_state.synthesis_complete
         assert final_state.final_response is not None
@@ -319,128 +306,109 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
         assert final_state.response_metadata["confidence_level"] > 0.8
         assert len(final_state.agent_sequence) == 4
         assert final_state.execution_metadata["total_execution_time"] > 0
-        
+
         # Verify all agents were called in correct sequence
-        expected_sequence = ["query_understanding", "tool_planning", "tool_execution", "response_synthesis"]
+        expected_sequence = [
+            "query_understanding",
+            "tool_planning",
+            "tool_execution",
+            "response_synthesis",
+        ]
         assert final_state.agent_sequence == expected_sequence
-        
+
         # Verify tools were executed
         assert len(final_state.executed_tools) == 2
         assert "entity_lookup" in final_state.executed_tools
         assert "search" in final_state.executed_tools
-        
+
         # Verify mock tool calls
         assert mock_kg_tools.get_call_count("entity_lookup") == 1
         assert mock_kg_tools.get_call_count("search") == 1
-    
+
     @pytest.mark.asyncio
     async def test_streaming_workflow_integration(
-        self, 
-        sample_queries,
-        mock_streaming_manager,
-        mock_stream_writer
+        self, sample_queries, mock_streaming_manager, mock_stream_writer
     ):
         """Test streaming integration throughout workflow."""
-        
+
         mock_streaming_manager.set_stream_writer(mock_stream_writer)
-        
+
         # Simulate streaming throughout workflow
         await mock_streaming_manager.emit_thinking(
-            "query_understanding",
-            "Analyzing query structure and intent..."
+            "query_understanding", "Analyzing query structure and intent..."
         )
-        
+
         await mock_streaming_manager.emit_agent_transition(
             "query_understanding",
             "tool_planning",
-            "Query analysis complete, proceeding to planning"
+            "Query analysis complete, proceeding to planning",
         )
-        
+
         await mock_streaming_manager.emit_thinking(
-            "tool_planning",
-            "Designing optimal tool execution sequence..."
+            "tool_planning", "Designing optimal tool execution sequence..."
         )
-        
+
         await mock_streaming_manager.emit_agent_transition(
-            "tool_planning",
-            "tool_execution",
-            "Execution plan ready, beginning tool execution"
+            "tool_planning", "tool_execution", "Execution plan ready, beginning tool execution"
         )
-        
+
         await mock_streaming_manager.emit_tool_execution(
-            "tool_execution",
-            "entity_lookup",
-            "starting",
-            ""
+            "tool_execution", "entity_lookup", "starting", ""
         )
-        
+
         await mock_streaming_manager.emit_tool_execution(
-            "tool_execution",
-            "entity_lookup",
-            "completed",
-            "Found comprehensive entity information"
+            "tool_execution", "entity_lookup", "completed", "Found comprehensive entity information"
         )
-        
+
         await mock_streaming_manager.emit_thinking(
-            "response_synthesis",
-            "Synthesizing findings into comprehensive response..."
+            "response_synthesis", "Synthesizing findings into comprehensive response..."
         )
-        
+
         # Verify streaming events
         events = mock_streaming_manager.get_emitted_events()
         assert len(events) == 7
-        
+
         thinking_events = mock_streaming_manager.get_emitted_events("thinking")
         assert len(thinking_events) == 3
-        
+
         transition_events = mock_streaming_manager.get_emitted_events("agent_transition")
         assert len(transition_events) == 2
-        
+
         tool_events = mock_streaming_manager.get_emitted_events("tool_execution")
         assert len(tool_events) == 2
-        
+
         # Verify stream writer was called
         assert mock_stream_writer.call_count == 7
-    
+
     @pytest.mark.asyncio
-    async def test_memory_integration_workflow(
-        self,
-        sample_queries,
-        mock_memory_manager
-    ):
+    async def test_memory_integration_workflow(self, sample_queries, mock_memory_manager):
         """Test memory integration throughout workflow."""
-        
+
         user_id = "test_user_workflow"
         query = sample_queries["enforcement_tracking"]["query"]
-        
+
         # Test memory retrieval at start of workflow
         user_prefs = await mock_memory_manager.get_user_preferences(user_id)
         query_insights = await mock_memory_manager.get_query_insights(user_id)
-        
+
         # Simulate learning from query during workflow
         await mock_memory_manager.learn_from_query(
             user_id=user_id,
             query=query,
             intent="enforcement_tracking",
             entities=["Meta", "European Union"],
-            satisfaction_rating=4.2
+            satisfaction_rating=4.2,
         )
-        
+
         # Simulate tool performance learning
         await mock_memory_manager.update_tool_performance(
-            tool_name="search",
-            success=True,
-            execution_time=0.12,
-            error=None
+            tool_name="search", success=True, execution_time=0.12, error=None
         )
-        
+
         await mock_memory_manager.update_tool_performance(
-            tool_name="entity_lookup",
-            success=True,
-            execution_time=0.05,
-            error=None
+            tool_name="entity_lookup", success=True, execution_time=0.05, error=None
         )
-        
+
         # Test pattern learning
         await mock_memory_manager.save_learned_pattern(
             pattern_type="successful_workflows",
@@ -449,36 +417,33 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                 "strategy_used": "comprehensive",
                 "tools_sequence": ["search", "entity_lookup", "relationship_analysis"],
                 "success_score": 0.91,
-                "user_satisfaction": 4.2
-            }
+                "user_satisfaction": 4.2,
+            },
         )
-        
+
         # Verify memory operations
         assert mock_memory_manager.get_call_count("get_user_preferences") >= 1
         assert mock_memory_manager.get_call_count("learn_from_query") == 1
         assert mock_memory_manager.get_call_count("update_tool_performance") == 2
         assert mock_memory_manager.get_call_count("save_learned_pattern") == 1
-        
+
         # Verify learned data
         updated_insights = await mock_memory_manager.get_query_insights(user_id)
         assert "enforcement_tracking" in dict(updated_insights["common_intents"])
-        
+
         search_perf = await mock_memory_manager.get_tool_performance_history("search")
         assert search_perf["total_executions"] > 0
         assert search_perf["success_rate"] > 0
-    
+
     @pytest.mark.asyncio
     async def test_error_handling_workflow(
-        self,
-        sample_queries,
-        mock_kg_tools,
-        mock_streaming_manager
+        self, sample_queries, mock_kg_tools, mock_streaming_manager
     ):
         """Test error handling and recovery in workflow."""
-        
+
         # Simulate tool failure
         mock_kg_tools.set_execution_delay("entity_lookup", 0.01)  # Very fast for error simulation
-        
+
         # Test tool failure scenario
         try:
             # This should succeed with mock data
@@ -488,35 +453,29 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
         except Exception as e:
             # If exception occurs, verify it's handled gracefully
             assert isinstance(e, Exception)
-        
+
         # Test error streaming
         await mock_streaming_manager.emit_error(
-            "tool_execution",
-            "Entity lookup failed: entity not found",
-            "entity_not_found"
+            "tool_execution", "Entity lookup failed: entity not found", "entity_not_found"
         )
-        
+
         # Test backup strategy activation
         # Simulate switching to search when entity_lookup fails
         search_result = await mock_kg_tools.search("Nonexistent Entity", limit=5)
         assert search_result["total_results"] >= 0  # Should not fail, even with no results
-        
+
         # Verify error was logged
         error_events = mock_streaming_manager.get_emitted_events("error")
         assert len(error_events) == 1
         assert "entity not found" in error_events[0]["error_message"]
-    
+
     @pytest.mark.asyncio
-    async def test_complex_query_workflow(
-        self,
-        sample_queries,
-        mock_kg_tools
-    ):
+    async def test_complex_query_workflow(self, sample_queries, mock_kg_tools):
         """Test workflow with complex query requiring comprehensive analysis."""
-        
+
         complex_query_data = sample_queries["complex_compliance"]
         query = complex_query_data["query"]
-        
+
         # Simulate complex query analysis
         query_analysis = {
             "intent": "compliance_research",
@@ -530,20 +489,24 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
             "search_priorities": [
                 {"entity": "GDPR", "priority": "high", "reasoning": "Foundational regulation"},
                 {"entity": "Meta", "priority": "high", "reasoning": "Example platform"},
-                {"entity": "Digital Services Act", "priority": "medium", "reasoning": "Related regulation"}
+                {
+                    "entity": "Digital Services Act",
+                    "priority": "medium",
+                    "reasoning": "Related regulation",
+                },
             ],
             "expected_information_types": [
                 "compliance_requirements",
                 "regulatory_interactions",
-                "enforcement_precedents"
+                "enforcement_precedents",
             ],
             "memory_insights": {
                 "user_pattern_match": "compliance_research_pattern",
                 "preference_alignment": "detailed_multi_jurisdictional",
-                "context_relevance": "follows_enforcement_questions"
-            }
+                "context_relevance": "follows_enforcement_questions",
+            },
         }
-        
+
         # Test comprehensive tool plan for complex query
         tool_plan = {
             "strategy_type": "comprehensive",
@@ -552,11 +515,14 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                 {
                     "step": 1,
                     "tool_name": "search",
-                    "parameters": {"query": "GDPR Digital Services Act AI Act compliance interaction", "limit": 15},
+                    "parameters": {
+                        "query": "GDPR Digital Services Act AI Act compliance interaction",
+                        "limit": 15,
+                    },
                     "purpose": "Establish broad regulatory landscape",
                     "expected_insights": "Regulatory interactions overview",
                     "estimated_time": 10,
-                    "dependency": None
+                    "dependency": None,
                 },
                 {
                     "step": 2,
@@ -565,7 +531,7 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                     "purpose": "Analyze specific regulatory relationships",
                     "expected_insights": "How regulations interact",
                     "estimated_time": 8,
-                    "dependency": None
+                    "dependency": None,
                 },
                 {
                     "step": 3,
@@ -574,74 +540,83 @@ The EU AI Act is a comprehensive regulation that addresses artificial intelligen
                     "purpose": "Find regulatory pathways",
                     "expected_insights": "How AI Act affects Meta",
                     "estimated_time": 12,
-                    "dependency": "step_2"
-                }
+                    "dependency": "step_2",
+                },
             ],
             "success_criteria": {
                 "primary": "Comprehensive multi-regulation compliance analysis",
                 "secondary": "Specific company examples and interactions",
-                "minimum_threshold": "Basic understanding of regulatory interactions"
+                "minimum_threshold": "Basic understanding of regulatory interactions",
             },
             "backup_strategies": [
                 {
                     "trigger_condition": "relationship_analysis insufficient",
                     "alternative_tools": ["traverse_from_entity", "get_communities"],
-                    "modified_approach": "Use network traversal for relationships"
+                    "modified_approach": "Use network traversal for relationships",
                 }
             ],
             "optimization_notes": {
                 "parallel_opportunities": "steps 1 and 2 can run in parallel",
                 "performance_priorities": "thoroughness over speed",
-                "user_preference_alignment": "comprehensive analysis for complex query"
-            }
+                "user_preference_alignment": "comprehensive analysis for complex query",
+            },
         }
-        
+
         # Execute comprehensive tool sequence
         results = []
-        
+
         # Step 1: Search
         search_result = await mock_kg_tools.search(
-            "GDPR Digital Services Act AI Act compliance interaction", 
-            limit=15
+            "GDPR Digital Services Act AI Act compliance interaction", limit=15
         )
-        results.append({
-            "tool_name": "search",
-            "success": True,
-            "insights": [f"Found {search_result['total_results']} regulatory interactions"],
-            "quality_score": 0.87
-        })
-        
+        results.append(
+            {
+                "tool_name": "search",
+                "success": True,
+                "insights": [f"Found {search_result['total_results']} regulatory interactions"],
+                "quality_score": 0.87,
+            }
+        )
+
         # Step 2: Relationship analysis
         rel_result = await mock_kg_tools.relationship_analysis("GDPR", "Digital Services Act")
-        results.append({
-            "tool_name": "relationship_analysis",
-            "success": True,
-            "insights": [f"Found {len(rel_result['direct_relationships'])} direct relationships"],
-            "quality_score": 0.82
-        })
-        
+        results.append(
+            {
+                "tool_name": "relationship_analysis",
+                "success": True,
+                "insights": [
+                    f"Found {len(rel_result['direct_relationships'])} direct relationships"
+                ],
+                "quality_score": 0.82,
+            }
+        )
+
         # Step 3: Path finding
-        path_result = await mock_kg_tools.find_paths_between_entities("Meta", "EU AI Act", max_path_length=3)
-        results.append({
-            "tool_name": "find_paths_between_entities",
-            "success": path_result["connection_exists"],
-            "insights": [f"Found {len(path_result['paths_found'])} connection paths"],
-            "quality_score": 0.79
-        })
-        
+        path_result = await mock_kg_tools.find_paths_between_entities(
+            "Meta", "EU AI Act", max_path_length=3
+        )
+        results.append(
+            {
+                "tool_name": "find_paths_between_entities",
+                "success": path_result["connection_exists"],
+                "insights": [f"Found {len(path_result['paths_found'])} connection paths"],
+                "quality_score": 0.79,
+            }
+        )
+
         # Verify comprehensive analysis
         assert len(results) == 3
         assert all(r["success"] for r in results)
-        
+
         # Verify mock tool calls for complex workflow
         assert mock_kg_tools.get_call_count("search") >= 1
         assert mock_kg_tools.get_call_count("relationship_analysis") >= 1
         assert mock_kg_tools.get_call_count("find_paths_between_entities") >= 1
-        
+
         # Calculate overall workflow metrics
         total_insights = sum(len(r["insights"]) for r in results)
         avg_quality = sum(r["quality_score"] for r in results) / len(results)
-        
+
         assert total_insights >= 3
         assert avg_quality > 0.7
 

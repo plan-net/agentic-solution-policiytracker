@@ -4,8 +4,9 @@ Exa.ai news collector for political monitoring.
 
 import asyncio
 import os
-from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
+from typing import Any, Optional
+
 import structlog
 from exa_py import Exa
 
@@ -32,7 +33,7 @@ class ExaNewsCollector:
         max_items: int = DEFAULT_MAX_ITEMS,
         days_back: int = 1,
         category: str = DEFAULT_CATEGORY,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Collect news articles from Exa.ai.
 
@@ -57,7 +58,6 @@ class ExaNewsCollector:
 
             # Search with Exa.ai - run in thread pool to avoid blocking
             import concurrent.futures
-            import functools
 
             def search_exa():
                 return self.client.search_and_contents(
@@ -117,7 +117,7 @@ class ExaNewsCollector:
         logger.warning(f"Could not parse date: {date_str}")
         return None
 
-    def _normalize_article(self, exa_result) -> Dict[str, Any]:
+    def _normalize_article(self, exa_result) -> dict[str, Any]:
         """Normalize article data from Exa.ai to our standard format."""
         # Extract published date from Exa result
         published_date = None
@@ -214,8 +214,8 @@ class ExaNewsCollector:
         return truncated.strip() + "..."
 
     async def deduplicate_articles(
-        self, articles: List[Dict[str, Any]], existing_urls: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, articles: list[dict[str, Any]], existing_urls: list[str]
+    ) -> list[dict[str, Any]]:
         """Remove articles that have already been collected based on URL."""
         existing_set = set(existing_urls)
         deduplicated = []

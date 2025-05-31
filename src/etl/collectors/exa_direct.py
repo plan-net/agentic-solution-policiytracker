@@ -2,11 +2,11 @@
 Direct HTTP Exa.ai news collector for political monitoring.
 """
 
-import asyncio
-import aiohttp
 import os
-from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
+from typing import Any, Optional
+
+import aiohttp
 import structlog
 
 logger = structlog.get_logger()
@@ -34,7 +34,7 @@ class ExaDirectCollector:
         max_items: int = DEFAULT_MAX_ITEMS,
         days_back: int = 1,
         category: str = DEFAULT_CATEGORY,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Collect news articles from Exa.ai using direct HTTP calls.
 
@@ -145,7 +145,7 @@ class ExaDirectCollector:
 
         return parsed_date.isoformat()
 
-    def _normalize_article(self, exa_result: Dict[str, Any]) -> Dict[str, Any]:
+    def _normalize_article(self, exa_result: dict[str, Any]) -> dict[str, Any]:
         """Normalize article data from Exa.ai to our standard format."""
         # Extract and validate published date
         published_date = self._parse_date(exa_result.get("publishedDate"))
@@ -220,8 +220,8 @@ class ExaDirectCollector:
         return truncated.strip() + "..."
 
     async def deduplicate_articles(
-        self, articles: List[Dict[str, Any]], existing_urls: List[str]
-    ) -> List[Dict[str, Any]]:
+        self, articles: list[dict[str, Any]], existing_urls: list[str]
+    ) -> list[dict[str, Any]]:
         """Remove articles that have already been collected based on URL."""
         existing_set = set(existing_urls)
         deduplicated = []

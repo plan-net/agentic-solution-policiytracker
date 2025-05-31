@@ -4,9 +4,9 @@ Airflow DAG for orchestrating Kodosumi flows.
 
 import asyncio
 import json
-from datetime import datetime, timedelta
-from pathlib import Path
 import sys
+from datetime import datetime, timedelta
+
 import requests
 
 # Add project root to path for imports - Airflow container paths
@@ -14,7 +14,6 @@ sys.path.insert(0, "/opt/airflow")
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.dates import days_ago
 
 from src.etl.storage import get_storage

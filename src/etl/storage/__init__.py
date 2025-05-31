@@ -2,9 +2,9 @@
 Storage module for ETL pipeline.
 """
 
+from .azure import AzureStorage
 from .base import BaseStorage
 from .local import LocalStorage
-from .azure import AzureStorage
 
 __all__ = ["BaseStorage", "LocalStorage", "AzureStorage", "get_storage"]
 
