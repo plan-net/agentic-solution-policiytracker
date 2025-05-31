@@ -2,7 +2,7 @@
 title: German Police Seize $38,260,000 in Crypto From eXch Amid Allegations the Exchange Laundered Hacked ByBit Funds
 url: https://dailyhodl.com/2025/05/10/german-police-seize-38000000-in-crypto-from-exch-amid-allegations-the-exchange-laundered-hacked-bybit-funds/
 published_date: 2025-05-10T00:00:00
-collected_date: 2025-05-31T09:04:51.475152
+collected_date: 2025-05-31T11:08:17.869327
 source: Dailyhodl
 source_url: https://dailyhodl.com
 author: Conor Devitt

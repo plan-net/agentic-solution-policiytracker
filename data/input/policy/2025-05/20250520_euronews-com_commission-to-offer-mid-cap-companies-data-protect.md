@@ -2,7 +2,7 @@
 title: Commission to offer mid-cap companies data protection relief
 url: https://www.euronews.com/next/2025/05/20/commission-to-offer-mid-cap-companies-data-protection-relief-in-simplification-plan
 published_date: 2025-05-20T00:00:00
-collected_date: 2025-05-31T09:04:15.600067
+collected_date: 2025-05-31T11:07:42.062689
 source: Euronews
 source_url: https://www.euronews.com
 description: "By  Romane Armangau 

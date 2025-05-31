@@ -2,7 +2,7 @@
 title: Google, Amazon, X, Microsoft Ad Practices Ruled Illegal Under EU Privacy Law
 url: https://www.techrepublic.com/article/news-europe-gdpr-violations-ads-microsoft-google-amazon-x/
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T09:04:15.051010
+collected_date: 2025-05-31T11:07:42.062827
 source: Techrepublic
 source_url: https://www.techrepublic.com
 author: Fiona Jackson

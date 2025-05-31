@@ -2,7 +2,7 @@
 title: EU 2040 climate target with carbon credits expected in July, diplomats say
 url: https://www.politico.eu/article/eu-2040-climate-target-with-carbon-credits-expected-in-july-diplomats-say/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T09:04:37.141210
+collected_date: 2025-05-31T11:08:14.624554
 source: Politico
 source_url: https://www.politico.eu
 author: Zia Weise

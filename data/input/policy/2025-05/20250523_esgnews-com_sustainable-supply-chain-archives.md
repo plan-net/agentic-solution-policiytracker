@@ -1,8 +1,8 @@
 ---
 title: Sustainable Supply Chain Archives
 url: https://esgnews.com/?cat=10431
-published_date: 2025-05-23T14:38:49.906000
-collected_date: 2025-05-28T14:38:51.125923
+published_date: 2025-05-23T00:00:00
+collected_date: 2025-05-31T11:08:03.868358
 source: Esgnews
 source_url: https://esgnews.com
 author: ESG News

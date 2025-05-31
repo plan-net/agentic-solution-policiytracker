@@ -2,7 +2,7 @@
 title: France, Spain and Greece urge EU to curb child access to social media
 url: https://www.euractiv.com/section/tech/news/france-spain-and-greece-urge-eu-to-curb-child-access-to-social-media/
 published_date: 2025-05-19T00:00:00
-collected_date: 2025-05-31T08:34:01.902017
+collected_date: 2025-05-31T11:08:11.567813
 source: Euractiv
 source_url: https://www.euractiv.com
 author: Anupriya Datta, Claudie Moreau

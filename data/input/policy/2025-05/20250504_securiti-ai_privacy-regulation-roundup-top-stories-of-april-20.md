@@ -2,7 +2,7 @@
 title: Privacy Regulation Roundup: Top Stories of April 2025
 url: https://securiti.ai/privacy-roundup/april-2025/
 published_date: 2025-05-04T00:00:00
-collected_date: 2025-05-29T14:35:35.708728
+collected_date: 2025-05-31T11:07:42.062913
 source: Securiti
 source_url: https://securiti.ai
 author: Yasir Nawaz

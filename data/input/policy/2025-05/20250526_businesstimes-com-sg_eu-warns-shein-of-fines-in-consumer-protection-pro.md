@@ -1,8 +1,8 @@
 ---
 title: EU warns Shein of fines in consumer protection probe
 url: https://www.businesstimes.com.sg/international/global/eu-warns-shein-fines-consumer-protection-probe
-published_date: 2025-05-26T03:52:55.830000
-collected_date: 2025-05-31T03:52:56.901555
+published_date: 2025-05-26T10:37:18.455000
+collected_date: 2025-05-31T10:37:19.677916
 source: Businesstimes
 source_url: https://www.businesstimes.com.sg
 description: Shein could also be the target of EU regulatory demands under the EU’s Digital Services Act Published Mon, May 26, 2025 · 11:40 PM [BRUSSELS] The European Union on Monday (May 26) urged fast-fashion retailer Shein to respect EU consumer protection laws and warned it could face fines if it failed to...

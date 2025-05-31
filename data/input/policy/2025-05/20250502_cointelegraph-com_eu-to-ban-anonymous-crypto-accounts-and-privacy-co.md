@@ -2,7 +2,7 @@
 title: EU to ban anonymous crypto accounts and privacy coins by 2027
 url: https://cointelegraph.com/news/eu-crypto-ban-anonymous-privacy-tokens-2027?utm_source=rss_feed&amp;utm_medium=rss&amp;utm_campaign=rss_partner_inbound
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-30T20:41:05.489269
+collected_date: 2025-05-31T11:08:17.427633
 source: Cointelegraph
 source_url: https://cointelegraph.com
 author: Zoltan Vardai

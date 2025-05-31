@@ -2,7 +2,7 @@
 title: European Digital Compliance: Key Digital Regulation & Compliance Developments (May 2025) | Morrison Foerster
 url: https://www.mofo.com/resources/insights/250509-european-digital-compliance-key-digital-regulation
 published_date: 2025-05-09T00:00:00
-collected_date: 2025-05-31T09:04:26.058683
+collected_date: 2025-05-31T11:07:52.695012
 source: Mofo
 source_url: https://www.mofo.com
 description: To help organizations stay on top of the main developments in European digital compliance, Morrison Foerster’s European Digital Regulatory Compliance team reports on some of the main topical digital regulatory and compliance developments that have taken place in the third quarter of 2024. This...

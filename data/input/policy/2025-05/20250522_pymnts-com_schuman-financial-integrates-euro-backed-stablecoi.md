@@ -2,7 +2,7 @@
 title: Schuman Financial Integrates Euro-Backed Stablecoin With Ripple’s XRPL
 url: https://www.pymnts.com/cryptocurrency/2025/schuman-financial-integrates-euro-backed-stablecoin-with-ripples-xrpl/
 published_date: 2025-05-22T00:00:00
-collected_date: 2025-05-30T20:41:05.489222
+collected_date: 2025-05-31T11:08:17.427734
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS

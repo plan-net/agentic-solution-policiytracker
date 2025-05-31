@@ -2,7 +2,7 @@
 title: GDPR is cracking: Brussels rewrites its prized privacy law
 url: https://www.politico.eu/article/brussels-gdpr-technology-rewrites-prized-loathed-privacy-law/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
 published_date: 2025-05-21T00:00:00
-collected_date: 2025-05-31T09:04:15.600098
+collected_date: 2025-05-31T11:07:42.062729
 source: Politico
 source_url: https://www.politico.eu
 author: Ellen O'Regan

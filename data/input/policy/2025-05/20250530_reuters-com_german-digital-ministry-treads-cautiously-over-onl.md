@@ -2,7 +2,7 @@
 title: German digital ministry treads cautiously over online platform levy
 url: https://www.reuters.com/technology/german-digital-ministry-treads-cautiously-over-online-platform-levy-2025-05-30/
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T09:04:51.475388
+collected_date: 2025-05-31T11:08:17.869425
 source: Reuters
 source_url: https://www.reuters.com
 author: Reuters

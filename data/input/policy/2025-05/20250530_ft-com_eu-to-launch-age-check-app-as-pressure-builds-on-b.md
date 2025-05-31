@@ -2,7 +2,7 @@
 title: EU to launch age-check app as pressure builds on Big Tech
 url: https://www.ft.com/content/6b672468-a085-47dc-b195-daa98d6a591b
 published_date: 2025-05-30T00:00:00
-collected_date: 2025-05-31T08:03:17.452123
+collected_date: 2025-05-31T10:37:26.715911
 source: Ft
 source_url: https://www.ft.com
 author: Barbara Moens

@@ -2,7 +2,7 @@
 title: EU Slaps $600M Fine on TikTok for Transferring User Data to China
 url: https://www.outlookbusiness.com/corporate/eu-slaps-600m-fine-on-tiktok-for-transferring-user-data-to-china
 published_date: 2025-05-02T00:00:00
-collected_date: 2025-05-30T22:30:21.165045
+collected_date: 2025-05-31T10:06:12.517042
 source: Outlookbusiness
 source_url: https://www.outlookbusiness.com
 author: Outlook Business Desk

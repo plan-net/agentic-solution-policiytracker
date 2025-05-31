@@ -2,7 +2,7 @@
 title: "\"Meta AI non-compliant with GDPR\" – Digital rights group menaces Meta with injunction over EU AI training"
 url: https://www.techradar.com/computing/cyber-security/meta-ai-non-compliant-with-gdpr-digital-rights-group-menaces-meta-with-injunction-over-eu-ai-training
 published_date: 2025-05-15T00:00:00
-collected_date: 2025-05-31T08:02:16.841437
+collected_date: 2025-05-31T10:06:15.321741
 source: Techradar
 source_url: https://www.techradar.com
 author: Chiara Castro

@@ -2,7 +2,7 @@
 title: No link ban, no commission: Apple loses control over the App Store
 url: https://www.heise.de/en/news/No-link-ban-no-commission-Apple-loses-control-over-the-App-Store-10398701.html
 published_date: 2025-05-26T00:00:00
-collected_date: 2025-05-31T09:04:51.475530
+collected_date: 2025-05-31T10:37:34.017464
 source: Heise
 source_url: https://www.heise.de
 author: Leo Becker

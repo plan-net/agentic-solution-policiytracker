@@ -2,7 +2,7 @@
 title: Microsoft and EU set to end Teams antitrust clash on friendly terms
 url: https://www.techspot.com/news/107949-microsoft-eu-set-end-teams-antitrust-clash-friendly.html
 published_date: 2025-05-16T00:00:00
-collected_date: 2025-05-31T09:04:37.124268
+collected_date: 2025-05-31T10:06:34.272608
 source: Techspot
 source_url: https://www.techspot.com
 author: Alfonso Maruccia
