@@ -101,26 +101,50 @@ class ChatServer:
         logger.info("Multi-agent ChatServer initialized with LangWatch observability")
 
     async def _get_graphiti_client(self):
-        """Lazy initialization of Graphiti client."""
+        """Lazy initialization of Graphiti client with APISIX routing."""
         if self.graphiti_client is None:
+            from src.flows.shared.apisix_llm_client import (
+                AgentContext,
+                create_graphiti_apisix_config,
+            )
+
+            # Create agent context
+            context = AgentContext(
+                agent_type="chat_agent",
+                agent_name="graphiti_knowledge_graph",
+                chat_agent_name="knowledge_graph",
+            )
+
+            # Get APISIX-configured LLM client
+            llm_client, note = create_graphiti_apisix_config(context)
+
+            # Initialize Graphiti with APISIX routing
             self.graphiti_client = Graphiti(
-                settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD
+                settings.NEO4J_URI,
+                settings.NEO4J_USERNAME,
+                settings.NEO4J_PASSWORD,
+                llm_client=llm_client,
             )
             await self.graphiti_client.build_indices_and_constraints()
-            logger.info("Graphiti client initialized")
+            logger.info("Graphiti client initialized with APISIX routing")
+            logger.warning(note)  # Log Week 1 limitation
         return self.graphiti_client
 
     async def _get_llm(self):
-        """Lazy initialization of LLM."""
+        """Lazy initialization of LLM with APISIX routing."""
         if self.llm is None:
-            openai_api_key = os.getenv("OPENAI_API_KEY")
-            if not openai_api_key:
-                raise ValueError("OPENAI_API_KEY environment variable not set")
+            from src.flows.shared.apisix_llm_client import create_chat_agent_llm
 
-            self.llm = ChatOpenAI(
-                api_key=openai_api_key, model="gpt-4o-mini", temperature=0.1, streaming=True
+            # Create LLM with APISIX routing and agent tracking
+            # Note: session_id will be set per-request, this is a default
+            self.llm = create_chat_agent_llm(
+                agent_name="chat_orchestrator",
+                session_id="default",
+                model="gpt-4o-mini",
+                temperature=0.1,
+                streaming=True,
             )
-            logger.info("LLM initialized")
+            logger.info("LLM initialized with APISIX gateway routing and cost tracking")
         return self.llm
 
     async def _get_tool_integration_manager(self):

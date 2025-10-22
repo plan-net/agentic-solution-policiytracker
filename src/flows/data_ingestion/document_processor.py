@@ -14,60 +14,22 @@ from typing import Optional
 import structlog
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
-from pydantic import BaseModel, Field
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
+from src.graphrag.schema_converter import (
+    get_entity_types,
+    get_edge_types,
+    get_edge_type_map,
+)
+
+from src.graphrag.political_schema_v2_14thOct import (
+    ENTITY_TYPE_REGISTRY,
+    EDGE_TYPE_REGISTRY,
+    EDGE_TYPE_MAP,
+    SCHEMA_INFO,
+)
 
 logger = structlog.get_logger()
-
-
-# Political domain entity types for Graphiti
-class Policy(BaseModel):
-    """Government policies, laws, and regulations that create compliance obligations and affect companies."""
-
-    policy_name: str = Field(
-        ...,
-        description="Official name of the policy, law, or regulation that companies must comply with",
-    )
-    jurisdiction: str | None = Field(
-        None,
-        description="Geographic region where this policy is enforced and companies must comply",
-    )
-    status: str | None = Field(
-        None, description="Current legislative status: draft, enacted, implemented, or repealed"
-    )
-
-
-class Company(BaseModel):
-    """Business entities that are subject to government regulations and policies."""
-
-    company_name: str = Field(
-        ...,
-        description="Name of the company that may be regulated, fined, or required to comply with policies",
-    )
-    industry: str | None = Field(
-        None, description="Business sector that determines which regulations apply to this company"
-    )
-
-
-class Politician(BaseModel):
-    """Political figures who propose, support, or oppose policies and regulations."""
-
-    politician_name: str = Field(
-        ...,
-        description="Name of the politician who influences, proposes, or votes on policies affecting companies",
-    )
-    position: str | None = Field(
-        None,
-        description="Official role that grants authority to create or influence regulatory policy",
-    )
-
-
-POLITICAL_ENTITY_TYPES = {
-    "Policy": Policy,
-    "Company": Company,
-    "Politician": Politician,
-}
 
 # Configuration
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
@@ -119,11 +81,33 @@ try:
             self.tracker = DocumentTracker()
 
         async def initialize(self):
-            """Initialize the Graphiti client connection."""
+            """Initialize the Graphiti client connection with APISIX routing."""
             try:
-                self.graphiti_client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+                from src.flows.shared.apisix_llm_client import (
+                    AgentContext,
+                    create_graphiti_apisix_config,
+                )
+
+                # Create agent context for cost tracking
+                context = AgentContext(
+                    agent_type="kodosumi_flow",
+                    agent_name="graphiti_document_processor",
+                    flow_name="data_ingestion",
+                )
+
+                # Get APISIX-configured LLM client
+                llm_client, note = create_graphiti_apisix_config(context)
+
+                # Initialize Graphiti with APISIX routing
+                self.graphiti_client = Graphiti(
+                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
+                )
                 await self.graphiti_client.build_indices_and_constraints()
-                logger.info(f"Actor {self.actor_id}: Graphiti client initialized")
+
+                logger.info(
+                    f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing"
+                )
+                logger.warning(note)  # Log the Week 1 limitation
                 return True
             except Exception as e:
                 logger.error(f"Actor {self.actor_id}: Failed to initialize: {e}")
@@ -166,7 +150,7 @@ try:
                 episode_name = generate_episode_name(doc_path, datetime.now())
                 reference_time = extract_document_date(content) or datetime.now()
 
-                # Process through Graphiti directly
+                # Process through Graphiti directly with enhanced schema
                 result = await self.graphiti_client.add_episode(
                     name=episode_name,
                     episode_body=content,
@@ -174,7 +158,9 @@ try:
                     reference_time=reference_time,
                     source=EpisodeType.text,
                     group_id=GROUP_ID,
-                    entity_types=POLITICAL_ENTITY_TYPES,
+                    entity_types=ENTITY_TYPE_REGISTRY,
+                    edge_types=EDGE_TYPE_REGISTRY,
+                    edge_type_map=EDGE_TYPE_MAP,
                 )
 
                 # Extract metrics
@@ -324,7 +310,9 @@ class SimpleDocumentProcessor:
                     reference_time=reference_time,
                     source=EpisodeType.text,
                     group_id=GROUP_ID,
-                    entity_types=POLITICAL_ENTITY_TYPES,
+                    entity_types=ENTITY_TYPE_REGISTRY,
+                    edge_types=EDGE_TYPE_REGISTRY,
+                    edge_type_map=EDGE_TYPE_MAP,
                 )
 
                 # Track successful processing
