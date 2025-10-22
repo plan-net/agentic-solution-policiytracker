@@ -70,11 +70,15 @@ status:
     @echo "  ✈️  Airflow:        http://localhost:8080 (admin/admin)"
     @echo "  ☁️  Azurite:        http://localhost:10000 (blob storage)"
     @echo "  🤖 Graphiti MCP:   http://localhost:8000 (SSE endpoint)"
+    @echo "  🚪 APISIX Gateway: http://localhost:9080 (LLM API Gateway)"
+    @echo "  🎛️  APISIX Dashboard: http://localhost:9000 (admin/admin)"
+    @echo "  📊 Cost Analytics: http://localhost:8090 (Cost tracking API)"
     @echo ""
     @echo "  📡 API Endpoints:"
     @echo "  🗨️  Chat API:       http://localhost:8001/v1/chat/completions"
     @echo "  📝 Data Ingestion: http://localhost:8001/data-ingestion"
     @echo "  🔄 ETL Health:     http://localhost:8080/health"
+    @echo "  🌐 LLM Gateway:    http://localhost:9080/v1/* (via APISIX)"
 
 
 # === Application Deployment ===
@@ -210,6 +214,128 @@ clean-all: stop clean
     docker system prune -f
     @echo "✅ Full cleanup complete"
 
+
+# === APISIX API Gateway Management ===
+
+# Start APISIX gateway services
+apisix-up:
+    @echo "🚪 Starting APISIX gateway services..."
+    docker compose up -d etcd apisix apisix-dashboard timescaledb cost-analytics
+    @echo "⏳ Waiting for services to be healthy..."
+    @sleep 10
+    @just apisix-status
+
+# Stop APISIX services
+apisix-down:
+    @echo "🛑 Stopping APISIX services..."
+    docker compose stop cost-analytics timescaledb apisix-dashboard apisix etcd
+
+# Restart APISIX services
+apisix-restart:
+    @echo "🔄 Restarting APISIX services..."
+    docker compose restart apisix
+
+# View APISIX logs
+apisix-logs:
+    docker compose logs -f apisix
+
+# Check APISIX service status
+apisix-status:
+    @echo "📊 APISIX Service Status:"
+    @docker compose ps apisix etcd apisix-dashboard timescaledb cost-analytics
+    @echo ""
+    @echo "🌐 APISIX Gateway: http://localhost:9080"
+    @echo "🎛️  APISIX Dashboard: http://localhost:9000 (admin/admin)"
+    @echo "📊 Cost Analytics: http://localhost:8090"
+    @echo ""
+    @echo "Testing gateway health..."
+    @curl -s http://localhost:9080/apisix/status || echo "❌ APISIX not responding"
+
+# Open APISIX Dashboard in browser
+apisix-ui:
+    @echo "🌐 Opening APISIX Dashboard..."
+    open http://localhost:9000 || xdg-open http://localhost:9000 || echo "Please visit: http://localhost:9000 (admin/admin)"
+
+# Test APISIX routing to OpenAI
+apisix-test-openai:
+    @echo "🧪 Testing APISIX → OpenAI routing..."
+    @echo "Note: Requires OPENAI_API_KEY in .env"
+    @if [ -z "$$OPENAI_API_KEY" ]; then \
+        echo "❌ OPENAI_API_KEY not set in environment"; \
+        exit 1; \
+    fi
+    curl -X POST http://localhost:9080/v1/chat/completions \
+      -H "Authorization: Bearer $$OPENAI_API_KEY" \
+      -H "X-Agent-Type: test" \
+      -H "X-Agent-Name: justfile-test" \
+      -H "Content-Type: application/json" \
+      -d '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"Say hello"}],"max_tokens":10}'
+
+# Test APISIX routing to Anthropic
+apisix-test-anthropic:
+    @echo "🧪 Testing APISIX → Anthropic routing..."
+    @echo "Note: Requires ANTHROPIC_API_KEY in .env"
+    @if [ -z "$$ANTHROPIC_API_KEY" ]; then \
+        echo "❌ ANTHROPIC_API_KEY not set in environment"; \
+        exit 1; \
+    fi
+    curl -X POST http://localhost:9080/v1/messages \
+      -H "x-api-key: $$ANTHROPIC_API_KEY" \
+      -H "anthropic-version: 2023-06-01" \
+      -H "X-Agent-Type: test" \
+      -H "X-Agent-Name: justfile-test" \
+      -H "Content-Type: application/json" \
+      -d '{"model":"claude-3-haiku-20240307","messages":[{"role":"user","content":"Say hello"}],"max_tokens":10}'
+
+# View cost tracking data (today)
+apisix-costs-today:
+    @echo "💰 Today's LLM Costs by Agent:"
+    docker exec -it policiytracker-timescaledb psql -U timescale -d llm_costs -c \
+      "SELECT agent_type, agent_name, COUNT(*) as requests, SUM(cost_usd) as cost FROM llm_requests WHERE timestamp >= CURRENT_DATE GROUP BY agent_type, agent_name ORDER BY cost DESC;"
+
+# View cost tracking data (last 7 days)
+apisix-costs-week:
+    @echo "💰 Last 7 Days LLM Costs by Agent:"
+    docker exec -it policiytracker-timescaledb psql -U timescale -d llm_costs -c \
+      "SELECT agent_type, agent_name, COUNT(*) as requests, SUM(cost_usd) as cost FROM llm_requests WHERE timestamp > NOW() - INTERVAL '7 days' GROUP BY agent_type, agent_name ORDER BY cost DESC LIMIT 20;"
+
+# View recent LLM requests
+apisix-requests-recent:
+    @echo "📜 Recent LLM Requests (last 10):"
+    docker exec -it policiytracker-timescaledb psql -U timescale -d llm_costs -c \
+      "SELECT timestamp, provider, agent_name, model, total_tokens, cost_usd, latency_ms FROM llm_requests ORDER BY timestamp DESC LIMIT 10;"
+
+# Query cost analytics API
+apisix-analytics query="by-agent-type":
+    @echo "📊 Querying cost analytics: {{query}}"
+    curl -s "http://localhost:8090/api/costs/{{query}}?days=7" | python3 -m json.tool
+
+# Connect to TimescaleDB for custom queries
+apisix-db:
+    @echo "🗄️  Connecting to TimescaleDB..."
+    docker exec -it policiytracker-timescaledb psql -U timescale -d llm_costs
+
+# Clear cost tracking data (WARNING: Destructive)
+apisix-clear-costs:
+    @echo "⚠️  This will delete ALL cost tracking data!"
+    @read -p "Continue? (y/N) " -n 1 -r; \
+    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+        echo ""; \
+        docker exec -it policiytracker-timescaledb psql -U timescale -d llm_costs -c "TRUNCATE llm_requests;"; \
+        echo "✅ Cost data cleared"; \
+    fi
+
+# APISIX setup instructions
+apisix-setup:
+    @echo "📝 APISIX Setup Instructions:"
+    @echo ""
+    @echo "1. Start services: just apisix-up"
+    @echo "2. Access Dashboard at http://localhost:9000 (admin/admin)"
+    @echo "3. Test routing: just apisix-test-openai"
+    @echo "4. View costs: just apisix-costs-today"
+    @echo "5. Analytics API: http://localhost:8090"
+    @echo ""
+    @echo "For detailed documentation, see: apisix/README.md"
 
 # === LangWatch Observability ===
 
