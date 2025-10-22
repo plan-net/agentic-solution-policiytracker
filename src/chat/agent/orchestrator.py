@@ -15,6 +15,8 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.store.memory import InMemoryStore
 from langgraph.types import Command
 
+from src.chat.observability.langwatch_config import langwatch_config
+
 from .agents import (
     QueryUnderstandingAgent,
     ResponseSynthesisAgent,
@@ -37,6 +39,9 @@ class MultiAgentOrchestrator:
         memory_store: Optional[InMemoryStore] = None,
         checkpointer: Optional[MemorySaver] = None,
     ):
+        # Initialize LangWatch observability
+        langwatch_config.initialize()
+
         self.llm = llm
         self.tools = tools
 
@@ -227,6 +232,7 @@ class MultiAgentOrchestrator:
 
     # Old routing functions removed - agents now use Command handoffs
 
+    @langwatch_config.trace(name="multi_agent_political_analysis")
     async def process_query(
         self,
         query: str,

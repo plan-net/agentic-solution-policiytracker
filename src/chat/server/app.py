@@ -88,12 +88,17 @@ class ChatServer:
     """OpenAI-compatible chat server with multi-agent orchestration."""
 
     def __init__(self):
+        # Initialize LangWatch observability
+        from src.chat.observability.langwatch_config import langwatch_config
+
+        langwatch_config.initialize()
+
         self.graphiti_client = None
         self.tool_integration_manager = None
         self.orchestrator = None
         self.streaming_orchestrator = None
         self.llm = None
-        logger.info("Multi-agent ChatServer initialized")
+        logger.info("Multi-agent ChatServer initialized with LangWatch observability")
 
     async def _get_graphiti_client(self):
         """Lazy initialization of Graphiti client."""

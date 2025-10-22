@@ -211,6 +211,55 @@ clean-all: stop clean
     @echo "✅ Full cleanup complete"
 
 
+# === LangWatch Observability ===
+
+# Start LangWatch services
+langwatch-up:
+    @echo "🔭 Starting LangWatch services..."
+    docker compose up -d langwatch-postgres langwatch-clickhouse langwatch-elasticsearch langwatch-server
+    @echo "⏳ Waiting for services to be healthy..."
+    @sleep 15
+    @just langwatch-status
+
+# Stop LangWatch services
+langwatch-down:
+    @echo "🛑 Stopping LangWatch services..."
+    docker compose stop langwatch-server langwatch-elasticsearch langwatch-clickhouse langwatch-postgres
+
+# View LangWatch logs
+langwatch-logs:
+    docker compose logs -f langwatch-server
+
+# Check LangWatch service status
+langwatch-status:
+    @echo "📊 LangWatch Service Status:"
+    @docker compose ps langwatch-server langwatch-postgres langwatch-clickhouse langwatch-elasticsearch
+    @echo ""
+    @echo "🌐 LangWatch UI: http://localhost:5560"
+
+# Open LangWatch UI in browser
+langwatch-ui:
+    @echo "🌐 Opening LangWatch UI..."
+    open http://localhost:5560 || xdg-open http://localhost:5560 || echo "Please visit: http://localhost:5560"
+
+# Setup instructions for LangWatch
+langwatch-setup:
+    @echo "📝 LangWatch Setup Instructions:"
+    @echo ""
+    @echo "1. Start services: just langwatch-up"
+    @echo "2. Access LangWatch UI at http://localhost:5560"
+    @echo "3. Create account and project"
+    @echo "4. Go to Settings → API Keys"
+    @echo "5. Generate new API key"
+    @echo "6. Add to .env: LANGWATCH_API_KEY=<your-key>"
+    @echo "7. Set ENABLE_LANGWATCH=true in .env"
+    @echo "8. Restart services: just restart"
+
+# Test LangWatch integration
+test-langwatch:
+    @echo "🧪 Testing LangWatch integration..."
+    uv run pytest tests/integration/test_langwatch_integration.py -v
+
 # === Quick Access Commands ===
 
 # Quick development cycle

@@ -253,6 +253,198 @@ services:
       - open_webui_data:/app/backend/data
     restart: unless-stopped
 
+  # LangWatch - LLMOps observability platform
+  langwatch-postgres:
+    image: postgres:15-alpine
+    container_name: policiytracker-langwatch-postgres
+    environment:
+      POSTGRES_DB: langwatch
+      POSTGRES_USER: langwatch
+      POSTGRES_PASSWORD: langwatch_secure_password
+    volumes:
+      - langwatch_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langwatch -d langwatch"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  langwatch-clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: policiytracker-langwatch-clickhouse
+    environment:
+      CLICKHOUSE_DB: langwatch
+      CLICKHOUSE_USER: langwatch
+      CLICKHOUSE_PASSWORD: langwatch_secure_password
+    volumes:
+      - langwatch_clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  langwatch-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: policiytracker-langwatch-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - langwatch_elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  langwatch-server:
+    image: langwatch/langwatch:latest
+    container_name: policiytracker-langwatch
+    depends_on:
+      langwatch-postgres:
+        condition: service_healthy
+      langwatch-clickhouse:
+        condition: service_healthy
+      langwatch-elasticsearch:
+        condition: service_healthy
+    ports:
+      - "5560:5560"
+    environment:
+      # Database connections (LangWatch uses these specific variable names)
+      DATABASE_URL: postgresql://langwatch:langwatch_secure_password@langwatch-postgres:5432/langwatch
+      CLICKHOUSE_URL: http://langwatch:langwatch_secure_password@langwatch-clickhouse:8123/langwatch
+      ELASTICSEARCH_NODE_URL: http://langwatch-elasticsearch:9200
+
+      # Application settings
+      NEXTAUTH_SECRET: ${LANGWATCH_NEXTAUTH_SECRET:-changeme-langwatch-secret}
+      API_TOKEN_JWT_SECRET: ${LANGWATCH_API_TOKEN_JWT_SECRET:-changeme-api-token-jwt-secret}
+      NEXTAUTH_URL: http://localhost:5560
+      BASE_HOST: http://localhost:5560
+
+      # Optional: OpenAI for evaluations
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - langwatch_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5560/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================================================
+  # API GATEWAY & COST TRACKING INFRASTRUCTURE
+  # ============================================================================
+
+  # etcd - Configuration storage for APISIX
+  etcd:
+    image: bitnami/etcd:3.5.11
+    container_name: policiytracker-etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    volumes:
+      - etcd_data:/bitnami/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Apache APISIX - API Gateway
+  apisix:
+    image: apache/apisix:3.7.0-debian
+    container_name: policiytracker-apisix
+    depends_on:
+      etcd:
+        condition: service_healthy
+    ports:
+      - "9080:9080"  # HTTP Gateway
+      - "9443:9443"  # HTTPS Gateway
+      - "9180:9180"  # Admin API
+    volumes:
+      - ./apisix/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./apisix/plugins:/usr/local/apisix/apisix/plugins:ro
+      - apisix_logs:/usr/local/apisix/logs
+    environment:
+      - APISIX_STAND_ALONE=false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9080/apisix/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # APISIX Dashboard - Management UI
+  apisix-dashboard:
+    image: apache/apisix-dashboard:3.0.1
+    container_name: policiytracker-apisix-dashboard
+    depends_on:
+      - apisix
+    ports:
+      - "9000:9000"
+    environment:
+      - APISIX_API_URL=http://apisix:9180/apisix/admin
+    volumes:
+      - ./apisix/dashboard_conf/conf.yaml:/usr/local/apisix-dashboard/conf/conf.yaml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # TimescaleDB - Time-series database for cost tracking
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: policiytracker-timescaledb
+    environment:
+      POSTGRES_DB: llm_costs
+      POSTGRES_USER: timescale
+      POSTGRES_PASSWORD: timescale_secure_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+      - ./apisix/init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U timescale -d llm_costs"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Cost Analytics API - FastAPI service for cost queries
+  cost-analytics:
+    build:
+      context: .
+      dockerfile: ./apisix/analytics/Dockerfile
+    container_name: policiytracker-cost-analytics
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - "8090:8000"
+    environment:
+      - DATABASE_URL=postgresql://timescale:timescale_secure_password@timescaledb:5432/llm_costs
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./apisix/analytics:/app:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   langfuse_data:
@@ -264,6 +456,14 @@ volumes:
   airflow_postgres_data:
   airflow_logs:
   open_webui_data:
+  langwatch_postgres_data:
+  langwatch_clickhouse_data:
+  langwatch_elasticsearch_data:
+  langwatch_data:
+  # API Gateway & Cost Tracking volumes
+  etcd_data:
+  apisix_logs:
+  timescaledb_data:
 
 networks:
   default:

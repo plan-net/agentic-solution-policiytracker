@@ -1,0 +1,35 @@
+#
+# Apache APISIX Dashboard Configuration
+# Policy Tracker LLM Gateway - v0.2.0
+#
+
+conf:
+  listen:
+    host: 0.0.0.0
+    port: 9000
+
+  # Allow CORS for local development
+  allow_list:
+    - 0.0.0.0/0
+
+  etcd:
+    endpoints:
+      - "etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
+
+  log:
+    error_log:
+      level: warn
+      file_path: "/usr/local/apisix-dashboard/logs/error.log"
+    access_log:
+      file_path: "/usr/local/apisix-dashboard/logs/access.log"
+
+authentication:
+  # Default login credentials (change in production!)
+  secret: "secret"
+  expire_time: 3600
+  users:
+    - username: admin
+      password: admin
+      role: admin

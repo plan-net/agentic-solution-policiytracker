@@ -1,0 +1,174 @@
+#
+# Apache APISIX Routes and Upstreams Configuration
+# Policy Tracker LLM Gateway - v0.2.0
+#
+# This file defines the routes to LLM providers (OpenAI, Anthropic) and
+# configures request handling, retries, and timeouts.
+#
+
+routes:
+  #
+  # OpenAI Routes
+  #
+  - id: openai-chat-completions
+    name: "OpenAI Chat Completions API"
+    uri: /v1/chat/completions
+    methods:
+      - POST
+    upstream_id: openai-upstream
+    plugins:
+      # Cost tracking plugin (custom)
+      cost-tracker:
+        provider: "openai"
+        log_endpoint: "http://cost-analytics:8000/api/log-request"
+
+      # Proxy rewrite to forward to OpenAI
+      proxy-rewrite:
+        scheme: "https"
+        host: "api.openai.com"
+
+      # Rate limiting (adjust based on your OpenAI tier)
+      limit-req:
+        rate: 100
+        burst: 50
+        key_type: "var"
+        key: "remote_addr"
+        rejected_code: 429
+
+      # Circuit breaker
+      api-breaker:
+        break_response_code: 503
+        unhealthy:
+          http_statuses: [500, 502, 503, 504]
+          failures: 3
+        healthy:
+          http_statuses: [200, 201]
+          successes: 2
+
+  - id: openai-embeddings
+    name: "OpenAI Embeddings API"
+    uri: /v1/embeddings
+    methods:
+      - POST
+    upstream_id: openai-upstream
+    plugins:
+      cost-tracker:
+        provider: "openai"
+        log_endpoint: "http://cost-analytics:8000/api/log-request"
+      proxy-rewrite:
+        scheme: "https"
+        host: "api.openai.com"
+      limit-req:
+        rate: 100
+        burst: 50
+        key_type: "var"
+        key: "remote_addr"
+
+  - id: openai-models
+    name: "OpenAI Models API"
+    uri: /v1/models*
+    methods:
+      - GET
+    upstream_id: openai-upstream
+    plugins:
+      proxy-rewrite:
+        scheme: "https"
+        host: "api.openai.com"
+
+  #
+  # Anthropic Routes
+  #
+  - id: anthropic-messages
+    name: "Anthropic Messages API"
+    uri: /v1/messages
+    methods:
+      - POST
+    upstream_id: anthropic-upstream
+    plugins:
+      cost-tracker:
+        provider: "anthropic"
+        log_endpoint: "http://cost-analytics:8000/api/log-request"
+      proxy-rewrite:
+        scheme: "https"
+        host: "api.anthropic.com"
+      limit-req:
+        rate: 50
+        burst: 25
+        key_type: "var"
+        key: "remote_addr"
+      api-breaker:
+        break_response_code: 503
+        unhealthy:
+          http_statuses: [500, 502, 503, 504]
+          failures: 3
+        healthy:
+          http_statuses: [200, 201]
+          successes: 2
+
+  #
+  # Health Check Route
+  #
+  - id: apisix-health
+    name: "APISIX Health Check"
+    uri: /apisix/status
+    methods:
+      - GET
+    plugins:
+      response-rewrite:
+        body: '{"status":"ok","service":"apisix-gateway"}'
+        headers:
+          Content-Type: "application/json"
+
+#
+# Upstream Definitions
+#
+upstreams:
+  # OpenAI Upstream
+  - id: openai-upstream
+    name: "OpenAI API"
+    type: roundrobin
+    scheme: https
+    pass_host: pass
+    nodes:
+      "api.openai.com:443": 1
+    timeout:
+      connect: 30
+      send: 120
+      read: 300
+    retries: 2
+    retry_timeout: 0
+    keepalive_pool:
+      size: 320
+      idle_timeout: 60
+      requests: 1000
+
+  # Anthropic Upstream
+  - id: anthropic-upstream
+    name: "Anthropic API"
+    type: roundrobin
+    scheme: https
+    pass_host: pass
+    nodes:
+      "api.anthropic.com:443": 1
+    timeout:
+      connect: 30
+      send: 120
+      read: 300
+    retries: 2
+    retry_timeout: 0
+    keepalive_pool:
+      size: 320
+      idle_timeout: 60
+      requests: 1000
+
+#
+# Global Rules (applied to all routes)
+#
+global_rules:
+  - id: global-request-id
+    plugins:
+      request-id:
+        header_name: "X-Request-ID"
+        include_in_response: true
+
+#END

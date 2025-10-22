@@ -57,6 +57,11 @@ dependencies = [
     "prometheus-client==0.19.0",
     "azure-storage-blob>=12.25.1",
     "azure-identity>=1.23.0",
+    # LLMOps Observability
+    "langwatch>=0.5.0",
+    "opentelemetry-api>=1.20.0",
+    "opentelemetry-sdk>=1.20.0",
+    "openinference-instrumentation-langchain>=0.1.0",
     # Graph Database & GraphRAG (v0.2.0)
     "neo4j>=5.20.0",
     "neo4j-graphrag[anthropic]>=0.3.0",
