@@ -1,0 +1,42 @@
+#
+# Apache APISIX Configuration for APISIX 2.15.x
+#
+
+apisix:
+  node_listen: 9080
+  enable_control: true
+  control:
+    ip: "0.0.0.0"
+    port: 9092
+
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: etcd
+  etcd:
+    host:
+      - "http://etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
+  admin:
+    admin_key:
+      - name: "admin"
+        key: edd1c9f034335f136f87ad84b625c8f1
+        role: admin
+    allow_admin:
+      - 0.0.0.0/0
+
+plugins:
+  - api-breaker
+  - limit-req
+  - proxy-rewrite
+  - response-rewrite
+  - prometheus
+  - request-id
+
+nginx_config:
+  error_log: "/usr/local/apisix/logs/error.log"
+  error_log_level: "warn"
+  http:
+    access_log: "/usr/local/apisix/logs/access.log"
+    enable_access_log: true

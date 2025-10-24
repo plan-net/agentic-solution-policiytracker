@@ -220,7 +220,7 @@ clean-all: stop clean
 # Start APISIX gateway services
 apisix-up:
     @echo "🚪 Starting APISIX gateway services..."
-    docker compose up -d etcd apisix apisix-dashboard timescaledb cost-analytics
+    docker compose up -d etcd apisix apisix-dashboard timescaledb
     @echo "⏳ Waiting for services to be healthy..."
     @sleep 10
     @just apisix-status
@@ -228,7 +228,7 @@ apisix-up:
 # Stop APISIX services
 apisix-down:
     @echo "🛑 Stopping APISIX services..."
-    docker compose stop cost-analytics timescaledb apisix-dashboard apisix etcd
+    docker compose stop timescaledb apisix-dashboard apisix etcd
 
 # Restart APISIX services
 apisix-restart:
@@ -242,11 +242,10 @@ apisix-logs:
 # Check APISIX service status
 apisix-status:
     @echo "📊 APISIX Service Status:"
-    @docker compose ps apisix etcd apisix-dashboard timescaledb cost-analytics
+    @docker compose ps apisix etcd apisix-dashboard timescaledb
     @echo ""
     @echo "🌐 APISIX Gateway: http://localhost:9080"
     @echo "🎛️  APISIX Dashboard: http://localhost:9000 (admin/admin)"
-    @echo "📊 Cost Analytics: http://localhost:8090"
     @echo ""
     @echo "Testing gateway health..."
     @curl -s http://localhost:9080/apisix/status || echo "❌ APISIX not responding"

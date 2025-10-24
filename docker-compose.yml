@@ -342,25 +342,31 @@ services:
 
   # etcd - Configuration storage for APISIX
   etcd:
-    image: bitnami/etcd:3.5.11
+    image: quay.io/coreos/etcd:v3.5.11
     container_name: policiytracker-etcd
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
     ports:
       - "2379:2379"
       - "2380:2380"
     volumes:
-      - etcd_data:/bitnami/etcd
+      - etcd_data:/etcd-data
+    command:
+      - /usr/local/bin/etcd
+      - --data-dir=/etcd-data
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://etcd:2380
+      - --initial-cluster=default=http://etcd:2380
+      - --name=default
     healthcheck:
-      test: ["CMD", "etcdctl", "endpoint", "health"]
+      test: ["CMD", "/usr/local/bin/etcdctl", "endpoint", "health"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # Apache APISIX - API Gateway
   apisix:
-    image: apache/apisix:3.7.0-debian
+    image: apache/apisix:2.15.0-alpine
     container_name: policiytracker-apisix
     depends_on:
       etcd:
@@ -370,12 +376,9 @@ services:
       - "9443:9443"  # HTTPS Gateway
       - "9180:9180"  # Admin API
     volumes:
-      - ./apisix/config.yaml:/usr/local/apisix/conf/config.yaml:ro
-      - ./apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
-      - ./apisix/plugins:/usr/local/apisix/apisix/plugins:ro
+      - ./apisix/config-2.15.yaml:/usr/local/apisix/conf/config.yaml
+      - ./apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml
       - apisix_logs:/usr/local/apisix/logs
-    environment:
-      - APISIX_STAND_ALONE=false
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9080/apisix/status"]
       interval: 10s
@@ -385,7 +388,7 @@ services:
 
   # APISIX Dashboard - Management UI
   apisix-dashboard:
-    image: apache/apisix-dashboard:3.0.1
+    image: apache/apisix-dashboard:3.0.1-alpine
     container_name: policiytracker-apisix-dashboard
     depends_on:
       - apisix
@@ -423,27 +426,28 @@ services:
     restart: unless-stopped
 
   # Cost Analytics API - FastAPI service for cost queries
-  cost-analytics:
-    build:
-      context: .
-      dockerfile: ./apisix/analytics/Dockerfile
-    container_name: policiytracker-cost-analytics
-    depends_on:
-      timescaledb:
-        condition: service_healthy
-    ports:
-      - "8090:8000"
-    environment:
-      - DATABASE_URL=postgresql://timescale:timescale_secure_password@timescaledb:5432/llm_costs
-      - LOG_LEVEL=INFO
-    volumes:
-      - ./apisix/analytics:/app:ro
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
+  # COMMENTED OUT: Missing Dockerfile - needs to be implemented
+  # cost-analytics:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apisix/analytics/Dockerfile
+  #   container_name: policiytracker-cost-analytics
+  #   depends_on:
+  #     timescaledb:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8090:8000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://timescale:timescale_secure_password@timescaledb:5432/llm_costs
+  #     - LOG_LEVEL=INFO
+  #   volumes:
+  #     - ./apisix/analytics:/app:ro
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:

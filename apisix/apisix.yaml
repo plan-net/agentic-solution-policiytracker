@@ -17,11 +17,6 @@ routes:
       - POST
     upstream_id: openai-upstream
     plugins:
-      # Cost tracking plugin (custom)
-      cost-tracker:
-        provider: "openai"
-        log_endpoint: "http://cost-analytics:8000/api/log-request"
-
       # Proxy rewrite to forward to OpenAI
       proxy-rewrite:
         scheme: "https"
@@ -52,9 +47,6 @@ routes:
       - POST
     upstream_id: openai-upstream
     plugins:
-      cost-tracker:
-        provider: "openai"
-        log_endpoint: "http://cost-analytics:8000/api/log-request"
       proxy-rewrite:
         scheme: "https"
         host: "api.openai.com"
@@ -85,9 +77,6 @@ routes:
       - POST
     upstream_id: anthropic-upstream
     plugins:
-      cost-tracker:
-        provider: "anthropic"
-        log_endpoint: "http://cost-analytics:8000/api/log-request"
       proxy-rewrite:
         scheme: "https"
         host: "api.anthropic.com"
