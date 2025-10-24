@@ -22,7 +22,7 @@ from src.graphrag.schema_converter import (
     get_edge_type_map,
 )
 
-from src.graphrag.political_schema_v2_14thOct import (
+from src.graphrag.political_schema_v3 import (
     ENTITY_TYPE_REGISTRY,
     EDGE_TYPE_REGISTRY,
     EDGE_TYPE_MAP,
