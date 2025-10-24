@@ -320,7 +320,7 @@ def create_graphiti_apisix_config(
         ...     llm_client=llm_client
         ... )
     """
-    from graphiti_core.llm_client.client import LLMClient
+    from graphiti_core.llm_client.openai_client import OpenAIClient
     from graphiti_core.llm_client.config import LLMConfig
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -333,8 +333,8 @@ def create_graphiti_apisix_config(
     # Create LLMConfig with APISIX base URL
     config = LLMConfig(api_key=api_key, model=model, base_url=base_url, temperature=temperature)
 
-    # Create LLMClient
-    llm_client = LLMClient(config=config, cache=False)
+    # Create OpenAIClient (concrete implementation of LLMClient)
+    llm_client = OpenAIClient(config=config, cache=False)
 
     note = f"""
     ⚠️  WEEK 1 LIMITATION: Graphiti routing through APISIX without agent headers
