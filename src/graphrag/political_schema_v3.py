@@ -21,7 +21,7 @@ from pydantic import BaseModel, Field
 
 class LegislativeProposal(BaseModel):
     """Draft legislation moving through the legislative process"""
-    name: str = Field(..., description="Working title of the proposal")
+    legislative_proposal_name: str = Field(..., description="Working title of the proposal")
     proposal_id: Optional[str] = Field(None, description="Official identifier: COM(2024)123, BT-Drs 20/1234, etc.")
     jurisdiction: str = Field(..., description="EU, Germany, France, Bayern, etc.")
     legislative_body: str = Field(..., description="European Parliament, Bundestag, Bundesrat, National Assembly, etc.")
@@ -50,7 +50,7 @@ class LegislativeProposal(BaseModel):
     transposes_eu_directive: Optional[str] = Field(None, description="EU Directive ID being transposed")
     transposition_deadline: Optional[str] = Field(None, description="Deadline for transposition")
     
-    summary: Optional[str] = Field(None, description="Brief summary of proposal content")
+    legislative_proposal_summary: Optional[str] = Field(None, description="Brief summary of proposal content")
     policy_areas: Optional[str] = Field(None, description="Policy domains affected")
     
     voting_history: Optional[str] = Field(
@@ -64,7 +64,7 @@ class LegislativeProposal(BaseModel):
 
 class LegislativeBody(BaseModel):
     """Unified entity for all legislative institutions"""
-    name: str = Field(..., description="European Parliament, Bundestag, Council of EU, Bundesrat, National Assembly, etc.")
+    legislative_body_name: str = Field(..., description="European Parliament, Bundestag, Council of EU, Bundesrat, National Assembly, etc.")
     jurisdiction: str = Field(..., description="EU, Germany, France, or Bundesland name")
     type: str = Field(..., description="parliament, upper_chamber, lower_chamber, council, commission")
     
@@ -83,7 +83,7 @@ class LegislativeBody(BaseModel):
 
 class Committee(BaseModel):
     """Parliamentary/Council committees that examine legislation in detail"""
-    name: str = Field(..., description="Committee on Industry, Research and Energy; Ausschuss für Digitales, etc.")
+    committee_name: str = Field(..., description="Committee on Industry, Research and Energy; Ausschuss für Digitales, etc.")
     parent_body: str = Field(..., description="Which LegislativeBody this belongs to")
     jurisdiction: str = Field(..., description="EU, Germany, etc.")
     
@@ -111,7 +111,7 @@ class Document(BaseModel):
     related_proposal: Optional[str] = Field(None, description="LegislativeProposal ID this relates to")
     related_policy: Optional[str] = Field(None, description="Final Policy ID this relates to")
     
-    summary: Optional[str] = Field(None, description="Brief summary of document content")
+    document_summary: Optional[str] = Field(None, description="Brief summary of document content")
     language: Optional[str] = Field(None, description="Document language")
     
     date_published: Optional[str] = Field(None, description="Publication date")
@@ -143,7 +143,7 @@ class Vote(BaseModel):
 
 class Policy(BaseModel):
     """Final enacted laws and regulations"""
-    name: str = Field(..., description="Official name of the enacted policy")
+    policy_name: str = Field(..., description="Official name of the enacted policy")
     policy_id: str = Field(..., description="Official identifier: Regulation (EU) 2016/679, BGBl. I S. 2097, etc.")
     jurisdiction: str = Field(..., description="EU, Germany, Bayern, etc.")
     
@@ -161,7 +161,7 @@ class Policy(BaseModel):
     status: str = Field(..., description="in_force, repealed, amended, under_review, suspended")
     supersedes: Optional[str] = Field(None, description="Previous policy ID that this replaces")
     
-    summary: Optional[str] = Field(None, description="Summary of policy content and objectives")
+    policy_summary: Optional[str] = Field(None, description="Summary of policy content and objectives")
     policy_areas: Optional[str] = Field(None, description="Policy domains affected")
     scope: Optional[str] = Field(None, description="Who/what is covered by this policy")
     
@@ -187,7 +187,7 @@ class Policy(BaseModel):
 
 class Regulation(BaseModel):
     """Implementing rules and technical regulations"""
-    name: str = Field(..., description="Name of the implementing regulation")
+    regulation_name: str = Field(..., description="Name of the implementing regulation")
     regulation_id: str = Field(..., description="Official identifier")
     jurisdiction: str = Field(..., description="EU, Germany, etc.")
     
@@ -223,7 +223,7 @@ class Regulation(BaseModel):
 
 class Politician(BaseModel):
     """Individual politicians, elected officials, and appointees"""
-    name: str = Field(..., description="Full name")
+    politician_name: str = Field(..., description="Full name")
     jurisdiction: str = Field(..., description="EU, Germany, France, etc.")
     
     role: str = Field(..., description="MEP, MdB (Member of Bundestag), Minister, Commissioner, Senator, etc.")
@@ -248,7 +248,7 @@ class Politician(BaseModel):
 
 class Person(BaseModel):
     """Non-politician individuals who influence or comment on policy"""
-    name: str = Field(..., description="Full name")
+    person_name: str = Field(..., description="Full name")
     
     role: str = Field(..., description="CEO, expert, academic, activist, journalist, influencer, consultant, etc.")
     title: Optional[str] = Field(None, description="Professional title: Dr., Prof., etc.")
@@ -271,7 +271,7 @@ class Person(BaseModel):
 
 class PoliticalParty(BaseModel):
     """Political parties and their positions"""
-    name: str = Field(..., description="Party name")
+    political_party_name: str = Field(..., description="Party name")
     jurisdiction: str = Field(..., description="Country or level where party operates")
     
     party_family: Optional[str] = Field(None, description="European party family: PES, EPP, ALDE, EGP, etc.")
@@ -291,7 +291,7 @@ class PoliticalParty(BaseModel):
 
 class GovernmentAgency(BaseModel):
     """Executive agencies, regulatory bodies, ministries"""
-    name: str = Field(..., description="Official agency name")
+    government_agency_name: str = Field(..., description="Official agency name")
     jurisdiction: str = Field(..., description="EU, Germany, etc.")
     
     agency_type: str = Field(..., description="commission_dg, federal_ministry, state_ministry, regulatory_authority, executive_agency")
@@ -315,7 +315,7 @@ class GovernmentAgency(BaseModel):
 
 class LobbyGroup(BaseModel):
     """Interest groups, industry associations, NGOs, advocacy organizations"""
-    name: str = Field(..., description="Organization name")
+    lobby_group_name: str = Field(..., description="Organization name")
     type: str = Field(..., description="industry_association, trade_union, ngo, think_tank, advocacy_group, professional_association")
     
     primary_jurisdiction: str = Field(..., description="Main jurisdiction where organization is based: EU, Germany, France, etc.")
@@ -339,7 +339,7 @@ class LobbyGroup(BaseModel):
 
 class Company(BaseModel):
     """Individual corporations and business entities"""
-    name: str = Field(..., description="Company name")
+    company_name: str = Field(..., description="Company name")
     
     sector: str = Field(..., description="Primary industry sector")
     size: Optional[str] = Field(None, description="small, medium, large, multinational")
@@ -375,7 +375,7 @@ class Company(BaseModel):
 
 class Industry(BaseModel):
     """Business sectors and industry classifications"""
-    name: str = Field(..., description="Industry name")
+    industry_name: str = Field(..., description="Industry name")
     classification_code: Optional[str] = Field(None, description="NACE, NAICS, or SIC code")
     
     description: Optional[str] = Field(None, description="Industry description")
@@ -433,7 +433,7 @@ class ComplianceObligation(BaseModel):
 
 class ConsultationProcess(BaseModel):
     """Public consultations and stakeholder engagement processes"""
-    name: str = Field(..., description="Consultation name/title")
+    consultation_process_name: str = Field(..., description="Consultation name/title")
     jurisdiction: str = Field(..., description="EU, Germany, etc.")
     
     organizing_authority: str = Field(..., description="Institution conducting consultation: Commission, Ministry, etc.")
@@ -490,7 +490,7 @@ class EnforcementAction(BaseModel):
 
 class Jurisdiction(BaseModel):
     """Geographic and legal jurisdictions"""
-    name: str = Field(..., description="EU, Germany, France, Bayern, Paris, etc.")
+    jurisdiction_name: str = Field(..., description="EU, Germany, France, Bayern, Paris, etc.")
     type: str = Field(..., description="supranational, member_state, bundesland, region, municipality")
     
     parent_jurisdiction: Optional[str] = Field(None, description="Bayern -> Germany -> EU")
@@ -516,7 +516,7 @@ class Jurisdiction(BaseModel):
 
 class LegalFramework(BaseModel):
     """Broader legal context: constitutions, treaties, framework legislation"""
-    name: str = Field(..., description="Treaty on European Union, Grundgesetz, Charter of Fundamental Rights, etc.")
+    legal_framework_name: str = Field(..., description="Treaty on European Union, Grundgesetz, Charter of Fundamental Rights, etc.")
     jurisdiction: str = Field(..., description="EU, Germany, etc.")
     
     framework_type: str = Field(..., description="constitution, treaty, charter, framework_directive, enabling_act")
@@ -538,7 +538,7 @@ class LegalFramework(BaseModel):
 
 class TechnicalStandard(BaseModel):
     """Technical standards and specifications"""
-    standard_name: str = Field(..., description="ISO 27001, EN standards, etc.")
+    technical_standard_name: str = Field(..., description="ISO 27001, EN standards, etc.")
     standard_id: Optional[str] = Field(None, description="Official standard identifier")
     
     issuing_body: str = Field(..., description="ISO, CEN, CENELEC, DIN, ETSI, etc.")
