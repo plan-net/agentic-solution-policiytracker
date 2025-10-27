@@ -20,7 +20,7 @@ async def test_all_failure_types():
         tracking_file.unlink()
 
     # Import after cleanup so tracker starts fresh
-    from src.flows.data_ingestion.document_processor import process_documents
+    from src.flows.data_ingestion.document_processor import SimpleDocumentProcessor
 
     # Create mock actor
     class MockActor:
@@ -192,7 +192,7 @@ async def test_all_failure_types():
         print("❌ Graphiti/unexpected errors NOT tracked")
 
     # Cleanup
-    tracking_file.unlink()
+    # tracking_file.unlink()
 
     if stats['failed'] == expected_failed and stats['completed'] == expected_success:
         print("\n✅ SUCCESS: All failure types are being tracked correctly!")

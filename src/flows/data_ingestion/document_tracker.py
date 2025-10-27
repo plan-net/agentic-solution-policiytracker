@@ -145,7 +145,7 @@ class DocumentTracker:
         }
         self._modified_docs.add(doc_path_str)
         self._save_tracking()
-        logger.debug(f"Marked as processed: {doc_path}")
+        logger.info(f"Marked as processed: {doc_path}")
 
     def mark_failed(self, doc_path: str, error: str) -> None:
         """Mark document as failed with error details."""
@@ -157,7 +157,7 @@ class DocumentTracker:
         }
         self._modified_docs.add(doc_path_str)
         self._save_tracking()
-        logger.warning(f"Marked as failed: {doc_path} - {error}")
+        logger.info(f"Marked as failed: {doc_path} - {error}")
 
     def clear_all(self) -> int:
         """Clear all tracking data and return count of cleared items."""
