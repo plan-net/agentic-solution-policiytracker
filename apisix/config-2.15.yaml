@@ -33,10 +33,11 @@ plugins:
   - response-rewrite
   - prometheus
   - request-id
+  - serverless-pre-function
 
 nginx_config:
   error_log: "/usr/local/apisix/logs/error.log"
-  error_log_level: "warn"
+  error_log_level: "info"
   http:
     access_log: "/usr/local/apisix/logs/access.log"
     enable_access_log: true

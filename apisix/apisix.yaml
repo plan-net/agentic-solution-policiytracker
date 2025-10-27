@@ -17,6 +17,32 @@ routes:
       - POST
     upstream_id: openai-upstream
     plugins:
+      # Inject agent headers for tracking
+      # This plugin runs BEFORE proxy-rewrite to add headers to upstream request
+      serverless-pre-function:
+        phase: "rewrite"
+        functions:
+          - |
+            return function(conf, ctx)
+              local core = require("apisix.core")
+              local user_agent = core.request.header(ctx, "User-Agent") or ""
+
+              -- Detect Graphiti calls by User-Agent pattern
+              if string.find(user_agent, "AsyncOpenAI") then
+                -- Check if agent headers are already present
+                local agent_type = core.request.header(ctx, "X-Agent-Type")
+
+                -- If no agent headers, inject default Graphiti headers
+                if not agent_type then
+                  core.request.set_header(ctx, "X-Agent-Type", "kodosumi_flow")
+                  core.request.set_header(ctx, "X-Agent-Name", "graphiti_document_processor")
+                  core.request.set_header(ctx, "X-Flow-Name", "data_ingestion")
+                  core.request.set_header(ctx, "X-Project-ID", "political_monitoring_v2")
+                  core.log.info("Injected default Graphiti agent headers")
+                end
+              end
+            end
+
       # Proxy rewrite to forward to OpenAI
       proxy-rewrite:
         scheme: "https"

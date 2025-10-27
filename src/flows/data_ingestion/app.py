@@ -99,8 +99,8 @@ async def ingest_documents(request: fastapi.Request, inputs: dict):
         document_limit = int(inputs.get("document_limit", 10))
         if document_limit < 1:
             error.add(document_limit="Document limit must be at least 1")
-        elif document_limit > 100:
-            error.add(document_limit="Document limit cannot exceed 100")
+        elif document_limit > 500:
+            error.add(document_limit="Document limit cannot exceed 500")
     except (ValueError, TypeError):
         error.add(document_limit="Document limit must be a valid number")
 
