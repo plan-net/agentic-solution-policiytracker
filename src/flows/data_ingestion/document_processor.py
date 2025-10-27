@@ -171,13 +171,9 @@ try:
                 episode_id = result.episode.uuid if hasattr(result, "episode") else None
                 self.tracker.mark_processed(
                     doc_path,
-                    {
-                        "episode_id": episode_id,
-                        "entity_count": entity_count,
-                        "relationship_count": relationship_count,
-                        "processed_at": datetime.now().isoformat(),
-                        "actor_id": self.actor_id,
-                    },
+                    episode_id,
+                    entity_count,
+                    relationship_count
                 )
 
                 processing_time = (datetime.now() - start_time).total_seconds()
@@ -315,37 +311,42 @@ class SimpleDocumentProcessor:
                     edge_type_map=EDGE_TYPE_MAP,
                 )
 
+                # Extract metrics from result
+                episode_id = result.episode.uuid if hasattr(result, "episode") else None
+                entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
+                relationship_count = len(result.edges) if hasattr(result, "edges") else 0
+
                 # Track successful processing
                 self.tracker.mark_processed(
                     str(doc_path),
-                    result["episode_id"],
-                    result["entity_count"],
-                    result["relationship_count"],
+                    episode_id,
+                    entity_count,
+                    relationship_count,
                 )
 
                 processing_time = (datetime.now() - start_time).total_seconds()
                 self.processing_stats["processed"] += 1
-                self.processing_stats["total_entities"] += result["entity_count"]
-                self.processing_stats["total_relationships"] += result["relationship_count"]
+                self.processing_stats["total_entities"] += entity_count
+                self.processing_stats["total_relationships"] += relationship_count
                 self.processing_stats["processing_time"] += processing_time
 
                 doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
                 logger.info(
                     f"Processed document: {doc_name}",
-                    entities=result["entity_count"],
-                    relationships=result["relationship_count"],
+                    entities=entity_count,
+                    relationships=relationship_count,
                     time=f"{processing_time:.2f}s",
                 )
 
                 return {
                     "status": "success",
                     "path": str(doc_path),
-                    "episode_id": result["episode_id"],
-                    "entity_count": result["entity_count"],
-                    "relationship_count": result["relationship_count"],
+                    "episode_id": episode_id,
+                    "entity_count": entity_count,
+                    "relationship_count": relationship_count,
                     "processing_time": processing_time,
                     "content_length": len(content),
-                    "entities": result.get("entities", []),
+                    "entities": [{"name": node.name, "type": node.labels[0] if node.labels else "Unknown"} for node in result.nodes] if hasattr(result, "nodes") else [],
                     "document_date": reference_time.strftime("%Y-%m-%d")
                     if reference_time != datetime.now()
                     else None,

@@ -6,6 +6,8 @@ unless clear_data option is used.
 """
 
 import json
+import fcntl
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -22,34 +24,102 @@ class DocumentTracker:
         self.processed_docs: dict[str, dict] = self._load_tracking()
 
     def _load_tracking(self) -> dict[str, dict]:
-        """Load tracking data from JSON file."""
+        """Load tracking data from JSON file with file locking."""
         if not self.tracking_file.exists():
-            logger.info("No tracking file found, starting fresh", file=str(self.tracking_file))
+            logger.debug("No tracking file found, starting fresh", file=str(self.tracking_file))
             return {}
 
-        try:
-            with open(self.tracking_file, encoding="utf-8") as f:
-                data = json.load(f)
-                logger.info(
-                    f"Loaded tracking for {len(data)} documents", file=str(self.tracking_file)
-                )
-                return data
-        except (OSError, json.JSONDecodeError) as e:
-            logger.warning(f"Failed to load tracking file: {e}, starting fresh")
-            return {}
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                with open(self.tracking_file, "r", encoding="utf-8") as f:
+                    # Acquire shared lock for reading
+                    fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+                    try:
+                        data = json.load(f)
+                        logger.debug(
+                            f"Loaded tracking for {len(data)} documents", file=str(self.tracking_file)
+                        )
+                        return data
+                    finally:
+                        fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            except (OSError, json.JSONDecodeError) as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Failed to load tracking file (attempt {attempt + 1}/{max_retries}): {e}")
+                    time.sleep(0.1 * (attempt + 1))  # Exponential backoff
+                else:
+                    logger.warning(f"Failed to load tracking file after {max_retries} attempts: {e}, starting fresh")
+                    return {}
+        return {}
 
     def _save_tracking(self) -> None:
-        """Save tracking data to JSON file."""
-        try:
-            # Ensure parent directory exists
-            self.tracking_file.parent.mkdir(parents=True, exist_ok=True)
+        """Save tracking data to JSON file with file locking and atomic writes."""
+        max_retries = 5
+        for attempt in range(max_retries):
+            lock_file = None
+            try:
+                # Ensure parent directory exists
+                self.tracking_file.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(self.tracking_file, "w", encoding="utf-8") as f:
-                json.dump(self.processed_docs, f, indent=2, ensure_ascii=False)
+                # Use a lock file instead of locking the data file
+                lock_file_path = self.tracking_file.with_suffix('.lock')
+                lock_file = open(lock_file_path, 'w')
 
-            logger.debug(f"Saved tracking for {len(self.processed_docs)} documents")
-        except OSError as e:
-            logger.error(f"Failed to save tracking file: {e}")
+                # Acquire exclusive lock on lock file
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+
+                try:
+                    # Read existing data
+                    existing_data = {}
+                    if self.tracking_file.exists():
+                        try:
+                            with open(self.tracking_file, "r", encoding="utf-8") as f:
+                                existing_data = json.load(f)
+                        except json.JSONDecodeError:
+                            logger.warning("Corrupted tracking file, will overwrite")
+
+                    # Merge with current data (current data takes precedence)
+                    merged_data = {**existing_data, **self.processed_docs}
+
+                    # Use unique temp file with PID to avoid collisions
+                    import os
+                    temp_file = self.tracking_file.with_suffix(f'.tmp.{os.getpid()}')
+
+                    # Write to temp file
+                    with open(temp_file, "w", encoding="utf-8") as f:
+                        json.dump(merged_data, f, indent=2, ensure_ascii=False)
+
+                    # Atomic rename
+                    temp_file.replace(self.tracking_file)
+
+                    # Update our in-memory state
+                    self.processed_docs = merged_data
+
+                    logger.debug(f"Saved tracking for {len(self.processed_docs)} documents")
+                    return
+
+                finally:
+                    # Release lock
+                    fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+                    lock_file.close()
+                    # Clean up lock file
+                    try:
+                        lock_file_path.unlink()
+                    except:
+                        pass
+
+            except OSError as e:
+                if lock_file:
+                    try:
+                        lock_file.close()
+                    except:
+                        pass
+
+                if attempt < max_retries - 1:
+                    logger.warning(f"Failed to save tracking file (attempt {attempt + 1}/{max_retries}): {e}")
+                    time.sleep(0.1 * (attempt + 1))  # Exponential backoff
+                else:
+                    logger.error(f"Failed to save tracking file after {max_retries} attempts: {e}")
 
     def is_processed(self, doc_path: str) -> bool:
         """Check if document has been processed."""
