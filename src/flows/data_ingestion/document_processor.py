@@ -369,6 +369,7 @@ class SimpleDocumentProcessor:
             # Catch-all for unexpected errors
             error_msg = f"Unexpected error: {e}"
             logger.error(f"Unexpected error processing {doc_path}: {e}")
+            self.tracker.mark_failed(str(doc_path), error_msg)
             self.processing_stats["failed"] += 1
             return {
                 "status": "failed",
