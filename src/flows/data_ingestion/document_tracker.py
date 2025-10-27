@@ -22,6 +22,8 @@ class DocumentTracker:
     def __init__(self, tracking_file: str = "data/processed_documents.json"):
         self.tracking_file = Path(tracking_file)
         self.processed_docs: dict[str, dict] = self._load_tracking()
+        # Track which documents this instance has modified
+        self._modified_docs: set[str] = set()
 
     def _load_tracking(self) -> dict[str, dict]:
         """Load tracking data from JSON file with file locking."""
@@ -78,8 +80,12 @@ class DocumentTracker:
                         except json.JSONDecodeError:
                             logger.warning("Corrupted tracking file, will overwrite")
 
-                    # Merge with current data (current data takes precedence)
-                    merged_data = {**existing_data, **self.processed_docs}
+                    # Smart merge: only overwrite documents that this instance modified
+                    # This prevents Actor A from overwriting Actor B's failed documents
+                    merged_data = existing_data.copy()
+                    for doc_path in self._modified_docs:
+                        if doc_path in self.processed_docs:
+                            merged_data[doc_path] = self.processed_docs[doc_path]
 
                     # Use unique temp file with PID to avoid collisions
                     import os
@@ -92,7 +98,7 @@ class DocumentTracker:
                     # Atomic rename
                     temp_file.replace(self.tracking_file)
 
-                    # Update our in-memory state
+                    # Update our in-memory state with the full merged data
                     self.processed_docs = merged_data
 
                     logger.debug(f"Saved tracking for {len(self.processed_docs)} documents")
@@ -129,23 +135,27 @@ class DocumentTracker:
         self, doc_path: str, episode_id: str, entity_count: int = 0, relationship_count: int = 0
     ) -> None:
         """Mark document as processed with metadata."""
-        self.processed_docs[str(doc_path)] = {
+        doc_path_str = str(doc_path)
+        self.processed_docs[doc_path_str] = {
             "episode_id": episode_id,
             "processed_at": datetime.now().isoformat(),
             "status": "completed",
             "entity_count": entity_count,
             "relationship_count": relationship_count,
         }
+        self._modified_docs.add(doc_path_str)
         self._save_tracking()
         logger.debug(f"Marked as processed: {doc_path}")
 
     def mark_failed(self, doc_path: str, error: str) -> None:
         """Mark document as failed with error details."""
-        self.processed_docs[str(doc_path)] = {
+        doc_path_str = str(doc_path)
+        self.processed_docs[doc_path_str] = {
             "processed_at": datetime.now().isoformat(),
             "status": "failed",
             "error": error,
         }
+        self._modified_docs.add(doc_path_str)
         self._save_tracking()
         logger.warning(f"Marked as failed: {doc_path} - {error}")
 
