@@ -1,0 +1,131 @@
+---
+title: INDITEX | Interim Three Months 2025 Results
+url: https://www.inditex.com/itxcomweb/ss/en/press/news-detail/e7dc8504-2490-4ac0-8ce5-b9fb099de051/interim-three-months-2025-results
+published_date: 2025-10-28T06:44:39.474566
+collected_date: 2025-10-28T06:44:39.474625
+source: Inditex
+source_url: https://www.inditex.com
+description: "/ In 1Q2025, Inditex maintained a solid operational performance led by the creativity of our teams and the
+strong execution of the fully integrated business model"
+language: en
+---
+
+# INDITEX | Interim Three Months 2025 Results
+
+/ In 1Q2025, Inditex maintained a solid operational performance led by the creativity of our teams and the
+strong execution of the fully integrated business model
+
+/ In 1Q2025, Inditex maintained a solid operational performance led by the creativity of our teams and the
+strong execution of the fully integrated business model
+
+/ The Spring/Summer collections have been well received by our customers. Sales grew 1.5% to reach €8.3 billion. Sales in constant currency grew 4.2%; adjusted for the calendar effect of the leap year this growth
+was 5.3%
+
+/ Gross profit increased 1.5% to €5.0 billion. The gross margin reached 60.6% (-4 bps versus 1Q2024)
+
+/ All expense lines have been tightly controlled and show a favourable evolution
+
+/ Operating expenses increased 2.3%.
+
+/ EBITDA increased 1.0% to €2.4 billion
+
+/ EBIT increased 0.3% to €1.6 billion and PBT was flat at €1.7 billion with a PBT margin of 20.2%
+
+/ Net income increased 0.8% to €1.3 billion
+
+/ Inditex’s Board of Directors will propose to the Annual General Meeting a dividend for FY2024 of €1.68 per share. The dividend is composed of two equal payments of €0.84 per share: the first interim payment was
+made on 2 May 2025 and the final dividend payment will be made on 3 November 2025
+
+/ It has been 50 years since Zara opened its first store and Inditex continues to see strong growth opportunities. To take our business model to the next level and extend our dierentiation further we are
+developing several initiatives in all key areas for the coming years
+
+/ Spring/Summer collections continue to be very well received by our customers. Store and online sales in constant currency between 1 May and 9 June increased 6% versus the same period in 2024
+
+**First quarter 2025: Solid operational performance**
+
+Inditex remains focused on four key areas: A unique fashion proposition, enhancing the customer experience, sustainability, and the talent and commitment of our people.
+
+In 1Q2025, Inditex maintained a solid operational performance led by the creativity of our teams and the strong execution of the fully integrated business model.
+
+The Spring/Summer collections have been well received by our customers. Sales grew 1.5% to reach €8.3 billion. Sales in constant currency grew 4.2%; adjusted for the calendar effect of the leap year this growth was 5.3%.
+
+In 1Q2025, openings have been carried out in 26 markets.
+
+At the end of the period Inditex operated 5,562 stores. A list of total stores by concept is included in Annex I.
+
+In 1Q2025, the execution of the business model was sound. Gross profit increased 1.5% to €5.0 billion. The gross margin reached 60.6%, -4 bps versus 1Q2024.
+
+All expense lines have been tightly controlled and show a favourable evolution. Operating expenses increased 2.3%.
+
+EBITDA increased 1.0% to €2.4 billion.
+
+EBIT increased 0.3% to €1.6 billion and PBT was flat at €1.7 billion with a PBT margin of 20.2%.
+
+Annex II includes a breakdown of the Financial Results.
+
+The tax rate applied to the quarterly result is the best estimate for the financial year 2025 based on available information.
+
+Net income increased 0.8% to reach €1.3 billion.
+
+The net cash position was €10.8 billion at the end of 1Q2025.
+
+| **Million Euros** | **30/04/25** | **30/04/24** |
+| --- | --- | --- |
+| Cash and cash equivalents | 5,973 | 7,668 |
+| Short term investments | 4,812 | 3,978 |
+| Current financial debt | (7) | (22) |
+| Non current financial debt | - | - |
+| **Net financial cash (debt)** | 10,778 | 11,623 |
+
+In line with the performance of the business in 1Q2025, inventory as of 30 April 2025 was 6% higher versus the same date in 2024. Collections are considered to be of high quality.
+
+| **Million Euros** | **30/04/25** | **30/04/24** |
+| --- | --- | --- |
+| Inventories | 3,791 | 3,566 |
+| Receivables | 1,128 | 1,131 |
+| Payables | (10,443) | (10,126) |
+| **Operating working capital** | (5,523) | (5,429) |
+
+**Second quarter 2025**
+
+Spring/Summer collections continue to be very well received by our customers. Store and online sales in constant currency between 1 May and 9 June 2025 increased 6% versus the same period in 2024.
+
+It has been 50 years since Zara opened its first store in A Coruña Juan Flórez, a store that has remained open and was recently refurbished. We see strong growth opportunities and our main priorities continue to be the improvement of our fashion proposition and the customer experience, the clear focus on sustainability and taking care of the talent and commitment of our people. Prioritising these areas will drive long-term growth.
+
+The flexibility and responsiveness of our business in conjunction with in-season proximity sourcing allows a rapid reaction to fashion trends and reinforces our unique market position. This provides us with great potential for the future. The growth of the Group is underpinned by the continual investment in our store network, the advances made to the online sales channel and the improvements to the logistics platforms, with a clear focus on innovation and technology. Sustainability is central to this.
+
+Inditex operates in 214 markets with low share in a highly fragmented sector and we see strong growth opportunities. Optimisation of stores is ongoing, and we expect this to drive further gains in store productivity. The growth of annual gross space in the period 2025¬2026 is expected to be around 5%, accompanied by positive net space contribution and strong online sales.
+
+At current exchange rates, Inditex anticipates a -3% currency impact on sales for FY2025.
+
+In FY2025, Inditex expects a stable gross margin (+/-50 bps).
+
+In the current year, we are planning investments that willscale our capabilities, obtain effciencies and increase our competitive differentiation to the next level. We estimate ordinary capital expenditure of around €1.8 billion.
+
+Our logistics expansion plan in 2024 and 2025 is on track. This extraordinary two-year investment programme focused on the expansion of the business allocates €900 million per year to increase logistics capacities in each of the 2024 and 2025 financial years. The objective of this logistics plan is to strengthen Inditex's capabilities to address strong global growth opportunities in the medium and long term. These
+investments will have the highest standards of sustainability and use the most up-to-date technology. The Zaragoza II distribution centre will commence operations this summer.
+
+We continue focusing on the creativity, innovation, design and quality of all our collections and integrated sales channels, while reinforcing the commercial initiatives of all our concepts. Zara Icons, Massimo Dutti Limited Edition SS25 Collection, Pull&Bear STWD Collection, Stradivarius Running Late, Bershka x Ca7riel & Paco Amoroso and Oysho The Boutique Sports Club are just some of the creative proposals available.
+
+We will continue to offer the best shopping experience to our customers, both in our stores and on our online platforms.
+
+Regarding our stores, Zara has launched in new locations for example in Athens Minion and CambridgeSide. Additionally, we have made important enlargements and refurbishments in some of our most emblematic stores
+such as Seoul Noon Square and Torino Via Roma, and relocations like The Grove in LA. The rest of the concepts continue to launch or refurbish in important locations, for example, Massimo Dutti and Pull&Bear in London
+Oxford Street, Oysho in Paris Madeleine and Zara Home in San Sebastian.
+
+We continue introducing the new security technology in our stores. This new technology provides a significant improvement in customer experience, facilitating interaction with our products, improving the purchasing process and will be the basis for us to continue deepening the digitalisation of stores and their integration with online platforms in the coming years. The new system is now fully operational in Zara and, in the process of its implementation in the rest of the concepts, is being rolled out in Bershka and Pull&Bear.
+
+Zara.com has commenced offering "Travel Mode" to clients in the UK, Italy and Japan and will soon be available in Spain, France and Turkey. Thanks to this functionality, travelling clients can receive their online purchases wherever they are staying and access travel tips in cities like London, Rome and Tokyo.
+
+At Inditex, we believe in the importance of continuing to offer opportunities to everyone. In April 2025, we launched a new program, in partnership with Asian University for Women, to support the academic training of women textile factory workers in Bangladesh through the financing of 50 five-year scholarships. The for&from project for the integration of people with disabilities has continued its expansion. After
+the recent opening in 2025 of a new store in Mexico City, in the second half of this year we plan to open new for&from stores in Lisbon and Porto. With these openings, the program will be in four markets with 17 stores.
+
+As approved in March 2025, Inditex’s Board of Directors will propose to the Annual General Meeting a dividend for FY2024 of €1.68 per share. The dividend is composed of two equal payments of €0.84 per share: the first interim payment was made on 2 May 2025 and the final dividend payment will be made on 3 November 2025.
+
+**Agreements of the Board of Directors**
+
+Inditex´s Annual General Meeting will take place at the Company’s registered offce on 15 July 2025.
+
+Mr José Arnau will leave the Board of Directors once his tenure expires on 15 July 2025. Inditex would like to thank him for his important contribution during his many years at the Group.
+
+The Board will propose the appointment of Mr Roberto Cibeira, CEO of Pontegadea, as proprietary director.
