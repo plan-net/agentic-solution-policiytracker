@@ -1,7 +1,6 @@
 """LangWatch observability configuration."""
 
 import logging
-import os
 from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
@@ -11,9 +10,12 @@ class LangWatchConfig:
     """LangWatch observability configuration manager."""
 
     def __init__(self) -> None:
-        self.enabled = os.getenv("ENABLE_LANGWATCH", "false").lower() == "true"
-        self.api_key = os.getenv("LANGWATCH_API_KEY")
-        self.endpoint = os.getenv("LANGWATCH_ENDPOINT", "http://langwatch-server:5560")
+        # Import settings lazily to avoid circular imports
+        from src.config import settings
+
+        self.enabled = settings.ENABLE_LANGWATCH
+        self.api_key = settings.LANGWATCH_API_KEY
+        self.endpoint = settings.LANGWATCH_ENDPOINT
         self._initialized = False
 
     def initialize(self) -> bool:
@@ -37,7 +39,7 @@ class LangWatchConfig:
 
             # Setup LangWatch with LangChain instrumentation
             langwatch.setup(
-                api_key=self.api_key, endpoint=self.endpoint, instrumentors=[LangChainInstrumentor()]
+                api_key=self.api_key, endpoint_url=self.endpoint, instrumentors=[LangChainInstrumentor()]
             )
 
             self._initialized = True

@@ -68,6 +68,13 @@ class Settings(BaseSettings):
         default="https://cloud.langfuse.com", description="Langfuse host URL"
     )
 
+    # LangWatch Observability
+    ENABLE_LANGWATCH: bool = Field(default=False, description="Enable LangWatch observability")
+    LANGWATCH_API_KEY: Optional[str] = Field(default=None, description="LangWatch API key")
+    LANGWATCH_ENDPOINT: str = Field(
+        default="http://localhost:5560", description="LangWatch server endpoint"
+    )
+
     # Neo4j GraphRAG Configuration
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j database URI")
     NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")

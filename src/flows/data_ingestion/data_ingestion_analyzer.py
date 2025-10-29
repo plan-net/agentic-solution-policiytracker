@@ -9,6 +9,11 @@ from datetime import datetime
 from pathlib import Path
 
 import structlog
+
+# Configure logging for Ray environment
+from src.flows.data_ingestion.logging_config import configure_logging
+configure_logging()
+
 from graphiti_core import Graphiti
 from kodosumi import core
 from kodosumi.core import Tracer

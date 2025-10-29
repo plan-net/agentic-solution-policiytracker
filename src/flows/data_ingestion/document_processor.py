@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Optional
 
 import structlog
+
+# Configure logging for Ray environment
+from src.flows.data_ingestion.logging_config import configure_logging
+configure_logging()
+
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
@@ -126,86 +131,122 @@ try:
                     return f.read()
 
         async def process_document(self, doc_path_str: str) -> dict[str, any]:
-            """Process a single document through Graphiti."""
+            """Process a single document through Graphiti with robust error handling."""
             doc_path = Path(doc_path_str)
             start_time = datetime.now()
 
             try:
-                # Check if already processed
-                if not self.clear_mode and self.tracker.is_processed(doc_path):
+                # Check if already processed (unless clear mode)
+                if not self.clear_mode and self.tracker.is_processed(str(doc_path)):
+                    logger.info(f"Actor {self.actor_id}: Skipping already processed document: {doc_path}")
                     return {
                         "status": "skipped",
+                        "reason": "already_processed",
                         "path": str(doc_path),
                         "actor_id": self.actor_id,
                         "processing_time": 0.0,
-                        "entity_count": 0,
-                        "relationship_count": 0,
                     }
 
-                # Read and process document
-                content = self._read_document(doc_path)
-                if not content.strip():
-                    raise ValueError("Document is empty")
+                # Read document content
+                try:
+                    content = self._read_document(doc_path)
+                    if not content.strip():
+                        raise ValueError("Document is empty")
 
+                    logger.debug(f"Actor {self.actor_id}: Read document: {doc_path} ({len(content)} characters)")
+                except Exception as e:
+                    error_msg = f"Failed to read document: {e}"
+                    self.tracker.mark_failed(str(doc_path), error_msg)
+                    logger.error(f"Actor {self.actor_id}: {error_msg}")
+                    return {
+                        "status": "failed",
+                        "error": error_msg,
+                        "path": str(doc_path),
+                        "actor_id": self.actor_id,
+                        "processing_time": (datetime.now() - start_time).total_seconds(),
+                    }
+
+                # Process through Graphiti
                 episode_name = generate_episode_name(doc_path, datetime.now())
+                source_description = f"Political document: {doc_path.name}"
                 reference_time = extract_document_date(content) or datetime.now()
 
-                # Process through Graphiti directly with enhanced schema
-                result = await self.graphiti_client.add_episode(
-                    name=episode_name,
-                    episode_body=content,
-                    source_description=f"Political document: {doc_path.name}",
-                    reference_time=reference_time,
-                    source=EpisodeType.text,
-                    group_id=GROUP_ID,
-                    entity_types=ENTITY_TYPE_REGISTRY,
-                    edge_types=EDGE_TYPE_REGISTRY,
-                    edge_type_map=EDGE_TYPE_MAP,
-                )
+                try:
+                    self.graphiti_client.
+                    result = await self.graphiti_client.add_episode(
+                        name=episode_name,
+                        episode_body=content,
+                        source_description=source_description,
+                        reference_time=reference_time,
+                        source=EpisodeType.text,
+                        group_id=GROUP_ID,
+                        entity_types=ENTITY_TYPE_REGISTRY,
+                        edge_types=EDGE_TYPE_REGISTRY,
+                        edge_type_map=EDGE_TYPE_MAP,
+                    )
 
-                # Extract metrics
-                entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
-                relationship_count = len(result.edges) if hasattr(result, "edges") else 0
+                    # Extract metrics from result
+                    episode_id = result.episode.uuid if hasattr(result, "episode") else None
+                    entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
+                    relationship_count = len(result.edges) if hasattr(result, "edges") else 0
 
-                # Mark as processed
-                episode_id = result.episode.uuid if hasattr(result, "episode") else None
-                self.tracker.mark_processed(
-                    doc_path,
-                    episode_id,
-                    entity_count,
-                    relationship_count
-                )
+                    # Track successful processing
+                    self.tracker.mark_processed(
+                        str(doc_path),
+                        episode_id,
+                        entity_count,
+                        relationship_count,
+                    )
 
-                processing_time = (datetime.now() - start_time).total_seconds()
+                    processing_time = (datetime.now() - start_time).total_seconds()
 
-                logger.info(
-                    f"Actor {self.actor_id}: Successfully processed {doc_path.name} "
-                    f"({entity_count} entities, {relationship_count} relationships) "
-                    f"in {processing_time:.2f}s"
-                )
+                    logger.info(
+                        f"Actor {self.actor_id}: Processed document: {doc_path.name}",
+                        entities=entity_count,
+                        relationships=relationship_count,
+                        time=f"{processing_time:.2f}s",
+                    )
 
-                return {
-                    "status": "success",
-                    "path": str(doc_path),
-                    "actor_id": self.actor_id,
-                    "episode_id": episode_id,
-                    "entity_count": entity_count,
-                    "relationship_count": relationship_count,
-                    "processing_time": processing_time,
-                }
+                    return {
+                        "status": "success",
+                        "path": str(doc_path),
+                        "actor_id": self.actor_id,
+                        "episode_id": episode_id,
+                        "entity_count": entity_count,
+                        "relationship_count": relationship_count,
+                        "processing_time": processing_time,
+                        "content_length": len(content),
+                        "entities": [{"name": node.name, "type": node.labels[0] if node.labels else "Unknown"} for node in result.nodes] if hasattr(result, "nodes") else [],
+                        "document_date": reference_time.strftime("%Y-%m-%d")
+                        if reference_time != datetime.now()
+                        else None,
+                        "content_preview": content[:200] + "..." if len(content) > 200 else content,
+                    }
+
+                except Exception as e:
+                    error_msg = f"Graphiti processing failed: {e}"
+                    self.tracker.mark_failed(str(doc_path), error_msg)
+                    logger.error(f"Actor {self.actor_id}: {error_msg}")
+
+                    return {
+                        "status": "failed",
+                        "error": error_msg,
+                        "path": str(doc_path),
+                        "actor_id": self.actor_id,
+                        "processing_time": (datetime.now() - start_time).total_seconds(),
+                    }
 
             except Exception as e:
-                processing_time = (datetime.now() - start_time).total_seconds()
-                logger.error(f"Actor {self.actor_id}: Failed to process {doc_path.name}: {e}")
-
+                # Catch-all for unexpected errors
+                error_msg = f"Unexpected error: {e}"
+                logger.error(f"Actor {self.actor_id}: Unexpected error processing {doc_path}: {e}")
+                self.tracker.mark_failed(str(doc_path), error_msg)
                 return {
                     "status": "failed",
+                    "error": error_msg,
                     "path": str(doc_path),
                     "actor_id": self.actor_id,
-                    "error": str(e),
-                    "processing_time": processing_time,
-                    "entity_count": 0,
-                    "relationship_count": 0,
+                    "processing_time": (datetime.now() - start_time).total_seconds(),
                 }
 
         async def process_batch(self, doc_paths: list[str]) -> list[dict[str, any]]:
@@ -264,7 +305,7 @@ class SimpleDocumentProcessor:
         try:
             # Check if already processed (unless clear mode)
             if not self.clear_mode and self.tracker.is_processed(str(doc_path)):
-                logger.debug(f"Skipping already processed document: {doc_path}")
+                logger.info(f"Skipping already processed document: {doc_path}")
                 self.processing_stats["skipped"] += 1
                 return {
                     "status": "skipped",
@@ -483,7 +524,7 @@ Found documents:
         """Process documents using Ray actors."""
         # Initialize Ray if not already done
         if not ray.is_initialized():
-            ray.init(log_to_driver=False)
+            ray.init(log_to_driver=True)  # Enable driver logging to see worker logs
 
         # Create Ray actors
         num_actors = min(3, len(documents))

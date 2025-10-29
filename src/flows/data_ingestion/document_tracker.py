@@ -13,6 +13,10 @@ from pathlib import Path
 
 import structlog
 
+# Configure logging for Ray environment
+from src.flows.data_ingestion.logging_config import configure_logging
+configure_logging()
+
 logger = structlog.get_logger()
 
 
