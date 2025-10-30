@@ -9,7 +9,7 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Dict
 
 import structlog
 
@@ -119,16 +119,150 @@ try:
                 return False
 
         def _read_document(self, doc_path: Path) -> str:
-            """Read document content with encoding detection."""
+            """Read document content with encoding detection and preprocessing."""
             try:
                 with open(doc_path, encoding="utf-8") as f:
-                    return f.read()
+                    content = f.read()
             except UnicodeDecodeError:
                 logger.warning(
                     f"Actor {self.actor_id}: UTF-8 failed for {doc_path}, trying latin-1"
                 )
                 with open(doc_path, encoding="latin-1") as f:
-                    return f.read()
+                    content = f.read()
+
+            # Apply preprocessing (link removal, deduplication, whitespace cleaning)
+            from src.flows.data_ingestion.document_preprocessor import preprocess_document
+            return preprocess_document(content, enable_link_removal=True)
+
+        async def _process_chunked_document(self, doc_path: Path, chunks: List[Dict]) -> dict:
+            """
+            Process a document that has been chunked into multiple parts.
+
+            Uses chain linking strategy: each chunk links to the immediately previous chunk.
+
+            Args:
+                doc_path: Path to the document being processed
+                chunks: List of chunk dictionaries from HybridDocumentChunker
+
+            Returns:
+                Processing result dictionary with aggregated statistics
+            """
+            start_time = datetime.now()
+            episode_uuids = []
+            total_entities = 0
+            total_relationships = 0
+            chunk_results = []
+            previous_episode_uuid = None
+
+            logger.info(
+                f"Actor {self.actor_id}: Processing chunked document: {doc_path.name} ({len(chunks)} chunks)"
+            )
+
+            for chunk in chunks:
+                chunk_index = chunk["chunk_index"]
+                chunk_text = chunk["text"]
+                chunk_token_count = chunk["token_count"]
+
+                try:
+                    # Generate episode name for this chunk
+                    episode_name = f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                    source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_path.name}"
+                    reference_time = extract_document_date(chunk_text) or datetime.now()
+
+                    # Chain linking: link to previous chunk if it exists
+                    previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
+
+                    # Process chunk through Graphiti
+                    result = await self.graphiti_client.add_episode(
+                        name=episode_name,
+                        episode_body=chunk_text,
+                        source_description=source_description,
+                        reference_time=reference_time,
+                        source=EpisodeType.text,
+                        group_id=GROUP_ID,
+                        entity_types=ENTITY_TYPE_REGISTRY,
+                        edge_types=EDGE_TYPE_REGISTRY,
+                        edge_type_map=EDGE_TYPE_MAP,
+                        previous_episode_uuids=previous_episodes,
+                    )
+
+                    # Track this episode for chain linking
+                    episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
+                    episode_uuids.append(episode_uuid)
+                    previous_episode_uuid = episode_uuid
+
+                    # Aggregate metrics
+                    entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
+                    relationship_count = len(result.edges) if hasattr(result, "edges") else 0
+                    total_entities += entity_count
+                    total_relationships += relationship_count
+
+                    chunk_results.append({
+                        "chunk_index": chunk_index,
+                        "episode_uuid": episode_uuid,
+                        "entities": entity_count,
+                        "relationships": relationship_count,
+                        "tokens": chunk_token_count,
+                        "boundary_type": chunk.get("boundary_type", "unknown"),
+                    })
+
+                    logger.debug(
+                        f"Actor {self.actor_id}: Processed chunk {chunk_index + 1}/{len(chunks)}",
+                        entities=entity_count,
+                        relationships=relationship_count,
+                        tokens=chunk_token_count,
+                    )
+
+                except Exception as e:
+                    error_msg = f"Failed to process chunk {chunk_index}: {e}"
+                    logger.error(f"Actor {self.actor_id}: {error_msg}")
+                    chunk_results.append({
+                        "chunk_index": chunk_index,
+                        "error": str(e),
+                        "tokens": chunk_token_count,
+                    })
+
+            # Calculate success rate
+            successful_chunks = len([c for c in chunk_results if "error" not in c])
+            success_rate = successful_chunks / len(chunks) if chunks else 0
+
+            processing_time = (datetime.now() - start_time).total_seconds()
+
+            # Track in document tracker (will add mark_processed_chunked method)
+            if success_rate >= 0.5:  # At least 50% of chunks succeeded
+                # For now, use the regular mark_processed with aggregated data
+                self.tracker.mark_processed(
+                    str(doc_path),
+                    episode_uuids[0] if episode_uuids else None,
+                    total_entities,
+                    total_relationships,
+                )
+            else:
+                error_msg = f"Chunked processing failed: only {successful_chunks}/{len(chunks)} chunks succeeded"
+                self.tracker.mark_failed(str(doc_path), error_msg)
+
+            logger.info(
+                f"Actor {self.actor_id}: Completed chunked processing: {doc_path.name}",
+                chunks=len(chunks),
+                successful=successful_chunks,
+                total_entities=total_entities,
+                total_relationships=total_relationships,
+                time=f"{processing_time:.2f}s",
+            )
+
+            return {
+                "status": "success" if success_rate >= 0.5 else "partial_failure",
+                "path": str(doc_path),
+                "actor_id": self.actor_id,
+                "episode_uuids": episode_uuids,
+                "total_chunks": len(chunks),
+                "successful_chunks": successful_chunks,
+                "entity_count": total_entities,
+                "relationship_count": total_relationships,
+                "processing_time": processing_time,
+                "chunk_results": chunk_results,
+                "chunking_strategy": "hybrid",
+            }
 
         async def process_document(self, doc_path_str: str) -> dict[str, any]:
             """Process a single document through Graphiti with robust error handling."""
@@ -166,65 +300,39 @@ try:
                         "processing_time": (datetime.now() - start_time).total_seconds(),
                     }
 
-                # Process through Graphiti
-                episode_name = generate_episode_name(doc_path, datetime.now())
-                source_description = f"Political document: {doc_path.name}"
-                reference_time = extract_document_date(content) or datetime.now()
+                # Chunk the document using hybrid strategy (ALWAYS chunk for consistency)
+                from src.flows.data_ingestion.document_chunker import HybridDocumentChunker
 
+                # Initialize chunker with default settings (120K tokens, 10% overlap)
+                chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
+                chunks = chunker.create_chunks(content)
+
+                logger.info(
+                    f"Actor {self.actor_id}: Chunked document {doc_path.name} into {len(chunks)} parts",
+                    total_chunks=len(chunks),
+                    boundary_types=[c.get("boundary_type") for c in chunks],
+                )
+
+                # Process all chunks (delegates to _process_chunked_document)
                 try:
-                    self.graphiti_client.
-                    result = await self.graphiti_client.add_episode(
-                        name=episode_name,
-                        episode_body=content,
-                        source_description=source_description,
-                        reference_time=reference_time,
-                        source=EpisodeType.text,
-                        group_id=GROUP_ID,
-                        entity_types=ENTITY_TYPE_REGISTRY,
-                        edge_types=EDGE_TYPE_REGISTRY,
-                        edge_type_map=EDGE_TYPE_MAP,
-                    )
+                    result = await self._process_chunked_document(doc_path, chunks)
 
-                    # Extract metrics from result
-                    episode_id = result.episode.uuid if hasattr(result, "episode") else None
-                    entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
-                    relationship_count = len(result.edges) if hasattr(result, "edges") else 0
-
-                    # Track successful processing
-                    self.tracker.mark_processed(
-                        str(doc_path),
-                        episode_id,
-                        entity_count,
-                        relationship_count,
-                    )
-
-                    processing_time = (datetime.now() - start_time).total_seconds()
+                    # Return the result from chunked processing
+                    processing_time = result.get("processing_time", 0.0)
 
                     logger.info(
                         f"Actor {self.actor_id}: Processed document: {doc_path.name}",
-                        entities=entity_count,
-                        relationships=relationship_count,
+                        chunks=result.get("total_chunks", 0),
+                        entities=result.get("entity_count", 0),
+                        relationships=result.get("relationship_count", 0),
                         time=f"{processing_time:.2f}s",
                     )
 
-                    return {
-                        "status": "success",
-                        "path": str(doc_path),
-                        "actor_id": self.actor_id,
-                        "episode_id": episode_id,
-                        "entity_count": entity_count,
-                        "relationship_count": relationship_count,
-                        "processing_time": processing_time,
-                        "content_length": len(content),
-                        "entities": [{"name": node.name, "type": node.labels[0] if node.labels else "Unknown"} for node in result.nodes] if hasattr(result, "nodes") else [],
-                        "document_date": reference_time.strftime("%Y-%m-%d")
-                        if reference_time != datetime.now()
-                        else None,
-                        "content_preview": content[:200] + "..." if len(content) > 200 else content,
-                    }
+                    # Return the chunked processing result
+                    return result
 
                 except Exception as e:
-                    error_msg = f"Graphiti processing failed: {e}"
+                    error_msg = f"Chunked processing failed: {e}"
                     self.tracker.mark_failed(str(doc_path), error_msg)
                     logger.error(f"Actor {self.actor_id}: {error_msg}")
 
@@ -287,16 +395,143 @@ class SimpleDocumentProcessor:
         }
 
     def _read_document(self, doc_path: Path) -> str:
-        """Read document content with encoding detection."""
+        """Read document content with encoding detection and preprocessing."""
         try:
             # Try UTF-8 first
             with open(doc_path, encoding="utf-8") as f:
-                return f.read()
+                content = f.read()
         except UnicodeDecodeError:
             # Fallback to latin-1 for legacy documents
             logger.warning(f"UTF-8 failed for {doc_path}, trying latin-1")
             with open(doc_path, encoding="latin-1") as f:
-                return f.read()
+                content = f.read()
+
+        # Apply preprocessing (link removal, deduplication, whitespace cleaning)
+        from src.flows.data_ingestion.document_preprocessor import preprocess_document
+        return preprocess_document(content, enable_link_removal=True)
+
+    async def _process_chunked_document(self, doc_path: Path, chunks: List[Dict], graphiti_client: Graphiti) -> dict:
+        """Process a document that has been chunked (same as DocumentProcessorActor version but adapted for SimpleDocumentProcessor)."""
+        start_time = datetime.now()
+        episode_uuids = []
+        total_entities = 0
+        total_relationships = 0
+        chunk_results = []
+        previous_episode_uuid = None
+
+        logger.info(f"Processing chunked document: {doc_path.name} ({len(chunks)} chunks)")
+
+        for chunk in chunks:
+            chunk_index = chunk["chunk_index"]
+            chunk_text = chunk["text"]
+            chunk_token_count = chunk["token_count"]
+
+            try:
+                # Generate episode name for this chunk
+                episode_name = f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
+                source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_name}"
+                reference_time = extract_document_date(chunk_text) or datetime.now()
+
+                # Chain linking: link to previous chunk if it exists
+                previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
+
+                # Process chunk through Graphiti
+                result = await graphiti_client.add_episode(
+                    name=episode_name,
+                    episode_body=chunk_text,
+                    source_description=source_description,
+                    reference_time=reference_time,
+                    source=EpisodeType.text,
+                    group_id=GROUP_ID,
+                    entity_types=ENTITY_TYPE_REGISTRY,
+                    edge_types=EDGE_TYPE_REGISTRY,
+                    edge_type_map=EDGE_TYPE_MAP,
+                    previous_episode_uuids=previous_episodes,
+                )
+
+                # Track this episode for chain linking
+                episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
+                episode_uuids.append(episode_uuid)
+                previous_episode_uuid = episode_uuid
+
+                # Aggregate metrics
+                entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
+                relationship_count = len(result.edges) if hasattr(result, "edges") else 0
+                total_entities += entity_count
+                total_relationships += relationship_count
+
+                chunk_results.append({
+                    "chunk_index": chunk_index,
+                    "episode_uuid": episode_uuid,
+                    "entities": entity_count,
+                    "relationships": relationship_count,
+                    "tokens": chunk_token_count,
+                    "boundary_type": chunk.get("boundary_type", "unknown"),
+                })
+
+                logger.debug(
+                    f"Processed chunk {chunk_index + 1}/{len(chunks)}",
+                    entities=entity_count,
+                    relationships=relationship_count,
+                    tokens=chunk_token_count,
+                )
+
+            except Exception as e:
+                error_msg = f"Failed to process chunk {chunk_index}: {e}"
+                logger.error(error_msg)
+                chunk_results.append({
+                    "chunk_index": chunk_index,
+                    "error": str(e),
+                    "tokens": chunk_token_count,
+                })
+
+        # Calculate success rate
+        successful_chunks = len([c for c in chunk_results if "error" not in c])
+        success_rate = successful_chunks / len(chunks) if chunks else 0
+
+        processing_time = (datetime.now() - start_time).total_seconds()
+
+        # Track in document tracker
+        if success_rate >= 0.5:  # At least 50% of chunks succeeded
+            self.tracker.mark_processed(
+                str(doc_path),
+                episode_uuids[0] if episode_uuids else None,
+                total_entities,
+                total_relationships,
+            )
+            self.processing_stats["processed"] += 1
+        else:
+            error_msg = f"Chunked processing failed: only {successful_chunks}/{len(chunks)} chunks succeeded"
+            self.tracker.mark_failed(str(doc_path), error_msg)
+            self.processing_stats["failed"] += 1
+
+        # Update stats
+        self.processing_stats["total_entities"] += total_entities
+        self.processing_stats["total_relationships"] += total_relationships
+        self.processing_stats["processing_time"] += processing_time
+
+        logger.info(
+            f"Completed chunked processing: {doc_path.name}",
+            chunks=len(chunks),
+            successful=successful_chunks,
+            total_entities=total_entities,
+            total_relationships=total_relationships,
+            time=f"{processing_time:.2f}s",
+        )
+
+        return {
+            "status": "success" if success_rate >= 0.5 else "partial_failure",
+            "path": str(doc_path),
+            "episode_uuids": episode_uuids,
+            "total_chunks": len(chunks),
+            "successful_chunks": successful_chunks,
+            "entity_count": total_entities,
+            "relationship_count": total_relationships,
+            "processing_time": processing_time,
+            "chunk_results": chunk_results,
+            "chunking_strategy": "hybrid",
+        }
 
     async def process_document(self, doc_path: Path, graphiti_client: Graphiti) -> dict[str, any]:
         """Process a single document through Graphiti."""
@@ -332,70 +567,38 @@ class SimpleDocumentProcessor:
                     "processing_time": (datetime.now() - start_time).total_seconds(),
                 }
 
-            # Process through Graphiti
-            episode_name = generate_episode_name(doc_path, datetime.now())
-            # Handle both Path objects and strings for source description
+            # Chunk the document using hybrid strategy (ALWAYS chunk for consistency)
+            from src.flows.data_ingestion.document_chunker import HybridDocumentChunker
+
+            # Initialize chunker with default settings (120K tokens, 10% overlap)
+            chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
+            chunks = chunker.create_chunks(content)
+
             doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
-            source_description = f"Political document: {doc_name}"
-            reference_time = extract_document_date(content) or datetime.now()
+            logger.info(
+                f"Chunked document {doc_name} into {len(chunks)} parts",
+                total_chunks=len(chunks),
+                boundary_types=[c.get("boundary_type") for c in chunks],
+            )
 
+            # Process all chunks (delegates to _process_chunked_document)
             try:
-                result = await graphiti_client.add_episode(
-                    name=episode_name,
-                    episode_body=content,
-                    source_description=source_description,
-                    reference_time=reference_time,
-                    source=EpisodeType.text,
-                    group_id=GROUP_ID,
-                    entity_types=ENTITY_TYPE_REGISTRY,
-                    edge_types=EDGE_TYPE_REGISTRY,
-                    edge_type_map=EDGE_TYPE_MAP,
-                )
+                result = await self._process_chunked_document(doc_path, chunks, graphiti_client)
 
-                # Extract metrics from result
-                episode_id = result.episode.uuid if hasattr(result, "episode") else None
-                entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
-                relationship_count = len(result.edges) if hasattr(result, "edges") else 0
-
-                # Track successful processing
-                self.tracker.mark_processed(
-                    str(doc_path),
-                    episode_id,
-                    entity_count,
-                    relationship_count,
-                )
-
-                processing_time = (datetime.now() - start_time).total_seconds()
-                self.processing_stats["processed"] += 1
-                self.processing_stats["total_entities"] += entity_count
-                self.processing_stats["total_relationships"] += relationship_count
-                self.processing_stats["processing_time"] += processing_time
-
+                # Return the result from chunked processing
                 doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
                 logger.info(
                     f"Processed document: {doc_name}",
-                    entities=entity_count,
-                    relationships=relationship_count,
-                    time=f"{processing_time:.2f}s",
+                    chunks=result.get("total_chunks", 0),
+                    entities=result.get("entity_count", 0),
+                    relationships=result.get("relationship_count", 0),
+                    time=f"{result.get('processing_time', 0.0):.2f}s",
                 )
 
-                return {
-                    "status": "success",
-                    "path": str(doc_path),
-                    "episode_id": episode_id,
-                    "entity_count": entity_count,
-                    "relationship_count": relationship_count,
-                    "processing_time": processing_time,
-                    "content_length": len(content),
-                    "entities": [{"name": node.name, "type": node.labels[0] if node.labels else "Unknown"} for node in result.nodes] if hasattr(result, "nodes") else [],
-                    "document_date": reference_time.strftime("%Y-%m-%d")
-                    if reference_time != datetime.now()
-                    else None,
-                    "content_preview": content[:200] + "..." if len(content) > 200 else content,
-                }
+                return result
 
             except Exception as e:
-                error_msg = f"Graphiti processing failed: {e}"
+                error_msg = f"Chunked processing failed: {e}"
                 self.tracker.mark_failed(str(doc_path), error_msg)
                 self.processing_stats["failed"] += 1
 

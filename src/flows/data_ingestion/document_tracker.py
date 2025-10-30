@@ -151,6 +151,44 @@ class DocumentTracker:
         self._save_tracking()
         logger.info(f"Marked as processed: {doc_path}")
 
+    def mark_processed_chunked(
+        self,
+        doc_path: str,
+        episode_uuids: list[str],
+        total_chunks: int,
+        entity_count: int = 0,
+        relationship_count: int = 0,
+        chunk_results: list[dict] = None,
+    ) -> None:
+        """Mark chunked document as processed with detailed chunk metadata."""
+        doc_path_str = str(doc_path)
+        self.processed_docs[doc_path_str] = {
+            "episode_uuids": episode_uuids,  # List of all chunk episode IDs
+            "primary_episode_id": episode_uuids[0] if episode_uuids else None,  # First chunk for backward compatibility
+            "processed_at": datetime.now().isoformat(),
+            "status": "completed",
+            "entity_count": entity_count,
+            "relationship_count": relationship_count,
+            "is_chunked": True,
+            "total_chunks": total_chunks,
+            "successful_chunks": len([c for c in (chunk_results or []) if "error" not in c]),
+            "chunking_strategy": "hybrid",
+            "chunk_summary": [
+                {
+                    "chunk_index": c.get("chunk_index"),
+                    "episode_uuid": c.get("episode_uuid"),
+                    "entities": c.get("entities", 0),
+                    "relationships": c.get("relationships", 0),
+                    "boundary_type": c.get("boundary_type", "unknown"),
+                }
+                for c in (chunk_results or [])
+                if "error" not in c
+            ] if chunk_results else [],
+        }
+        self._modified_docs.add(doc_path_str)
+        self._save_tracking()
+        logger.info(f"Marked chunked document as processed: {doc_path} ({total_chunks} chunks)")
+
     def mark_failed(self, doc_path: str, error: str) -> None:
         """Mark document as failed with error details."""
         doc_path_str = str(doc_path)

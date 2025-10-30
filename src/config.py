@@ -160,9 +160,30 @@ class GraphRAGSettings(BaseSettings):
     )
     GRAPHRAG_EMBEDDING_DIMS: int = Field(default=1536, description="Embedding dimensions")
 
-    # Chunking Configuration
-    GRAPHRAG_CHUNK_SIZE: int = Field(default=1000, description="Document chunk size")
-    GRAPHRAG_CHUNK_OVERLAP: int = Field(default=200, description="Chunk overlap size")
+    # Chunking Configuration (Legacy - for backward compatibility)
+    GRAPHRAG_CHUNK_SIZE: int = Field(default=1000, description="Document chunk size (legacy)")
+    GRAPHRAG_CHUNK_OVERLAP: int = Field(default=200, description="Chunk overlap size (legacy)")
+
+    # Hybrid Chunking Configuration (v0.2.0)
+    ENABLE_HYBRID_CHUNKING: bool = Field(
+        default=True, description="Enable hybrid semantic/paragraph/fixed-size chunking"
+    )
+    MAX_EPISODE_TOKENS: int = Field(
+        default=1500, description="Maximum tokens per episode (safety margin below 128K limit)"
+    )
+    CHUNK_OVERLAP_PERCENTAGE: int = Field(
+        default=10, description="Overlap between chunks as percentage (10 = 10%)"
+    )
+    MIN_CHUNK_TOKENS: int = Field(
+        default=50, description="Minimum viable chunk size in tokens"
+    )
+    CHUNKING_STRATEGY: str = Field(
+        default="hybrid",
+        description="Chunking strategy: 'hybrid' (semantic+paragraph+fixed) or 'fixed' (legacy)"
+    )
+    ENABLE_LINK_REMOVAL: bool = Field(
+        default=True, description="Remove links from scraped documents before processing"
+    )
 
     # Ray Data Configuration
     RAY_DATA_NUM_WORKERS: int = Field(default=4, description="Number of Ray workers")
