@@ -11,7 +11,8 @@ from datetime import datetime, timedelta
 sys.path.insert(0, "/opt/airflow")
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import BranchPythonOperator, PythonOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.dates import days_ago
 
 from src.etl.collectors.factory import create_news_collector, get_available_collectors
@@ -219,6 +220,25 @@ def mark_initialization_complete(**context):
     return was_initialization
 
 
+def check_auto_trigger(**context):
+    """Check if auto-trigger for Flow 1 is enabled."""
+    from src.config import graphrag_settings
+
+    saved_count = context["task_instance"].xcom_pull(key="saved_count") or 0
+
+    # Check if auto-trigger is enabled and we have new documents
+    if graphrag_settings.ENABLE_AUTO_TRIGGER_FLOW1 and saved_count > 0:
+        print(f"✅ Auto-trigger enabled and {saved_count} new documents saved")
+        print(f"Will trigger DAG: {graphrag_settings.FLOW1_ORCHESTRATION_DAG_ID}")
+        return "trigger_flow_orchestration"
+    else:
+        if not graphrag_settings.ENABLE_AUTO_TRIGGER_FLOW1:
+            print("ℹ️  Auto-trigger disabled in config")
+        if saved_count == 0:
+            print("ℹ️  No new documents to trigger Flow 1 with")
+        return "generate_summary"
+
+
 def generate_summary(**context):
     """Generate summary of the collection run."""
     company_name = context["task_instance"].xcom_pull(key="company_name")
@@ -277,6 +297,18 @@ mark_complete_task = PythonOperator(
     dag=dag,
 )
 
+check_trigger_task = BranchPythonOperator(
+    task_id="check_auto_trigger",
+    python_callable=check_auto_trigger,
+    dag=dag,
+)
+
+trigger_orchestration_task = TriggerDagRunOperator(
+    task_id="trigger_flow_orchestration",
+    trigger_dag_id="flow_orchestration",
+    dag=dag,
+)
+
 summary_task = PythonOperator(
     task_id="generate_summary",
     python_callable=generate_summary,
@@ -284,4 +316,5 @@ summary_task = PythonOperator(
 )
 
 # Set task dependencies
-load_config_task >> collect_news_task >> transform_task >> mark_complete_task >> summary_task
+load_config_task >> collect_news_task >> transform_task >> mark_complete_task >> check_trigger_task
+check_trigger_task >> [trigger_orchestration_task, summary_task]

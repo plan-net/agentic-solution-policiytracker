@@ -14,7 +14,8 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import BranchPythonOperator, PythonOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 # ETL imports
 from src.etl.collectors.policy_landscape import PolicyLandscapeCollector
@@ -218,6 +219,30 @@ def mark_policy_initialization_complete(**context) -> Dict[str, Any]:
         raise
 
 
+def check_auto_trigger(**context):
+    """Check if auto-trigger for Flow 1 is enabled."""
+    from src.config import graphrag_settings
+
+    # Get collection result
+    collection_result = context["task_instance"].xcom_pull(
+        task_ids="collect_policy_documents", key="collection_result"
+    )
+
+    documents_saved = collection_result.get("documents_saved", 0) if collection_result else 0
+
+    # Check if auto-trigger is enabled and we have new documents
+    if graphrag_settings.ENABLE_AUTO_TRIGGER_FLOW1 and documents_saved > 0:
+        logger.info(f"✅ Auto-trigger enabled and {documents_saved} new documents saved")
+        logger.info(f"Will trigger DAG: {graphrag_settings.FLOW1_ORCHESTRATION_DAG_ID}")
+        return "trigger_flow_orchestration"
+    else:
+        if not graphrag_settings.ENABLE_AUTO_TRIGGER_FLOW1:
+            logger.info("ℹ️  Auto-trigger disabled in config")
+        if documents_saved == 0:
+            logger.info("ℹ️  No new documents to trigger Flow 1 with")
+        return "generate_policy_collection_summary"
+
+
 def generate_policy_collection_summary(**context) -> Dict[str, Any]:
     """Generate summary of policy collection run."""
     try:
@@ -366,6 +391,29 @@ mark_initialization_task = PythonOperator(
     """,
 )
 
+check_trigger_task = BranchPythonOperator(
+    task_id="check_auto_trigger",
+    python_callable=check_auto_trigger,
+    dag=dag,
+    doc_md="""
+    **Check Auto-Trigger**
+
+    Checks if auto-trigger for Flow 1 orchestration is enabled.
+    If enabled and new documents were collected, triggers flow_orchestration DAG.
+    """,
+)
+
+trigger_orchestration_task = TriggerDagRunOperator(
+    task_id="trigger_flow_orchestration",
+    trigger_dag_id="flow_orchestration",
+    dag=dag,
+    doc_md="""
+    **Trigger Flow Orchestration**
+
+    Triggers the Flow 1 orchestration DAG to process newly collected documents.
+    """,
+)
+
 generate_summary_task = PythonOperator(
     task_id="generate_policy_collection_summary",
     python_callable=generate_policy_collection_summary,
@@ -385,8 +433,9 @@ generate_summary_task = PythonOperator(
     check_initialization_task
     >> collect_documents_task
     >> mark_initialization_task
-    >> generate_summary_task
+    >> check_trigger_task
 )
+check_trigger_task >> [trigger_orchestration_task, generate_summary_task]
 
 # Export DAG
 globals()[DAG_ID] = dag

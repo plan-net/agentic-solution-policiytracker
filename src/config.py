@@ -164,6 +164,16 @@ class GraphRAGSettings(BaseSettings):
     GRAPHRAG_CHUNK_SIZE: int = Field(default=1000, description="Document chunk size (legacy)")
     GRAPHRAG_CHUNK_OVERLAP: int = Field(default=200, description="Chunk overlap size (legacy)")
 
+    # Flow Orchestration Settings
+    ENABLE_AUTO_TRIGGER_FLOW1: bool = Field(
+        default=False,
+        description="Auto-trigger Flow 1 orchestration after collection DAGs"
+    )
+    FLOW1_ORCHESTRATION_DAG_ID: str = Field(
+        default="flow_orchestration",
+        description="DAG ID for Flow 1 orchestration"
+    )
+
     # Hybrid Chunking Configuration (v0.2.0)
     ENABLE_HYBRID_CHUNKING: bool = Field(
         default=True, description="Enable hybrid semantic/paragraph/fixed-size chunking"

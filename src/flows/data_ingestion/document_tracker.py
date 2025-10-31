@@ -10,12 +10,17 @@ import fcntl
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional, Set
 
 import structlog
 
-# Configure logging for Ray environment
-from src.flows.data_ingestion.logging_config import configure_logging
-configure_logging()
+# Configure logging for Ray environment (but not in Airflow)
+try:
+    from src.flows.data_ingestion.logging_config import configure_logging
+    configure_logging()
+except Exception:
+    # Skip if logging config fails (e.g., in Airflow environment)
+    pass
 
 logger = structlog.get_logger()
 
@@ -25,11 +30,11 @@ class DocumentTracker:
 
     def __init__(self, tracking_file: str = "data/processed_documents.json"):
         self.tracking_file = Path(tracking_file)
-        self.processed_docs: dict[str, dict] = self._load_tracking()
+        self.processed_docs: Dict[str, Dict] = self._load_tracking()
         # Track which documents this instance has modified
-        self._modified_docs: set[str] = set()
+        self._modified_docs: Set[str] = set()
 
-    def _load_tracking(self) -> dict[str, dict]:
+    def _load_tracking(self) -> Dict[str, Dict]:
         """Load tracking data from JSON file with file locking."""
         if not self.tracking_file.exists():
             logger.debug("No tracking file found, starting fresh", file=str(self.tracking_file))
@@ -154,11 +159,11 @@ class DocumentTracker:
     def mark_processed_chunked(
         self,
         doc_path: str,
-        episode_uuids: list[str],
+        episode_uuids: List[str],
         total_chunks: int,
         entity_count: int = 0,
         relationship_count: int = 0,
-        chunk_results: list[dict] = None,
+        chunk_results: List[Dict] = None,
     ) -> None:
         """Mark chunked document as processed with detailed chunk metadata."""
         doc_path_str = str(doc_path)
@@ -209,7 +214,7 @@ class DocumentTracker:
         logger.info(f"Cleared tracking for {count} documents")
         return count
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> Dict:
         """Get processing statistics."""
         completed = sum(
             1 for doc in self.processed_docs.values() if doc.get("status") == "completed"
