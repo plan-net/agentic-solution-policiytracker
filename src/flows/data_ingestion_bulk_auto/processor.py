@@ -226,34 +226,35 @@ Found **{len(unprocessed_docs)}** documents to process:
         await tracer.markdown("\n")
 
         # Process batches in parallel
-        batch_tasks = []
+        batch_refs = []
         actor_info = []
         for i, (actor, batch) in enumerate(zip(successful_actors, batches), 1):
             if batch:
-                task = actor.process_batch.remote(batch)
-                batch_tasks.append(task)
+                ref = actor.process_batch.remote(batch)
+                batch_refs.append(ref)
                 actor_info.append({"actor_id": i, "batch_size": len(batch), "batch": batch})
 
         await tracer.markdown("⏳ **Processing documents in parallel...**\n\n")
 
-        # Wait for results with progress tracking
+        # Wait for results with progress tracking using Ray's wait
         completed = 0
-        pending = batch_tasks
+        pending_refs = batch_refs.copy()
 
-        while pending:
-            done, pending = await asyncio.wait(pending, timeout=5, return_when=asyncio.FIRST_COMPLETED)
+        while pending_refs:
+            # Use Ray's wait (not asyncio.wait) - returns lists, not sets
+            done_refs, pending_refs = ray.wait(pending_refs, num_returns=1, timeout=5)
 
-            for task in done:
+            for ref in done_refs:
                 completed += 1
-                actor_idx = batch_tasks.index(task)
+                actor_idx = batch_refs.index(ref)
                 await tracer.markdown(
                     f"✅ **Actor {actor_info[actor_idx]['actor_id']}** completed: "
                     f"{actor_info[actor_idx]['batch_size']} documents processed "
                     f"({completed}/{len(successful_actors)} actors done)\n\n"
                 )
 
-        # Gather all results
-        batch_results = [await task for task in batch_tasks]
+        # Gather all results using Ray's get
+        batch_results = ray.get(batch_refs)
 
         # Flatten results
         processing_results = []

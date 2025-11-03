@@ -66,7 +66,7 @@ status:
     @echo "  📊 Ray Dashboard:  http://localhost:8265"
     @echo "  💬 Open WebUI:     http://localhost:3000"
     @echo "  🗄️  Neo4j Browser:  http://localhost:7474 (neo4j/password123)"
-    @echo "  🔍 Langfuse:       http://localhost:3001"
+    @echo "  🔍 Langfuse:       http://localhost:3001 (disabled, use 'just langfuse-up')"
     @echo "  ✈️  Airflow:        http://localhost:8080 (admin/admin)"
     @echo "  ☁️  Azurite:        http://localhost:10000 (blob storage)"
     @echo "  🤖 Graphiti MCP:   http://localhost:8000 (SSE endpoint)"
@@ -126,15 +126,27 @@ redeploy: sync-config
 
 # === Docker Services ===
 
-# Start Docker services only
+# Start Docker services only (excluding Langfuse)
 services-up:
-    @echo "🐳 Starting Docker services..."
-    docker compose up -d
-    @echo "✅ Docker services started"
+    @echo "🐳 Starting Docker services (excluding Langfuse)..."
+    docker compose up -d --scale langfuse-server=0
+    @echo "✅ Docker services started (Langfuse disabled)"
 
 # Stop Docker services
 services-down:
     docker compose down
+
+# Start Langfuse observability service (optional)
+langfuse-up:
+    @echo "🔭 Starting Langfuse observability..."
+    docker compose up -d langfuse-server
+    @echo "✅ Langfuse started at http://localhost:3001"
+
+# Stop Langfuse service
+langfuse-down:
+    @echo "🛑 Stopping Langfuse..."
+    docker compose stop langfuse-server
+    @echo "✅ Langfuse stopped"
 
 # View service logs
 logs service="":
