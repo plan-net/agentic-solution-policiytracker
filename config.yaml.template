@@ -132,6 +132,28 @@ applications:
     max_replicas: 3
     target_num_ongoing_requests_per_replica: 1.0
 
+# Flow 1D: Raw Document Auto-Conversion
+- name: flow1d-raw-converter
+  route_prefix: /documents-raw-converter
+  import_path: src.flows.documents_raw_converter.app:app
+
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Storage (for output directory access)
+      USE_AZURE_STORAGE: 'false'
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+
+  ray_actor_options:
+    num_cpus: 0.5
+    memory: 800000000  # 800MB (lightweight document conversion)
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 1
+    target_num_ongoing_requests_per_replica: 1.0
+
 # Chat Server: LLM Interface for Knowledge Graph
 - name: chat-server
   route_prefix: /chat

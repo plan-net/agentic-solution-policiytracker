@@ -197,13 +197,32 @@ class DocumentConverter:
             return f"**Error:** Failed to extract text from PowerPoint: {str(e)}"
 
     def _generate_frontmatter(self, file_path: Path) -> str:
-        """Generate YAML frontmatter with document metadata."""
+        """
+        Generate YAML frontmatter with document metadata.
+
+        Uses policy-compatible format for integration with Flow 1B processing.
+        """
+        now = datetime.now().isoformat()
+
+        # Try to extract metadata from document
+        metadata = self._extract_document_metadata(file_path)
+
+        # Build frontmatter with policy-compatible fields
         frontmatter_data = {
-            "title": file_path.stem.replace("_", " ").replace("-", " ").title(),
+            # Core metadata (policy-compatible)
+            "title": metadata.get("title") or file_path.stem.replace("_", " ").replace("-", " ").title(),
+            "url": metadata.get("url") or "not available",
+            "published_date": metadata.get("published_date") or now,
+            "collected_date": now,
+            "source": metadata.get("source") or "not available",
+            "source_url": metadata.get("source_url") or "not available",
+            "author": metadata.get("author") or "not available",
+            "description": metadata.get("description") or "not available",
+            "language": metadata.get("language") or "en",
+            "collection_type": "raw_document_upload",
+            # Additional reference fields
             "source_file": file_path.name,
             "file_type": file_path.suffix.lower().replace(".", "").upper(),
-            "converted_date": datetime.now().isoformat(),
-            "collection_type": "adhoc_upload",
         }
 
         lines = ["---"]
@@ -217,6 +236,85 @@ class DocumentConverter:
         lines.append("---")
 
         return "\n".join(lines)
+
+    def _extract_document_metadata(self, file_path: Path) -> dict:
+        """
+        Extract metadata from document if possible.
+
+        Returns dict with available metadata fields. Missing fields will be None.
+        """
+        metadata = {}
+        extension = file_path.suffix.lower()
+
+        try:
+            if extension == ".pdf":
+                metadata = self._extract_pdf_metadata(file_path)
+            elif extension == ".docx":
+                metadata = self._extract_docx_metadata(file_path)
+            elif extension in {".ppt", ".pptx"}:
+                metadata = self._extract_pptx_metadata(file_path)
+        except Exception as e:
+            logger.warning(f"Could not extract metadata from {file_path.name}: {e}")
+
+        return metadata
+
+    def _extract_pdf_metadata(self, file_path: Path) -> dict:
+        """Extract metadata from PDF document properties."""
+        try:
+            import pypdf
+            reader = pypdf.PdfReader(str(file_path))
+            info = reader.metadata or {}
+
+            return {
+                "title": info.get("/Title"),
+                "author": info.get("/Author"),
+                "source": info.get("/Producer"),
+                # PDF metadata doesn't typically have URL/date in properties
+            }
+        except Exception:
+            return {}
+
+    def _extract_docx_metadata(self, file_path: Path) -> dict:
+        """Extract metadata from DOCX document properties."""
+        try:
+            import docx
+            doc = docx.Document(str(file_path))
+            props = doc.core_properties
+
+            metadata = {
+                "title": props.title,
+                "author": props.author,
+                "source": props.subject,
+            }
+
+            # Try to get creation date
+            if props.created:
+                metadata["published_date"] = props.created.isoformat()
+
+            return metadata
+        except Exception:
+            return {}
+
+    def _extract_pptx_metadata(self, file_path: Path) -> dict:
+        """Extract metadata from PPTX presentation properties."""
+        try:
+            from pptx import Presentation
+            prs = Presentation(str(file_path))
+            props = prs.core_properties
+
+            metadata = {
+                "title": props.title,
+                "author": props.author,
+                "source": props.subject,
+            }
+
+            # Try to get creation date
+            if props.created:
+                metadata["published_date"] = props.created.isoformat()
+
+            return metadata
+        except Exception:
+            return {}
 
     def _generate_filename(self, file_path: Path) -> str:
         """Generate safe markdown filename."""

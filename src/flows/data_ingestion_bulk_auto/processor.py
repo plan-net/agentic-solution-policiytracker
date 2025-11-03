@@ -5,6 +5,7 @@ Automatically detects unprocessed documents by comparing processed_documents.jso
 with current folder state, then processes them using the same pipeline as Flow 1.
 """
 
+import asyncio
 import json
 import os
 from datetime import datetime
@@ -25,12 +26,11 @@ logger = structlog.get_logger()
 FLOW1B_MAX_DOCUMENTS = int(os.getenv("FLOW1B_MAX_DOCUMENTS", "500"))
 FLOW1B_NUM_ACTORS = int(os.getenv("FLOW1B_NUM_ACTORS", "4"))
 
-# Import Ray and document processor components
+# Import Ray for parallel processing
 try:
     import ray
 
     RAY_AVAILABLE = True
-    from src.flows.data_ingestion.document_processor import DocumentProcessorActor
 except ImportError:
     RAY_AVAILABLE = False
     logger.warning("Ray not available - bulk processing will be limited")
@@ -59,9 +59,13 @@ def get_unprocessed_documents(
     else:
         logger.info("No tracking file found, treating all documents as unprocessed")
 
-    # Get all markdown documents from both news and policy directories
+    # Get all markdown documents from news, policy, and documents_md directories
     all_docs = []
-    base_paths = [Path(base_path) / "news", Path(base_path) / "policy"]
+    base_paths = [
+        Path(base_path) / "news",
+        Path(base_path) / "policy",
+        Path(base_path) / "documents_md",
+    ]
 
     for search_path in base_paths:
         if not search_path.exists():
@@ -92,10 +96,9 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
     """
     Execute bulk auto-delta document processing.
 
-    Uses the same processing pipeline and report format as Flow 1.
+    Uses parallel Ray actors for fast processing and the same report format as Flow 1.
     """
     from kodosumi import core
-    from src.flows.data_ingestion.document_processor import SimpleDocumentProcessor
     from src.flows.data_ingestion.document_tracker import DocumentTracker
     from src.flows.data_ingestion.report_generator import IngestionReportGenerator
 
@@ -178,46 +181,113 @@ Found **{len(unprocessed_docs)}** documents to process:
             AgentContext,
             create_graphiti_apisix_config,
         )
+        from src.flows.data_ingestion.document_processor import DocumentProcessorActor
 
         tracker = DocumentTracker()
-        processor = SimpleDocumentProcessor(tracker, clear_mode=False)
 
-        # Initialize Graphiti client with APISIX routing
-        NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-        NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-        NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+        # Initialize Ray if not already done
+        if not ray.is_initialized():
+            ray.init(log_to_driver=True)
 
-        # Create agent context for cost tracking
-        agent_context = AgentContext(
-            agent_type="kodosumi_flow",
-            agent_name="bulk_auto_processor",
-            flow_name="data_ingestion_bulk_auto",
+        # Create Ray actors for parallel processing
+        num_actors = min(FLOW1B_NUM_ACTORS, len(unprocessed_docs))
+        actors = [DocumentProcessorActor.remote(i, clear_mode=False) for i in range(num_actors)]
+
+        # Initialize actors
+        init_results = await asyncio.gather(*[actor.initialize.remote() for actor in actors])
+        successful_actors = [actor for actor, success in zip(actors, init_results) if success]
+
+        logger.info(f"Actor initialization: {len(successful_actors)}/{num_actors} successful")
+
+        if not successful_actors:
+            raise RuntimeError("No actors could be initialized for parallel processing")
+
+        await tracer.markdown(
+            f"🚀 **Using {len(successful_actors)} Ray actors** for parallel processing\n\n"
         )
 
-        # Get APISIX-configured LLM client
-        llm_client, note = create_graphiti_apisix_config(agent_context)
+        # Create balanced batches
+        batch_size = max(1, len(unprocessed_docs) // len(successful_actors))
+        batches = []
+        for i in range(0, len(unprocessed_docs), batch_size):
+            batch = unprocessed_docs[i : i + batch_size]
+            if batch:
+                batches.append([str(doc) for doc in batch])
 
-        # Initialize Graphiti with APISIX routing
-        graphiti_client = Graphiti(
-            NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
-        )
-        await graphiti_client.build_indices_and_constraints()
+        # Display batch assignments
+        await tracer.markdown("📋 **Batch Assignments:**\n\n")
+        for i, (actor, batch) in enumerate(zip(successful_actors, batches), 1):
+            doc_names = [Path(doc).name for doc in batch[:3]]
+            remaining = len(batch) - 3
+            doc_list = ", ".join(doc_names)
+            if remaining > 0:
+                doc_list += f" ... and {remaining} more"
+            await tracer.markdown(f"- **Actor {i}**: {len(batch)} documents ({doc_list})\n")
+        await tracer.markdown("\n")
 
-        logger.info("Graphiti client initialized with APISIX routing")
-        logger.debug(note)  # Log the Week 1 limitation note
+        # Process batches in parallel
+        batch_tasks = []
+        actor_info = []
+        for i, (actor, batch) in enumerate(zip(successful_actors, batches), 1):
+            if batch:
+                task = actor.process_batch.remote(batch)
+                batch_tasks.append(task)
+                actor_info.append({"actor_id": i, "batch_size": len(batch), "batch": batch})
 
-        # Process documents with the shared processor
+        await tracer.markdown("⏳ **Processing documents in parallel...**\n\n")
+
+        # Wait for results with progress tracking
+        completed = 0
+        pending = batch_tasks
+
+        while pending:
+            done, pending = await asyncio.wait(pending, timeout=5, return_when=asyncio.FIRST_COMPLETED)
+
+            for task in done:
+                completed += 1
+                actor_idx = batch_tasks.index(task)
+                await tracer.markdown(
+                    f"✅ **Actor {actor_info[actor_idx]['actor_id']}** completed: "
+                    f"{actor_info[actor_idx]['batch_size']} documents processed "
+                    f"({completed}/{len(successful_actors)} actors done)\n\n"
+                )
+
+        # Gather all results
+        batch_results = [await task for task in batch_tasks]
+
+        # Flatten results
         processing_results = []
-        for doc_path in unprocessed_docs:
-            result = await processor.process_document(Path(doc_path), graphiti_client)
-            processing_results.append(result)
+        for batch_result in batch_results:
+            processing_results.extend(batch_result)
 
-        # Close graphiti client
-        await graphiti_client.close()
+        # Update tracker with processed documents
+        for result in processing_results:
+            if result.get("status") == "completed":
+                tracker.mark_processed(
+                    result.get("file_path", ""),
+                    result.get("entities_extracted", 0),
+                    result.get("relationships_extracted", 0),
+                )
 
-        # Get processing statistics
-        stats = processor.get_processing_stats()
-        tracker_stats = tracker.get_stats()
+        # Calculate processing stats from results
+        total_entities = sum(r.get("entities_extracted", 0) for r in processing_results)
+        total_relationships = sum(r.get("relationships_extracted", 0) for r in processing_results)
+        successful = sum(1 for r in processing_results if r.get("status") == "completed")
+        failed = len(processing_results) - successful
+        processing_time = sum(r.get("processing_time", 0) for r in processing_results)
+
+        # Build stats dict for display
+        stats = {
+            "total_documents": len(processing_results),
+            "processed": successful,
+            "skipped": 0,
+            "failed": failed,
+            "success_rate": (successful / len(processing_results) * 100) if len(processing_results) > 0 else 0,
+            "total_entities": total_entities,
+            "total_relationships": total_relationships,
+            "avg_entities_per_doc": (total_entities / successful) if successful > 0 else 0,
+            "total_processing_time": processing_time,
+        }
 
         # Step 3: Generate comprehensive report (same format as Flow 1)
         await tracer.markdown("## ✅ Document Processing Complete\n\n")
