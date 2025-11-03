@@ -2,7 +2,7 @@
 title: EDPB and Commission publish joint guidelines on interplay between the Digital Markets Act and the General Data Protection Regulation
 url: https://eulawlive.com/edpb-and-commission-publish-joint-guidelines-on-interplay-between-the-digital-markets-act-and-the-general-data-protection-regulation/
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:23.596076
+collected_date: 2025-11-03T03:50:08.897114
 source: Eulawlive
 source_url: https://eulawlive.com
 description: Data, Tech & IP

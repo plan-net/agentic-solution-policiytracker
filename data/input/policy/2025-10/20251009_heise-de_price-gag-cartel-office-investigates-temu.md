@@ -2,7 +2,7 @@
 title: Price gag? Cartel office investigates Temu
 url: https://www.heise.de/en/news/Price-gag-Cartel-office-investigates-Temu-10747649.html
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:45.652360
+collected_date: 2025-11-03T03:50:31.477663
 source: Heise
 source_url: https://www.heise.de
 author: Daniel AJ Sokolov

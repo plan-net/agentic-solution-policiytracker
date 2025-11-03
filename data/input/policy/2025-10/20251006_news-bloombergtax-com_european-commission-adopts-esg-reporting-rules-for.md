@@ -2,7 +2,7 @@
 title: European Commission Adopts ESG Reporting Rules for Smaller Firms
 url: https://news.bloombergtax.com/financial-accounting/european-commission-adopts-esg-reporting-rules-for-smaller-firms
 published_date: 2025-10-06T00:00:00
-collected_date: 2025-10-27T02:54:38.811324
+collected_date: 2025-11-03T03:50:24.110105
 source: News
 source_url: https://news.bloombergtax.com
 author: Michael Kapoor

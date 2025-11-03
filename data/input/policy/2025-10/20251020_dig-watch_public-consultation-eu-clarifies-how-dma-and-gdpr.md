@@ -2,7 +2,7 @@
 title: Public consultation: EU clarifies how DMA and GDPR work together | Digital Watch Observatory
 url: https://dig.watch/updates/public-consultation-eu-clarifies-how-dma-and-gdpr-work-together
 published_date: 2025-10-20T00:00:00
-collected_date: 2025-10-27T02:54:22.726489
+collected_date: 2025-11-03T03:50:09.089011
 source: Dig
 source_url: https://dig.watch
 author: harrisorla@gmail.com
@@ -43,21 +43,21 @@ _**Would you like to learn more about AI, tech and digital diplomacy? If so,**_ 
 
 [Artificial intelligence](https://dig.watch/technologies/artificial-intelligence)
 
-- [**DW shorts \#30 The ‘labours’ of AI, digital property ratings & JPMorgan’s bitcoin bet**](https://dig.watch/dig.watch#EsR1HiDwli4)
+- [**AI shorts \#16 AI in ancient medicine, tacos, and crime—What could go wrong?**](https://dig.watch/dig.watch#pOVsz8mkKGg)
 
 [Load more](https://dig.watch/dig.watch)
 
-### [UK data stays in the UK as OpenAI rolls out residency](https://dig.watch/updates/uk-data-stays-in-the-uk-as-openai-rolls-out-residency)
+### [Microsoft faces Australian lawsuit over hidden AI subscription option](https://dig.watch/updates/microsoft-faces-australian-lawsuit-over-hidden-ai-subscription-option)
 
-### [ChatGPT faces EU’s toughest platform rules after 120 million users](https://dig.watch/updates/chatgpt-faces-eus-toughest-platform-rules-after-120-million-users)
+### [Alliance science pact lifts US–Korea cooperation on AI, quantum, 6G, and space](https://dig.watch/updates/alliance-science-pact-lifts-us-korea-cooperation-on-ai-quantum-6g-and-space)
 
-### [Crypto hiring snaps back as AI cools](https://dig.watch/updates/crypto-hiring-snaps-back-as-ai-cools)
+### [Big Tech ramps up Brussels lobbying as EU considers easing digital rules](https://dig.watch/updates/big-tech-ramps-up-brussels-lobbying-as-eu-considers-easing-digital-rules)
 
-### [Cloudflare calls for UK action on Google’s AI crawlers](https://dig.watch/updates/cloudflare-calls-for-uk-action-on-googles-ai-crawlers)
+### [Apple fined over unfair iPhone sales contracts in France](https://dig.watch/updates/apple-fined-over-unfair-iphone-sales-contracts-in-france)
 
-### [CMC pegs JLR hack at £1.9bn with 5,000 firms affected](https://dig.watch/updates/cmc-pegs-jlr-hack-at-1-9bn-with-5000-firms-affected)
+### [French lawmakers advance plan to double digital services tax on Big Tech](https://dig.watch/updates/french-lawmakers-advance-plan-to-double-digital-services-tax-on-big-tech)
 
-### [OpenAI launches ChatGPT Atlas web browser](https://dig.watch/updates/openai-launches-chatgpt-atlas-web-browser)
+### [Labels press platforms to curb AI slop and protect artists](https://dig.watch/updates/labels-press-platforms-to-curb-ai-slop-and-protect-artists)
 
 - [WordPress.org](https://wordpress.org/)
 - [Documentation](https://wordpress.org/documentation/)

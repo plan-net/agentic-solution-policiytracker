@@ -2,7 +2,7 @@
 title: Joint Guidelines on the Interplay between the Digital Markets Act and the General Data Protection Regulation
 url: https://www.edpb.europa.eu/our-work-tools/documents/public-consultations/2025/joint-guidelines-interplay-between-digital_en
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:22.726503
+collected_date: 2025-11-03T03:50:08.897208
 source: Edpb
 source_url: https://www.edpb.europa.eu
 description: "Public consultation ongoing

@@ -2,7 +2,7 @@
 title: EU Commission takes DSA enforcement action to protect minors online (via Passle)
 url: https://inquisitiveminds.bristows.com/post/102lq6d/eu-commission-takes-dsa-enforcement-action-to-protect-minors-online
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-10-27T02:54:52.928077
+collected_date: 2025-11-03T03:50:16.390585
 source: Inquisitiveminds
 source_url: https://inquisitiveminds.bristows.com
 author: Mike Edgar, Vivien Zhu
@@ -59,14 +59,14 @@ The announcement also revealed that there will be coordination action between th
 
 [Vivien Zhu](https://inquisitiveminds.bristows.com/u/102hhfm/vivien-zhu)
 
-10/24/2025 11:51:02 AM
-
-By [Jamie Drucker](https://inquisitiveminds.bristows.com/u/102gf2g/jamie-drucker) [Mark Watts](https://inquisitiveminds.bristows.com/u/102gf2f/mark-watts)
-
-10/24/2025 10:38:43 AM
-
-By [Freya Ollerearnshaw](https://inquisitiveminds.bristows.com/u/102h35t/freya-ollerearnshaw) [Barney Bussell](https://inquisitiveminds.bristows.com/u/102kquu/barney-bussell)
-
 10/22/2025 12:19:36 PM
 
 By [Sophie Lawrance](https://inquisitiveminds.bristows.com/u/102h074/sophie-lawrance) [Edwin Bond](https://inquisitiveminds.bristows.com/u/102hy0v/edwin-bond) [Iva Gobac](https://inquisitiveminds.bristows.com/u/102i6ei/iva-gobac)
+
+10/22/2025 9:05:01 AM
+
+By [Dominic Adair](https://inquisitiveminds.bristows.com/u/102h076/dominic-adair)
+
+10/21/2025 3:18:56 PM
+
+By [Edwin Bond](https://inquisitiveminds.bristows.com/u/102hy0v/edwin-bond) [Iva Gobac](https://inquisitiveminds.bristows.com/u/102i6ei/iva-gobac)

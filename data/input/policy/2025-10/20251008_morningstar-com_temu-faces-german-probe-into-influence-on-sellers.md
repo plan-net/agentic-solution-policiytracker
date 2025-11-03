@@ -2,7 +2,7 @@
 title: Temu Faces German Probe Into Influence on Sellers' Prices
 url: https://www.morningstar.com/news/dow-jones/202510084947/temu-faces-german-probe-into-influence-on-sellers-prices
 published_date: 2025-10-08T00:00:00
-collected_date: 2025-10-27T02:54:41.974870
+collected_date: 2025-11-03T03:50:29.312357
 source: Morningstar
 source_url: https://www.morningstar.com
 description: "By Joshua Kirby 

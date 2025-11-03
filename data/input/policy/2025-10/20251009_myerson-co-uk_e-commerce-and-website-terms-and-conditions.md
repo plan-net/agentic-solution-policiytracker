@@ -2,7 +2,7 @@
 title: E-commerce and Website Terms and Conditions
 url: https://www.myerson.co.uk/business/it-technology/e-commerce
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:28.935553
+collected_date: 2025-11-03T03:50:13.852475
 source: Myerson
 source_url: https://www.myerson.co.uk
 description: "[![](https://www.reviewsolicitors.co.uk/assets/img/widgets/bottom-widget-rs-logo-light.svg)\

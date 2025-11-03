@@ -2,7 +2,7 @@
 title: Germany initiates proceedings against owner of Chinese retailer Temu
 url: https://www.yahoo.com/news/articles/germany-initiates-proceedings-against-owner-133925854.html
 published_date: 2025-10-08T00:00:00
-collected_date: 2025-10-27T02:54:55.896096
+collected_date: 2025-11-03T03:50:40.214608
 source: Yahoo
 source_url: https://www.yahoo.com
 author: DPA

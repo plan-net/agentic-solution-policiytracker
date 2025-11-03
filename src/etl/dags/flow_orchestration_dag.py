@@ -3,6 +3,7 @@ Airflow DAG for orchestrating Kodosumi flows.
 """
 
 import json
+import os
 import sys
 from datetime import timedelta
 
@@ -14,6 +15,9 @@ sys.path.insert(0, "/opt/airflow")
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+
+# Configuration from environment variables
+FLOW1B_MAX_DOCUMENTS = int(os.getenv("FLOW1B_MAX_DOCUMENTS", "500"))
 
 # Default arguments for the DAG
 default_args = {
@@ -155,11 +159,11 @@ def trigger_flow1_kodosumi(**context):
     payload = {
         "job_name": f"Airflow Auto Orchestration - {context['execution_date']}",
         "clear_data": False,
-        "max_documents": 500,  # Safety limit: process at most 500 documents per run
+        "max_documents": FLOW1B_MAX_DOCUMENTS,  # Safety limit from environment variable
     }
 
-    if unprocessed_count > 500:
-        print(f"⚠️  Found {unprocessed_count} unprocessed documents, will process first 500")
+    if unprocessed_count > FLOW1B_MAX_DOCUMENTS:
+        print(f"⚠️  Found {unprocessed_count} unprocessed documents, will process first {FLOW1B_MAX_DOCUMENTS}")
 
     try:
         print(f"Triggering Flow 1B with auto-delta detection")

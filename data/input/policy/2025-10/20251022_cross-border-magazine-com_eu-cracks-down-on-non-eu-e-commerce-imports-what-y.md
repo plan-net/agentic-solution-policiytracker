@@ -2,7 +2,7 @@
 title: EU Cracks Down on Non-EU E-Commerce Imports: What You Need to Know
 url: https://cross-border-magazine.com/non-eu-e-commerce-imports-regulation/
 published_date: 2025-10-22T00:00:00
-collected_date: 2025-10-27T02:54:26.368394
+collected_date: 2025-11-03T03:50:11.694076
 source: Cross Border Magazine
 source_url: https://cross-border-magazine.com
 description: Search
@@ -121,17 +121,17 @@ The message is clear: the age of unregulated low-value e-commerce imports into E
 
 Tagged with: [cross-border](https://cross-border-magazine.com/tag/cross-border/), [e-commerce](https://cross-border-magazine.com/tag/e-commerce/), [Europe](https://cross-border-magazine.com/tag/europe/), [European Commission](https://cross-border-magazine.com/tag/european-commission/), [laws](https://cross-border-magazine.com/tag/laws/), [logistics](https://cross-border-magazine.com/tag/logistics/), [online shopping](https://cross-border-magazine.com/tag/online-shopping/)
 
+[U.S. E-Commerce Holiday Sales 2025 Expected to Exceed $250 Billion, According to Adobe](https://cross-border-magazine.com/u-s-e-commerce-holiday-sales-2025/)
+
+The 2025 U.S. holiday e-commerce season is forecast to break records, with online sales projected to surpass $250 billion between November 1 and December 31, according to the latest Adobe...
+
+[European Commission Flags TikTok and Meta for Breaching Transparency Rules Under the Digital Services Act](https://cross-border-magazine.com/european-commission-flags-tiktok-and-meta/)
+
+On 24 October 2025, the European Commission released preliminary findings indicating that TikTok and Meta Platforms (Facebook and Instagram) have breached their transparency obligations under the Digital Services Act (DSA)....
+
 [Zalando Enters Portugal: Expansion Strategy, Challenges, and Market Impact](https://cross-border-magazine.com/zalando-enters-portugal/)
 
 The European fashion and lifestyle e-commerce giant Zalando is entering Portugal as part of its 2025 expansion strategy. Alongside Greece and Bulgaria, Portugal is one of the new markets that...
-
-[Social Commerce Playbook for the Netherlands 2025](https://cross-border-magazine.com/social-commerce-playbook-netherlands-2025/)
-
-Social commerce—selling goods directly via social platforms—is no longer just a buzzword; it’s fast becoming a core retail channel in the Netherlands. With shifts in consumer behavior, technology, and regulation,...
-
-[Nvidia’s Impact on AI Development—and What It Means for E-commerce Over the Next Five Years](https://cross-border-magazine.com/nvidia-ai-ecommerce-impact/)
-
-Nvidia has become the backbone of modern AI, combining cutting-edge GPUs with a mature software stack that makes training and serving large models faster and cheaper. This accelerating capability is...
 
 [Top](https://cross-border-magazine.com/cross-border-magazine.com)
 

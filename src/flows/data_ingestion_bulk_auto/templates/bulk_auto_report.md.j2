@@ -1,0 +1,235 @@
+# Bulk Auto-Delta Processing Report: {{ executive_summary.job_name }}
+
+**Generated:** {{ generation_timestamp.strftime('%Y-%m-%d %H:%M:%S') }} UTC
+**Flow:** Bulk Auto-Delta Processing (Flow 1B)
+**Processing Mode:** Automatic delta detection
+
+---
+
+## Executive Summary
+
+### Document Discovery
+- **Total Unprocessed Documents Found:** {{ executive_summary.total_unprocessed_found }}
+- **Documents Processed:** {{ executive_summary.documents_processed }}
+{% if executive_summary.safety_limit_applied %}
+- **⚠️ Safety Limit Applied:** Processing limited to {{ executive_summary.max_documents }} documents
+- **Remaining Documents:** {{ executive_summary.total_unprocessed_found - executive_summary.documents_processed }}
+{% else %}
+- **✅ All Available Documents Processed**
+{% endif %}
+
+### Processing Results
+- **Successful:** {{ executive_summary.successful }} ({{ "%.1f"|format(executive_summary.success_rate) }}%)
+- **Failed:** {{ executive_summary.failed }}
+- **Processing Time:** {{ "%.1f"|format(executive_summary.processing_time) }} seconds
+- **Processing Rate:** {{ "%.1f"|format(executive_summary.processing_rate) }} docs/second
+
+### Knowledge Graph Growth
+- **Entities Created:** {{ executive_summary.total_entities }}
+- **Relationships Created:** {{ executive_summary.total_relationships }}
+- **Average Entities per Document:** {{ "%.1f"|format(executive_summary.avg_entities_per_doc) }}
+
+### System Resources
+- **Ray Actors Used:** {{ executive_summary.num_actors }}
+- **Parallel Processing:** Enabled
+- **Document Limit:** {{ executive_summary.max_documents }} per run
+
+---
+
+## Processing Details
+
+{% if processing_details.successful_documents %}
+### Successful Documents ({{ processing_details.total_successful }})
+
+| Document | Entities | Relationships | Status |
+|----------|----------|---------------|--------|
+{% for doc in processing_details.successful_documents %}
+| {{ doc.document_path|basename|escape_md }} | {{ doc.entity_count }} | {{ doc.relationship_count }} | ✅ Success |
+{% endfor %}
+{% if processing_details.total_successful > 20 %}
+*... and {{ processing_details.total_successful - 20 }} more successful documents*
+{% endif %}
+
+{% else %}
+*No documents were successfully processed in this run*
+{% endif %}
+
+---
+
+## Failed Documents
+
+{% if processing_details.failed_documents %}
+### Processing Failures ({{ processing_details.total_failed }})
+
+| Document | Error |
+|----------|-------|
+{% for doc in processing_details.failed_documents %}
+| {{ doc.document_path|basename|escape_md }} | {{ doc.error|truncate_text(100)|escape_md }} |
+{% endfor %}
+
+### Recommendations
+1. Review document encoding (UTF-8 vs latin-1)
+2. Check for empty or corrupted files
+3. Verify network connectivity to Graphiti service
+4. Monitor memory usage during processing
+5. Check Ray actor logs for detailed errors
+
+{% else %}
+✅ **No processing failures - all documents processed successfully!**
+{% endif %}
+
+---
+
+## Performance Metrics
+
+### Processing Performance
+- **Total Processing Time:** {{ "%.2f"|format(executive_summary.processing_time) }} seconds
+- **Average per Document:** {{ "%.2f"|format(executive_summary.processing_time / executive_summary.documents_processed) if executive_summary.documents_processed > 0 else "N/A" }} seconds
+- **Documents per Minute:** {{ "%.1f"|format(executive_summary.processing_rate * 60) if executive_summary.processing_rate > 0 else "N/A" }}
+
+### Graph Database Performance
+- **Entity Creation Rate:** {{ "%.1f"|format(executive_summary.total_entities / executive_summary.processing_time) if executive_summary.processing_time > 0 else "N/A" }} entities/second
+- **Relationship Creation Rate:** {{ "%.1f"|format(executive_summary.total_relationships / executive_summary.processing_time) if executive_summary.processing_time > 0 else "N/A" }} relationships/second
+
+### Parallel Processing
+- **Ray Actors:** {{ executive_summary.num_actors }}
+- **Concurrent Processing:** Enabled
+- **Load Balancing:** Round-robin distribution
+
+---
+
+## Auto-Delta Detection
+
+### How It Works
+Flow 1B automatically detects unprocessed documents by:
+1. Reading `processed_documents.json` tracking file
+2. Scanning `data/input/news/` and `data/input/policy/` directories
+3. Computing the delta (unprocessed documents)
+4. Processing up to {{ executive_summary.max_documents }} documents per run
+
+### Current Status
+{% if executive_summary.safety_limit_applied %}
+- **More Documents Available:** {{ executive_summary.total_unprocessed_found - executive_summary.documents_processed }} documents remaining
+- **Next Steps:** Run Flow 1B again to process the next batch
+{% else %}
+- **All Documents Processed:** Knowledge graph is up to date
+- **Next Steps:** Wait for new documents from ETL collection
+{% endif %}
+
+---
+
+## Configuration Used
+
+### Processing Parameters
+- **Job Name:** {{ executive_summary.job_name }}
+- **Max Documents:** {{ executive_summary.max_documents }}
+- **Ray Actors:** {{ executive_summary.num_actors }}
+- **Clear Data Mode:** No (preserves existing graph)
+
+### Environment Variables
+- **FLOW1B_MAX_DOCUMENTS:** {{ config.max_documents }} (from .env)
+- **FLOW1B_NUM_ACTORS:** {{ config.num_actors }} (from .env)
+
+### Data Sources
+- News documents: `data/input/news/`
+- Policy documents: `data/input/policy/`
+- Tracking file: `data/processed_documents.json`
+
+---
+
+## Next Steps
+
+### Immediate Actions
+1. **Verify Results:** Browse the knowledge graph at [Neo4j Browser](http://localhost:7474)
+2. **Review Failed Documents:** Address any processing failures listed above
+{% if executive_summary.safety_limit_applied %}
+3. **Process Remaining Documents:** Run Flow 1B again to process next {{ executive_summary.max_documents }} documents
+{% else %}
+3. **Query Knowledge Graph:** Use [Open WebUI](http://localhost:3000) to explore new data
+{% endif %}
+
+### Recommended Workflows
+1. **Chat Interface:** Query new information via Open WebUI
+2. **ETL Collection:** Trigger news/policy collection to gather more documents
+3. **Manual Review:** Spot-check entity extraction quality
+
+### Graph Exploration Queries
+```cypher
+// View recently processed episodes
+MATCH (e:Episode)
+WHERE e.created_at > datetime() - duration('P1D')
+RETURN e.name, e.created_at
+ORDER BY e.created_at DESC
+LIMIT 10;
+
+// Explore new entity relationships
+MATCH (n)-[r]->(m)
+WHERE r.created_at > datetime() - duration('P1D')
+RETURN type(r), count(*)
+ORDER BY count(*) DESC;
+
+// Find policy-related entities
+MATCH (n:Policy)
+RETURN n.policy_name, n.jurisdiction
+LIMIT 10;
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+1. **"No unprocessed documents found"**:
+   - Check if ETL collection has run recently
+   - Verify `data/input/` contains markdown files
+   - Review `processed_documents.json` tracking status
+
+2. **"Ray actors failed to initialize"**:
+   - Check Ray cluster status: `just ray-status`
+   - Verify sufficient memory available
+   - Review Ray dashboard at http://localhost:8265
+
+3. **"Entity extraction failed"**:
+   - Check OpenAI API key configuration
+   - Verify Neo4j is running on port 7687
+   - Check Graphiti service connectivity
+
+4. **"Safety limit reached"**:
+   - This is normal behavior to prevent overload
+   - Run Flow 1B again to process next batch
+   - Adjust FLOW1B_MAX_DOCUMENTS in .env if needed
+
+### Support Resources
+- **Ray Dashboard:** http://localhost:8265
+- **Neo4j Browser:** http://localhost:7474
+- **Airflow ETL:** http://localhost:8080 (admin/admin)
+- **Kodosumi Admin:** http://localhost:3370 (admin/admin)
+- **Logs:** Check Ray logs for detailed error messages
+
+---
+
+## Airflow Integration
+
+This Flow 1B run can be triggered automatically by Airflow:
+
+### Airflow DAG: flow_orchestration
+1. **check_for_new_documents:** Scans for unprocessed documents
+2. **trigger_flow1:** Triggers Flow 1B (this flow)
+3. **trigger_flow2:** Triggers company context analysis (future)
+4. **update_processing_status:** Updates tracking statistics
+
+### Manual Trigger
+```bash
+# Via Airflow UI
+http://localhost:8080 → DAGs → flow_orchestration → Trigger
+
+# Via CLI
+just deploy-bulk-auto
+# Then submit job via Kodosumi UI at http://localhost:3370
+```
+
+---
+
+*This report was generated by the Political Monitoring Agent v0.2.0 Bulk Auto-Delta Processing Flow (Flow 1B). The temporal knowledge graph has been updated with newly processed documents.*
+
+**End of Report**

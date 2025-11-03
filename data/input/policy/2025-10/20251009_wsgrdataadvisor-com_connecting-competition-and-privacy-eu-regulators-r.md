@@ -2,7 +2,7 @@
 title: Connecting Competition and Privacy: EU Regulators Release Draft Guidance on DMA and GDPR Interplay
 url: https://www.wsgrdataadvisor.com/2025/10/connecting-competition-and-privacy-eu-regulators-release-draft-guidance-on-dma-and-gdpr-interplay/
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:23.596101
+collected_date: 2025-11-03T03:50:09.088919
 source: Wsgrdataadvisor
 source_url: https://www.wsgrdataadvisor.com
 author: Cédric Burton, Jindrich Kloub, Deirdre Carroll, Carol Evrard, Laurine Daïnesi Signoret, Claudia Chan

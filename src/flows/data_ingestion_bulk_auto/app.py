@@ -7,12 +7,16 @@ processed_documents.json with current folder state.
 For Airflow orchestration - no file list parameters needed.
 """
 
+import os
 import fastapi
 from kodosumi.core import InputsError, Launch, ServeAPI
 from kodosumi.core import forms as F
 from ray import serve
 
 app = ServeAPI()
+
+# Get defaults from environment variables
+DEFAULT_MAX_DOCUMENTS = int(os.getenv("FLOW1B_MAX_DOCUMENTS", "500"))
 
 # Define user interface form
 bulk_auto_form = F.Model(
@@ -40,10 +44,10 @@ bulk_auto_form = F.Model(
         label="Maximum Documents",
         name="max_documents",
         min_value=1,
-        max_value=500,
+        max_value=1000,
         step=1,
-        value=500,
-        placeholder="Safety limit: maximum documents to process",
+        value=DEFAULT_MAX_DOCUMENTS,
+        placeholder=f"Safety limit (default from env: {DEFAULT_MAX_DOCUMENTS})",
     ),
     # Action Buttons
     F.Submit("Start Processing"),
@@ -75,11 +79,11 @@ async def process_bulk_auto(request: fastapi.Request, inputs: dict):
 
     # Max documents validation
     try:
-        max_documents = int(inputs.get("max_documents", 500))
+        max_documents = int(inputs.get("max_documents", DEFAULT_MAX_DOCUMENTS))
         if max_documents < 1:
             error.add(max_documents="Maximum documents must be at least 1")
-        elif max_documents > 500:
-            error.add(max_documents="Maximum documents cannot exceed 500 (safety limit)")
+        elif max_documents > 1000:
+            error.add(max_documents="Maximum documents cannot exceed 1000")
     except (ValueError, TypeError):
         error.add(max_documents="Maximum documents must be a valid number")
 

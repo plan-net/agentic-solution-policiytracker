@@ -1,32 +1,30 @@
 ---
-title: Sustainability reporting and due diligence: simpler rules for fewer companies | Actualitate | Parlamentul European
-url: https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies
+title: Sustainability reporting and due diligence: simpler rules for fewer companies | News | European Parliament
+url: https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-10-27T02:54:51.545024
+collected_date: 2025-11-03T03:50:37.496621
 source: Europarl
 source_url: https://www.europarl.europa.eu
-description: Lansați căutarea
+description: Launch the search
 language: en
 collection_type: policy_landscape
 ---
 
-# Sustainability reporting and due diligence: simpler rules for fewer companies | Actualitate | Parlamentul European
+# Sustainability reporting and due diligence: simpler rules for fewer companies | News | European Parliament
 
-Lansați căutarea
+Launch the search
 
 # Sustainability reporting and due diligence: simpler rules for fewer companies
 
-[JURI](https://www.europarl.europa.eu/news/ro?contentType=committee&keywordValue=JURI)
+[JURI](https://www.europarl.europa.eu/news/en?contentType=committee&keywordValue=JURI)
 
-## Distribuiți această pagină:
+- [Facebook](https://www.facebook.com/share.php?u=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bfacebook%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-)
 
-- [Facebook](https://www.facebook.com/share.php?u=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bfacebook%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-)
+- [X](https://x.com/intent/tweet?text=Sustainability%20reporting%20and%20due%20diligence:%20simpler%20rules%20for%20fewer%20companies&url=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Btwitter%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-&via=Europarl_EN)
 
-- [X](https://x.com/intent/tweet?text=Sustainability%20reporting%20and%20due%20diligence:%20simpler%20rules%20for%20fewer%20companies&url=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Btwitter%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-&via=Europarl_RO)
+- [LinkedIn](https://www.linkedin.com/shareArticle?mini=true&url=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Blinkedin%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26&title=European%20Parliament&summary=&source=)
 
-- [LinkedIn](https://www.linkedin.com/shareArticle?mini=true&url=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Blinkedin%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26&title=European%20Parliament&summary=&source=)
-
-- [WhatsApp](https://api.whatsapp.com/send?text=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bwhatsapp%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26)
+- [WhatsApp](https://api.whatsapp.com/send?text=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bwhatsapp%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26)
 
 - Fewer companies required to report on sustainability and comply with due diligence obligations
 
@@ -64,13 +62,11 @@ The Commission presented its [Omnibus I](https://commission.europa.eu/publicatio
 
 MEPs have repeatedly called for a revision of the EU rulebook to simplify and reduce administrative requirements for companies. The so-called “omnibus” proposals, tabled by the Commission as of February 2025, aim to boost EU competitiveness and prosperity, and unlock additional investment capacity for businesses. As a matter of urgency, Parliament has already [adopted some proposals](https://www.europarl.europa.eu/news/en/press-room/press-tool-kit/0/parliament-s-priorities) and is making swift progress to finalise the remaining proposals.
 
-Informații de contact:
-
-- [Număr de telefon: (+32) 2 28 40172 (BXL)](tel:(+32) 2 28 40172)
-- [Numărul de telefon mobil: (+32) 477 99 11 57](tel:(+32) 477 99 11 57)
-- [e-mail: martina.vass@europarl.europa.eu](mailto:martina.vass@europarl.europa.eu)
-- [e-mail: lega-press@europarl.europa.eu](mailto:lega-press@europarl.europa.eu)
-- [Cont X: @EP\_Legal](http://x.com/EP_Legal)
+- [Phone number: (+32) 2 28 40172 (BXL)](tel:(+32) 2 28 40172)
+- [Mobile number: (+32) 477 99 11 57](tel:(+32) 477 99 11 57)
+- [E-mail: martina.vass@europarl.europa.eu](mailto:martina.vass@europarl.europa.eu)
+- [E-mail: lega-press@europarl.europa.eu](mailto:lega-press@europarl.europa.eu)
+- [X account: @EP\_Legal](http://x.com/EP_Legal)
 
 ## Further information
 
@@ -82,20 +78,18 @@ Informații de contact:
 
 - [Legislative train](https://www.europarl.europa.eu/legislative-train/package-simplification-business/file-first-omnibus-package-on-sustainability-proposal-amending-csrd-and-csddd)
 
-## Informații referitoare la produs
+## Product information
 
-REF.:20251009IPR30836
+Ref.:20251009IPR30836
 
-## Distribuiți această pagină:
+- [Facebook](https://www.facebook.com/share.php?u=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bfacebook%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-)
 
-- [Facebook](https://www.facebook.com/share.php?u=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bfacebook%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-)
+- [X](https://x.com/intent/tweet?text=Sustainability%20reporting%20and%20due%20diligence:%20simpler%20rules%20for%20fewer%20companies&url=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Btwitter%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-&via=Europarl_EN)
 
-- [X](https://x.com/intent/tweet?text=Sustainability%20reporting%20and%20due%20diligence:%20simpler%20rules%20for%20fewer%20companies&url=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Btwitter%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D-&via=Europarl_RO)
+- [LinkedIn](https://www.linkedin.com/shareArticle?mini=true&url=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Blinkedin%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26&title=European%20Parliament&summary=&source=)
 
-- [LinkedIn](https://www.linkedin.com/shareArticle?mini=true&url=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Blinkedin%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26&title=European%20Parliament&summary=&source=)
+- [WhatsApp](https://api.whatsapp.com/send?text=https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bwhatsapp%5D-%5Ben%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26)
 
-- [WhatsApp](https://api.whatsapp.com/send?text=https://www.europarl.europa.eu/news/ro/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies?xtor%3DAD-78-%5BSocial_share_buttons%5D-%5Bwhatsapp%5D-%5Bro%5D-%5Bnews%5D-%5Bpressroom%5D-%5Bomnibus-csrd-and-csddd%5D%26)
+[Sign up for mail updates](https://www.europarl.europa.eu/subscription/en)
 
-[Abonați-vă pentru a primi noutăți pe e-mail](https://www.europarl.europa.eu/subscription/ro)
-
-[versiunea PDF](https://www.europarl.europa.eu/pdfs/news/expert/2025/10/press_release/20251009IPR30836/20251009IPR30836_en.pdf)
+[PDF version](https://www.europarl.europa.eu/pdfs/news/expert/2025/10/press_release/20251009IPR30836/20251009IPR30836_en.pdf)

@@ -2,26 +2,33 @@
 Bulk Auto-Delta Document Processor
 
 Automatically detects unprocessed documents by comparing processed_documents.json
-with current folder state, then processes the delta.
+with current folder state, then processes them using the same pipeline as Flow 1.
 """
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import List
 
 import structlog
-from kodosumi import Tracer
+from kodosumi.core import Tracer
 
 # Configure logging for Ray environment
 from src.flows.data_ingestion.logging_config import configure_logging
+
 configure_logging()
 
 logger = structlog.get_logger()
 
+# Configuration from environment variables
+FLOW1B_MAX_DOCUMENTS = int(os.getenv("FLOW1B_MAX_DOCUMENTS", "500"))
+FLOW1B_NUM_ACTORS = int(os.getenv("FLOW1B_NUM_ACTORS", "4"))
+
 # Import Ray and document processor components
 try:
     import ray
+
     RAY_AVAILABLE = True
     from src.flows.data_ingestion.document_processor import DocumentProcessorActor
 except ImportError:
@@ -29,7 +36,9 @@ except ImportError:
     logger.warning("Ray not available - bulk processing will be limited")
 
 
-def get_unprocessed_documents(base_path: str = "data/input", tracking_file: str = "data/processed_documents.json") -> List[str]:
+def get_unprocessed_documents(
+    base_path: str = "data/input", tracking_file: str = "data/processed_documents.json"
+) -> List[str]:
     """
     Get list of documents that haven't been processed.
 
@@ -62,9 +71,10 @@ def get_unprocessed_documents(base_path: str = "data/input", tracking_file: str 
         # Find all markdown files in this directory
         for md_file in search_path.rglob("*.md"):
             try:
-                # Get relative path from base_path (stored paths in tracker are relative)
-                relative_path = str(md_file.relative_to(Path(base_path)))
-                all_docs.append(relative_path)
+                # Get path as stored in tracking file (full path from project root)
+                # Tracking file stores paths like: data/input/policy/2025-05/file.md
+                full_relative_path = str(md_file)
+                all_docs.append(full_relative_path)
             except ValueError:
                 # Skip if file is not under base_path
                 continue
@@ -82,20 +92,42 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
     """
     Execute bulk auto-delta document processing.
 
-    Automatically detects unprocessed documents and processes them in parallel
-    using Ray actors.
+    Uses the same processing pipeline and report format as Flow 1.
     """
     from kodosumi import core
+    from src.flows.data_ingestion.document_processor import SimpleDocumentProcessor
+    from src.flows.data_ingestion.document_tracker import DocumentTracker
+    from src.flows.data_ingestion.report_generator import IngestionReportGenerator
 
     job_name = inputs.get("job_name", "Bulk Auto-Delta Processing")
-    max_documents = inputs.get("max_documents", 500)
+    max_documents = inputs.get("max_documents", FLOW1B_MAX_DOCUMENTS)
 
     start_time = datetime.now()
 
+    logger.info(
+        "Starting bulk auto-delta processing",
+        job_name=job_name,
+        max_documents=max_documents,
+        num_actors=FLOW1B_NUM_ACTORS,
+    )
+
     # Step 1: Auto-detect unprocessed documents
-    await tracer.markdown(f"## {job_name}\n\n")
-    await tracer.markdown("### Step 1: Auto-Detecting Unprocessed Documents\n\n")
-    await tracer.markdown("🔍 Scanning document directories...\n\n")
+    await tracer.markdown(
+        f"""
+# 📄 {job_name} - Starting
+
+**Configuration:**
+- Mode: Auto-Delta Detection
+- Document Limit: {max_documents} per run
+- Parallel Actors: {FLOW1B_NUM_ACTORS}
+- Clear Data: ❌ No (preserves existing graph)
+
+---
+"""
+    )
+
+    await tracer.markdown("## 📊 Document Discovery\n\n")
+    await tracer.markdown("🔍 Scanning for unprocessed documents...\n\n")
 
     try:
         unprocessed_docs = get_unprocessed_documents()
@@ -103,13 +135,18 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
         if not unprocessed_docs:
             await tracer.markdown("✅ No unprocessed documents found.\n\n")
             return core.response.Markdown(
-                "## Processing Complete\n\n"
-                "No unprocessed documents found. All documents are up to date.\n\n"
-                f"**Job Name**: {job_name}\n"
-                f"**Execution Time**: {(datetime.now() - start_time).total_seconds():.1f}s\n"
+                f"""# {job_name} - Complete
+
+## No Unprocessed Documents
+
+All documents are up to date. The knowledge graph is current.
+
+**Job Name**: {job_name}
+**Execution Time**: {(datetime.now() - start_time).total_seconds():.1f}s
+"""
             )
 
-        # Apply 500 document safety limit
+        # Apply safety limit
         total_unprocessed = len(unprocessed_docs)
         if total_unprocessed > max_documents:
             await tracer.markdown(
@@ -120,117 +157,97 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
         else:
             await tracer.markdown(f"✅ Found {total_unprocessed} unprocessed documents to process.\n\n")
 
-        # Step 2: Process documents
-        await tracer.markdown("### Step 2: Processing Documents\n\n")
-        await tracer.markdown(f"📄 Processing {len(unprocessed_docs)} documents in parallel using Ray...\n\n")
+        # Display documents to be processed
+        await tracer.markdown(
+            f"""
+Found **{len(unprocessed_docs)}** documents to process:
+{chr(10).join(f"- {Path(doc).name}" for doc in unprocessed_docs[:10])}
+{'...' if len(unprocessed_docs) > 10 else ''}
 
-        if not RAY_AVAILABLE:
-            await tracer.markdown("❌ Ray is not available. Cannot process documents.\n\n")
-            return core.response.Markdown(
-                "## Processing Failed\n\n"
-                "Ray is not available for distributed processing.\n"
-            )
-
-        # Initialize Ray actors for parallel processing
-        num_actors = min(4, len(unprocessed_docs))  # Use up to 4 actors
-        actors = [DocumentProcessorActor.remote(i, clear_mode=False) for i in range(num_actors)]
-
-        # Initialize actors using ray.get for synchronous initialization
-        init_tasks = [actor.initialize.remote() for actor in actors]
-        init_results = ray.get(init_tasks)
-        if not all(init_results):
-            await tracer.markdown("❌ Failed to initialize processing actors.\n\n")
-            return core.response.Markdown(
-                "## Processing Failed\n\n"
-                "Failed to initialize document processing actors.\n"
-            )
-
-        await tracer.markdown(f"✅ Initialized {num_actors} processing actors.\n\n")
-
-        # Convert relative paths to absolute paths
-        base_path = Path("data/input")
-        absolute_paths = [str(base_path / doc_path) for doc_path in unprocessed_docs]
-
-        # Distribute documents across actors
-        tasks = []
-        for i, doc_path in enumerate(absolute_paths):
-            actor = actors[i % num_actors]
-            tasks.append(actor.process_document.remote(Path(doc_path)))
-
-        # Process with progress updates
-        processed_count = 0
-        successful_count = 0
-        failed_count = 0
-
-        await tracer.markdown("**Progress Updates:**\n\n")
-
-        # Use ray.wait instead of asyncio.wait for Ray remote calls
-        while tasks:
-            # Wait for at least one task to complete
-            done, tasks = ray.wait(tasks, num_returns=1, timeout=None)
-
-            for completed_task in done:
-                try:
-                    result = ray.get(completed_task)
-                    processed_count += 1
-
-                    if result.get("success"):
-                        successful_count += 1
-                        doc_name = Path(result.get("document_path", "unknown")).name
-                        entities = result.get("entity_count", 0)
-                        relationships = result.get("relationship_count", 0)
-                        await tracer.markdown(
-                            f"- ✅ **{processed_count}/{len(unprocessed_docs)}**: {doc_name} "
-                            f"({entities} entities, {relationships} relationships)\n"
-                        )
-                    else:
-                        failed_count += 1
-                        doc_name = Path(result.get("document_path", "unknown")).name
-                        error = result.get("error", "Unknown error")
-                        await tracer.markdown(
-                            f"- ❌ **{processed_count}/{len(unprocessed_docs)}**: {doc_name} - {error}\n"
-                        )
-
-                except Exception as e:
-                    failed_count += 1
-                    processed_count += 1
-                    await tracer.markdown(
-                        f"- ❌ **{processed_count}/{len(unprocessed_docs)}**: Processing error: {e}\n"
-                    )
-
-        await tracer.markdown("\n")
-
-        # Step 3: Generate summary
-        processing_time = (datetime.now() - start_time).total_seconds()
-        success_rate = (successful_count / processed_count * 100) if processed_count > 0 else 0
-
-        await tracer.markdown("### Step 3: Processing Summary\n\n")
-        await tracer.markdown("✅ **Bulk auto-delta processing complete!**\n\n")
-
-        # Generate final report
-        report = f"""## Bulk Auto-Delta Processing Complete
-
-### Job Information
-- **Job Name**: {job_name}
-- **Execution Time**: {processing_time:.1f}s
-- **Processing Rate**: {(processed_count / processing_time):.1f} docs/second
-
-### Document Statistics
-- **Total Unprocessed Found**: {total_unprocessed}
-- **Documents Processed**: {processed_count}
-- **Successful**: {successful_count} ({success_rate:.1f}%)
-- **Failed**: {failed_count}
-
-### Status
-{"🎉 All documents processed successfully!" if failed_count == 0 else f"⚠️ {failed_count} document(s) failed processing."}
-
-### Next Steps
-{"- All documents are now up to date" if total_unprocessed <= max_documents else f"- {total_unprocessed - max_documents} documents remaining (run again to process next batch)"}
-- Check knowledge graph at [Neo4j Browser](http://localhost:7474)
-- Use chat interface at [Open WebUI](http://localhost:3000) to query new data
+---
 """
+        )
 
-        return core.response.Markdown(report)
+        # Step 2: Process documents using Flow 1's processor
+        await tracer.markdown("## 🚀 Processing Documents\n\n")
+        await tracer.markdown(f"Processing {len(unprocessed_docs)} documents...\n\n")
+
+        # Initialize components (same as Flow 1)
+        from graphiti_core import Graphiti
+
+        tracker = DocumentTracker()
+        processor = SimpleDocumentProcessor(tracker, clear_mode=False)
+
+        # Initialize Graphiti client
+        NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+        NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
+        NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+
+        graphiti_client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+        await graphiti_client.build_indices_and_constraints()
+
+        # Process documents with the shared processor
+        processing_results = []
+        for doc_path in unprocessed_docs:
+            result = await processor.process_document(Path(doc_path), graphiti_client)
+            processing_results.append(result)
+
+        # Close graphiti client
+        await graphiti_client.close()
+
+        # Get processing statistics
+        stats = processor.get_processing_stats()
+        tracker_stats = tracker.get_stats()
+
+        # Step 3: Generate comprehensive report (same format as Flow 1)
+        await tracer.markdown("## ✅ Document Processing Complete\n\n")
+        await tracer.markdown(
+            f"""
+**Processing Statistics:**
+- **Total Documents:** {stats.get('total_documents', 0)}
+- **Processed:** {stats.get('processed', 0)}
+- **Skipped:** {stats.get('skipped', 0)}
+- **Failed:** {stats.get('failed', 0)}
+- **Success Rate:** {stats.get('success_rate', 0):.1f}%
+
+**Knowledge Graph Growth:**
+- **Total Entities:** {stats.get('total_entities', 0)}
+- **Total Relationships:** {stats.get('total_relationships', 0)}
+- **Avg Entities/Doc:** {stats.get('avg_entities_per_doc', 0):.1f}
+- **Processing Time:** {stats.get('total_processing_time', 0):.2f}s
+
+---
+"""
+        )
+
+        # Calculate total execution time
+        total_time = (datetime.now() - start_time).total_seconds()
+
+        # Generate final comprehensive report using Flow 1's report generator
+        report_generator = IngestionReportGenerator()
+
+        # Prepare configuration for report generator
+        config = {
+            "job_name": job_name,
+            "source_path": "Auto-detected (news + policy)",
+            "document_limit": max_documents,
+            "clear_data": False,
+            "enable_communities": False,
+            "graph_group_id": os.getenv("GRAPHITI_GROUP_ID", "political_monitoring_v2"),
+            "neo4j_uri": os.getenv("NEO4J_URI", "bolt://localhost:7687"),
+        }
+
+        # Generate the comprehensive report
+        report_content = await report_generator.generate_report(
+            processing_results=processing_results,
+            communities=[],  # Flow 1B doesn't build communities
+            config=config,
+            job_name=job_name,
+        )
+
+        await tracer.markdown("### ✅ Analysis Complete! Report ready for viewing.")
+
+        return core.response.Markdown(report_content)
 
     except Exception as e:
         error_msg = f"Bulk auto-delta processing failed: {str(e)}"
@@ -238,9 +255,18 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
         await tracer.markdown(f"❌ **Error**: {error_msg}\n\n")
 
         return core.response.Markdown(
-            f"""## Processing Failed
+            f"""# {job_name} - Failed
 
-**Error**: {error_msg}
+**Error Details:**
+```
+{error_msg}
+```
+
+**Troubleshooting Steps:**
+1. Check that Neo4j is running: `docker ps | grep neo4j`
+2. Verify environment variables in `.env` file
+3. Check document paths exist and contain supported files (.md)
+4. Review logs for detailed error information
 
 **Job Name**: {job_name}
 **Execution Time**: {(datetime.now() - start_time).total_seconds():.1f}s

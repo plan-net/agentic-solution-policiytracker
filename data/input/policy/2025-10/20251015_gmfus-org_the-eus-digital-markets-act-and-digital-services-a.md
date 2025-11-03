@@ -1,8 +1,8 @@
 ---
-title: The EU’s Digital Markets Act and Digital Services Act
+title: The EU's Digital Markets Act and Digital Services Act
 url: https://www.gmfus.org/news/eus-digital-markets-act-and-digital-services-act
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-10-27T02:54:26.368775
+collected_date: 2025-11-03T03:50:16.498442
 source: Gmfus
 source_url: https://www.gmfus.org
 description: [Skip to main content](https://www.gmfus.org/www.gmfus.org#main-content)
@@ -10,7 +10,7 @@ language: en
 collection_type: policy_landscape
 ---
 
-# The EU’s Digital Markets Act and Digital Services Act
+# The EU's Digital Markets Act and Digital Services Act
 
 [Skip to main content](https://www.gmfus.org/www.gmfus.org#main-content)
 

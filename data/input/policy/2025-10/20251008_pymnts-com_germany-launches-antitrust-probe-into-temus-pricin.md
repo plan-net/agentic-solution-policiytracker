@@ -2,7 +2,7 @@
 title: Germany Launches Antitrust Probe into Temu’s Pricing Practices | PYMNTS.com
 url: https://www.pymnts.com/cpi-posts/germany-launches-antitrust-probe-into-temus-pricing-practices/
 published_date: 2025-10-08T00:00:00
-collected_date: 2025-10-27T02:54:55.896241
+collected_date: 2025-11-03T03:50:40.214647
 source: Pymnts
 source_url: https://www.pymnts.com
 author: CPI

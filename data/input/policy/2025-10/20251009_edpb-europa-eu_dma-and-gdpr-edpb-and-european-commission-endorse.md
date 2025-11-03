@@ -2,7 +2,7 @@
 title: DMA and GDPR: EDPB and European Commission endorse joint guidelines to clarify common touchpoints
 url: https://www.edpb.europa.eu/news/news/2025/dma-and-gdpr-edpb-and-european-commission-endorse-joint-guidelines-clarify-common_en
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:23.596058
+collected_date: 2025-11-03T03:50:08.897058
 source: Edpb
 source_url: https://www.edpb.europa.eu
 description: [Skip to main content](https://www.edpb.europa.eu/www.edpb.europa.eu#main-content)

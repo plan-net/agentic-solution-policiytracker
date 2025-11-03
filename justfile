@@ -96,6 +96,13 @@ deploy-data:
     uv run --active serve deploy config.yaml --app flow1-data-ingestion
     @echo "✅ Data ingestion deployed"
 
+# Deploy only bulk auto-delta flow
+deploy-bulk-auto:
+    @echo "📦 Deploying bulk auto-delta flow..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app flow1b-bulk-auto
+    @echo "✅ Bulk auto-delta flow deployed"
+
 # Deploy only chat server
 deploy-chat:
     @echo "📦 Deploying chat server..."

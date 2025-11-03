@@ -2,7 +2,7 @@
 title: European Union: Digital Fairness Act – Consultation opens on EU's next major consumer law reform
 url: https://insightplus.bakermckenzie.com/bm/data-technology/europe-eu-digital-fairness-act-consultation-opens-on-eus-next-major-consumer-law-reform
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:26.368467
+collected_date: 2025-11-03T03:50:13.905096
 source: Insightplus
 source_url: https://insightplus.bakermckenzie.com
 description: - [Login](https://insightplus.bakermckenzie.com/bm/LoginRequired.action)

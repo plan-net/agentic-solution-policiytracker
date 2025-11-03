@@ -2,7 +2,7 @@
 title: EU Sustainability: State of Play — Greenwashing and Consumer Protection
 url: https://www.lw.com/en/insights/eu-sustainability-state-of-play-greenwashing-and-consumer-protection
 published_date: 2025-10-22T00:00:00
-collected_date: 2025-10-27T02:54:38.698058
+collected_date: 2025-11-03T03:50:24.496085
 source: Lw
 source_url: https://www.lw.com
 description: "- [skip to Main Content](https://www.lw.com/www.lw.com#maincontent)

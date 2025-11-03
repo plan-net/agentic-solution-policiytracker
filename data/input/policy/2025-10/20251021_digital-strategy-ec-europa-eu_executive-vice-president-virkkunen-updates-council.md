@@ -2,7 +2,7 @@
 title: Executive Vice-President Virkkunen updates Council and Parliament on simplification, implementation and enforcement of the digital rulebook
 url: https://digital-strategy.ec.europa.eu/en/library/executive-vice-president-virkkunen-updates-council-and-parliament-simplification-implementation-and
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-10-27T02:54:47.899765
+collected_date: 2025-11-03T03:50:34.939090
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)

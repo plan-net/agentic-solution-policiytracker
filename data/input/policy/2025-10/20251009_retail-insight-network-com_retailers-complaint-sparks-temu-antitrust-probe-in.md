@@ -2,7 +2,7 @@
 title: Retailers’ complaint sparks Temu antitrust probe in Germany
 url: https://www.retail-insight-network.com/news/retailers-complaint-sparks-temu-antitrust-probe-in-germany/
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:45.076280
+collected_date: 2025-11-03T03:50:31.429537
 source: Retail Insight Network
 source_url: https://www.retail-insight-network.com
 author: Mohamed Dabo

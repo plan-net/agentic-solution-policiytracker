@@ -2,7 +2,7 @@
 title: Digital Markets Act
 url: https://en.wikipedia.org/wiki/Digital_Markets_Act
 published_date: 2025-10-06T00:00:00
-collected_date: 2025-10-27T02:54:28.935823
+collected_date: 2025-11-03T03:50:11.723723
 source: En
 source_url: https://en.wikipedia.org
 author: Contributors to Wikimedia projects

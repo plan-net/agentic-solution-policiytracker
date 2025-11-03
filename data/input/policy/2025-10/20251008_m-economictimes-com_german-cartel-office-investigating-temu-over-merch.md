@@ -2,7 +2,7 @@
 title: German cartel office investigating Temu over merchant price influencing - The Economic Times
 url: https://m.economictimes.com/tech/technology/german-cartel-office-investigating-temu-over-merchant-price-influencing/articleshow/124387544.cms
 published_date: 2025-10-08T00:00:00
-collected_date: 2025-10-27T02:54:55.896391
+collected_date: 2025-11-03T03:50:40.214663
 source: M
 source_url: https://m.economictimes.com
 author: ET

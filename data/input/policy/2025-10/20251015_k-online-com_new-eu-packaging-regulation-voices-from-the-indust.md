@@ -2,7 +2,7 @@
 title: New EU packaging regulation: Voices from the industry
 url: https://k-online.com/en/media_news/k-mag/sustainability/climate-protection/eu-packaging-regulation
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-10-27T02:54:39.172411
+collected_date: 2025-11-03T03:50:24.494938
 source: K Online
 source_url: https://k-online.com
 description: "New EU packaging regulation: Voices from the industry https://k-online.com/en/media_news/k-mag/sustainability/climate-protection/eu-packaging-regulation

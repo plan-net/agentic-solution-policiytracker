@@ -2,7 +2,7 @@
 title: Proceedings initiated against Temu on suspicion of influencing marketplace sellers’ pricing
 url: https://www.bundeskartellamt.de/SharedDocs/Meldung/EN/Pressemitteilungen/2025/10_08_2025_Temu.html?nn=49114
 published_date: 2025-10-08T00:00:00
-collected_date: 2025-10-27T02:54:45.076398
+collected_date: 2025-11-03T03:50:29.312386
 source: Bundeskartellamt
 source_url: https://www.bundeskartellamt.de
 description: # Proceedings initiated against Temu on suspicion of influencing marketplace sellers’ pricing

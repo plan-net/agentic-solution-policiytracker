@@ -2,7 +2,7 @@
 title: EDPB & European Commission publish joint GDPR-DMA guidelines
 url: https://freevacy.com/news/edpb/edpb-european-commission-publish-joint-gdpr-dma-guidelines/6809
 published_date: 2025-10-09T00:00:00
-collected_date: 2025-10-27T02:54:23.596154
+collected_date: 2025-11-03T03:50:11.693755
 source: Freevacy
 source_url: https://freevacy.com
 description: # EDPB & European Commission publish joint GDPR-DMA guidelines

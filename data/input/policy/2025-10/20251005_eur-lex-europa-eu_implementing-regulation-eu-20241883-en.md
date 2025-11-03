@@ -1,8 +1,8 @@
 ---
 title: Implementing regulation - EU - 2024/1883 - EN
-url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1883
+url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32024R1883
 published_date: 2025-10-05T00:00:00
-collected_date: 2025-10-27T02:54:26.368819
+collected_date: 2025-11-03T03:50:11.723156
 source: Eur Lex
 source_url: https://eur-lex.europa.eu
 description: [Skip to main content](https://eur-lex.europa.eu/eur-lex.europa.eu#MainContent)
