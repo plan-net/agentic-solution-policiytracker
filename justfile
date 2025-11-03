@@ -103,6 +103,13 @@ deploy-bulk-auto:
     uv run --active serve deploy config.yaml --app flow1b-bulk-auto
     @echo "✅ Bulk auto-delta flow deployed"
 
+# Deploy only ad-hoc flow
+deploy-adhoc:
+    @echo "📦 Deploying ad-hoc processing flow..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app flow1c-adhoc
+    @echo "✅ Ad-hoc processing flow deployed"
+
 # Deploy only chat server
 deploy-chat:
     @echo "📦 Deploying chat server..."

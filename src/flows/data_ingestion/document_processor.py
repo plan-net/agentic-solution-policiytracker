@@ -431,12 +431,44 @@ class SimpleDocumentProcessor:
                 episode_name = f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
                 doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
                 source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_name}"
-                reference_time = extract_document_date(chunk_text) or datetime.now()
+
+                # Extract reference time with detailed logging
+                extracted_date = extract_document_date(chunk_text)
+                reference_time = extracted_date or datetime.now()
+
+                # DETAILED LOGGING: Capture what we're about to pass to Graphiti
+                print(f"\n=== CHUNK PROCESSING DEBUG ===", flush=True)
+                print(f"Chunk index: {chunk_index}", flush=True)
+                print(f"Episode name: {episode_name}", flush=True)
+                print(f"Extracted date: {extracted_date}", flush=True)
+                print(f"Reference time: {reference_time}", flush=True)
+                print(f"Reference time type: {type(reference_time).__name__}", flush=True)
+                print(f"Reference time is None: {reference_time is None}", flush=True)
+                print(f"Chunk text length: {len(chunk_text)}", flush=True)
+                print(f"==========================\n", flush=True)
+
+                logger.info(
+                    "About to call add_episode for chunk",
+                    chunk_index=chunk_index,
+                    episode_name=episode_name,
+                    extracted_date=extracted_date,
+                    reference_time=reference_time,
+                    reference_time_type=type(reference_time).__name__,
+                    reference_time_is_none=(reference_time is None),
+                    chunk_text_length=len(chunk_text),
+                    chunk_text_preview=chunk_text[:200] if chunk_text else None,
+                )
 
                 # Chain linking: link to previous chunk if it exists
                 previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
 
                 # Process chunk through Graphiti
+                logger.debug(
+                    "Calling graphiti_client.add_episode",
+                    reference_time_value=str(reference_time),
+                    reference_time_isoformat=reference_time.isoformat() if reference_time else None,
+                )
+
                 result = await graphiti_client.add_episode(
                     name=episode_name,
                     episode_body=chunk_text,
@@ -479,7 +511,32 @@ class SimpleDocumentProcessor:
 
             except Exception as e:
                 error_msg = f"Failed to process chunk {chunk_index}: {e}"
-                logger.error(error_msg)
+
+                # DETAILED ERROR LOGGING: Capture full exception details
+                print(f"\n=== CHUNK PROCESSING ERROR ===", flush=True)
+                print(f"Chunk index: {chunk_index}", flush=True)
+                print(f"Error type: {type(e).__name__}", flush=True)
+                print(f"Error message: {str(e)}", flush=True)
+                print(f"Error repr: {repr(e)}", flush=True)
+                print(f"Reference time: {reference_time if 'reference_time' in locals() else 'NOT_SET'}", flush=True)
+                print(f"Extracted date: {extracted_date if 'extracted_date' in locals() else 'NOT_SET'}", flush=True)
+                print(f"============================\n", flush=True)
+
+                import traceback
+                traceback.print_exc()
+
+                logger.error(
+                    "Chunk processing failed with exception",
+                    chunk_index=chunk_index,
+                    error_message=str(e),
+                    error_type=type(e).__name__,
+                    exception_details=repr(e),
+                    reference_time_value=str(reference_time) if 'reference_time' in locals() else "NOT_SET",
+                    extracted_date_value=str(extracted_date) if 'extracted_date' in locals() else "NOT_SET",
+                    chunk_text_preview=chunk_text[:200] if chunk_text else None,
+                    exc_info=True,  # Include full traceback
+                )
+
                 chunk_results.append({
                     "chunk_index": chunk_index,
                     "error": str(e),

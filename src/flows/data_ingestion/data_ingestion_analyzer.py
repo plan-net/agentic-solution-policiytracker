@@ -82,13 +82,34 @@ Found **{len(available_docs)}** documents to process:
         if clear_data:
             await tracer.markdown("🧹 **Clearing existing data...**")
             try:
-                # Direct Graphiti clear
+                # Direct Graphiti clear with APISIX routing
+                from src.flows.shared.apisix_llm_client import (
+                    AgentContext,
+                    create_graphiti_apisix_config,
+                )
+
                 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
                 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
                 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
 
-                client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+                # Create agent context for cost tracking
+                agent_context = AgentContext(
+                    agent_type="kodosumi_flow",
+                    agent_name="graph_cleaner",
+                    flow_name="data_ingestion",
+                )
+
+                # Get APISIX-configured LLM client
+                llm_client, note = create_graphiti_apisix_config(agent_context)
+
+                # Initialize Graphiti with APISIX routing
+                client = Graphiti(
+                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
+                )
                 await client.build_indices_and_constraints()
+
+                logger.info("Graphiti client initialized with APISIX routing for clearing")
+                logger.debug(note)
 
                 logger.info("Clearing all graph data...")
                 await clear_data(client.driver)

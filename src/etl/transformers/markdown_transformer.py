@@ -153,7 +153,9 @@ class MarkdownTransformer:
         return "\n\n".join(cleaned_paragraphs)
 
     def _generate_filename(self, article: Dict[str, Any]) -> str:
-        """Generate a safe filename for the article."""
+        """Generate a safe filename for the article with URL hash for uniqueness."""
+        import hashlib
+
         # Use published date for chronological ordering
         date_str = "unknown_date"
         if article.get("published_date"):
@@ -170,8 +172,12 @@ class MarkdownTransformer:
         # Include source for uniqueness
         source = self._slugify(article.get("source", "unknown"))[:20]
 
-        # Combine elements
-        filename = f"{date_str}_{source}_{title_slug}.md"
+        # Generate URL hash for guaranteed uniqueness (prevents collisions)
+        url = article.get("url", article.get("source_url", ""))
+        url_hash = hashlib.md5(url.encode()).hexdigest()[:8] if url else "nohash"
+
+        # Combine elements with hash
+        filename = f"{date_str}_{source}_{title_slug}_{url_hash}.md"
 
         return filename
 

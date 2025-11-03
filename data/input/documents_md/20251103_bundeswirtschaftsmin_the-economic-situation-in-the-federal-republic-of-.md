@@ -1,0 +1,107 @@
+---
+title: The Economic Situation in the Federal Republic of Germany in July 20251
+url: https://www.bundeswirtschaftsministerium.de/Redaktion/EN/Pressemitteilungen/Wirtschaftliche-Lage/2025/20250714-the-economic-situation-in-germany-in-july-2025.html
+published_date: 2025-11-03T12:14:41.264359
+collected_date: 2025-11-03T12:14:41.264365
+source: bundeswirtschaftsministerium.de
+source_url: https://www.bundeswirtschaftsministerium.de/Redaktion/EN/Pressemitteilungen/Wirtschaftliche-Lage/2025/20250714-the-economic-situation-in-germany-in-july-2025.html
+author: Federal Ministry for Economic Affairs and Climate Action | BMWE
+language: en
+collection_type: adhoc_url
+---
+
+# The Economic Situation in the Federal Republic of Germany in July 20251
+
+*By Federal Ministry for Economic Affairs and Climate Action | BMWE*
+
+© iStock.com/blackred
+
+Following the economic upturn at the start of the year, a weaker momentum has emerged in the second quarter. Despite improved business expectations, industrial production and incoming orders remain volatile. Foreign trade weighs on growth, as exports, especially to the USA, declined after earlier pull-forward effects. The domestic economy shows a mixed picture: declining retail sales recently contrast with increases in private passenger car registrations and rising revenues in the hospitality sector. Persistent geopolitical uncertainties and a continuously weak labour market are dampening private consumer sentiment. Overall, the recovery in the second quarter appears to be losing momentum – partly due to fading pull-forward effects and persistent uncertainty surrounding U.S. trade policy.
+
+Output in the manufacturing sector increased in May by 1.2% month-on-month, adjusted for price, calendar, and seasonal effects. While industrial output rose by 1.4% and energy production saw a strong increase of 10.8%, construction output declined sharply by 3.9%. In the same period, new manufacturing orders fell by 1.4%. Although the industrial sector has maintained a positive trend since the beginning of the year, another downturn in the manufacturing outlook cannot be ruled out given the persistently high trade and geopolitical uncertainties.
+
+Price-adjusted retail sales (seasonally adjusted, excluding motor vehicles) decreased by 0.9% in May compared with the previous month. Compared with June 2024, however, retail sales in June reported a real increase of 2.5%. Private passenger car registrations rose by 2.0% in June; however, in the more meaningful three-month comparison, they increased only by 0.4%. Leading indicators for consumer development currently present a mixed picture following a slight rebound in private spending in the first quarter of 2025.
+
+The inflation rate fell to +2.0% in June. Noticeable relief once again came from energy prices, while price pressures on food continued to ease. The core rate stood at +2.7%, slightly lower than in May. This was due to easing price pressures on both goods and services. Inflation is expected to stabilise at its current level over the course of the year.
+
+No labour market recovery is in sight at the end of the second quarter either. Employment stagnated in May, while unemployment increased again in June by 11,000 persons, a slightly stronger increase than is typical for the season. Leading indicators offer no signs of improving employment prospects for the third quarter.
+
+According to official data, the number of corporate insolvencies increased in April 2025 by 6.6% compared with the previous month and by 11.5% compared with April 2024. The IWH insolvency monitor for partnerships and corporations shows a decline of 3.9% for June 2025 compared with the previous month. Compared with June 2024, this represents an increase of 22.6%.
+
+Economic slowdown in the second quarter
+
+Following the pronounced recovery at the start of the year, economic developments in Germany indicate somewhat weaker momentum in the second quarter. Although sentiment indicators – particularly regarding business expectations – have brightened noticeably in recent months, recent data on economic activity still paint a subdued picture: manufacturing output recovered slightly after a sharp decline in April; however, the truck toll performance index, a leading indicator for industrial production, suggests a slowdown in June. New manufacturing orders remained volatile, reflecting ongoing high trade and geopolitical uncertainties. After strong growth in goods exports at the start of the year, mainly driven by anticipated U.S. tariff increases, exports weakened considerably in the first two months of the current quarter, particularly exports to the USA. Overall, foreign trade is likely to exert a dampening effect on economic growth in the second quarter.
+
+Domestic demand currently shows a rather uneven picture. As in the previous month, retail sales in May declined in real terms compared with the previous month, and retail sentiment deteriorated slightly. By contrast, private passenger car registrations rose in June compared with May, resulting in a slight increase for the entire second quarter. Similarly, the hospitality sector recorded a price-adjusted revenue increase in April compared with the previous month.
+
+Despite recently rising income and economic expectations, consumer sentiment is likely to be more restrained in the second quarter than before due to persistent geopolitical uncertainties and the still weak labour market. This is also indicated by the recent rise in the GfK savings propensity – reaching its highest level in over a year.
+
+Overall, the economic upturn noticeable at the start of the year seems unable to gain further momentum in the second quarter. This is partly due to the normalisation of pull-forward effects from the first quarter, which occurred ahead of the announced U.S. tariff increases, and partly due to ongoing trade and geopolitical tensions. These concerns are expected to persist, as U.S. President Trump extended the suspension of the so-called 'reciprocal' tariffs until 1 August.
+
+Ongoing global uncertainty weighs on outlook for the second half of the year
+
+Following two consecutive increases, global industrial output nearly stagnated in April, with a seasonally adjusted decline of 0.1% compared with the previous month. It remained 3.1% above the previous year’s level at the start of the second quarter. While production fell sharply in the euro area (-2.2%) and slightly less in China (-0.3%) month-on-month, the USA recorded a marginal increase (+0.1%). Leading indicators have recently sent somewhat more positive signals after a sharp downturn at the beginning of the first quarter: The S&P Global Purchasing Managers’ Index (PMI) for the global economy rose by 0.5 points in June to 51.7, indicating slightly higher momentum than in the previous month. While the service sector PMI remained almost unchanged (falling by -0.1 to 51.9 points), the manufacturing PMI climbed from 49.5 to 50.3 points, surpassing the growth threshold of 50 points after weak developments in April and May. In July, the finance-market-based Sentix Economic Sentiment Index for the global economy rose for the third consecutive month, with improvements in sentiment becoming more widespread across world regions. Investors surveyed rated both the current situation and their economic expectations more favourably than in the previous month.
+
+Worldwide trade in goods declined by 1.4% (seasonally adjusted) in April compared with the previous month, following strong growth in the first quarter that was supported by pull-forward effects in U.S. business. This was mainly due to a sharp correction in US imports (-20% over the previous month). Deliveries to euro-area countries also decreased slightly (-1.2%). Overall, world trade remained significantly higher at the start of the second quarter, up 3.8% year-on-year (March: +6.6%).
+
+Although world trade has so far shown considerable resilience to previous tariff increases and heightened trade policy uncertainty, current data indicate a fading of pull-forward effects and possible structural changes in trade activity. The RWI/ISL container throughput index rose slightly from 137.9 to 138.3 points in May (seasonally adjusted). However, container throughput at the U.S. West Coast, handling a large part of trade with China, fell noticeably. Activity at Chinese ports also declined, while European ports saw an increase. According to RWI, this may indicate a redirection of Chinese exports to Europe. According to RWI, this may indicate a redirection of Chinese exports to Europe.
+
+Overall, economic conditions in many countries in the first half of the year, largely due to early deliveries to U.S. companies, appear to have been somewhat better than many analysts expected. Accordingly, growth expectations for many countries were recently revised upward. The average forecast for the global economy by Consensus Economics currently stands at 2.2% and 2.3% for 2025 and 2026, respectively, after 2.7% last year. With further U.S. tariff increases looming from August, prospects for world trade and industrial production are expected to deteriorate again in the third quarter. Persistent trade and geopolitical uncertainty are expected to weigh heavily on corporate investment decisions.
+
+German exports declined further in may
+
+The export sector deteriorated further in May: nominal exports of goods and services fell sharply by 3.8% month-on-month (seasonally and calendar adjusted; April: -0.2%). This put exports after half of the second quarter 1.4% below the average for the first quarter, which was mainly due to pull-forward effects related to announced US tariff hikes. Fewer goods were shipped to both EU countries (-2.2%) and non-EU countries (-0.3%) – especially to the USA (-7.7%) – compared with the previous month. Nominal imports of goods and services declined even more sharply, falling by 4.5% (seasonally and calendar adjusted), though they remained around 0.5% above the first-quarter average. Import activity contracted with both EU countries (-3.6%) and non-EU countries (-4.1%), with imports from the USA dropping by 10.7%. As imports declined more than exports, the seasonally adjusted monthly foreign trade surplus widened from €8.7 billion to €9.4 billion.
+
+Import prices fell further by 0.5% in May (seasonally adjusted), driven by declining energy and raw material prices, while export prices remained broadly unchanged at -0.1%. As a result, the terms of trade improved by 0.4% compared with the previous month. In real terms, the decline in goods imports and exports is therefore likely to have been somewhat smaller.
+
+Leading indicators are sending slightly more positive signals for the coming months. In May, foreign orders rose by 2.9% (seasonally adjusted) compared with the previous month. Alongside a 3.1% increase in foreign demand for consumer goods, the main driver was a significant 5.8% rise in orders for investment goods, primarily from customers outside the euro area (+13.1%). In the less volatile three-month comparison, foreign orders grew by 6.4%. However, the ifo export expectations indicator deteriorated slightly, falling from -3.0 points in May to -3.9 points in June, reflecting continued uncertainty over trade policy. In key export sectors such as the automotive and mechanical engineering industries, a renewed decline in foreign business is expected over the next three months. Manufacturers of electrical equipment, by contrast, remain cautiously optimistic.
+
+Following a first quarter shaped by pull-forward effects, German foreign trade showed a subdued trend in the second quarter. Although production levels and leading indicators for the global economy have improved somewhat in recent months, uncertainty remains unusually high, particularly in the run-up to the announced end of the U.S. tariff pause, casting a shadow over the outlook for foreign trade.
+
+Declining orders in may, but industrial output rebounds
+
+Following a setback in the previous month, manufacturing output in Germany rose noticeably in May. According to data from the Federal Statistical Office, total output (adjusted for price, calendar, and seasonal effects) increased by 1.2% compared with the previous month, following a 1.6% decline in April. While the production of industrial goods (+1.4%) and energy (+10.8%) expanded, construction output contracted by 3.9%.
+
+Within the industrial sector, developments varied considerably. Production of pharmaceutical products (+10.0%), motor vehicles and parts (+4.9%), and metal products (+0.6%) increased, partly offsetting previous months’ declines. Conversely, output of chemical products (-3.8%), electrical equipment (-3.1%), and machinery manufacturing (-0.4%) decreased. Energy-intensive industries also recorded a significant production decline of -1.8% in May, continuing the trend from the previous month.
+
+In the less volatile three-month comparison, output rose by a stronger 1.4% than in preceding months. This increase was driven by a marked rise in industrial production (+2.2%), while construction output dropped significantly (-1.7%) and energy production remained almost flat (-0.1%).
+
+Similar to industrial production, new manufacturing orders saw a setback in May after previously rising noticeably. According to the Federal Statistical Office, orders (adjusted for price, calendar, and seasonal factors) fell by 1.4% compared to the previous month. Domestic customers significantly reduced their orders by 7.8%, while demand from abroad, especially driven by increasing orders for investment goods, rose by 2.9%. This was mainly due to a strong 9.0% increase in orders from non-eurozone countries. In contrast, orders from eurozone countries declined by 6.5%. Excluding large orders, overall order intake dropped by 3.1% compared to the previous month.
+
+Developments varied significantly across manufacturing sectors. Gains were recorded in other vehicle manufacturing (+6.8%), pharmaceutical products (+7.7%), metal products (+18.2%), and machinery (+1.2%). In the important motor vehicle sector, orders nearly stagnated (-0.2%). Demand decreased for IT and optics (-17.7%), chemicals (-3.3%), and electrical equipment (-6.2%).
+
+The overall trend suggests that industrial demand dynamics remain on an upward trajectory despite the setback in May. In the less volatile three-month comparison, new orders rose by 2.1%, driven in particular by strong foreign demand for investment goods (+11.8%) and consumer goods (+2.4%). By contrast, domestic order activity declined by 4.1% over the same period.
+
+The industrial economy has continued its upward momentum since the beginning of the year into early summer, though it is subject to significant fluctuations due to unpredictable US tariff policies. Given persistent trade and geopolitical uncertainties, further developments are likely to remain volatile until a stable trade agreement between the EU and the US is concluded. Despite recent improvements in business expectations across many industrial sectors, a renewed downturn in manufacturing cannot be ruled out under these conditions.
+
+Retail sales decline again; consumer sentiment deteriorates
+
+Price-adjusted retail sales (seasonally adjusted, excluding motor vehicles) fell by 0.9% in May compared with the previous month. Both food retail (-0.6%) and non-food retail (-1.4%) declined relative to April. However, compared with June of the previous year, retail sales recorded a real increase of 2.5%, notably supported by a 10% rise in internet and mail-order sales year-on-year. In the less volatile three-month comparison, retail sales rose slightly by 0.7%, also reflecting an upward revision of the previous month’s figure from -1.1% to -0.6%.
+
+New passenger car registrations fell by 2.0% in June compared to the previous month; however, in the more meaningful three-month comparison, they increased by 1.8%. Compared to the previous year, there was a significant decline of 13.8%, reflecting accelerated registrations in June 2024 ahead of upcoming EU regulatory changes. Private passenger car registrations in June rose by 2.0% month-on-month and by 0.4% in the three-month comparison. Registrations by companies and self-employed persons decreased by 4.0% in June. The hospitality sector’s nominal sales increased by 1.8% in April compared to March, with a real increase of 1.7%. Compared to the previous year, nominal sales were up 1.7%, while real sales fell by 1.0%.
+
+After a slight revival in private consumption in the first quarter of 2025, leading indicators for current developments present a mixed picture. The ifo business climate index for retail (including motor vehicles) fell by 1.7 points in June to -20.3, following a sharp increase the previous month. While the assessment of the current situation remained relatively stable, expectations declined more markedly by 3.0 points to -28.1, remaining firmly negative. According to GfK forecasts, consumer sentiment is expected to weaken slightly by 0.3 points to -20.3 in July. However, consumer mood improved in June by 0.8 points to -20.0, though it remains deeply negative. The anticipated cooling in July is primarily attributed to increased savings tendencies despite improved income expectations. Purchase intentions remained largely unchanged in June. In contrast, the HDE consumer barometer continued to rise in July, reaching its highest level in a year.
+
+The predominantly slight weakening of current leading indicators suggests that consumer spending will remain restrained. Given ongoing geopolitical uncertainties and persistently weak labour market conditions, private consumption growth is expected to slow again in the second quarter.
+
+Inflation rate drops to 2.0%
+
+The inflation rate, the year-on-year increase in the price level, fell slightly to +2.0% in June from +2.1% in May. On a month-on-month basis, the consumer price level remained stable when adjusted for seasonal effects (±0.0%). Significant relief continued to come from energy prices, which fell by 3.5% compared with June 2024 (unchanged from May 2025). Food price inflation also slowed, rising by 2.0% year-on-year but declining by 0.5% month-on-month.  The core inflation rate (excluding energy and food) eased slightly to +2.7% year-on-year in June, down from +2.8% in May. This was driven by somewhat easing price pressures in the services sector (+3.3%) and moderate price increases for goods (+0.8%). Compared with the previous month, the core rate rose slightly by 0.2%.
+
+For the remainder of the year, inflation is expected to stabilise around the current level, supported by less dynamic wage increases in collective agreements and initially subdued overall economic activity.
+
+Labour market outlook for the summer remains muted
+
+No improvement is expected in the labour market at the end of the second quarter. Unemployment in June rose by 11,000 persons, exceeding typical seasonal increases. However, underemployment fell by 10,000 persons, reflecting reduced use of labour market policy measures. Employment in May edged up slightly by 2,000 persons (seasonally adjusted) but remains down on a year-on-year basis. Employment subject to social security contributions also stagnated in April, increasing by just 1,000 persons. Short-time work claims declined slightly in April to 214,000 persons, with short-time work notifications expected to remain stable through June.
+
+Leading indicators provide little evidence of an improvement in employment prospects for the third quarter. The IAB labour market barometer rose marginally but remains well below the expansion threshold, signalling a likely increase in unemployment. While the ifo employment barometer showed gains in construction and trade, it registered a notable decline in hiring intentions within manufacturing and services. Similarly, the Federal Employment Agency’s job index continues to reflect persistently weak labour demand. Given the persistently weak assessment of the situation by businesses, the chances of a noticeable improvement in the labour market during the summer half-year have once again diminished.
+
+Business insolvencies remain at elevated levels
+
+The number of corporate insolvencies rose by 6.6% in April 2025 compared with the previous month, reaching 2,125 filed cases, according to final data from the Federal Statistical Office. Year-on-year, this represents an increase of 11.5%. Several factors continue to drive this dynamic insolvency trend, including subdued overall economic growth, structural challenges, rising costs, and ongoing geopolitical uncertainties.
+
+The IWH insolvency trend, which is methodologically narrower but more timely than official statistics for corporations and partnerships, recorded a 3.9% decline month-on-month in June, with 1,420 insolvencies. However, this compares to a 22.6% increase versus June 2024, and a 50.4% rise compared with the average for June in the pre-pandemic years 2016 to 2019. In the second quarter of 2025, a total of 4,524 corporations and partnerships were affected by insolvency, 20% more than in the same quarter of 2024.
+
+---------------------------
+
+[1] This report is based on data that was available as of 11 July 2025. Unless stated otherwise, these are rates of change against the respective preceding period on the basis of price-adjusted figures which have also been adjusted for calendar-day and seasonal variations.

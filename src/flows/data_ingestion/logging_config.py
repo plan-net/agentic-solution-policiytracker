@@ -23,6 +23,13 @@ def configure_logging(log_level: str = "INFO"):
         force=True,  # Force reconfiguration
     )
 
+    # CRITICAL FIX: Suppress httpx logging to prevent Kodosumi tracer conflicts
+    # When running in Ray workers without Kodosumi context, httpx's logger
+    # tries to write to the Kodosumi tracer which causes AttributeError
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("openai").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+
     # Configure structlog with console output
     structlog.configure(
         processors=[

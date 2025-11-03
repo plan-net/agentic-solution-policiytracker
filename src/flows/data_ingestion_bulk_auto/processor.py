@@ -174,17 +174,37 @@ Found **{len(unprocessed_docs)}** documents to process:
 
         # Initialize components (same as Flow 1)
         from graphiti_core import Graphiti
+        from src.flows.shared.apisix_llm_client import (
+            AgentContext,
+            create_graphiti_apisix_config,
+        )
 
         tracker = DocumentTracker()
         processor = SimpleDocumentProcessor(tracker, clear_mode=False)
 
-        # Initialize Graphiti client
+        # Initialize Graphiti client with APISIX routing
         NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
         NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
         NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
 
-        graphiti_client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+        # Create agent context for cost tracking
+        agent_context = AgentContext(
+            agent_type="kodosumi_flow",
+            agent_name="bulk_auto_processor",
+            flow_name="data_ingestion_bulk_auto",
+        )
+
+        # Get APISIX-configured LLM client
+        llm_client, note = create_graphiti_apisix_config(agent_context)
+
+        # Initialize Graphiti with APISIX routing
+        graphiti_client = Graphiti(
+            NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
+        )
         await graphiti_client.build_indices_and_constraints()
+
+        logger.info("Graphiti client initialized with APISIX routing")
+        logger.debug(note)  # Log the Week 1 limitation note
 
         # Process documents with the shared processor
         processing_results = []
