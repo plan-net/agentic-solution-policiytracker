@@ -16,12 +16,20 @@ app = ServeAPI()
 raw_converter_form = F.Model(
     F.Markdown(
         """
-        # Political Monitoring Agent v0.2.0 - Raw Document Conversion
+        # Political Monitoring Agent v0.2.0 - Raw Document Conversion + Graphiti Processing
 
         Automatically converts raw documents (PDF, DOC, DOCX, PPT, PPTX) to markdown format
-        with policy-compatible metadata. The flow scans for new documents and tracks processed files.
+        with policy-compatible metadata, and optionally processes them through Graphiti for
+        knowledge graph extraction using parallel Ray actors.
 
         **Supported Formats**: PDF, DOC, DOCX, PPT, PPTX
+
+        **Features:**
+        - Auto-detection of unprocessed documents
+        - Policy-compatible metadata generation
+        - Optional Graphiti knowledge graph extraction
+        - Parallel processing with Ray actors
+        - Entity and relationship extraction
         """
     ),
     F.Errors(),
@@ -31,7 +39,7 @@ raw_converter_form = F.Model(
         label="Job Name",
         name="job_name",
         placeholder="e.g., Weekly Document Conversion",
-        value="Raw Document Auto-Conversion",
+        value="Raw Document Auto-Conversion + Graphiti",
     ),
     F.InputText(
         label="Source Directory",
@@ -45,8 +53,14 @@ raw_converter_form = F.Model(
         placeholder="Path for converted markdown files",
         value="data/input/documents_md",
     ),
+    F.Checkbox(
+        label="Graphiti Processing",
+        name="enable_graphiti",
+        value=True,
+        option="✅ Process converted documents through Graphiti for knowledge graph extraction",
+    ),
     # Action Buttons
-    F.Submit("Start Conversion"),
+    F.Submit("Start Processing"),
     F.Cancel("Cancel"),
 )
 

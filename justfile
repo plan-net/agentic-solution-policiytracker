@@ -110,6 +110,13 @@ deploy-adhoc:
     uv run --active serve deploy config.yaml --app flow1c-adhoc
     @echo "✅ Ad-hoc processing flow deployed"
 
+# Deploy only raw document converter flow
+deploy-raw-converter:
+    @echo "📦 Deploying raw document converter + Graphiti flow..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app flow1d-raw-converter
+    @echo "✅ Raw document converter flow deployed"
+
 # Deploy only chat server
 deploy-chat:
     @echo "📦 Deploying chat server..."

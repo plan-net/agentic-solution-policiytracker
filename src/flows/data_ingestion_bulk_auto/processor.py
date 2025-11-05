@@ -36,6 +36,38 @@ except ImportError:
     logger.warning("Ray not available - bulk processing will be limited")
 
 
+def distribute_documents_to_actors(documents: List, num_actors: int) -> List[List]:
+    """
+    Distribute documents evenly across actors, ensuring all documents are processed.
+
+    Uses a balanced distribution algorithm that ensures:
+    - All documents are assigned to an actor
+    - Load is balanced as evenly as possible
+    - No documents are skipped due to remainder in division
+
+    Example:
+        5 documents, 2 actors -> [[doc0, doc1, doc2], [doc3, doc4]]
+        7 documents, 3 actors -> [[doc0, doc1, doc2], [doc3, doc4], [doc5, doc6]]
+    """
+    if num_actors <= 0 or not documents:
+        return []
+
+    base_size = len(documents) // num_actors
+    remainder = len(documents) % num_actors
+
+    batches = []
+    start = 0
+    for i in range(num_actors):
+        # First 'remainder' actors get one extra document
+        batch_size = base_size + (1 if i < remainder else 0)
+        end = start + batch_size
+        if start < len(documents):  # Ensure we don't go past document list
+            batches.append(documents[start:end])
+        start = end
+
+    return batches
+
+
 def get_unprocessed_documents(
     base_path: str = "data/input", tracking_file: str = "data/processed_documents.json"
 ) -> List[str]:
@@ -206,13 +238,16 @@ Found **{len(unprocessed_docs)}** documents to process:
             f"🚀 **Using {len(successful_actors)} Ray actors** for parallel processing\n\n"
         )
 
-        # Create balanced batches
-        batch_size = max(1, len(unprocessed_docs) // len(successful_actors))
-        batches = []
-        for i in range(0, len(unprocessed_docs), batch_size):
-            batch = unprocessed_docs[i : i + batch_size]
-            if batch:
-                batches.append([str(doc) for doc in batch])
+        # Create balanced batches using proper distribution algorithm
+        unprocessed_docs_str = [str(doc) for doc in unprocessed_docs]
+        batches = distribute_documents_to_actors(unprocessed_docs_str, len(successful_actors))
+
+        # Verify all documents are assigned
+        total_assigned = sum(len(batch) for batch in batches)
+        logger.info(
+            f"Document distribution: {len(unprocessed_docs)} files → {len(batches)} batches "
+            f"(assigned: {total_assigned}, actors: {len(successful_actors)})"
+        )
 
         # Display batch assignments
         await tracer.markdown("📋 **Batch Assignments:**\n\n")
