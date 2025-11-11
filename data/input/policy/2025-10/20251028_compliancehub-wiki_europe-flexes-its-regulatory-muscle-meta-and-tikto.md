@@ -2,7 +2,7 @@
 title: Europe Flexes Its Regulatory Muscle: Meta and TikTok Face Historic DSA Enforcement Action
 url: https://www.compliancehub.wiki/europe-flexes-its-regulatory-muscle-meta-and-tiktok-face-historic-dsa-enforcement-action/
 published_date: 2025-10-28T00:00:00
-collected_date: 2025-11-03T03:50:38.182406
+collected_date: 2025-11-11T12:26:35.549436
 source: Compliancehub
 source_url: https://www.compliancehub.wiki
 author: Compliance Hub
@@ -270,15 +270,16 @@ _Editor's Note: This article discusses preliminary findings that have not been f
 - [Digital Services Act Full Text](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&ref=compliancehub.wiki)
 - [DSA Data Access Portal](https://digital-strategy.ec.europa.eu/en/policies/dsa-data-access?ref=compliancehub.wiki)
 
-[**EU Data Act Compliance Guide: Navigating Europe's Game-Changing IoT Data Regulation** \
+[**Building Resilience Against Information Threats: A Deep Dive into the UK Government's RESIST 3 Framework** \
 \
-On September 12, 2025, the European Union fundamentally transformed the data landscape for connected devices with the full implementation of the EU Data Act (Regulation (EU) 2023/2854). This landmark regulation represents one of the most significant shifts in data governance since GDPR, affecting everyone from individual smart home owners](https://www.compliancehub.wiki/eu-data-act-compliance-guide-navigating-europes-game-changing-iot-data-regulation/)[**EU Cyber Resilience Act Implementation Guide: Building Secure Products for Europe's Digital Future** \
+In an era where disinformation can spread faster than facts, governments worldwide are grappling with how to protect democratic institutions, public trust, and policy outcomes from information manipulation. The UK Government's newly updated RESIST 3 framework offers a comprehensive, pragmatic approach that any institution can adapt to strengthen](https://www.compliancehub.wiki/building-resilience-against-information-threats-a-deep-dive-into-the-uk-governments-resist-3-framework/)[**Navigating the U.S. State Privacy Law Patchwork Post-October 2025: A Nationwide Compliance Analysis** \
 \
-The EU Cyber Resilience Act (CRA), which entered into force on December 10, 2024, represents a paradigm shift in how digital products are developed, secured, and maintained throughout their lifecycle. With main obligations applying from December 11, 2027, and certain critical requirements starting even earlier, manufacturers, importers, and distributors of](https://www.compliancehub.wiki/eu-cyber-resilience-act-implementation-guide-building-secure-products-for-europes-digital-future/)[**GDPR and Data Act Coordination Framework: Navigating Two Parallel Data Regimes** \
+October 1, 2025 marked a critical inflection point in American data privacy regulation as Maryland's groundbreaking privacy law took effect, joining seven other new state laws that became active throughout 2025. With 18 states now enforcing comprehensive privacy legislation and aggressive enforcement actions intensifying—including Texas AG'](https://www.compliancehub.wiki/navigating-the-u-s-state-privacy-law-patchwork-post-october-2025-a-nationwide-compliance-analysis/)[**SEC Cybersecurity Rules: A Year of Enforcement and Investor Scrutiny** \
 \
-The EU Data Act's implementation on September 12, 2025, introduced a critical challenge for organizations: coordinating compliance between two powerful yet distinct data regulations. While the General Data Protection Regulation (GDPR) has governed personal data since 2018, the Data Act now establishes comprehensive rules for both personal and](https://www.compliancehub.wiki/gdpr-and-data-act-coordination-framework-navigating-two-parallel-data-regimes/)[**October 1, 2025: Three Major State Privacy Law Updates and the Universal Opt-Out Revolution** \
+As we approach 2026, public companies face unprecedented cybersecurity disclosure obligations and heightened SEC enforcement—here's what you need to know\
+Executive Summary\
+The SEC's cybersecurity disclosure rules, which became effective in December 2023, have fundamentally transformed how public companies approach incident reporting and governance oversight.](https://www.compliancehub.wiki/sec-cybersecurity-rules-a-year-of-enforcement-and-investor-scrutiny/)[**The Global Compliance Landscape 2025: Preparing for the Regulatory Wave of 2026** \
 \
-Almost a month ago, October 1, 2025 marked a pivotal moment in American data privacy regulation. Not one, but three significant state privacy law developments took effect on this date, fundamentally reshaping the compliance landscape for businesses operating across the United States.\
-Maryland's groundbreaking new comprehensive privacy law](https://www.compliancehub.wiki/october-1-2025-three-major-state-privacy-law-updates-and-the-universal-opt-out-revolution/)
+Executive Summary: As 2025 draws to a close, the compliance landscape has reached unprecedented complexity and enforcement intensity. With the EU AI Act now actively enforcing penalties up to €35 million, DORA requiring full financial sector compliance since January 17, 2025, NIS2 facing enforcement proceedings against 13 EU Member States,](https://www.compliancehub.wiki/the-global-compliance-landscape-2025-preparing-for-the-regulatory-wave-of-2026/)
 
 [Generate Policy](https://generatepolicy.com/) [Global Compliance Map](https://globalcompliancemap.com/) [Policy Quest](https://policyquest.diy/) [Secure Checklists](https://securecheck.tools) [Cyber Templates](https://cybertemplates.com/)

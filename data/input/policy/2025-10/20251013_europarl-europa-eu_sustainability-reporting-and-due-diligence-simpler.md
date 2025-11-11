@@ -2,7 +2,7 @@
 title: Sustainability reporting and due diligence: simpler rules for fewer companies | News | European Parliament
 url: https://www.europarl.europa.eu/news/en/press-room/20251009IPR30836/sustainability-reporting-and-due-diligence-simpler-rules-for-fewer-companies
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-11-03T03:50:37.496621
+collected_date: 2025-11-11T12:26:35.442210
 source: Europarl
 source_url: https://www.europarl.europa.eu
 description: Launch the search

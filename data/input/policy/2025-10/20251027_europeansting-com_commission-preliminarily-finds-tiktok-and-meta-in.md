@@ -2,7 +2,7 @@
 title: Commission preliminarily finds TikTok and Meta in breach of their transparency obligations under the Digital Services Act
 url: https://europeansting.com/2025/10/27/commission-preliminarily-finds-tiktok-and-meta-in-breach-of-their-transparency-obligations-under-the-digital-services-act/
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:42.250848
+collected_date: 2025-11-11T12:26:39.892219
 source: Europeansting
 source_url: https://europeansting.com
 author: European Union
@@ -84,18 +84,6 @@ Filed Under: [Business](https://europeansting.com/category/business/), [Digital]
 
 ### Why don't you drop your comment here?[Cancel reply](https://europeansting.com/2025/10/27/commission-preliminarily-finds-tiktok-and-meta-in-breach-of-their-transparency-obligations-under-the-digital-services-act/\#respond)
 
-## [The EU strengthens its humanitarian response in the Democratic Republic of the Congo with €9 million](https://europeansting.com/2025/10/31/the-eu-strengthens-its-humanitarian-response-in-the-democratic-republic-of-the-congo-with-e9-million/)
-
-## [Commission releases €8.5 million from the European Globalisation Adjustment Fund to support 5,800 dismissed workers in Sweden](https://europeansting.com/2025/10/30/commission-releases-e8-5-million-from-the-european-globalisation-adjustment-fund-to-support-5800-dismissed-workers-in-sweden/)
-
-## [Commission greenlights Poland’s third payment request for €6.2 billion under NextGenerationEU](https://europeansting.com/2025/10/30/commission-greenlights-polands-third-payment-request-for-e6-2-billion-under-nextgenerationeu/)
-
-## [Commission advances the Savings and Investments Union with measures to mobilise insurers’ and banks’ capital for Europe’s future](https://europeansting.com/2025/10/30/commission-advances-the-savings-and-investments-union-with-measures-to-mobilise-insurers-and-banks-capital-for-europes-future/)
-
-## [Upgraded EU-Ukraine trade agreement enters into force](https://europeansting.com/2025/10/30/upgraded-eu-ukraine-trade-agreement-enters-into-force/)
-
-## [Commission proposes 2026 fishing opportunities for EU-managed stocks in the Atlantic and Skagerrak-Kattegat waters](https://europeansting.com/2025/10/30/commission-proposes-2026-fishing-opportunities-for-eu-managed-stocks-in-the-atlantic-and-skagerrak-kattegat-waters/)
-
 ## [Commission approves €750 million Estonian strategic reserve to support security of electricity supply](https://europeansting.com/2025/10/29/commission-approves-e750-million-estonian-strategic-reserve-to-support-security-of-electricity-supply/)
 
 ## [Commission partners with private investors to set up multi-billion Scaleup Europe Fund](https://europeansting.com/2025/10/29/commission-partners-with-private-investors-to-set-up-multi-billion-scaleup-europe-fund/)
@@ -104,29 +92,41 @@ Filed Under: [Business](https://europeansting.com/category/business/), [Digital]
 
 ## [Commission approves French scheme to partially compensate pension contributions in rail freight transport](https://europeansting.com/2025/10/28/commission-approves-french-scheme-to-partially-compensate-pension-contributions-in-rail-freight-transport/)
 
+## [European Union and Uzbekistan strengthen relations with Enhanced Partnership and Cooperation Agreement](https://europeansting.com/2025/10/27/european-union-and-uzbekistan-strengthen-relations-with-enhanced-partnership-and-cooperation-agreement/)
+
+## [Commission preliminarily finds TikTok and Meta in breach of their transparency obligations under the Digital Services Act](https://europeansting.com/2025/10/27/commission-preliminarily-finds-tiktok-and-meta-in-breach-of-their-transparency-obligations-under-the-digital-services-act/)
+
+## [COP30: MEPs set out their demands ahead of this year’s global climate talks](https://europeansting.com/2025/10/24/cop30-meps-set-out-their-demands-ahead-of-this-years-global-climate-talks/)
+
+## [EU adopts 19th package of sanctions against Russia](https://europeansting.com/2025/10/24/eu-adopts-19th-package-of-sanctions-against-russia/)
+
+## [MEPs to vote on simplified sustainability and due diligence rules in November](https://europeansting.com/2025/10/23/meps-to-vote-on-simplified-sustainability-and-due-diligence-rules-in-november/)
+
+## [2026 EU budget: focus on competitiveness, preparedness and defence](https://europeansting.com/2025/10/23/2026-eu-budget-focus-on-competitiveness-preparedness-and-defence/)
+
 [More EU Picks...](https://europeansting.com/category/european-union-news/)
 
-- [The EU strengthens its humanitarian response in the Democratic Republic of the Congo with €9 million](https://europeansting.com/2025/10/31/the-eu-strengthens-its-humanitarian-response-in-the-democratic-republic-of-the-congo-with-e9-million/)
-- [World News in Brief: Ukraine energy targeted, nuclear test warning, rights violations in Nicaragua](https://europeansting.com/2025/10/31/world-news-in-brief-ukraine-energy-targeted-nuclear-test-warning-rights-violations-in-nicaragua/)
-- [Commission releases €8.5 million from the European Globalisation Adjustment Fund to support 5,800 dismissed workers in Sweden](https://europeansting.com/2025/10/30/commission-releases-e8-5-million-from-the-european-globalisation-adjustment-fund-to-support-5800-dismissed-workers-in-sweden/)
-- [Myanmar at a crossroads: A choice between impunity and justice](https://europeansting.com/2025/10/30/myanmar-at-a-crossroads-a-choice-between-impunity-and-justice/)
-- [Reported massacre at hospital in Sudan’s El Fasher leaves 460 dead](https://europeansting.com/2025/10/30/reported-massacre-at-hospital-in-sudans-el-fasher-leaves-460-dead/)
-- [Amid shifting alliances, General Assembly demands end to US embargo on Cuba](https://europeansting.com/2025/10/30/amid-shifting-alliances-general-assembly-demands-end-to-us-embargo-on-cuba/)
-- [UN nuclear watchdog highlights Iran, Syria and Ukraine as key global tests](https://europeansting.com/2025/10/30/un-nuclear-watchdog-highlights-iran-syria-and-ukraine-as-key-global-tests/)
-- [Hurricane Melissa: Devastation in Jamaica at levels ‘never been seen before’](https://europeansting.com/2025/10/30/hurricane-melissa-devastation-in-jamaica-at-levels-never-been-seen-before/)
-- [Commission greenlights Poland’s third payment request for €6.2 billion under NextGenerationEU](https://europeansting.com/2025/10/30/commission-greenlights-polands-third-payment-request-for-e6-2-billion-under-nextgenerationeu/)
-- [Commission advances the Savings and Investments Union with measures to mobilise insurers’ and banks’ capital for Europe’s future](https://europeansting.com/2025/10/30/commission-advances-the-savings-and-investments-union-with-measures-to-mobilise-insurers-and-banks-capital-for-europes-future/)
-
-- [Greece: EIB signs with Iberdrola a €25.9 million green financing to develop wind energy](https://europeansting.com/2025/10/01/greece-eib-signs-with-iberdrola-a-e25-9-million-green-financing-to-develop-wind-energy/)
-- [Commission greenlights Poland's third payment request for €6.2 billion under NextGenerationEU](https://europeansting.com/2025/10/30/commission-greenlights-polands-third-payment-request-for-e6-2-billion-under-nextgenerationeu/)
-- [Upgraded EU-Ukraine trade agreement enters into force](https://europeansting.com/2025/10/30/upgraded-eu-ukraine-trade-agreement-enters-into-force/)
+- [‘Horrific’ violence as thousands flee Sudan’s El Fasher](https://europeansting.com/2025/10/29/horrific-violence-as-thousands-flee-sudans-el-fasher/)
+- [Hurricane Melissa: UN launches sea-lift operation to deliver aid](https://europeansting.com/2025/10/29/hurricane-melissa-un-launches-sea-lift-operation-to-deliver-aid/)
+- [World enters ‘new era’ of climate action – but progress must accelerate](https://europeansting.com/2025/10/29/world-enters-new-era-of-climate-action-but-progress-must-accelerate/)
+- [Gaza: Humanitarian response scaled up amid faltering ceasefire](https://europeansting.com/2025/10/29/gaza-humanitarian-response-scaled-up-amid-faltering-ceasefire/)
+- [European Investment Bank supports Freudenberg’s investment in innovation and technology](https://europeansting.com/2025/10/29/european-investment-bank-supports-freudenbergs-investment-in-innovation-and-technology/)
+- [Commission approves €750 million Estonian strategic reserve to support security of electricity supply](https://europeansting.com/2025/10/29/commission-approves-e750-million-estonian-strategic-reserve-to-support-security-of-electricity-supply/)
+- [Israel responsible for four genocidal acts in Gaza, inquiry chair tells General Assembly](https://europeansting.com/2025/10/29/israel-responsible-for-four-genocidal-acts-in-gaza-inquiry-chair-tells-general-assembly/)
 - [Commission partners with private investors to set up multi-billion Scaleup Europe Fund](https://europeansting.com/2025/10/29/commission-partners-with-private-investors-to-set-up-multi-billion-scaleup-europe-fund/)
-- [Amid shifting alliances, General Assembly demands end to US embargo on Cuba](https://europeansting.com/2025/10/30/amid-shifting-alliances-general-assembly-demands-end-to-us-embargo-on-cuba/)
-- [European Investment Bank supports Freudenberg's investment in innovation and technology](https://europeansting.com/2025/10/29/european-investment-bank-supports-freudenbergs-investment-in-innovation-and-technology/)
-- [Myanmar at a crossroads: A choice between impunity and justice](https://europeansting.com/2025/10/30/myanmar-at-a-crossroads-a-choice-between-impunity-and-justice/)
-- [Commission releases €8.5 million from the European Globalisation Adjustment Fund to support 5,800 dismissed workers in Sweden](https://europeansting.com/2025/10/30/commission-releases-e8-5-million-from-the-european-globalisation-adjustment-fund-to-support-5800-dismissed-workers-in-sweden/)
-- [Reported massacre at hospital in Sudan’s El Fasher leaves 460 dead](https://europeansting.com/2025/10/30/reported-massacre-at-hospital-in-sudans-el-fasher-leaves-460-dead/)
-- [Commission advances the Savings and Investments Union with measures to mobilise insurers' and banks' capital for Europe's future](https://europeansting.com/2025/10/30/commission-advances-the-savings-and-investments-union-with-measures-to-mobilise-insurers-and-banks-capital-for-europes-future/)
+- [Russia using ‘rule of fear’ to silence anti-war dissent, says UN independent human rights expert](https://europeansting.com/2025/10/29/russia-using-rule-of-fear-to-silence-anti-war-dissent-says-un-independent-human-rights-expert/)
+- [‘Catastrophic’ Hurricane Melissa hours from landfall in Jamaica](https://europeansting.com/2025/10/29/catastrophic-hurricane-melissa-hours-from-landfall-in-jamaica/)
+
+- [MEPs to visit Democratic Republic of the Congo](https://europeansting.com/2025/10/28/meps-to-visit-democratic-republic-of-the-congo/)
+- [Dublin Airport to accelerate Electric Vehicle charging, water and energy upgrades with €288 million EIB support](https://europeansting.com/2025/10/28/dublin-airport-to-accelerate-electric-vehicle-charging-water-and-energy-upgrades-with-e288-million-eib-support/)
+- [Commission approves French scheme to partially compensate pension contributions in rail freight transport](https://europeansting.com/2025/10/28/commission-approves-french-scheme-to-partially-compensate-pension-contributions-in-rail-freight-transport/)
+- [World News in Brief: Funding cuts curb development, human rights in Belarus update, Ebola and mpox in Africa](https://europeansting.com/2025/10/28/world-news-in-brief-funding-cuts-curb-development-human-rights-in-belarus-update-ebola-and-mpox-in-africa/)
+- [EIB to help cut heating bills by unlocking Ireland’s District Heating Future](https://europeansting.com/2025/10/28/eib-to-help-cut-heating-bills-by-unlocking-irelands-district-heating-future/)
+- [Prescription for Tomorrow: Youth as the Unsung Innovators of Global Health](https://europeansting.com/2025/10/28/prescription-for-tomorrow-youth-as-the-unsung-innovators-of-global-health/)
+- [Israel responsible for four genocidal acts in Gaza, inquiry chair tells General Assembly](https://europeansting.com/2025/10/29/israel-responsible-for-four-genocidal-acts-in-gaza-inquiry-chair-tells-general-assembly/)
+- [Commission approves €750 million Estonian strategic reserve to support security of electricity supply](https://europeansting.com/2025/10/29/commission-approves-e750-million-estonian-strategic-reserve-to-support-security-of-electricity-supply/)
+- [Commission partners with private investors to set up multi-billion Scaleup Europe Fund](https://europeansting.com/2025/10/29/commission-partners-with-private-investors-to-set-up-multi-billion-scaleup-europe-fund/)
+- [HFA and EIB launch €400 million loan facility to boost social and affordable housing in Ireland](https://europeansting.com/2025/10/27/hfa-and-eib-launch-e400-million-loan-facility-to-boost-social-and-affordable-housing-in-ireland/)
 
 ## [Health as a Bridge for Peace: Why Europe  Must Lead in Public Health Diplomacy](https://europeansting.com/2025/10/09/health-as-a-bridge-for-peace-why-europe-must-lead-in-public-health-diplomacy/)
 
@@ -230,8 +230,6 @@ Condemning polarisation and state repression in Serbia, MEPs demand an open inve
 October 22, 2025
 MEPs urge sustained EU engagement with Belarus, denouncing human rights abuses and highlighting the threat posed by Russia’s influence.Committee on Foreign Affairs Source : © European Union, 2025 - EP
 
-- [1.1550 USD = 1 EUR 2025-10-30 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-30&rate=1.1550)
-
 - [1.1636 USD = 1 EUR 2025-10-29 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-29&rate=1.1636)
 
 - [1.1630 USD = 1 EUR 2025-10-28 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-28&rate=1.1630)
@@ -239,6 +237,8 @@ MEPs urge sustained EU engagement with Belarus, denouncing human rights abuses a
 - [1.1640 USD = 1 EUR 2025-10-27 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-27&rate=1.1640)
 
 - [1.1612 USD = 1 EUR 2025-10-24 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-24&rate=1.1612)
+
+- [1.1593 USD = 1 EUR 2025-10-23 ECB Reference rate](http://www.ecb.europa.eu/stats/exchange/eurofxref/html/eurofxref-graph-usd.en.html?date=2025-10-23&rate=1.1593)
 
 [About](http://europeansting.com/category/about-the-sting/) \| [Privacy](http://www.europeansting.com/the-european-sting-privacy-policy) \| [Cookies](http://europeansting.com/2015/08/27/european-sting-cookie-policy/) \| [Contact](https://europeansting.com/contact-us)  \|
 [Sitemap](https://europeansting.com/site-map)

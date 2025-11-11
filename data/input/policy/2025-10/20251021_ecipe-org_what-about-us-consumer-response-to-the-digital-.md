@@ -2,7 +2,7 @@
 title: What About Us? Consumer Response to the Digital ...
 url: https://ecipe.org/publications/consumer-response-to-the-digital-markets-act/
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-03T03:50:17.606730
+collected_date: 2025-11-11T12:26:17.830735
 source: Ecipe
 source_url: https://ecipe.org
 description: The Digital Markets Act (DMA) was introduced as a landmark piece of EU legislation to change how consumers interact or engage with large online platforms. By restraining the power of the so-called gatekeepers, Brussels aimed to promote greater competition, improve privacy protections and make...

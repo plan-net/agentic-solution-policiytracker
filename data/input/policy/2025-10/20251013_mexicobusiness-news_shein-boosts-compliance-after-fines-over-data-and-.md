@@ -2,7 +2,7 @@
 title: Shein Boosts Compliance After Fines Over Data and ...
 url: https://mexicobusiness.news/ecommerce/news/shein-boosts-compliance-after-fines-over-data-and-greenwashing
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-11-03T03:50:24.240269
+collected_date: 2025-11-11T12:26:07.605960
 source: Mexicobusiness
 source_url: https://mexicobusiness.news
 description: - [Entrepreneurs](https://mexicobusiness.news/entrepreneurs)

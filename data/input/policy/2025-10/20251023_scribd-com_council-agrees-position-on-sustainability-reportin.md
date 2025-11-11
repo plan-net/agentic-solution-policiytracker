@@ -2,7 +2,7 @@
 title: Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness
 url: https://www.scribd.com/document/880575202/Council-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-EU-competitiveness
 published_date: 2025-10-23T00:00:00
-collected_date: 2025-10-27T02:54:51.545081
+collected_date: 2025-11-11T12:26:35.442233
 source: Scribd
 source_url: https://www.scribd.com
 description: [Open navigation menu](https://www.scribd.com/www.scribd.com#sidebar)

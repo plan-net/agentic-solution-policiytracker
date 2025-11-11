@@ -2,7 +2,7 @@
 title: REPORT on a new legislative framework for products that is fit for the digital and sustainable transition | A10-0189/2025 | European Parliament
 url: https://www.europarl.europa.eu/doceo/document/A-10-2025-0189_EN.html
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-11-03T03:50:24.495990
+collected_date: 2025-11-11T12:26:24.263861
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: David CORMAND

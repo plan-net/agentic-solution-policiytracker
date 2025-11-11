@@ -2,7 +2,7 @@
 title: EU Lawmakers Agree to Drastically Curtail ESG Directives (1)
 url: https://news.bloomberglaw.com/esg/european-lawmakers-agree-to-drastically-curtail-esg-directives
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-10-27T02:54:38.698160
+collected_date: 2025-11-11T12:26:24.263939
 source: News
 source_url: https://news.bloomberglaw.com
 author: John Ainger, Frances Schwartzkopff

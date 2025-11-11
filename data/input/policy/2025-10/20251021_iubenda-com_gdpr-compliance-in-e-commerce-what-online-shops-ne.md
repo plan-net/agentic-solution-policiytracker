@@ -2,7 +2,7 @@
 title: GDPR Compliance in E-Commerce: What Online Shops Need to Know | iubenda | Compliance Solutions for Websites, Apps and Organizations | iubenda
 url: https://www.iubenda.com/p/en/gdpr-compliance-in-e-commerce/
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-03T03:50:09.088695
+collected_date: 2025-11-11T12:26:08.040673
 source: Iubenda
 source_url: https://www.iubenda.com
 author: Carla

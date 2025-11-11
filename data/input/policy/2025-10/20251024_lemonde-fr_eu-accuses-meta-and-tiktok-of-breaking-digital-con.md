@@ -2,7 +2,7 @@
 title: EU accuses Meta and TikTok of breaking digital content rules
 url: https://www.lemonde.fr/en/international/article/2025/10/24/eu-accuses-meta-tiktok-of-breaking-digital-content-rules_6746738_4.html
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:40.211134
+collected_date: 2025-11-11T12:26:39.804376
 source: Lemonde
 source_url: https://www.lemonde.fr
 author: Le Monde with AFP

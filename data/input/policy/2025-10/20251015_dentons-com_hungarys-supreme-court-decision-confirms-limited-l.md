@@ -2,7 +2,7 @@
 title: Hungary's Supreme Court decision confirms limited liability ...
 url: https://www.dentons.com/en/insights/articles/2025/october/15/hungarian-digital-services-act
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-11-03T03:50:16.498607
+collected_date: 2025-11-11T12:26:17.664703
 source: Dentons
 source_url: https://www.dentons.com
 description: ## {{BCKData.LocationHeading}}

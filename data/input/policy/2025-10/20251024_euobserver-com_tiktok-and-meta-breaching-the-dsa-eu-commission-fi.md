@@ -2,7 +2,7 @@
 title: TikTok and Meta breaching the DSA, EU Commission finds
 url: https://euobserver.com/rule-of-law/ar493fa366
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:38.182776
+collected_date: 2025-11-11T12:26:35.549739
 source: Euobserver
 source_url: https://euobserver.com
 description: Ad
@@ -68,34 +68,36 @@ TikTok does not provide a searchable and reliable ad library for researchers —
 
 [EU's GDPR rules finally updated in bid to speed up investigations](https://euobserver.com/eu-and-the-world/ar0f769560) [Listen: How Big Tech profits from fraud](https://euobserver.com/digital/ar50dd8a70) [Privacy and AI fears, in EU bonfire of digital red tape](https://euobserver.com/eu-and-the-world/ar721f4c30) [The ads used to pay for news — here's how they could again](https://euobserver.com/digital/ar8394ce7e) [ALLOW ALL? Brussels deregulation drive to make rejecting cookies harder](https://euobserver.com/digital/ard653a0af) [How Serbia could use EU Digital Services Act for state censorship](https://euobserver.com/eu-and-the-world/arf48ebc3d) [Behind the scam: how an alleged criminal network set a trap for thousands of Europeans to fall for ‘fake’ investments and raked in millions](https://euobserver.com/eu-and-the-world/arf605a31b) [Why Ireland is the Achilles Heel of the EU's fightback against Big Tech](https://euobserver.com/digital/arfd2322c4)
 
-- [by Owen Carpenter-Zehe](https://euobserver.com/search/Owen%20Carpenter-Zehe)
+- [by Benjamin\
+Fox](https://euobserver.com/bio/eu7c6b1824)
 
-[**TikTok and Meta breaching the DSA, EU Commission finds**](https://euobserver.com/rule-of-law/ar493fa366)
-
-[Rule of Law](https://euobserver.com/section/5019a5cd48)
-
-- [by Hannah Kriwak](https://euobserver.com/search/Hannah%20Kriwak)
-
-[**Israel blocking €43m of Gaza aid despite ceasefire, NGOs say**](https://euobserver.com/eu-and-the-world/ar40280aa8)
+[**Trump-Xi deal on rare earths applies to EU, trade chief says**](https://euobserver.com/eu-and-the-world/ard2ad3334)
 
 [EU & the World](https://euobserver.com/section/5002452f20)
 
-- [by MEPs Marc Botenga and Ozlem Demirel](https://euobserver.com/search/MEPs%20Marc%20Botenga%20and%20Ozlem%20Demirel)
+- [by Owen Carpenter-Zehe](https://euobserver.com/search/Owen%20Carpenter-Zehe)
 
-[**Why we should worry about little-known 'crisis mechanism' in EU military industrial plan**](https://euobserver.com/eu-and-the-world/ar58aafd22)
+[**French researchers find major flaws in AI age-verification software for porn**](https://euobserver.com/digital/ar2f63c7fd)
 
-[EU & the World](https://euobserver.com/section/5002452f20) [Opinion](https://euobserver.com/article-type/806f303338)
+[Digital](https://euobserver.com/section/503f501420)
 
-- [by Wester van\
-Gaal](https://euobserver.com/bio/eud6dc869c)
+- [by Nikolaj\
+Nielsen](https://euobserver.com/bio/eu09e46885)
 
-[**EU backs 2040 target, but emissions trading for cars and buildings to be 'revised' in tit-for-tat deal**](https://euobserver.com/green-economy/arb157ca3a)
+[**Using third-countries helps avoid ghetto camps in Europe, suggests lead MEP**](https://euobserver.com/migration/arf3bac7d8)
 
-[Green Economy](https://euobserver.com/section/50739332cc)
+[Migration](https://euobserver.com/section/50192d9286)
 
-- [by Elena Sánchez Nicolás & Owen Carpenter-Zehe](https://euobserver.com/search/Elena%20S%C3%A1nchez%20Nicol%C3%A1s%20%26%20Owen%20Carpenter-Zehe)
+- [by Alejandro\
+Tauber](https://euobserver.com/bio/eu31f83c46)
 
-[**Kyiv seeks EU move on Russia's frozen assets, despite Belgian concerns**](https://euobserver.com/eu-and-the-world/ar2ed10c71)
+[**Don’t be too relieved: Dutch election result not ‘end of populism’ or far-right**](https://euobserver.com/eu-elections/ard231c688)
+
+[EU Elections](https://euobserver.com/section/509704cb00) [Analysis](https://euobserver.com/article-type/80178480d0)
+
+- [by Hannah Kriwak](https://euobserver.com/search/Hannah%20Kriwak)
+
+[**A year after Serbia's Novi Sad disaster: 'It is no longer the country it was before 1 November last year'**](https://euobserver.com/eu-and-the-world/arc3581dde)
 
 [EU & the World](https://euobserver.com/section/5002452f20)
 

@@ -2,7 +2,7 @@
 title: Top EU body finds both Meta and TikTok in breach of Digital Services Act
 url: https://www.jurist.org/news/2025/10/top-eu-body-finds-both-meta-and-tiktok-in-breach-of-eu-digital-services-act/
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:38.182709
+collected_date: 2025-11-11T12:26:38.873796
 source: Jurist
 source_url: https://www.jurist.org
 author: Emanuel Xhindi | U. Tirana Faculty of Law, AL
@@ -35,11 +35,14 @@ The Digital Services Act (DSA) came into [force](https://eur-lex.europa.eu/eli/r
 
 Accordingly, if the Commission’s preliminary findings are confirmed, the companies may be fined for up to 6% of their annual turnover.
 
-McKinley assassin executed
+White supremacists overthrow government in Wilmington, North Carolina
 
-On October 29, 1901, [Leon Czolgosz](https://case.edu/ech/articles/c/czolgosz-leon-f) was executed for assassinating President William McKinley.
+A group of white supremacists overthrew the government of Wilmington, North Carolina on November 10, 1898, killing at least dozens of Black people in the process. The city's Republican government resigned after the 500-2,000 strong white mob burned the offices of a Black-owned newspaper and terrorized black neighborhoods. The new state Democratic government passed laws in 1899 disenfranchising Black voters across North Carolina.
+[Learn more](https://www.dncr.nc.gov/1898-wilmington-coup) about the 1898 Wilmington Coup.
 
-Red Cross established
+Supreme Court limited free speech in wartime
 
-On October 29, 1863, the International Red Cross was established in Geneva, Switzerland.
-[Learn more](https://www.icrc.org/en/document/history-icrc) about the history of the International Committee of the Red Cross and the history of International Humanitarian law.
+On November 10, 1919, the US Supreme Court ruled in [Abrams v. United States](https://supreme.justia.com/cases/federal/us/250/616/) that the federal government could criminalize speech if it was of a type tending to bring about harmful results, in this case, resistance to the United States war effort. In a powerful [dissenting opinion](http://web.archive.org/web/20070419152616/http://usinfo.state.gov/usa/infousa/facts/democrac/43.htm), Justice Oliver Wendell Holmes countered that even during wartime, free speech could only be curtailed when there was clear and "present danger of immediate evil or an intent to bring it about."
+
+On November 10, 1982, Soviet leader Leonid Brezhnev died of a heart attack. He had served as leader of the USSR from October 1964 until his death. Following his death, the Soviet Union cycled through three more leaders during the 1980s until Mikhail Gorbachev allowed the country to dissolve in 1991.
+[Read](https://www.nytimes.com/1982/11/12/world/brezhnev-dead-at-75-no-successor-named-reagan-pledges-an-effort-to-improve-ties.html) an obituary of Leonid Brezhnev from the New York Times.

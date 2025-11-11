@@ -2,7 +2,7 @@
 title: What Is ESPR? Understanding Regulation (EU) 2024/1781 and Its Role - REACH24H
 url: https://en.reach24h.com/news/insights/sustainability/espr-regulation-eu-2024-1781
 published_date: 2025-10-23T00:00:00
-collected_date: 2025-11-03T03:50:24.109958
+collected_date: 2025-11-11T12:26:23.931476
 source: En
 source_url: https://en.reach24h.com
 author: Reach24h

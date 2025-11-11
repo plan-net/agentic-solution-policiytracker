@@ -2,7 +2,7 @@
 title: EU Sustainability: State of Play — Circular Economy and Product-Related Frameworks
 url: https://www.lw.com/en/insights/eu-sustainability-state-of-play-circular-economy-and-product-related-frameworks
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-11-03T03:50:38.186287
+collected_date: 2025-11-11T12:26:35.442028
 source: Lw
 source_url: https://www.lw.com
 description: "- [skip to Main Content](https://www.lw.com/www.lw.com#maincontent)

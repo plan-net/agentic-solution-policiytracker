@@ -2,7 +2,7 @@
 title: EDPB and European Commission release joint guidelines on DMA and GDPR
 url: https://eudigitallaw.com/edpb-and-european-commission-release-joint-guidelines-on-dma-and-gdpr/
 published_date: 2025-10-14T00:00:00
-collected_date: 2025-11-03T03:50:09.088986
+collected_date: 2025-11-11T12:26:08.040810
 source: Eudigitallaw
 source_url: https://eudigitallaw.com
 author: atis
@@ -35,15 +35,15 @@ Further guidance is forthcoming. The EDPB and the Commission’s AI Office are d
 
 [Digital Services Act](https://eudigitallaw.com/digital-services-act/)
 
-#### [Dutch court rules Meta must respect persistent user feed choices](https://eudigitallaw.com/dutch-court-rules-meta-must-respect-persistent-user-feed-choices/)
+#### [TikTok faces EU fines over ad transparency and researcher access](https://eudigitallaw.com/tiktok-faces-eu-fines-over-ad-transparency-and-researcher-access/)
 
 [Other](https://eudigitallaw.com/other/)
 
-#### [EU stalemate on child abuse scanning and encryption risks](https://eudigitallaw.com/eu-stalemate-on-child-abuse-scanning-and-encryption-risks/)
+#### [Denmark backs voluntary CSAM detection in EU proposal](https://eudigitallaw.com/denmark-backs-voluntary-csam-detection-in-eu-proposal/)
 
-[AI Act](https://eudigitallaw.com/ai-act/)
+[Other](https://eudigitallaw.com/other/)
 
-#### [Commission Publishes AI Act Incident Reporting Guidance and Template](https://eudigitallaw.com/commission-publishes-ai-act-incident-reporting-guidance-and-template/)
+#### [EU signs UN Convention against Cybercrime](https://eudigitallaw.com/eu-signs-un-convention-against-cybercrime/)
 
 ### Leave a Reply [Cancel reply](https://eudigitallaw.com/edpb-and-european-commission-release-joint-guidelines-on-dma-and-gdpr/\#respond)
 

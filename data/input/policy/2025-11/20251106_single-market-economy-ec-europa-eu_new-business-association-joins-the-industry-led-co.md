@@ -1,0 +1,17 @@
+---
+title: New business association joins the industry-led cooperation ...
+url: https://single-market-economy.ec.europa.eu/news/new-business-association-joins-industry-led-cooperation-tackle-online-counterfeiting-2025-11-05_en
+published_date: 2025-11-06T12:26:23.546000
+collected_date: 2025-11-11T12:26:24.154306
+source: Single Market Economy
+source_url: https://single-market-economy.ec.europa.eu
+description: The UNIFAB (French Union des Fabricants) has signed up to the memorandum of understanding (MoU) on the sale of counterfeit goods on the internet as an IP Rights Holder. They join the 34 other stakeholders already working together under the agreement. Facilitated by the European Commission, the MoU...
+language: en
+collection_type: policy_landscape
+---
+
+# New business association joins the industry-led cooperation ...
+
+The UNIFAB (French Union des Fabricants) has signed up to the memorandum of understanding (MoU) on the sale of counterfeit goods on the internet as an IP Rights Holder. They join the 34 other stakeholders already working together under the agreement. Facilitated by the European Commission, the MoU...
+
+The UNIFAB (French Union des Fabricants) has signed up to the memorandum of understanding (MoU) on the sale of counterfeit goods on the internet as an IP Rights Holder. They join the 34 other stakeholders already working together under the agreement. Facilitated by the European Commission, the MoU contributes to the prevention of counterfeit goods being sold online and helps build cooperation between its signatories, who are rights holders of goods for which counterfeit versions are often sold online online platforms business associations As mentioned in the Commission recommendation on measures to combat counterfeiting and enhance the enforcement of intellectual property rights, the Commission encourages rightsholders and providers of intermediary services to cooperate under the MoU, which remains open for other stakeholders to join. The MoU is a part of the Commission’s comprehensive approach to addressing the challenges posed by e-commerce imports across their entire life cycle identified by the E-Commerce Communication, which was published in February 2025.  Counterfeit goods damage businesses, have a negative impact on jobs and tax revenues, often endanger the health and safety of consumers, and could have a negative environmental impact. The evaluation report on the functioning of the MoU (August 2020) shows continuous cooperation on the removal of counterfeit goods from online marketplaces. The report includes a series of reported practices shared by signatories in key areas, such as proactive and preventive measures, notice-and-takedown procedures, and tackling repeat infringers. These reported practices could set a standard for online platforms and rights owners to combat counterfeiting online. They may also prompt stakeholders not involved in the MoU to develop effective anti-counterfeiting strategies.  Signatories consider the MoU useful for encouraging qualitative dialogue on design infringements, new fraud patterns, changes in consumer behaviour, and more recently, the consequences of the Covid-19 crisis when it comes to the fight against counterfeiting. There is also an interest in delving deeper into certain MoU areas, such as boosting pragmatic ways for online platforms, rights owners, and law enforcement authorities to work together more intensively. More information Background MoU on the sale of counterfeit goods on the internet Full list of signatories

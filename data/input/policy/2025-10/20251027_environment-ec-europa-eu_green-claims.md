@@ -1,8 +1,8 @@
 ---
 title: Green claims
-url: https://environment.ec.europa.eu/topics/circular-economy/green-claims_en#:~:text=Some%20examples%20of%20green%20claims,reduced%20by%2020%25%20since%202015%E2%80%9D
+url: https://environment.ec.europa.eu/topics/circular-economy/green-claims_en
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:24.110049
+collected_date: 2025-11-11T12:26:24.154260
 source: Environment
 source_url: https://environment.ec.europa.eu
 description: [Skip to main content](https://environment.ec.europa.eu/environment.ec.europa.eu#main-content)

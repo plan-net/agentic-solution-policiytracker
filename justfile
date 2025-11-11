@@ -31,7 +31,7 @@ start: services-up
     just deploy-all
     @echo "🚀 Starting Kodosumi admin panel..."
     -uv run --active koco stop 2>/dev/null || true
-    nohup uv run koco start --register http://localhost:8001/-/routes > logs/kodosumi.log 2>&1 &
+    nohup uv run koco start --register   > logs/kodosumi.log 2>&1 &
     @sleep 3
     @echo "✅ All services started!"
     @just status

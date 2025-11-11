@@ -2,7 +2,7 @@
 title: EU investigates Meta and TikTok for DSA breaches | Digital Watch Observatory
 url: https://dig.watch/updates/eu-investigates-meta-and-tiktok-for-dsa-breaches
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:38.182671
+collected_date: 2025-11-11T12:26:39.804286
 source: Dig
 source_url: https://dig.watch
 author: iliasd@diplomacy.edu

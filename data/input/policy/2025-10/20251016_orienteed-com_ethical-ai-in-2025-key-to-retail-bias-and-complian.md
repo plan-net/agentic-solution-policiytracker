@@ -2,7 +2,7 @@
 title: Ethical AI in 2025: Key to Retail, Bias, and Compliance
 url: https://orienteed.com/en/ethical-ai-in-2025-trust-compliance-and-the-future-of-retail/
 published_date: 2025-10-16T00:00:00
-collected_date: 2025-11-03T03:50:17.606702
+collected_date: 2025-11-11T12:26:17.830797
 source: Orienteed
 source_url: https://orienteed.com
 author: Jesús Maceira

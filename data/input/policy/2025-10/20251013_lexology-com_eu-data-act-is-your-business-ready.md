@@ -2,7 +2,7 @@
 title: EU Data Act: Is Your Business Ready?
 url: https://www.lexology.com/library/detail.aspx?g=1f74b09a-d8a2-418d-91b5-1dedafa2fa78
 published_date: 2025-10-13T00:00:00
-collected_date: 2025-10-27T02:54:28.935763
+collected_date: 2025-11-11T12:26:07.380144
 source: Lexology
 source_url: https://www.lexology.com
 author: Szymon Sieniewicz
@@ -140,15 +140,15 @@ Folders shared with you
 
 ### Popular articles from this firm
 
-1. ##### [The Paris International Arbitration Newsletter - July 2024\ \*](https://www.lexology.com/library/detail.aspx?g=1a8ef601-af26-4357-ace4-0cee487b7438)
+1. ##### [What is the regulatory treatment of stablecoins across the world?\ \*](https://www.lexology.com/library/detail.aspx?g=0236a625-5522-4466-83d4-4fd942f50917)
 
-2. ##### [What is the regulatory treatment of stablecoins across the world?\ \*](https://www.lexology.com/library/detail.aspx?g=0236a625-5522-4466-83d4-4fd942f50917)
+2. ##### [EU Pay Transparency Directive: Which countries have implemented and how to prepare\ \*](https://www.lexology.com/library/detail.aspx?g=c69e77aa-9c28-4896-a092-5804ddebdfd1)
 
-3. ##### [EU Pay Transparency Directive: Which countries have implemented and how to prepare\ \*](https://www.lexology.com/library/detail.aspx?g=c69e77aa-9c28-4896-a092-5804ddebdfd1)
+3. ##### [How to develop an AI system in compliance with the GDPR: the CNIL publishes its first practical guidelines\ \*](https://www.lexology.com/library/detail.aspx?g=0318f887-6cf3-479f-b060-5ea879b08554)
 
-4. ##### [How to develop an AI system in compliance with the GDPR: the CNIL publishes its first practical guidelines\ \*](https://www.lexology.com/library/detail.aspx?g=0318f887-6cf3-479f-b060-5ea879b08554)
+4. ##### [Competition and FDI trends across Europe: Essential updates for your autumn agenda\ \*](https://www.lexology.com/library/detail.aspx?g=756d460e-a310-4090-a6f6-adcd94bf3beb)
 
-5. ##### [Competition and FDI trends across Europe: Essential updates for your autumn agenda\ \*](https://www.lexology.com/library/detail.aspx?g=756d460e-a310-4090-a6f6-adcd94bf3beb)
+5. ##### [EU Data Act: 7 changes set to reshape data use in Europe\ \*](https://www.lexology.com/library/detail.aspx?g=b47a90ac-66c3-4a02-a39e-b7038f5f583b)
 
 Interested in contributing?
 
@@ -192,6 +192,6 @@ Online
 
 #### [European Union](https://www.lexology.com/hub/european-union)
 
-#### [Internet & Social Media](https://www.lexology.com/hub/internet-and-social-media)
-
 #### [IT & Data Protection](https://www.lexology.com/hub/it-and-data-protection)
+
+#### [Internet & Social Media](https://www.lexology.com/hub/internet-and-social-media)

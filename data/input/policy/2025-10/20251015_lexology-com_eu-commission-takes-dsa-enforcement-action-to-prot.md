@@ -2,7 +2,7 @@
 title: EU Commission takes DSA enforcement action to protect minors online
 url: https://www.lexology.com/library/detail.aspx?g=af7c2ee2-73bc-4e82-8d35-3ac5d9b3cd48
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-11-03T03:50:38.182565
+collected_date: 2025-11-11T12:26:39.804116
 source: Lexology
 source_url: https://www.lexology.com
 author: Mike Edgar, Vivien Zhu

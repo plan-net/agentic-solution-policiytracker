@@ -2,7 +2,7 @@
 title: EU accuses Meta, TikTok of breaching rules under landmark digital content law
 url: https://www.france24.com/en/live-news/20251024-eu-accuses-meta-tiktok-of-breaking-digital-content-rules
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:38.182854
+collected_date: 2025-11-11T12:26:35.549779
 source: France24
 source_url: https://www.france24.com
 author: By:

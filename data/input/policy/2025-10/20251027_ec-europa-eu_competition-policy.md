@@ -2,7 +2,7 @@
 title: Competition Policy
 url: https://ec.europa.eu/competition/digital_markets_act/cases/202522/DMA_100109_906.pdf
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:29.312341
+collected_date: 2025-11-11T12:26:27.019320
 source: Ec
 source_url: https://ec.europa.eu
 description: [Skip to main content](https://ec.europa.eu/ec.europa.eu#main-content)
@@ -21,6 +21,16 @@ Competition policy encourages companies to offer consumers goods and services on
 ## Latest press releases
 
 - Press release
+- 4 November 2025
+
+[Commission opens in-depth investigation into the proposed acquisition of Anglo American's nickel business by MMG](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2566)
+
+- Press release
+- 28 October 2025
+
+[Commission approves €750 million Estonian strategic reserve to support security of electricity supply](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2510)
+
+- Press release
 - 27 October 2025
 
 [Commission approves French scheme to partially compensate pension contributions in rail freight transport](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2484)
@@ -29,16 +39,6 @@ Competition policy encourages companies to offer consumers goods and services on
 - 20 October 2025
 
 [Commission carries out unannounced antitrust inspections in the ski equipment sector](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2430)
-
-- Press release
-- 15 October 2025
-
-[Commission seeks input on evaluation of State aid rules for public service broadcasting](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2383)
-
-- Press release
-- 14 October 2025
-
-[Commission fines fashion brands Gucci, Chloé and Loewe over €157 million for anticompetitive pricing practices](https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2361)
 
 [See all Competition press material](https://ec.europa.eu/commission/presscorner/home/en?keywords=competition&dotyp=0#news-block)
 

@@ -2,7 +2,7 @@
 title: EU Commission takes DSA enforcement action to protect minors online (via Passle)
 url: https://inquisitiveminds.bristows.com/post/102lq6d/eu-commission-takes-dsa-enforcement-action-to-protect-minors-online
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-11-03T03:50:16.390585
+collected_date: 2025-11-11T12:26:39.804204
 source: Inquisitiveminds
 source_url: https://inquisitiveminds.bristows.com
 author: Mike Edgar, Vivien Zhu

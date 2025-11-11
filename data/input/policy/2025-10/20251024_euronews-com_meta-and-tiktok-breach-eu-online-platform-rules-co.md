@@ -2,7 +2,7 @@
 title: Meta and TikTok breach EU online platform rules, Commission finds
 url: https://www.euronews.com/next/2025/10/24/meta-and-tiktok-breach-eu-online-platform-rules-european-commission-finds
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:40.211082
+collected_date: 2025-11-11T12:26:35.549701
 source: Euronews
 source_url: https://www.euronews.com
 description: Advertisement
@@ -59,12 +59,6 @@ In total, the Commission has initiated some 14 proceedings for possible breaches
 [Go to accessibility shortcuts](https://www.euronews.com/www.euronews.com#accessibility-bar__menu)
 
 Share this article [Comments](https://www.euronews.com/www.euronews.com#vuukle-comments-2841171)
-
-[Tech News](https://www.euronews.com/next/tech-news) [**ChatGPT could face strictest set of EU rules as user numbers rise**](https://www.euronews.com/next/2025/10/22/chatgpt-could-face-strictest-set-of-eu-rules-as-it-hits-120-million-users-in-europe)
-
-[Tech News](https://www.euronews.com/next/tech-news) [**Meta, TikTok’s platform supervisory fees temporarily on hold: EU court**](https://www.euronews.com/next/2025/09/10/meta-tiktoks-online-platform-supervisory-fees-temporarily-on-hold-eu-court)
-
-[Tech News](https://www.euronews.com/next/tech-news) [**German watchdog received more platform complaints than EU counterparts**](https://www.euronews.com/next/2025/08/18/german-watchdog-received-more-platform-complaints-than-eu-counterparts)
 
 - [TikTok](https://www.euronews.com/tag/tiktok)
 - [EU Policy](https://www.euronews.com/tag/eu-policy)

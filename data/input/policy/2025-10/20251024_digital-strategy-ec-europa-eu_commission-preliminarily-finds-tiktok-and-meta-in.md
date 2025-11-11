@@ -2,7 +2,7 @@
 title: Commission preliminarily finds TikTok and Meta in breach of ...
 url: https://digital-strategy.ec.europa.eu/en/news/commission-preliminarily-finds-tiktok-and-meta-breach-their-transparency-obligations-under-digital
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:16.497938
+collected_date: 2025-11-11T12:26:21.693413
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: "Today, the European Commission preliminarily found both TikTok and Meta in breach of their 

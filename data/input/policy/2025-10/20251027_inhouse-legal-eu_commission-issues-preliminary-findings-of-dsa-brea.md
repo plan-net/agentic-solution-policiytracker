@@ -2,7 +2,7 @@
 title: Commission Issues Preliminary Findings of DSA Breaches Against Meta and TikTok
 url: https://inhouse-legal.eu/public-policy-regulations/dsa-preliminary/amp/
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:42.250829
+collected_date: 2025-11-11T12:26:39.892253
 source: Inhouse Legal
 source_url: https://inhouse-legal.eu
 author: iladmin

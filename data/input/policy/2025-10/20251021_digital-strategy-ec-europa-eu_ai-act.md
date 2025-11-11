@@ -2,7 +2,7 @@
 title: AI Act
 url: https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?utm_source=openai
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-03T03:50:34.175373
+collected_date: 2025-11-11T12:26:32.754558
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)
@@ -126,6 +126,26 @@ The AI Act entered into force on 1 August 2024, and will be fully applicable 2 y
 [European AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office)
 
 PRESS RELEASE
+\| 05 November 2025
+
+[Commission launches work on a code of practice on marking and labelling AI-generated content](https://digital-strategy.ec.europa.eu/en/news/commission-launches-work-code-practice-marking-and-labelling-ai-generated-content)
+
+PRESS RELEASE
+\| 03 November 2025
+
+[Commission launches ‘Resource for AI Science in Europe'](https://digital-strategy.ec.europa.eu/en/news/commission-launches-resource-ai-science-europe)
+
+DIGIBYTE
+\| 31 October 2025
+
+[EU-India discuss progress in shared digital priorities](https://digital-strategy.ec.europa.eu/en/news/eu-india-discuss-progress-shared-digital-priorities)
+
+PRESS RELEASE
+\| 28 October 2025
+
+[Commission partners with private investors to set up multi-billion Scaleup Europe Fund](https://digital-strategy.ec.europa.eu/en/news/commission-partners-private-investors-set-multi-billion-scaleup-europe-fund)
+
+PRESS RELEASE
 \| 13 October 2025
 
 [EU announces AI Factories Antennas across Member States and partner countries](https://digital-strategy.ec.europa.eu/en/news/eu-announces-ai-factories-antennas-across-member-states-and-partner-countries)
@@ -135,45 +155,25 @@ PRESS RELEASE
 
 [EU expands network of AI Factories, strengthening its ‘AI Continent’ ambition](https://digital-strategy.ec.europa.eu/en/news/eu-expands-network-ai-factories-strengthening-its-ai-continent-ambition)
 
-PRESS RELEASE
-\| 09 October 2025
-
-[€204 million funding for projects boosting innovation in business digitalisation, digital skills, health, public and automotive sectors](https://digital-strategy.ec.europa.eu/en/news/eu204-million-funding-projects-boosting-innovation-business-digitalisation-digital-skills-health)
-
-PRESS RELEASE
-\| 08 October 2025
-
-[Commission launches two strategies to speed up AI uptake in European industry and science](https://digital-strategy.ec.europa.eu/en/news/commission-launches-two-strategies-speed-ai-uptake-european-industry-and-science)
-
-DIGIBYTE
-\| 06 October 2025
-
-[Digital Europe Programme amended to accelerate the Commission’s digital ambitions](https://digital-strategy.ec.europa.eu/en/news/digital-europe-programme-amended-accelerate-commissions-digital-ambitions)
-
-PRESS RELEASE
-\| 16 September 2025
-
-[Commission collects feedback to simplify rules on data, cybersecurity and artificial intelligence in the upcoming Digital Omnibus](https://digital-strategy.ec.europa.eu/en/news/commission-collects-feedback-simplify-rules-data-cybersecurity-and-artificial-intelligence-upcoming)
-
 [Browse Artificial intelligence](https://digital-strategy.ec.europa.eu/en/related-content?topic=119)
 
 ## Policy and legislation
 
+- 04-11-2025
+[AI Act: Commission publishes a reporting template for serious incidents involving general-purpose AI models with systemic risk](https://digital-strategy.ec.europa.eu/en/library/ai-act-commission-publishes-reporting-template-serious-incidents-involving-general-purpose-ai)
 - 08-10-2025
 [Commission Communication Apply AI Strategy](https://digital-strategy.ec.europa.eu/en/library/commission-communication-apply-ai-strategy)
 - 01-08-2025
 [Commission Opinion on the assessment of the General-Purpose AI Code of Practice](https://digital-strategy.ec.europa.eu/en/library/commission-opinion-assessment-general-purpose-ai-code-practice)
-- 24-07-2025
-[Explanatory Notice and Template for the Public Summary of Training Content for general-purpose AI models](https://digital-strategy.ec.europa.eu/en/library/explanatory-notice-and-template-public-summary-training-content-general-purpose-ai-models)
 
 [More](https://digital-strategy.ec.europa.eu/en/related-content?topic=119&type=25)
 
+- 28-10-2025
+[Shaping and strengthening European AI talent](https://digital-strategy.ec.europa.eu/en/library/shaping-and-strengthening-european-ai-talent)
 - 21-10-2025
 [Executive Vice-President Virkkunen updates Council and Parliament on simplification, implementation and enforcement of the digital rulebook](https://digital-strategy.ec.europa.eu/en/library/executive-vice-president-virkkunen-updates-council-and-parliament-simplification-implementation-and)
 - 08-08-2025
 [Study on the deployment of AI in healthcare](https://digital-strategy.ec.europa.eu/en/library/study-deployment-ai-healthcare)
-- 07-07-2025
-[Artificial intelligence unlocking a smarter, greener energy future](https://digital-strategy.ec.europa.eu/en/library/artificial-intelligence-unlocking-smarter-greener-energy-future)
 
 [More](https://digital-strategy.ec.europa.eu/en/related-content?topic=119&type=28)
 

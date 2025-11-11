@@ -2,7 +2,7 @@
 title: Navigating the new EU customs rules as an e-commerce ...
 url: https://www.namecheap.com/blog/navigating-the-new-eu-customs-rules-as-an-e-commerce-brand/
 published_date: 2025-10-15T00:00:00
-collected_date: 2025-11-03T03:50:24.494894
+collected_date: 2025-11-11T12:26:24.154210
 source: Namecheap
 source_url: https://www.namecheap.com
 author: Gary Stevens
@@ -153,21 +153,21 @@ Gary Stevens is a web developer and technology writer. He's a part-time blockcha
 
 More articles like this
 
-[**Retail membership programs need top-notch security**](https://www.namecheap.com/blog/retail-membership-programs-need-top-notch-security/)
+[**Automation overdose: How far should businesses go?**](https://www.namecheap.com/blog/automation-overdose-how-far-should-businesses-go/)
 
 [Gary S.](https://www.namecheap.com/blog/author/garystevens/) \|
-Oct 3, 2025
+Oct 31, 2025
 
 [0\
-Comments](https://www.namecheap.com/blog/retail-membership-programs-need-top-notch-security/#comments)
+Comments](https://www.namecheap.com/blog/automation-overdose-how-far-should-businesses-go/#comments)
 
-[**Can a virtual influencer partnership drive sales?**](https://www.namecheap.com/blog/can-a-virtual-influencer-partnership-drive-sales/)
+[**How cybercriminals can hijack your contracts**](https://www.namecheap.com/blog/how-cybercriminals-can-hijack-your-contracts/)
 
 [Gary S.](https://www.namecheap.com/blog/author/garystevens/) \|
-Oct 1, 2025
+Oct 29, 2025
 
 [0\
-Comments](https://www.namecheap.com/blog/can-a-virtual-influencer-partnership-drive-sales/#comments)
+Comments](https://www.namecheap.com/blog/how-cybercriminals-can-hijack-your-contracts/#comments)
 
 Get the latest news and dealsSign up for email updates covering blogs, offers, and lots more.
 
@@ -180,9 +180,9 @@ We’ve sent you a confirmation email to check we 100% have the right address.
 
 [Current Deals at Namecheap](https://www.namecheap.com/promos/)
 
-### How .online domains are shaping digital brand strategy
+### Namecheap’s integrated domain and hosting advantages
 
-[Read More](https://www.namecheap.com/blog/how-online-domains-are-shaping-digital-brand-strategy/)
+[Read More](https://www.namecheap.com/blog/namecheaps-integrated-domain-and-hosting-advantages/)
 
 ## Get the latest news and deals
 
