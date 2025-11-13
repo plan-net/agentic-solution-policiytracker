@@ -1,8 +1,8 @@
 ---
 title: Zalando SE Stock (ZAL) - Quote Xetra
 url: https://www.marketscreener.com/quote/stock/ZALANDO-SE-18100088/
-published_date: 2025-11-12T01:14:39.611000
-collected_date: 2025-11-12T05:14:40.730574
+published_date: 2025-11-12T09:20:42.328000
+collected_date: 2025-11-13T04:20:43.239625
 source: Marketscreener
 source_url: https://www.marketscreener.com
 description: [ZALANDO SE](https://www.marketscreener.com/quote/stock/ZALANDO-SE-18100088/)

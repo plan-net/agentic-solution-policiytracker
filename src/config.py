@@ -79,7 +79,7 @@ class Settings(BaseSettings):
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j database URI")
     NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")
     NEO4J_PASSWORD: str = Field(default="password", description="Neo4j password")
-    NEO4J_DATABASE: str = Field(default="neo4j", description="Neo4j database name")
+    NEO4J_DATABASE: str = Field(default="politicamonitoring.v2", description="Neo4j database name")
 
     # Azure Storage Configuration
     USE_AZURE_STORAGE: bool = Field(
@@ -102,6 +102,24 @@ class Settings(BaseSettings):
         default="context/client.yaml", description="Azure context file path"
     )
     AZURE_OUTPUT_PATH: str = Field(default="output", description="Azure output blob path")
+
+    # Bundestag DIP API Configuration (Flow 5)
+    BUNDESTAG_API_URL: str = Field(
+        default="https://search.dip.bundestag.de/api/v1/",
+        description="Bundestag DIP API base URL"
+    )
+    BUNDESTAG_API_KEY: str = Field(
+        default="OSOegLs.PR2lwJ1dwCeje9vTj7FPOt3hvpYKtwKkhw",
+        description="Bundestag DIP API key"
+    )
+    BUNDESTAG_DEFAULT_WAHLPERIODE: str = Field(
+        default="20",
+        description="Default election period for Bundestag data"
+    )
+    BUNDESTAG_BATCH_SIZE: int = Field(
+        default=100,
+        description="Batch size for Bundestag API requests"
+    )
 
     @property
     def dimension_weights(self) -> dict[str, float]:
@@ -145,7 +163,7 @@ class GraphRAGSettings(BaseSettings):
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j connection URI")
     NEO4J_USERNAME: str = Field(default="neo4j", description="Neo4j username")
     NEO4J_PASSWORD: str = Field(default="password123", description="Neo4j password")
-    NEO4J_DATABASE: str = Field(default="politicalmonitoring", description="Neo4j database name")
+    NEO4J_DATABASE: str = Field(default="politicamonitoring.v2", description="Neo4j database name")
 
     # MCP Server Configuration
     GRAPHITI_MCP_HOST: str = Field(default="localhost", description="Graphiti MCP server host")

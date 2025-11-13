@@ -124,6 +124,13 @@ deploy-chat:
     uv run --active serve deploy config.yaml --app chat-server
     @echo "✅ Chat server deployed"
 
+# Deploy Bundestag ingestion flow (Flow 5)
+deploy-bundestag:
+    @echo "📦 Deploying Bundestag ingestion flow..."
+    just sync-config
+    uv run --active serve deploy config.yaml
+    @echo "✅ Bundestag ingestion flow deployed (part of full deployment)"
+
 # Quick redeploy (for development)
 redeploy: sync-config
     @echo "🔄 Quick redeployment..."
@@ -189,6 +196,16 @@ test-etl:
 etl-status:
     @echo "📊 ETL Initialization Status:"
     uv run python scripts/etl_init_manager.py status
+
+# Load Bundestag Wahlperiode reference data into Neo4j
+load-wahlperioden:
+    @echo "📅 Loading Bundestag Wahlperioden to Neo4j..."
+    uv run python src/flows/bundestag_wahlperiode/load_wahlperioden.py
+
+# Load Bundestag Fraktion reference data into Neo4j
+load-fraktionen:
+    @echo "🏛️  Loading Bundestag Fraktionen to Neo4j..."
+    uv run python src/flows/bundestag_fraktion/load_fraktionen.py
 
 # Reset specific ETL collector
 etl-reset collector:
@@ -436,3 +453,23 @@ test-chat:
 test-ingestion:
     @echo "🧪 Testing data ingestion..."
     curl http://localhost:8001/data-ingestion/health
+
+# Check Bundestag flow health
+bundestag-status:
+    @echo "📊 Bundestag Ingestion Flow Status"
+    @echo "=================================="
+    @echo ""
+    @echo "Checking Ray deployment..."
+    @uv run --active serve status | grep -A 5 "flow5-bundestag-ingestion" || echo "❌ Flow not deployed"
+    @echo ""
+    @echo "Testing health endpoint..."
+    @curl -s http://localhost:8001/bundestag-ingestion/health || echo "❌ Health endpoint not responding"
+    @echo ""
+    @echo ""
+    @echo "Flow Information:"
+    @echo "  Endpoint:       http://localhost:8001/bundestag-ingestion"
+    @echo "  Kodosumi Admin: http://localhost:3370"
+    @echo "  API Base:       https://search.dip.bundestag.de/api/v1/"
+    @echo ""
+    @echo "To deploy flow: just deploy-bundestag"
+    @echo "To view logs:   just ray-logs"

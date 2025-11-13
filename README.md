@@ -74,9 +74,12 @@ graph TB
 
 ### **Core Systems**
 - **[ETL Pipeline](src/etl/README.md)** - Automated data collection with Airflow, collectors, and storage
-- **[Document Flows](src/flows/README.md)** - Kodosumi-based document processing workflows  
+- **[Document Flows](src/flows/README.md)** - Kodosumi-based document processing workflows
 - **[Chat Interface](src/chat/README.md)** - Multi-agent conversational analysis system
 - **[GraphRAG System](src/graphrag/README.md)** - Knowledge graph construction and temporal intelligence
+
+### **Data Ingestion Flows**
+- **[Flow 5: Bundestag Ingestion](docs/flows/bundestag_ingestion.md)** - German parliamentary data from Bundestag DIP API (8 data sources)
 
 ### **Supporting Components**
 - **[Scoring Engine](src/scoring/README.md)** - 5-dimensional intelligence assessment framework

@@ -1,8 +1,8 @@
 ---
 title: Zalando SE (ZAL.DE) Stock Price, News, Quote & History
 url: https://finance.yahoo.com/quote/ZAL.DE/
-published_date: 2025-11-12T02:14:39.611000
-collected_date: 2025-11-12T05:14:40.730496
+published_date: 2025-11-12T18:20:42.328000
+collected_date: 2025-11-13T04:20:43.239418
 source: Finance
 source_url: https://finance.yahoo.com
 description: XETRA - Delayed Quote•EUR
