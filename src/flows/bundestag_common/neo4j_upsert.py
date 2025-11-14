@@ -25,11 +25,14 @@ class Neo4jUpsertManager:
         "BundestagPerson": "person_id",
         "Vorgang": "vorgang_id",
         "Drucksache": "drucksache_nummer",
+        "DrucksachePage": "page_id",
         "Plenarprotokoll": "plenarprotokoll_id",
         "Vorgangsposition": "vorgangsposition_id",
         "Aktivitaet": "aktivitaet_id",
         "Wahlperiode": "wahlperiode_nummer",
         "Fraktion": "fraktion_id",
+        "Deskriptor": "deskriptor_id",
+        "Sachgebiet": "sachgebiet_name",
     }
 
     def __init__(self, driver: Driver, database: str = "neo4j"):
@@ -354,6 +357,15 @@ class Neo4jUpsertManager:
             ("Fraktion", "fraktion_name"),
             ("Fraktion", "status"),
             ("Fraktion", "party_family"),
+            ("Vorgang", "vorgang_id"),
+            ("Vorgang", "wahlperiode"),
+            ("Vorgang", "vorgangstyp"),
+            ("Vorgang", "beratungsstand"),
+            ("Vorgang", "datum"),
+            ("Deskriptor", "deskriptor_id"),
+            ("Deskriptor", "name"),
+            ("Deskriptor", "typ"),
+            ("Sachgebiet", "sachgebiet_name"),
         ]
 
         results = {}

@@ -10,6 +10,9 @@ The flows system provides a Kodosumi-based interface for processing political do
 - **📄 Flow 1**: Data Ingestion - Document → Knowledge Graph
 - **🏢 Flow 2**: Company Context Analysis *(planned)*
 - **📊 Flow 3**: Relevance Assessment *(planned)*
+- **🏛️ Flow 5**: Bundestag Ingestion - German Parliamentary Data (comprehensive)
+- **👥 Flow 5a**: Bundestag Person - MPs and Parliamentary Members
+- **📜 Flow 5b**: Bundestag Vorgang - Legislative Procedures
 - **⚡ Ray Integration**: Distributed processing with parallel actors
 - **🧠 GraphRAG**: Advanced entity extraction with custom political schema
 - **📈 Progress Tracking**: Real-time processing updates via Kodosumi tracer
@@ -389,6 +392,75 @@ just graph-metrics
 }
 ```
 
+## 🏛️ Bundestag Flows (Flow 5 Series)
+
+### **Flow 5: Bundestag Ingestion** *(Comprehensive)*
+- **Purpose**: Full German parliamentary data collection covering 8 entity types
+- **Entities**: Vorgang, Drucksache, Person, Plenarprotokoll, Vorgangsposition, Aktivitaet, Wahlperiode, Fraktion
+- **Documentation**: [bundestag_ingestion.md](../../docs/flows/bundestag_ingestion.md)
+- **Status**: ✅ Fully Operational
+
+### **Flow 5a: Bundestag Person** *(Focused)*
+- **Purpose**: Collect German Bundestag members (MdBs) with biographical and political data
+- **Entities**: BundestagPerson
+- **Relationships**: Links to Wahlperiode, Fraktion
+- **Documentation**: [bundestag_person.md](../../docs/flows/bundestag_person.md) | [README](./bundestag_person/README.md)
+- **Endpoint**: http://localhost:3370 → Bundestag Person Ingestion
+- **Status**: ✅ Fully Operational
+
+### **Flow 5b: Bundestag Vorgang** *(Focused)*
+- **Purpose**: Collect legislative procedures (Vorgänge) with semantic keywords
+- **Entities**: Vorgang, Deskriptor, Sachgebiet
+- **Relationships**: Links to Wahlperiode, Fraktion, Deskriptor, Sachgebiet
+- **Documentation**: [bundestag_vorgang.md](../../docs/flows/bundestag_vorgang.md) | [README](./bundestag_vorgang/README.md)
+- **Endpoint**: http://localhost:3370 → Bundestag Vorgang Ingestion
+- **Status**: ✅ Fully Operational
+
+### **Flow 5c: Bundestag Drucksache** *(Focused)*
+- **Purpose**: Collect parliamentary documents (Drucksachen) with page-level text extraction and PDF storage
+- **Entities**: Drucksache, DrucksachePage
+- **Relationships**: Links to Wahlperiode, Vorgang; page-level relationships with HAS_PAGE and NEXT_PAGE
+- **Key Features**:
+  - Two-phase workflow: Fast metadata collection or selective full-text extraction
+  - PDF download and local storage organized by Wahlperiode
+  - Page-by-page text extraction using PyPDF
+  - Markdown export with YAML frontmatter and page headers
+  - Concurrency control for PDF downloads (configurable 1-10)
+- **Storage**: PDFs and markdown files stored in `data/input/bundestag/drucksache/`
+- **Documentation**: [bundestag_drucksache.md](../../docs/flows/bundestag_drucksache.md) | [README](./bundestag_drucksache/README.md)
+- **Endpoint**: http://localhost:3370 → Bundestag Drucksache Ingestion
+- **Status**: ✅ Fully Operational
+
+### **Flow 5g: Bundestag Wahlperiode** *(Script)*
+- **Purpose**: Create Wahlperiode (electoral period) reference nodes
+- **Entities**: Wahlperiode (19, 20, 21, etc.)
+- **Type**: Simple Python script (not Kodosumi flow)
+- **Script**: `scripts/bundestag_wahlperiode_setup.py`
+- **Status**: ✅ Completed
+
+### **Flow 5h: Bundestag Fraktion** *(Script)*
+- **Purpose**: Create Fraktion (parliamentary group) reference nodes
+- **Entities**: BundestagFraktion (SPD, CDU/CSU, GRÜNE, FDP, AfD, DIE LINKE)
+- **Type**: Simple Python script (not Kodosumi flow)
+- **Script**: `scripts/bundestag_fraktion_setup.py`
+- **Status**: ✅ Completed
+
+### **Bundestag Flow Prerequisites**
+
+**Recommended Execution Order**:
+1. **First**: Run Flow 5g (Wahlperiode setup) - Creates reference periods
+2. **Second**: Run Flow 5h (Fraktion setup) - Creates reference factions
+3. **Then**: Run Flow 5a (Person) or Flow 5b (Vorgang) - They create relationships to periods/factions
+
+### **Bundestag API Integration**
+
+All Bundestag flows use the official DIP API:
+- **Base URL**: https://search.dip.bundestag.de/api/v1/
+- **Authentication**: API Key (configured in environment)
+- **Rate Limits**: 100 requests/minute with exponential backoff
+- **SSL Handling**: Certificate verification bypass included
+- **Pagination**: Cursor-based pagination for large datasets
+
 ## 🔮 Future Flows
 
 ### **Flow 2: Company Context Analysis**
@@ -412,3 +484,4 @@ just graph-metrics
 - Configure [ETL Pipeline](../etl/README.md) to provide source documents
 - Set up [Knowledge Graph](../graphrag/README.md) for entity management
 - Enable [Chat Interface](../chat/README.md) for querying processed data
+- Run [Bundestag Flows](#-bundestag-flows-flow-5-series) for German parliamentary data
