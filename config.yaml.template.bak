@@ -97,154 +97,154 @@ applications:
 #    target_num_ongoing_requests_per_replica: 1.0
 
 # Flow 1C: Ad-hoc Document/URL Processing
-# - name: flow1c-adhoc
-#   route_prefix: /data-ingestion-adhoc
-#   import_path: src.flows.data_ingestion_adhoc.app:adhoc_app
-# 
-#   runtime_env:
-#     env_vars:
-#       PYTHONPATH: .
-#       LOG_LEVEL: INFO
-# 
-#       # Storage (required for document access)
-#       USE_AZURE_STORAGE: 'false'
-#       AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
-# 
-#       # Neo4j (required for Graphiti)
-#       NEO4J_URI: bolt://localhost:7687
-#       NEO4J_USER: neo4j
-#       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-#       NEO4J_DATABASE: politicamonitoring.v2
-#       GRAPHITI_GROUP_ID: political_monitoring_v2
-# 
-#       # API Keys (required)
-#       OPENAI_API_KEY: ${OPENAI_API_KEY}
-#       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-# 
-#       # Langfuse (optional observability)
-#       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
-#       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
-#       LANGFUSE_HOST: http://localhost:3001
-# 
-#       # Flow 1C Configuration
-#       FLOW1C_MAX_ITEMS: ${FLOW1C_MAX_ITEMS}
-# 
-#   ray_actor_options:
-#     num_cpus: 2
-#     memory: 4000000000  # 4GB
-#   autoscaling_config:
-#     min_replicas: 1
-#     max_replicas: 3
-#     target_num_ongoing_requests_per_replica: 1.0
-# 
+- name: flow1c-adhoc
+  route_prefix: /data-ingestion-adhoc
+  import_path: src.flows.data_ingestion_adhoc.app:adhoc_app
+
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Storage (required for document access)
+      USE_AZURE_STORAGE: 'false'
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+
+      # Neo4j (required for Graphiti)
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: politicamonitoring.v2
+      GRAPHITI_GROUP_ID: political_monitoring_v2
+
+      # API Keys (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+      # Flow 1C Configuration
+      FLOW1C_MAX_ITEMS: ${FLOW1C_MAX_ITEMS}
+
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000  # 4GB
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 3
+    target_num_ongoing_requests_per_replica: 1.0
+
 # Flow 1D: Raw Document Auto-Conversion + Graphiti Processing
-# - name: flow1d-raw-converter
-#   route_prefix: /documents-raw-converter
-#   import_path: src.flows.documents_raw_converter.app:app
-# 
-#   runtime_env:
-#     env_vars:
-#       PYTHONPATH: .
-#       LOG_LEVEL: INFO
-# 
-#       # Storage (for output directory access)
-#       USE_AZURE_STORAGE: 'false'
-#       AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
-# 
-#       # Neo4j (required for Graphiti processing)
-#       NEO4J_URI: bolt://localhost:7687
-#       NEO4J_USER: neo4j
-#       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-#       GRAPHITI_GROUP_ID: political_monitoring_v2
-# 
-#       # API Keys (required for Graphiti)
-#       OPENAI_API_KEY: ${OPENAI_API_KEY}
-#       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-# 
-#       # Langfuse (optional observability)
-#       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
-#       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
-#       LANGFUSE_HOST: http://localhost:3001
-# 
-#       # Flow 1D Configuration
-#       FLOW1D_NUM_ACTORS: '1'
-#       FLOW1D_ENABLE_GRAPHITI: 'true'
-# 
-#   ray_actor_options:
-#     num_cpus: 2
-#     memory: 4000000000  # 4GB (for Graphiti processing with parallel actors)
-#   autoscaling_config:
-#     min_replicas: 1
-#     max_replicas: 2
-#     target_num_ongoing_requests_per_replica: 1.0
-# 
+- name: flow1d-raw-converter
+  route_prefix: /documents-raw-converter
+  import_path: src.flows.documents_raw_converter.app:app
+
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Storage (for output directory access)
+      USE_AZURE_STORAGE: 'false'
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+
+      # Neo4j (required for Graphiti processing)
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      GRAPHITI_GROUP_ID: political_monitoring_v2
+
+      # API Keys (required for Graphiti)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+      # Flow 1D Configuration
+      FLOW1D_NUM_ACTORS: '1'
+      FLOW1D_ENABLE_GRAPHITI: 'true'
+
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000  # 4GB (for Graphiti processing with parallel actors)
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 1.0
+
 # Chat Server: LLM Interface for Knowledge Graph
-# - name: chat-server
-#   route_prefix: /chat
-#   import_path: src.chat.server.app:chat_app
-#   runtime_env:
-#     env_vars:
-#       PYTHONPATH: .
-#       LOG_LEVEL: INFO
-# 
-#       # Neo4j (required for Graphiti)
-#       NEO4J_URI: bolt://localhost:7687
-#       NEO4J_USERNAME: neo4j
-#       NEO4J_PASSWORD: password123
-#       NEO4J_DATABASE: politicamonitoring.v2
-# 
-#       # API Key (required)
-#       OPENAI_API_KEY: ${OPENAI_API_KEY}
-# 
-#   ray_actor_options:
-#     num_cpus: 1
-#     memory: 2000000000  # 2GB
-#   autoscaling_config:
-#     min_replicas: 1
-#     max_replicas: 3
-#     target_num_ongoing_requests_per_replica: 5
-# 
+- name: chat-server
+  route_prefix: /chat
+  import_path: src.chat.server.app:chat_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j (required for Graphiti)
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: password123
+      NEO4J_DATABASE: politicamonitoring.v2
+
+      # API Key (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+  ray_actor_options:
+    num_cpus: 1
+    memory: 2000000000  # 2GB
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 3
+    target_num_ongoing_requests_per_replica: 5
+
 # Flow 5: Bundestag Data Ingestion
-# - name: flow5-bundestag-ingestion
-#   route_prefix: /bundestag-ingestion
-#   import_path: src.flows.bundestag_ingestion.app:fast_app
-#   runtime_env:
-#     env_vars:
-#       PYTHONPATH: .
-#       LOG_LEVEL: INFO
-# 
-#       # Neo4j (required for graph storage)
-#       NEO4J_URI: bolt://localhost:7687
-#       NEO4J_USER: neo4j
-#       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-#       NEO4J_DATABASE: politicamonitoring.v2
-#       GRAPHITI_GROUP_ID: political_monitoring_v2
-# 
-#       # API Keys (required)
-#       OPENAI_API_KEY: ${OPENAI_API_KEY}
-#       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-# 
-#       # Langfuse (optional observability)
-#       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
-#       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
-#       LANGFUSE_HOST: http://localhost:3001
-# 
-#       # Bundestag DIP API Configuration
-#       BUNDESTAG_API_URL: https://search.dip.bundestag.de/api/v1/
-#       BUNDESTAG_API_KEY: ${BUNDESTAG_API_KEY}
-#       BUNDESTAG_DEFAULT_WAHLPERIODE: '20'
-#       BUNDESTAG_BATCH_SIZE: '100'
-# 
-#   ray_actor_options:
-#     num_cpus: 2
-#     memory: 4000000000  # 4GB for large German parliamentary datasets
-#   autoscaling_config:
-#     min_replicas: 1
-#     max_replicas: 2
-#     target_num_ongoing_requests_per_replica: 1
-# 
-# # Flow 5a: Bundestag Person Ingestion (Deterministic)
-# # Collects German Bundestag members (MdBs) with explicit field mapping
+- name: flow5-bundestag-ingestion
+  route_prefix: /bundestag-ingestion
+  import_path: src.flows.bundestag_ingestion.app:fast_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j (required for graph storage)
+      NEO4J_URI: bolt://localhost:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: politicamonitoring.v2
+      GRAPHITI_GROUP_ID: political_monitoring_v2
+
+      # API Keys (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+      # Bundestag DIP API Configuration
+      BUNDESTAG_API_URL: https://search.dip.bundestag.de/api/v1/
+      BUNDESTAG_API_KEY: ${BUNDESTAG_API_KEY}
+      BUNDESTAG_DEFAULT_WAHLPERIODE: '20'
+      BUNDESTAG_BATCH_SIZE: '100'
+
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000  # 4GB for large German parliamentary datasets
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 1
+
+# Flow 5a: Bundestag Person Ingestion (Deterministic)
+# Collects German Bundestag members (MdBs) with explicit field mapping
 - name: flow5a-bundestag-person
   route_prefix: /bundestag-person
   import_path: src.flows.bundestag_person.app:fast_app
@@ -255,7 +255,7 @@ applications:
 
       # Neo4j Configuration
       NEO4J_URI: ${NEO4J_URI}
-      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_USERNAME: ${NEO4J_USERNAME}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       NEO4J_DATABASE: ${NEO4J_DATABASE}
 
@@ -283,7 +283,7 @@ applications:
 
       # Neo4j Configuration
       NEO4J_URI: ${NEO4J_URI}
-      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_USERNAME: ${NEO4J_USERNAME}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       NEO4J_DATABASE: ${NEO4J_DATABASE}
 

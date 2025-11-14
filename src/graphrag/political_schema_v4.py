@@ -104,7 +104,7 @@ class Drucksache(BaseModel):
     herausgeber: Optional[str] = Field(None, description="Publisher: BT (Bundestag), BR (Bundesrat), Ausschuss")
 
     pdf_url: Optional[str] = Field(None, description="Direct link to PDF document")
-    full_text: Optional[str] = Field(None, description="Extracted full text content from drucksache-text endpoint")
+    full_text: Optional[str] = Field(None, description="Extracted full text content from drucksache-text endpoint (deprecated - use DrucksachePage entities)")
 
     autoren_anzahl: Optional[int] = Field(None, description="Number of document authors")
     autoren_anzeige: Optional[str] = Field(None, description="Display string of author names")
@@ -116,6 +116,30 @@ class Drucksache(BaseModel):
     related_vorgang_ids: Optional[str] = Field(None, description="JSON array of related Vorgang IDs")
 
     url: Optional[str] = Field(None, description="Link to document details on dip.bundestag.de")
+
+    # Storage and extraction metadata (Flow 5c)
+    local_pdf_path: Optional[str] = Field(None, description="Local filesystem path to stored PDF: data/input/bundestag/drucksache/pdf/wahlperiode_20/20_1234.pdf")
+    local_markdown_path: Optional[str] = Field(None, description="Local filesystem path to extracted markdown: data/input/bundestag/drucksache/markdown/wahlperiode_20/20_1234.md")
+    has_full_text: bool = Field(False, description="Whether full text has been extracted page-by-page (creates DrucksachePage entities)")
+    page_count: Optional[int] = Field(None, description="Total number of pages extracted from PDF")
+    file_size_bytes: Optional[int] = Field(None, description="PDF file size in bytes")
+    extraction_error: Optional[str] = Field(None, description="Error message if PDF extraction failed")
+
+
+class DrucksachePage(BaseModel):
+    """Individual page from a Drucksache document - enables page-level search and navigation
+
+    DrucksachePage entities are created by Flow 5c when full-text extraction is enabled.
+    Each page contains the extracted text from one page of the PDF document, enabling
+    granular search and sequential navigation through documents.
+    """
+    page_id: str = Field(..., description="Composite unique ID: drucksache_nummer_page_N (e.g., '20_1234_page_1')")
+    drucksache_nummer: str = Field(..., description="Parent document number format: wahlperiode/nummer (e.g., '20/1234')")
+    page_number: int = Field(..., description="Page number within the document (1-indexed)")
+
+    page_text: str = Field(..., description="Extracted text content from this page")
+    char_count: int = Field(..., description="Character count for this page's text")
+    has_content: bool = Field(..., description="Whether page contains extractable text content (some pages may be blank/images only)")
 
 
 class Plenarprotokoll(BaseModel):
