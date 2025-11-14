@@ -366,6 +366,12 @@ class Neo4jUpsertManager:
             ("Deskriptor", "name"),
             ("Deskriptor", "typ"),
             ("Sachgebiet", "sachgebiet_name"),
+            # Aktivitaet indexes (Flow 5f)
+            ("Aktivitaet", "aktivitaetsart"),
+            ("Aktivitaet", "person_id"),
+            ("Aktivitaet", "wahlperiode"),
+            ("Aktivitaet", "datum"),
+            ("Aktivitaet", "dokumentart"),
         ]
 
         results = {}
