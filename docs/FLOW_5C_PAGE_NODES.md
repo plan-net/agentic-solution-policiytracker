@@ -3,6 +3,8 @@
 ## Overview
 Flow 5c (Bundestag Drucksache Ingestion) now creates individual page nodes in Neo4j with embeddings for fine-grained semantic search.
 
+**🚀 Smart Resource Management**: Flow 5c now intelligently skips documents that already exist in Neo4j, preventing wasteful reprocessing of PDFs and regeneration of embeddings.
+
 ## Quick Start
 
 ### Running the Flow
@@ -154,6 +156,50 @@ RETURN count(*) as next_page_rels
 2. **Monitor API**: Watch OpenAI embedding API usage
 3. **Batch Processing**: Process documents in batches during off-peak hours
 4. **Index Creation**: Create vector index after bulk processing, not before
+5. **⭐ Rerun Optimization**: Flow automatically skips existing documents - safe to rerun without wasting resources!
+
+## Resource Optimization (NEW)
+
+### Smart Duplicate Prevention
+
+Flow 5c now checks if documents exist in Neo4j before downloading PDFs and creating page nodes:
+
+**First Run** (documents don't exist):
+```
+✅ Downloads all PDFs
+✅ Extracts text from each page
+✅ Creates page nodes with embeddings
+✅ Statistics: "Drucksachen Skipped: 0"
+```
+
+**Second Run** (documents already exist):
+```
+⏭️ Skips all PDF downloads
+⏭️ Skips text extraction
+⏭️ Skips embedding generation
+✅ Statistics: "Drucksachen Skipped: 5"
+```
+
+### Resource Savings
+
+When rerunning Flow 5c on existing documents:
+- **⏱️ Time Saved**: ~8-14 minutes per 100 documents
+- **💰 Cost Saved**: ~$0.50 per 100 documents (10 pages each)
+- **🌐 Network**: No redundant PDF downloads
+- **💾 Storage**: No duplicate files
+
+### How It Works
+
+1. Before queueing PDF download, Flow checks: `check_drucksache_exists(drucksache_nummer)`
+2. If document exists in Neo4j → Skip PDF download and processing
+3. If document is new → Download PDF and create page nodes
+4. Final report shows: "Drucksachen Skipped (already exist): X"
+
+### Best Practices
+
+- Safe to rerun Flow 5c multiple times on same Wahlperiode
+- Use for incremental updates (processes only new documents)
+- Monitor "Drucksachen Skipped" in final report to verify optimization working
 
 ## Configuration
 

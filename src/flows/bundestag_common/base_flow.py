@@ -136,6 +136,7 @@ class BaseBundestagFlow(ABC):
         max_items = inputs.get("max_items", 100)
         start_date = inputs.get("start_date")
         end_date = inputs.get("end_date")
+        aktivitaetsart = inputs.get("aktivitaetsart")  # For Aktivitaet endpoint
 
         # Build filters
         filters = {}
@@ -145,6 +146,8 @@ class BaseBundestagFlow(ABC):
             filters["f.datum_von"] = start_date
         if end_date:
             filters["f.datum_bis"] = end_date
+        if aktivitaetsart and aktivitaetsart != "Alle":
+            filters["f.aktivitaetsart"] = aktivitaetsart
 
         await tracer.markdown(f"**Filters:** {filters}\n")
         await tracer.markdown(f"**Max Items:** {max_items}\n\n")

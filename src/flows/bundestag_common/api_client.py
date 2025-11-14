@@ -116,8 +116,10 @@ class BundestagAPIClient:
         if "apikey" not in params:
             params["apikey"] = self.api_key
 
-        # Construct full URL
-        url = f"{self.base_url}{endpoint}"
+        # Construct full URL (ensure proper slash handling)
+        base = self.base_url.rstrip('/')
+        endpoint = endpoint.lstrip('/')
+        url = f"{base}/{endpoint}"
 
         # Retry loop with exponential backoff
         for attempt in range(self.max_retries):
