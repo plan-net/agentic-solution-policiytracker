@@ -48,12 +48,18 @@ bundestag_vorgang_form = F.Model(
         min_value=10,
         max_value=500,
     ),
-    F.InputNumber(
+    F.Select(
         label="Maximum Vorgänge to Process",
         name="max_vorgaenge",
-        value=1000,
-        min_value=100,
-        max_value=10000,
+        value="1000",
+        option=[
+            F.InputOption(name="100", label="100 - Quick test"),
+            F.InputOption(name="500", label="500 - Medium batch"),
+            F.InputOption(name="1000", label="1000 - Large batch"),
+            F.InputOption(name="5000", label="5000 - Very large"),
+            F.InputOption(name="10000", label="10000 - Extra large"),
+            F.InputOption(name="All", label="All - Complete ingestion (no limit)"),
+        ],
     ),
     F.Checkbox(
         label="Create relationships",

@@ -32,14 +32,17 @@ bundestag_person_form = F.Model(
         value="all",
         placeholder="Enter 19, 20, 21, or 'all'",
     ),
-    F.InputNumber(
+    F.Select(
         label="Maximum Persons",
         name="max_items",
-        min_value=1,
-        max_value=1000,
-        step=1,
-        value=100,
-        placeholder="Maximum persons to fetch",
+        value="100",
+        option=[
+            F.InputOption(name="100", label="100 - Quick test"),
+            F.InputOption(name="500", label="500 - Medium batch"),
+            F.InputOption(name="1000", label="1000 - Large batch"),
+            F.InputOption(name="2000", label="2000 - Very large"),
+            F.InputOption(name="All", label="All - Complete ingestion (no limit)"),
+        ],
     ),
     F.Break(),
     # Optional date filters

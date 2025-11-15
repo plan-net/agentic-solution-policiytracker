@@ -73,14 +73,17 @@ Collect German parliamentary documents (Drucksachen) including bills, motions, r
         placeholder="Number of documents to process per API request"
     ),
 
-    F.InputNumber(
+    F.Select(
         label="Maximum Documents",
         name="max_drucksachen",
-        value=100,
-        min_value=1,
-        max_value=10000,
-        step=1,
-        placeholder="Total number of documents to collect"
+        value="100",
+        option=[
+            F.InputOption(name="100", label="100 - Quick test"),
+            F.InputOption(name="500", label="500 - Medium batch"),
+            F.InputOption(name="1000", label="1000 - Large batch"),
+            F.InputOption(name="5000", label="5000 - Very large"),
+            F.InputOption(name="All", label="All - Complete ingestion (no limit)"),
+        ],
     ),
 
     F.Break(),

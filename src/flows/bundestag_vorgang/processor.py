@@ -158,6 +158,7 @@ async def fetch_vorgaenge_from_api(
     params = {
         "f.wahlperiode": wahlperiode,
         "format": "json",
+        "num": batch_size,  # API parameter for page size
     }
 
     if vorgangstyp and vorgangstyp != "Alle":
@@ -235,7 +236,7 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
             cursor = None
             wp_count = 0
 
-            while wp_count < max_vorgaenge:
+            while max_vorgaenge is None or wp_count < max_vorgaenge:
                 # Fetch batch from API
                 documents, next_cursor = await fetch_vorgaenge_from_api(
                     wahlperiode=wp_int,
@@ -323,8 +324,8 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
                     f"{stats.get('sachgebiete_created', 0)} sachgebiete\n"
                 )
 
-                # Check if we've reached max
-                if wp_count >= max_vorgaenge:
+                # Check if we've reached max (if set)
+                if max_vorgaenge is not None and wp_count >= max_vorgaenge:
                     await tracer.markdown(f"⚠️ Reached max limit of {max_vorgaenge} for WP {wp}\n")
                     break
 
@@ -354,7 +355,7 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
 - **Wahlperioden**: {', '.join(wahlperioden)}
 - **Vorgangstyp**: {vorgangstyp}
 - **Batch Size**: {batch_size}
-- **Max Vorgänge**: {max_vorgaenge}
+- **Max Vorgänge**: {'All (no limit)' if max_vorgaenge is None else max_vorgaenge}
 - **Create Relationships**: {'Yes' if create_relationships else 'No'}
 
 ## Errors

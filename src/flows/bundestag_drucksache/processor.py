@@ -584,7 +584,7 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
             cursor = None
             wp_count = 0
 
-            while wp_count < max_drucksachen:
+            while max_drucksachen is None or wp_count < max_drucksachen:
                 # Fetch batch from API
                 await tracer.markdown(f"Fetching drucksachen (batch {wp_count // batch_size + 1})...\n")
 
@@ -601,10 +601,11 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                     await tracer.markdown(f"No more drucksachen for WP {wp}\n\n")
                     break
 
-                # Limit documents to respect max_drucksachen
-                remaining = max_drucksachen - wp_count
-                if remaining < len(documents):
-                    documents = documents[:remaining]
+                # Limit documents to respect max_drucksachen (if set)
+                if max_drucksachen is not None:
+                    remaining = max_drucksachen - wp_count
+                    if remaining < len(documents):
+                        documents = documents[:remaining]
 
                 stats["total_fetched"] += len(documents)
                 wp_count += len(documents)
@@ -749,8 +750,8 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                     f"\nBatch complete: {drucksache_results['successful']} drucksachen processed\n\n"
                 )
 
-                # Check if we've reached max
-                if wp_count >= max_drucksachen:
+                # Check if we've reached max (if set)
+                if max_drucksachen is not None and wp_count >= max_drucksachen:
                     await tracer.markdown(f"Reached max limit of {max_drucksachen} for WP {wp}\n\n")
                     break
 
@@ -796,7 +797,7 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
 - **Wahlperioden**: {', '.join(wahlperioden)}
 - **Dokumentart**: {dokumentart}
 - **Batch Size**: {batch_size}
-- **Max Drucksachen**: {max_drucksachen}
+- **Max Drucksachen**: {'All (no limit)' if max_drucksachen is None else max_drucksachen}
 - **Extract Full Text**: {'Yes' if extract_full_text else 'No'}
 - **Max Concurrent Downloads**: {max_concurrent_downloads}
 - **Create Relationships**: {'Yes' if create_relationships else 'No'}

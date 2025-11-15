@@ -47,15 +47,17 @@ async def ingest_bundestag_aktivitaeten(request: fastapi.Request, inputs: dict):
     if inputs.get("aktivitaetsart") not in valid_arten:
         error.add(aktivitaetsart=f"Aktivitaetsart must be one of: {', '.join(valid_arten)}")
 
-    # Validate max_aktivitaeten
-    try:
-        max_aktivitaeten = int(inputs.get("max_aktivitaeten", 100))
-        if max_aktivitaeten < 1:
-            error.add(max_aktivitaeten="Maximum activities must be at least 1")
-        elif max_aktivitaeten > 5000:
-            error.add(max_aktivitaeten="Maximum activities cannot exceed 5000")
-    except (ValueError, TypeError):
-        error.add(max_aktivitaeten="Maximum activities must be a valid number")
+    # Validate max_aktivitaeten (can be number or "All")
+    max_aktivitaeten_input = inputs.get("max_aktivitaeten", "100")
+    if max_aktivitaeten_input == "All":
+        max_aktivitaeten = None  # None means unlimited
+    else:
+        try:
+            max_aktivitaeten = int(max_aktivitaeten_input)
+            if max_aktivitaeten < 1:
+                error.add(max_aktivitaeten="Maximum activities must be at least 1")
+        except (ValueError, TypeError):
+            error.add(max_aktivitaeten="Maximum activities must be a valid number or 'All'")
 
     # Validate batch_size
     try:
@@ -116,7 +118,7 @@ async def ingest_bundestag_aktivitaeten(request: fastapi.Request, inputs: dict):
             "job_name": inputs["job_name"],
             "wahlperiode": wahlperiode,
             "aktivitaetsart": inputs.get("aktivitaetsart", "Alle"),
-            "max_items": int(inputs.get("max_aktivitaeten", 100)),  # Map to max_items for base_flow
+            "max_items": max_aktivitaeten,  # Already validated (int or None)
             "batch_size": int(inputs.get("batch_size", 100)),
             "create_relationships": inputs.get("create_relationships", True),
             "start_date": start_date if start_date else None,
