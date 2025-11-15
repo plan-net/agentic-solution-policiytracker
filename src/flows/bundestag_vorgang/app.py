@@ -57,13 +57,17 @@ async def ingest_bundestag_vorgaenge(request: fastapi.Request, inputs: dict):
     except (ValueError, TypeError):
         error.add(batch_size="Batch size must be a valid number")
 
-    # Validate max_vorgaenge
-    try:
-        max_vorgaenge = int(inputs.get("max_vorgaenge", 1000))
-        if max_vorgaenge < 100 or max_vorgaenge > 10000:
-            error.add(max_vorgaenge="Maximum vorgänge must be between 100 and 10000")
-    except (ValueError, TypeError):
-        error.add(max_vorgaenge="Maximum vorgänge must be a valid number")
+    # Validate max_vorgaenge (can be number or "All")
+    max_vorgaenge_input = inputs.get("max_vorgaenge", "1000")
+    if max_vorgaenge_input == "All":
+        max_vorgaenge = None  # None means unlimited
+    else:
+        try:
+            max_vorgaenge = int(max_vorgaenge_input)
+            if max_vorgaenge < 100:
+                error.add(max_vorgaenge="Maximum vorgänge must be at least 100")
+        except (ValueError, TypeError):
+            error.add(max_vorgaenge="Maximum vorgänge must be a valid number or 'All'")
 
     # Check for validation errors
     if error.has_errors():
@@ -83,7 +87,7 @@ async def ingest_bundestag_vorgaenge(request: fastapi.Request, inputs: dict):
             "wahlperioden": wahlperioden,
             "vorgangstyp": inputs.get("vorgangstyp", "Alle"),
             "batch_size": batch_size,
-            "max_vorgaenge": max_vorgaenge,
+            "max_vorgaenge": max_vorgaenge,  # Already validated (int or None)
             "create_relationships": inputs.get("create_relationships", True),
         },
     )

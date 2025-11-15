@@ -89,13 +89,17 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
     except (ValueError, TypeError):
         error.add(batch_size="Batch size must be a valid number")
 
-    # Validate max_drucksachen
-    try:
-        max_drucksachen = int(inputs.get("max_drucksachen", 100))
-        if max_drucksachen < 1 or max_drucksachen > 10000:
-            error.add(max_drucksachen="Maximum drucksachen must be between 1 and 10000")
-    except (ValueError, TypeError):
-        error.add(max_drucksachen="Maximum drucksachen must be a valid number")
+    # Validate max_drucksachen (can be number or "All")
+    max_drucksachen_input = inputs.get("max_drucksachen", "100")
+    if max_drucksachen_input == "All":
+        max_drucksachen = None  # None means unlimited
+    else:
+        try:
+            max_drucksachen = int(max_drucksachen_input)
+            if max_drucksachen < 1:
+                error.add(max_drucksachen="Maximum documents must be at least 1")
+        except (ValueError, TypeError):
+            error.add(max_drucksachen="Maximum documents must be a valid number or 'All'")
 
     # Validate max_concurrent_downloads
     try:
@@ -131,7 +135,7 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
         "start_date": start_date if start_date else None,
         "end_date": end_date if end_date else None,
         "batch_size": batch_size,
-        "max_drucksachen": max_drucksachen,
+        "max_drucksachen": max_drucksachen,  # Already validated (int or None)
         "extract_full_text": inputs.get("extract_full_text", False),
         "max_concurrent_downloads": max_concurrent,
         "create_relationships": inputs.get("create_relationships", True),

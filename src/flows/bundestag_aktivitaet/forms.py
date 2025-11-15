@@ -45,14 +45,17 @@ bundestag_aktivitaet_form = F.Model(
             F.InputOption(name="Rede (zu Protokoll gegeben)", label="Speeches for Record"),
         ],
     ),
-    F.InputNumber(
+    F.Select(
         label="Maximum Activities",
         name="max_aktivitaeten",
-        min_value=1,
-        max_value=5000,
-        step=1,
-        value=100,
-        placeholder="Maximum activities to fetch",
+        value="100",
+        option=[
+            F.InputOption(name="100", label="100 - Quick test"),
+            F.InputOption(name="500", label="500 - Medium batch"),
+            F.InputOption(name="1000", label="1000 - Large batch"),
+            F.InputOption(name="5000", label="5000 - Very large"),
+            F.InputOption(name="All", label="All - Complete ingestion (no limit)"),
+        ],
     ),
     F.InputNumber(
         label="Batch Size",

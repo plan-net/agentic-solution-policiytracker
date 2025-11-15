@@ -42,15 +42,17 @@ async def ingest_bundestag_persons(request: fastapi.Request, inputs: dict):
     if inputs.get("wahlperiode") not in valid_wahlperioden:
         error.add(wahlperiode=f"Wahlperiode must be one of: {', '.join(valid_wahlperioden)}")
 
-    # Validate max_items
-    try:
-        max_items = int(inputs.get("max_items", 100))
-        if max_items < 1:
-            error.add(max_items="Maximum items must be at least 1")
-        elif max_items > 1000:
-            error.add(max_items="Maximum items cannot exceed 1000")
-    except (ValueError, TypeError):
-        error.add(max_items="Maximum items must be a valid number")
+    # Validate max_items (can be number or "All")
+    max_items_input = inputs.get("max_items", "100")
+    if max_items_input == "All":
+        max_items = None  # None means unlimited
+    else:
+        try:
+            max_items = int(max_items_input)
+            if max_items < 1:
+                error.add(max_items="Maximum items must be at least 1")
+        except (ValueError, TypeError):
+            error.add(max_items="Maximum items must be a valid number or 'All'")
 
     # Validate date filters if provided
     start_date = inputs.get("start_date", "").strip()
@@ -100,7 +102,7 @@ async def ingest_bundestag_persons(request: fastapi.Request, inputs: dict):
         inputs={
             "job_name": inputs["job_name"],
             "wahlperiode": inputs.get("wahlperiode", "all"),
-            "max_items": int(inputs.get("max_items", 100)),
+            "max_items": max_items,  # Already validated (int or None)
             "start_date": start_date if start_date else None,
             "end_date": end_date if end_date else None,
             "api_key": api_key,

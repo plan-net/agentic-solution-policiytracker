@@ -150,7 +150,7 @@ class BaseBundestagFlow(ABC):
             filters["f.aktivitaetsart"] = aktivitaetsart
 
         await tracer.markdown(f"**Filters:** {filters}\n")
-        await tracer.markdown(f"**Max Items:** {max_items}\n\n")
+        await tracer.markdown(f"**Max Items:** {'All (no limit)' if max_items is None else max_items}\n\n")
 
         # Stage 1: Fetch data from API
         await tracer.markdown("## Stage 1: Fetching Data from API\n")
@@ -354,7 +354,7 @@ class BaseBundestagFlow(ABC):
 ## Parameters
 
 - **Wahlperiode:** {inputs.get('wahlperiode', 'all')}
-- **Max Items:** {inputs.get('max_items', 'unlimited')}
+- **Max Items:** {'All (no limit)' if inputs.get('max_items') is None else inputs.get('max_items', 'unlimited')}
 - **Date Range:** {inputs.get('start_date', 'none')} to {inputs.get('end_date', 'none')}
 
 ---
