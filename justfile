@@ -266,6 +266,68 @@ sync-vorgaenge-dry:
     @echo "👀 Performing Vorgang dry run..."
     uv run python -c "import asyncio; from src.skills.bundestag_vorgang_manager import BundestagVorgangManager; import json; result = asyncio.run(BundestagVorgangManager(use_mock_dip=True).sync_all_vorgaenge(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
 
+# === BundestagDrucksache Manager (CRUD System) ===
+
+# Run complete BundestagDrucksache Manager demo
+demo-drucksache:
+    @echo "🎯 Running BundestagDrucksache Manager demo..."
+    uv run python scripts/demo_bundestag_drucksache_manager.py
+
+# Sync all Drucksache records (with mock DIP API)
+sync-drucksachen:
+    @echo "🔄 Syncing Drucksache records..."
+    uv run python -c "import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; result = asyncio.run(BundestagDrucksacheManager(use_mock_dip=True).sync_all_drucksachen()); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check Drucksache sync status
+check-drucksache-sync:
+    @echo "📊 Checking Drucksache sync status..."
+    uv run python -c "import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; m = BundestagDrucksacheManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Drucksache Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
+
+# Dry run Drucksache sync (preview changes without applying)
+sync-drucksachen-dry:
+    @echo "👀 Performing Drucksache dry run..."
+    uv run python -c "import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; result = asyncio.run(BundestagDrucksacheManager(use_mock_dip=True).sync_all_drucksachen(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Aktivitaet Manager commands
+demo-aktivitaet:
+    @echo "🎯 Running BundestagAktivitaet Manager demo..."
+    uv run python scripts/demo_bundestag_aktivitaet_manager.py
+
+# Sync all Aktivitaeten from DIP API to Neo4j
+sync-aktivitaeten:
+    @echo "🔄 Syncing Aktivitaet records..."
+    uv run python -c "import asyncio; from src.skills.bundestag_aktivitaet_manager import BundestagAktivitaetManager; import json; result = asyncio.run(BundestagAktivitaetManager(use_mock_dip=True).sync_all_aktivitaeten()); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check Aktivitaet sync status
+check-aktivitaet-sync:
+    @echo "📊 Checking Aktivitaet sync status..."
+    uv run python -c "import asyncio; from src.skills.bundestag_aktivitaet_manager import BundestagAktivitaetManager; import json; m = BundestagAktivitaetManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Aktivitaet Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
+
+# Dry run - preview Aktivitaet sync changes without applying
+sync-aktivitaeten-dry:
+    @echo "👀 Performing Aktivitaet dry run..."
+    uv run python -c "import asyncio; from src.skills.bundestag_aktivitaet_manager import BundestagAktivitaetManager; import json; result = asyncio.run(BundestagAktivitaetManager(use_mock_dip=True).sync_all_aktivitaeten(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Plenarprotokoll Manager commands
+demo-plenarprotokoll:
+    @echo "🎯 Running BundestagPlenarprotokoll Manager demo..."
+    uv run python scripts/demo_bundestag_plenarprotokoll_manager.py
+
+# Sync all Plenarprotokolle from DIP API to Neo4j
+sync-plenarprotokolle:
+    @echo "🔄 Syncing Plenarprotokoll records..."
+    uv run python -c "import asyncio; from src.skills.bundestag_plenarprotokoll_manager import BundestagPlenarprotokollManager; import json; result = asyncio.run(BundestagPlenarprotokollManager(use_mock_dip=True).sync_all_plenarprotokolle()); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check Plenarprotokoll sync status
+check-plenarprotokoll-sync:
+    @echo "📊 Checking Plenarprotokoll sync status..."
+    uv run python -c "import asyncio; from src.skills.bundestag_plenarprotokoll_manager import BundestagPlenarprotokollManager; import json; m = BundestagPlenarprotokollManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Plenarprotokoll Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
+
+# Dry run - preview Plenarprotokoll sync changes without applying
+sync-plenarprotokolle-dry:
+    @echo "👀 Performing Plenarprotokoll dry run..."
+    uv run python -c "import asyncio; from src.skills.bundestag_plenarprotokoll_manager import BundestagPlenarprotokollManager; import json; result = asyncio.run(BundestagPlenarprotokollManager(use_mock_dip=True).sync_all_plenarprotokolle(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
 # === Development ===
 
 # Run tests
