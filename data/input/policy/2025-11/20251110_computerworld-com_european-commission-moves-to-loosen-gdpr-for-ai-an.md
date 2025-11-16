@@ -2,7 +2,7 @@
 title: European Commission moves to loosen GDPR for AI and cookie tracking
 url: https://www.computerworld.com/article/4087347/european-commission-moves-to-loosen-gdpr-for-ai-and-cookie-tracking.html
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-11T12:26:07.606074
+collected_date: 2025-11-16T02:36:23.625634
 source: Computerworld
 source_url: https://www.computerworld.com
 author: by Gyana Swain

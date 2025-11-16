@@ -2,7 +2,7 @@
 title: EU Commission Publishes Draft New Rules for Distribution Agreements: What’s to Come for Distribution Relationships in the Digital Age?
 url: https://crowell.com/en/insights/client-alerts/eu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:27.018676
+collected_date: 2025-11-16T02:36:43.025995
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -26,7 +26,7 @@ collection_type: policy_landscape
 - [PDF Link](https://crowell.com/print/v2/content/44899/eu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age.pdf)
 - Share
 
-- [Email](mailto://crowell.com?subject=EU%20Commission%20Publishes%20Draft%20New%20Rules%20for%20Distribution%20Agreements%3A%20What%E2%80%99s%20to%20Come%20for%20Distribution%20Relationships%20in%20the%20Digital%20Age%3F&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
+- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age?subject=EU%20Commission%20Publishes%20Draft%20New%20Rules%20for%20Distribution%20Agreements%3A%20What%E2%80%99s%20to%20Come%20for%20Distribution%20Relationships%20in%20the%20Digital%20Age%3F&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 
@@ -49,33 +49,37 @@ The Commission has invited stakeholders to submit comments on the draft revised 
 
 - [Thomas De Meese](https://www.crowell.com/en/professionals/thomas-de-meese)
 
+- [Brussels](https://www.crowell.com/en/locations/brussels)
+
 - D \| [+32.2.282.1842](tel:%2B32.2.282.1842)
 
 [dGRlbWVlc2VAY3Jvd2VsbC5jb20=](mailto:dGRlbWVlc2VAY3Jvd2VsbC5jb20=)
 
 - [Marieke Van Nieuwenborgh](https://www.crowell.com/en/professionals/marieke-van-nieuwenborgh)
 
+- [Brussels](https://www.crowell.com/en/locations/brussels)
+
 - D \| [+32.2.282.4083](tel:%2B32.2.282.4083)
 
 [bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==](mailto:bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==)
 
-Client Alert \| 3 min read \| 11.06.25
+Client Alert \| 9 min read \| 09.11.25
 
-[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
+[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
 
-In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
+About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
 
-- Client Alert \| 2 min read \| 11.06.25
+- Client Alert \| 8 min read \| 09.09.25
 
-[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
+[FTC Stops Defending Rule Banning Noncompete Agreements, Opting Instead for “Aggressive” Case-by-Case Enforcement](https://www.crowell.com/en/insights/client-alerts/ftc-stops-defending-rule-banning-noncompete-agreements-opting-instead-for-aggressive-case-by-case-enforcement)
 
-- Client Alert \| 3 min read \| 11.06.25
+- Client Alert \| 12 min read \| 09.09.25
 
-[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
+[The Month in International Trade – August 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-august-2025)
 
-- Client Alert \| 13 min read \| 11.06.25
+- Client Alert \| 7 min read \| 09.08.25
 
-[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
+[California’s Climate Disclosure Laws Continue to Roll Forward](https://www.crowell.com/en/insights/client-alerts/californias-climate-disclosure-laws-continue-to-roll-forward)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

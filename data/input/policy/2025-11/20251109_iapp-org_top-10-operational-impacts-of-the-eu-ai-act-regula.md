@@ -2,7 +2,7 @@
 title: Top 10 operational impacts of the EU AI Act﻿ – Regulatory implementation and application alongside EU digital strategy
 url: https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:32.814710
+collected_date: 2025-11-16T02:36:45.630214
 source: Iapp
 source_url: https://iapp.org
 author: Claude-Étienne Armingaud, CIPP/E

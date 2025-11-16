@@ -2,7 +2,7 @@
 title: EU wants to weaken GDPR – for AI and cookie banners
 url: https://www.heise.de/en/news/EU-wants-to-weaken-GDPR-for-AI-and-cookie-banners-11071655.html
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:07.606103
+collected_date: 2025-11-16T02:36:21.334727
 source: Heise
 source_url: https://www.heise.de
 author: Stefan Krempl

@@ -2,7 +2,7 @@
 title: EU: Sustainability initiatives in the Commission 2026 Work Programme
 url: https://sustainablefutures.linklaters.com/post/102lrh5/eu-sustainability-initiatives-in-the-commission-2026-work-programme
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-11T12:26:35.441989
+collected_date: 2025-11-16T02:36:49.036099
 source: Sustainablefutures
 source_url: https://sustainablefutures.linklaters.com
 author: Julia Voskoboinikova, Rachel Barrett, Julia Grothaus, David Ballegeer, Silke Bernard, Sara Feijao

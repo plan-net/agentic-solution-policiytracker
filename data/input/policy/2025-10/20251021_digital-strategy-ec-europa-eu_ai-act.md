@@ -2,7 +2,7 @@
 title: AI Act
 url: https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai?utm_source=openai
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-11T12:26:32.754558
+collected_date: 2025-11-16T02:36:45.630915
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)

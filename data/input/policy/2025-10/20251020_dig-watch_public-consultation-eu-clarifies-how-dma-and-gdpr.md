@@ -2,7 +2,7 @@
 title: Public consultation: EU clarifies how DMA and GDPR work together | Digital Watch Observatory
 url: https://dig.watch/updates/public-consultation-eu-clarifies-how-dma-and-gdpr-work-together
 published_date: 2025-10-20T00:00:00
-collected_date: 2025-11-11T12:26:07.380098
+collected_date: 2025-11-16T02:36:21.124188
 source: Dig
 source_url: https://dig.watch
 author: harrisorla@gmail.com

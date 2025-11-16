@@ -2,7 +2,7 @@
 title: Digital Markets Act: EU Institutions Agree on New Rules to Curb the Power Of “Big Tech” Platforms
 url: https://crowell.com/en/insights/client-alerts/digital-markets-act-eu-institutions-agree-on-new-rules-to-curb-the-power-of-big-tech-platforms
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:10.612487
+collected_date: 2025-11-16T02:36:27.037959
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -144,23 +144,23 @@ The DMA will **likely enter into force in October 2022**, after a vote in the Eu
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 3 min read \| 11.06.25
+Client Alert \| 6 min read \| 11.13.25
 
-[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
+[FTC and NAD Enforcement Priorities & ANA 2025](https://www.crowell.com/en/insights/client-alerts/ftc-and-nad-enforcement-priorities-and-ana-2025)
 
-In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
+The Federal Trade Commission (FTC) and National Advertising Division (NAD) of BBB National Programs laid out their enforcement priorities during the 2025 ANA Masters of Advertising Law Conference, at which Crowell & Moring attorneys spoke on and attended various panels....
 
-- Client Alert \| 2 min read \| 11.06.25
+- Client Alert \| 12 min read \| 11.13.25
 
-[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
+[Highlighting Key Takeaways from the Pentagon Acquisition Transformation Strategy](https://www.crowell.com/en/insights/client-alerts/highlighting-key-takeaways-from-the-pentagon-acquisition-transformation-strategy)
 
-- Client Alert \| 3 min read \| 11.06.25
+- Client Alert \| 4 min read \| 11.13.25
 
-[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
+[The Password is “Louvre” – Lessons for Everyone from the Louvre’s Jewel Heist](https://www.crowell.com/en/insights/client-alerts/the-password-is-louvre-lessons-for-everyone-from-the-louvres-jewel-heist)
 
-- Client Alert \| 13 min read \| 11.06.25
+- Client Alert \| 3 min read \| 11.12.25
 
-[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
+[EPA Proposes Important Revisions to its PFAS Reporting Regulations](https://www.crowell.com/en/insights/client-alerts/epa-proposes-important-revisions-to-its-pfas-reporting-regulations)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

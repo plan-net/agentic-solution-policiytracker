@@ -1,89 +1,660 @@
 ---
 title: Latest Trends in Cloud and Data Security | Sentra's Blog
 url: https://www.sentra.io/blog
-published_date: 2025-11-06T12:26:09.849000
-collected_date: 2025-11-11T12:26:10.283039
+published_date: 2025-11-06T00:00:00
+collected_date: 2025-11-16T02:36:21.249649
 source: Sentra
 source_url: https://www.sentra.io
-author: Yoav Regev
-description: # Updates From the Front Lines of Data Security
+author: Ward Balcerzak
+description: ## Updates From the Front Lines of Data Security
 language: en
 collection_type: policy_landscape
 ---
 
 # Latest Trends in Cloud and Data Security | Sentra's Blog
 
-*By Yoav Regev*
+*By Ward Balcerzak*
 
-# Updates From the Front Lines of Data Security
+## Updates From the Front Lines of Data Security
 
-# Updates From the Front Lines of Data Security
+## Updates From the Front Lines of Data Security
 
 Subscribe to Sentra’s data security blog for the latest updates and insights from our researchers
 
-[![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)\
-\
-Yoav Regev\
-\
-April 23, 2025\
-\
-3\
-\
-Min Read\
-\
-Data Security\
-\
-**Your AI Is Only as Secure as Your Data: Celebrating a $100M Milestone** \
-\
-With $100M in total funding, Sentra is scaling data security solutions to help organizations harness AI safely and confidently. Read more.](https://www.sentra.io/blog/your-ai-is-only-as-secure-as-your-data-celebrating-a-100m-milestone)
+## Securing the Cloud: Advanced Strategies for Continuous Data Monitoring
 
-[![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)\
-\
-Meni Besso\
-\
-April 21, 2025\
-\
-Min Read\
-\
-Compliance\
-\
-**How to Scale DSAR Compliance (Without Breaking Your Team)** \
-\
-Meet growing privacy demands efficiently. Learn how Sentra helps enterprises automate DSAR compliance, reduce risk, and scale response operations.](https://www.sentra.io/blog/how-to-scale-dsar-compliance-without-breaking-your-team)
+Explore leading strategies for cloud data monitoring. Learn how to protect sensitive data with real-time insights and modern security practices. Read now.
 
-[![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)\
-\
-David Stuart\
-\
-April 3, 2025\
-\
-3\
-\
-Min Read\
-\
-Data Security\
-\
-**The Rise of Next-Generation DSPs** \
-\
-Discover the 6 must-have features for 2025’s next-gen data security platforms. Stay ahead of threats & secure your data. Read now to future-proof your DSP.](https://www.sentra.io/blog/the-rise-of-next-generation-dsps)
+## Data Security in 2025: Why DSPM Is Now a Business Imperative
 
-[![Ran Shister](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00d980d97203c730de307_Shister%20(1)%202.webp)\
-\
-Ran Shister\
-\
-March 27, 2025\
-\
-3\
-\
-Min Read\
-\
-Sentra Case Study\
-\
-**Empowering Users to Self-Protect Their Data** \
-\
-Empower users to self-protect with automated security operations. Learn how to operationalize data security, manage alerts, and enhance compliance efficiently.](https://www.sentra.io/blog/empowering-users-to-self-protect-their-data)
+DSPM defines the future of data security. Master risk reduction, sensitive data protection, and secure AI enablement across enterprises to stay ahead.
 
-![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)
+## Data Blindness: The Hidden Threat Lurking in Your Cloud
+
+Struggling to see where your sensitive data lives? Learn why Data Blindness is a growing risk and how teams can regain visibility across cloud & SaaS with Sentra.
+
+## Why Sentra Was Named Gartner Peer Insights Customer Choice 2025
+
+Learn why Sentra earned Gartner Peer Insights Customer Choice 2025 for DSPM. Our CEO shares insights from 650+ verified reviews on DSPM success.
+
+### Securing the Cloud: Advanced Strategies for Continuous Data Monitoring
+
+### Securing the Cloud: Advanced Strategies for Continuous Data Monitoring
+
+In today's digital world, [data security in the cloud](https://www.sentra.io/cloud-data-security) is essential. You rely on popular observability tools to track availability, performance, and usage—tools that keep your systems running smoothly. However, as your data flows continuously between systems and regions, you need a layer of security that delivers granular insights without disrupting performance.
+
+Cloud service platforms provide the agility and efficiency you expect; however, they often lack the ability to monitor real-time data movement, access, and risk across diverse environments.
+
+This blog post explains how cloud data monitoring strategies protect your data while addressing issues like data sprawl, data proliferation, and unstructured data challenges. Along the way, we will share practical information to help you deepen your understanding and strengthen your overall security posture.
+
+## Why Real-Time Cloud Monitoring Matters
+
+In the cloud, data does not remain static. It shifts between environments, services, and geographical locations. As you manage these flows, a critical question arises: "Where is my sensitive cloud data stored?"
+
+Knowing the exact location of your data in real-time is crucial for mitigating unauthorized access, preventing compliance issues, and effectively addressing data sprawl and proliferation.
+
+### Risk of Data Misplacement: When Data Is Stored Outside Approved Environments
+
+Misplaced data refers to information stored outside its approved environment. This can occur when data is in unauthorized or unverified cloud instances or shadow IT systems. Such misplacement heightens security risks and complicates compliance efforts.
+
+A simple table can clarify the differences in risk levels and possible mitigation strategies for various data storage environments:
+
+| Data Location | Approved Environment | Risk Level | Example Mitigation Strategy |
+| --- | --- | --- | --- |
+| Authorized Cloud | Yes | Low | Regular Audits |
+| Shadow IT Systems | No | High | Immediate remediation |
+| Unsecured File Shares | No | Medium | Enhanced access controls |
+
+### Risk of Insufficient Monitoring: Gaps in Real-Time Visibility of Rapid Data Movements
+
+The high velocity of data flows in vast cloud environments makes tracking data challenging, and traditional monitoring methods may fall short.
+
+The rapid data movement means that data proliferation often outstrips traditional monitoring efforts. Meanwhile, the sheer volume, variety, and velocity of data require risk analysis tools that are built for scale.
+
+Legacy systems typically struggle with these issues, making it difficult for you to maintain up-to-date oversight and achieve a comprehensive security posture. Explore [Sentra's blog on data movement risks](https://www.sentra.io/blog/understanding-data-movement-to-avert-proliferation-risks) for additional details.
+
+## Limitations of Legacy Data Security Solutions
+
+When evaluating how to manage and monitor cloud data, it’s clear that traditional security tools fall short in today’s complex, cloud-native environments.
+
+Older security solutions (built for the on-prem era!) were designed for static environments, while today's dynamic cloud demands modern, more scalable approaches. Legacy data classification methods, as discussed [in this Sentra analysis](https://www.sentra.io/blog/why-legacy-data-classification-tools-dont-work-well-in-the-cloud-but-dspm-does), also fail to manage unstructured data effectively.
+
+Let’s take a deeper look at their limitations:
+
+- **Inadequate data classification:** Traditional data classification often relies on manual processes that fail to keep pace with real-time cloud operations. Manual classification is inefficient and prone to error, making it challenging to quickly identify and secure sensitive information.
+
+- Such outdated methods particularly struggle with unstructured data management, leaving gaps in visibility.
+- ‍ **Scalability issues:** As your enterprise grows and embraces the cloud, the volume of data you must handle also grows exponentially. When this happens, legacy systems cannot keep up. They lag behind and are slow to respond to potential risks, exposing your company to possible security breaches.
+
+- Modern requirements for cloud data management and monitoring call for solutions that scale with your business.
+
+- **High operational costs:** Maintaining outdated security tools can be expensive. Legacy systems often incur high operational costs due to manual oversight, taxing cloud compute consumption, and inefficient processes.
+
+- These costs can escalate quickly, especially compared to cloud-native solutions offering automation, efficiency, and streamlined management.
+
+To address these risks, it's essential to have a strategy that shows you how to monitor data as it moves, ensuring that sensitive files never end up in unapproved environments.
+
+## Best Practices for Cloud Data Monitoring and Protection
+
+In an era of rapidly evolving cloud environments, implementing a cohesive cloud data monitoring strategy that integrates actionable recommendations is essential. This approach combines automated data discovery, real-time monitoring, robust access governance, and continuous compliance validation to secure sensitive cloud data and address emerging threats effectively.
+
+### Automated Data Discovery and Classification
+
+Implementing an agentless, cloud-native solution enables you to continuously discover and classify sensitive data without any performance drawbacks. Automation significantly reduces manual errors and delivers real-time insights for robust and efficient data monitoring.
+
+- Continuous data discovery and classification
+- Fewer manual interventions
+- Real-time risk assessment
+- Lower operational costs through automation
+- Simplified deployment and ongoing maintenance
+- Rapid response to emerging risks with minimal disruption
+
+By adopting a cloud-native data security platform, you gain deeper visibility into your sensitive data without adding system overhead.
+
+### Real-Time Data Movement Monitoring
+
+To prevent breaches, real-time cloud monitoring is critical. Receiving real-time alerts will empower you to take action quickly and mitigate threats in the event of unauthorized transfers or suspicious activities.
+
+A well-designed monitoring dashboard can visually display data flows, alert statuses, and remediation actions—all of which provide clear, actionable insights. Alerts can also flow directly to remediation platforms such as ITSM or SOAR systems.
+
+In addition to real-time dashboards, implement automated alerting workflows that integrate with your existing incident response tools. This ensures immediate visibility when anomalies occur for a swift and coordinated response. Continuous monitoring highlights any unusual data movement, helping security teams stay ahead of threats in an environment where data volumes and velocities are constantly expanding.
+
+### Robust Access Governance
+
+Only authorized parties should be able to access and utilize sensitive data. Maintain strict oversight by enforcing least privilege access and performing regular reviews. This not only safeguards data but also helps you adhere to the compliance requirements of any relevant regulatory standards.
+
+A checklist for robust governance might include:
+
+- Implementation of role-based and attribute-based access control
+- Periodic access audits
+- Integration with identity management systems
+
+### Ensuring Compliance and Data Privacy
+
+Adhering to data privacy regulations that apply to your sector or location is a must. Continuous monitoring and proactive validation will help you identify and address compliance gaps before your organization is hit with a security breach or legal violation. Sentra offers [actionable steps related to various regulations](https://www.sentra.io/use-cases/compliance) to solidify your compliance posture.
+
+Integrating automated compliance checks into your security processes helps you meet regulatory requirements. To learn more about scaling your security infrastructure, refer to [Sentra’s guide to achieving exabyte-scale enterprise data security](https://www.sentra.io/learn/achieving-exabyte-scale-enterprise-data-security).
+
+Beyond tools and processes, cultivating a security-minded culture is critical. Conduct regular training sessions and simulated breach exercises so that everyone understands how to handle sensitive data responsibly. Encouraging active participation and accountability across the organization solidifies your security posture, bridging the gap between technical controls and human vigilance.
+
+## Sentra Addresses Cloud Data Monitoring Challenges
+
+Sentra's platform complements your current observability tools, enhancing them with robust data security capabilities. Let’s explore how Sentra addresses common challenges in cloud data monitoring.
+
+### Exabyte-Scale Mastery: Navigating Expansive Data Ecosystems
+
+Sentra’s platform is designed to handle enormous data volumes with ease. Its distributed architecture and elastic scaling provide comprehensive oversight and ensure high performance as data proliferation intensifies. The platform's distributed architecture and elastic scaling capabilities guarantee high performance, regardless of data volume.
+
+- Distributed architecture for high-volume data
+- Elastic scaling for dynamic cloud environments
+- Integration with primary cloud services
+
+### Seamless Automation: Transforming Manual Workflows into Continuous Security
+
+By automating [data discovery, classification, and monitoring](https://www.sentra.io/product/data-discovery-and-classification), Sentra eliminates the need for extensive manual intervention. This streamlined approach provides uninterrupted protection and rapid threat response.
+
+Automation is essential for addressing the challenges of data sprawl without compromising system performance.
+
+### Deep Insights & Intelligent Validation: Harnessing Context for Proactive Risk Detection
+
+Sentra distinguishes itself by providing deep contextual analysis of your data. Its intelligent validation process efficiently detects anomalies and prioritizes risks, enabling precise and proactive remediation.
+
+This capability directly addresses the primary concern of achieving continuous, real-time monitoring and ensuring precise, efficient data protection.
+
+### Unified Security: Integrating with your Existing Systems for Enhanced Protection
+
+One of the most significant advantages of Sentra's platform is its seamless integration with your current SIEM and SOAR tools. This unified approach allows you to maintain excellent observability with your trusted systems while benefiting from enhanced security measures without any operational disruption.
+
+Effective cloud data monitoring is achieved by blending the strengths of your trusted observability tools with advanced security measures. By automating data discovery and classification, establishing real-time monitoring, and enforcing robust access governance, you can safeguard your data against emerging threats.
+
+Elevate your operations with an extra layer of automated, cloud-native security that tackles data sprawl, proliferation, and compliance challenges. After carefully reviewing your current security and identifying any gaps, invest in modern tools that provide visibility, protection, and resilience.
+
+Maintaining cloud security is a continuous task that demands vigilance, innovation, and proactive decision-making. Integrating solutions like Sentra's platform into your security framework will offer robust, scalable protection that evolves with your business needs. The future of your data security is in your hands, so take decisive steps to build a safer, more secure cloud environment.
+
+### Data Security in 2025: Why DSPM Is Now a Business Imperative
+
+### Data Security in 2025: Why DSPM Is Now a Business Imperative
+
+At RSAC 2025, I had the opportunity to speak with Adrian Sanabria about one of the most pressing and complex challenges facing security teams today: data security. Since then, the urgency around the future of data security has only intensified.
+
+We're watching a major inflection point unfold across industries. Organizations are generating and storing more data than ever, while simultaneously adopting AI at a pace that outstrips most security programs. At the same time, regulators are enforcing data privacy with increasing sharpness. These trends all converge on one critical question:
+
+**Do you know where your sensitive data is - and who can access it?**
+
+If the answer is no, then it's time to rethink your approach.
+
+## **Data is Now The Most Valuable, And Volatile Asset**
+
+For years, security tools have operated largely without visibility into the data itself. We've focused on endpoints, perimeters, and identities - all essential layers. But in 2025, that’s no longer sufficient.
+
+Data is now the most valuable, and volatile asset most companies have. We’re seeing this in breach investigations, where the root cause often traces back to unmonitored or duplicated sensitive data left in the wrong place. We're seeing it in AI deployments, where teams rush to fine-tune models or deploy copilots without knowing what's inside the datasets they’re exposing. And we’re certainly seeing it in regulatory fines, many of which stem from nothing more than storing customer data longer than necessary, in the wrong place, or in unsecured formats.
+
+What all of this underscores is a simple truth: **you can’t protect what you can’t see.**
+
+## **The Role of DSPM in the Future of Data Security**
+
+At Sentra, we’ve built our platform around a core philosophy that **Data Security Posture Management (DSPM)** is not just a security tool, it’s the future of data security, an enabler of responsible innovation. The foundation starts with [sensitive data discovery](https://www.sentra.io/product/data-discovery-and-classification). Most organizations are surprised by how much sensitive data exists outside expected systems- in backups, temporary stores, or SaaS apps that were never properly offboarded. From there, classification adds context. It’s not enough to label something as “ [PII](https://www.sentra.io/cloud-data-security-glossary/personally-identifiable-information-pii)”, we need to understand how sensitive it is, who owns it, how it is being used, and how it should be governed.
+
+We built Sentra as a cloud-native solution from day one. That means it works across IaaS, SaaS, PaaS, and even on-prem environments without needing agents or pulling data outside the customer’s environment. That last point is non-negotiable for us. As a security company, we believe strongly that extracting customer data for analysis creates unnecessary risk and liability.
+
+To support classification at scale, especially for unstructured data, we developed our own language models using open-source LLMs. This provides the deep contextual understanding needed to accurately label large volumes of data all while maintaining cost efficiency and avoiding unnecessary compute overhead.
+
+## **AI, Risk, and Responsibility in Data Securityy**
+
+One of the biggest shifts we’re seeing in the market is how AI has elevated data security from a technical concern to a boardroom issue. Security teams are now being asked to approve large-scale data usage for AI training, RAG systems, copilots, and internal assistants. But very few have the tools to answer basic questions about what’s in those datasets.
+
+I’ve worked with customers who only realized after deploying AI that they had been exposing medical records, credentials, or confidential meeting data to the model. Once it’s in, you can’t pull it back. That’s why data classification and risk detection must come before any AI integration.
+
+This is precisely the use case we had in mind when we built Sentra’s [Data Security for AI Module](https://www.sentra.io/ai-assets). It helps teams scan, assess, and verify the contents of data before it ever touches a model. The goal isn’t to slow down innovation - it’s to make it safer, auditable, and repeatable.
+
+## **Proactive Risk Management Helps Enterprises Ship Faster**
+
+One of the most exciting developments we’ve seen for the future of data security is how quickly Sentra’s data security platform becomes a strategic asset for enterprise data risk management. Time to value is fast in many cases, our customers discover major data risks just days after deployment. But beyond those early wins, the real power lies in alignment.
+
+When security leaders can map data to risk, compliance, and governance frameworks, and do so continuously, they’re no longer operating reactively. They’re enabling the business, helping teams ship faster with fewer unknowns, and building trust around how AI and data are managed.
+
+At scale, this kind of maturity is the difference between organizations that can confidently embrace generative AI and those that will always be playing catch-up.
+
+From my time in the Israeli Defense Forces and Unit 8200 to helping enterprises build modern security programs, I’ve seen one truth over and over again: data left behind is data exposed. The volume may grow, the threats may change, but this principle doesn’t.
+
+In 2025, securing data is no longer an aspiration, it’s a baseline. Whether you’re preparing for your next AI initiative, facing regulatory audits, or just trying to get visibility into sprawling cloud environments, DSPM should be your first step. At Sentra, we’re proud to help lead this change. And we believe the organizations that take control of their data today will be the ones best positioned to lead tomorrow.
+
+### Data Blindness: The Hidden Threat Lurking in Your Cloud
+
+### Data Blindness: The Hidden Threat Lurking in Your Cloud
+
+“If you don’t know where your sensitive data is, how can you protect it?”
+
+It’s a simple question, but for many security and compliance teams, it’s nearly impossible to answer. When a Fortune 500 company recently paid millions in fines due to improperly stored customer data on an unmanaged cloud bucket, the real failure wasn’t just a misconfiguration. It was a lack of visibility.
+
+Some in the industry are starting to refer to this challenge as "data blindness".
+
+## **What Is Data Blindness?**
+
+Data Blindness refers to an organization’s inability to fully see, classify, and understand the sensitive data spread across its cloud, SaaS, and hybrid environments.
+
+It’s not just another security buzzword. It’s the modern evolution of a very real problem: traditional data protection methods weren’t built for the dynamic, decentralized, and multi-cloud world we now operate in. Legacy DLP tools or one-time audits simply can’t keep up.
+
+Unlike general data security issues, Data Blindness speaks to a specific kind of operational gap: you can’t protect what you can’t see, and most teams today are flying partially blind.
+
+## **Why Data Blindness Is Getting Worse**
+
+What used to be a manageable gap in visibility has now escalated into a full-scale operational risk. As organizations accelerate cloud adoption and embrace SaaS-first architectures, the complexity of managing sensitive data has exploded. Information no longer lives in a few centralized systems, it’s scattered across AWS, [Azure](https://www.sentra.io/blog/azure-security-tools), and [GCP](https://www.sentra.io/blog/gcp-security-tools) instances, and a growing stack of SaaS tools, each with its own storage model, access controls, and risk profile.
+
+At the same time, shadow data is proliferating. Sensitive information ends up in collaboration platforms, forgotten test environments, and unsanctioned apps - places that rarely make it into formal security inventories. And with the rise of generative AI tools, a new wave of unstructured content is being created and shared at scale, often without proper visibility or retention controls in place.
+
+To make matters worse, many organizations are still operating with outdated identity and access frameworks. Stale permissions and misconfigured policies allow unnecessary access to critical data, dramatically increasing the potential impact of both internal mistakes and external breaches.
+
+In short, the cloud hasn’t just moved the data, it’s multiplied it, fragmented it, and made it harder than ever to track. Without continuous, intelligent visibility, data blindness becomes the default.
+
+## **The Hidden Risks of Operating Blind**
+
+When teams don’t have visibility into where sensitive data lives or how it moves, the consequences stack up quickly:
+
+- **Compliance gaps**: Regulations like [GDPR](https://www.sentra.io/blog/gdpr-compliance-failures-lead-to-surge-in-fines), HIPAA, and [PCI-DSS](https://www.sentra.io/blog/how-pci-dss-4-0-improves-your-security-posture) demand accurate data inventories, privacy adherence, and prompt response to DSARs. Without visibility, you risk fines and legal exposure.
+- **Breach potential**: Blind spots become attack vectors. Misplaced data, overexposed buckets, or forgotten environments are easy targets.
+- **Wasted resources**: Scanning everything (just in case) is expensive. Without prioritization, teams waste cycles on low-risk data.
+- **Trust erosion**: Customers expect you to know where their data is and how it’s protected. Data blindness isn’t a good look.
+
+## **Do You Have Data Blindness? Here Are the Signs**
+
+- Your security team can’t confidently answer, “Where is our most sensitive data and who has access to it?”
+- Data inventories are outdated, or built on manual tagging and spreadsheets.
+- You’re still relying on legacy DLP tools with poor context and high false positives.
+- Incident response is slow because it’s unclear what data was touched or how sensitive it was.
+
+Sound familiar? You’re not alone.
+
+### **Breaking Free from Data Blindness**
+
+Solving data blindness starts with visibility, but real progress comes from turning that visibility into action. Modern organizations need more than one-off audits or static reports. They need continuous data discovery that scans cloud, SaaS, and on-prem environments in real time, keeping up with the constant movement of data.
+
+But discovery alone isn’t enough. Classification must go beyond content analysis, it needs to be context-aware, taking into account where the data lives, who has access to it, how it’s used, and why it matters to the business. Visibility must extend to both structured and unstructured data, since sensitive information often hides in documents, PDFs, chat logs, and spreadsheets. And finally, insights need to be integrated into existing security and compliance workflows. Detection without action is just noise.
+
+### **How Sentra Solves Data Blindness**
+
+At Sentra, we give security and privacy teams the visibility and context they need to take control of their data - without disrupting operations or moving it out of place. Our cloud-native DSPM (Data Security Posture Management) platform scans and classifies data in-place across cloud, SaaS, and on-prem environments, with no agents or data removal required.
+
+Sentra uses AI-powered, context-rich classification to achieve over 95% accuracy, helping teams identify truly sensitive data and prioritize what matters most. We provide full coverage of structured and unstructured sources, along with real-time insights into risk exposure, access patterns, and regulatory posture, all with a cost-efficient scanning model that avoids unnecessary compute usage.
+
+One customer reduced their shadow data footprint by 30% in just a few weeks, eliminating blind spots that their legacy tools had missed for years. That’s the power of visibility, backed by context, at scale.
+
+## **The Bottom Line: Awareness Is Step One**
+
+Data Blindness is real, but it’s also solvable. The first step is acknowledging the problem. The next is choosing a solution that brings your data out of the dark, without slowing down your teams or compromising security.
+
+If you’re ready to assess your current exposure or just want to see what’s possible with modern data security, you can take a [free data blindness assessment](https://www.sentra.io/data-blindness#form-questions), or [talk to our experts](https://www.sentra.io/demo) to get started.
+
+### Why Sentra Was Named Gartner Peer Insights Customer Choice 2025
+
+### Why Sentra Was Named Gartner Peer Insights Customer Choice 2025
+
+When we started Sentra three years ago, we had a hypothesis: organizations were drowning in data they couldn't see, classify, or protect. What we didn't anticipate was how brutally honest our customers would be about what actually works, and what doesn't.
+
+This week, Gartner named Sentra a "Customer's Choice" in their Peer Insights Voice of the Customer report for Data Security Posture Management. The recognition is based on over 650 verified customer reviews, giving us a 4.9/5 rating with 98% willing to recommend us.
+
+### The Accuracy Obsession Was Right
+
+The most consistent theme across hundreds of reviews? **Accuracy matters more than anything else.**
+
+_"97.4% of Sentra's alerts in our testing were accurate! By far the highest percentage of any of the DSPM platforms that we tested."_
+
+‍ _"Sentra accurately identified 99% of PII and PCI in our cloud environments with minimal false positives during the POC."_
+
+But customers don't just want data discovery—they want trustworthy data discovery. When your DSPM tool incorrectly flags non-sensitive data as critical, teams waste time investigating false leads. When it misses actual sensitive data, you face compliance gaps and real risk. The reviews validate what we suspected: if security teams can't trust your classifications, the tool becomes shelf-ware. Precision isn't a nice-to-have—it's everything.
+
+## How Sentra Delivers Time-to-Value
+
+Another revelation: customers don't just want fast deployment, they want fast insights.
+
+_"Within less than a week we were getting results, seeing where our sensitive data had been moved to."_
+
+_"We were able to start seeing actionable insights within hours."_
+
+I used to think "time-to-value" was a marketing term. But when you're a CISO trying to demonstrate ROI to your board, or a compliance officer facing an audit deadline, every day matters. Speed isn’t a luxury in security, it’s a necessity. Data breaches don't wait for your security tools to finish their months-long deployment cycles. Compliance deadlines don't care about your proof-of-concept timeline. Security teams need to move at the speed of business risk.
+
+## The Honesty That Stings (And Helps)
+
+But here's what really struck me: our customers were refreshingly honest about our shortcomings.
+
+_"The chatbot is more annoying than helpful."_
+
+‍ _"Currently there is no SaaS support for something like Salesforce."_
+
+_"It's a startup so it has all the advantages and disadvantages that those come with."_
+
+As a founder, reading these critiques was... uncomfortable. But it's also incredibly valuable. Our customers aren't just users, they're partners in our product evolution. They're telling us exactly where to invest our engineering resources.
+
+The Salesforce integration requests, for instance, showed up in nearly every "dislike" section. Message received. We're shipping SaaS connectors specifically because it’s a top priority for our customers.
+
+## What Gartner Customer Choice Trends Reveal About the DSPM Market
+
+Analyzing 650 reviews across 9 vendors revealed something fascinating about our market's maturity. Customers aren't just comparing features, they're comparing outcomes.
+
+The traditional data security playbook focused on coverage: "How many data sources can you scan?" But customers are asking different questions:
+
+- How accurate are your findings?
+- How quickly can I act on your insights?
+- How much manual work does this actually eliminate?
+
+This shift from inputs to outcomes suggests the DSPM market is maturing rapidly.
+
+## The Gartner Voice of the Customer Validated
+
+Perhaps the most meaningful insight came from what customers _didn't_ say. I expected more complaints about deployment complexity, integration challenges, or learning curves. Instead, review after review mentioned how quickly teams became productive with Sentra.
+
+_"It was also the fastest set up."_
+
+_"Quick setup and responsive support."_
+
+_"The platform is intuitive and offers immediate insights."_
+
+This tells me we're solving a real problem in a way that feels natural to security teams. The best products don't just work, they feel inevitable once you use them.
+
+## The Road Ahead: Learning from Gartner Choice Recognition
+
+These reviews crystallized our 2025 roadmap priorities:
+
+**1\. SaaS-First Expansion**: Every customer asked for broader SaaS coverage. We're expanding beyond IaaS to support the applications where your most sensitive data actually lives. Our mission is to secure data everywhere.
+
+**2\. AI Enhancement**: Our classification engine is industry-leading, but customers want more. We're building contextual AI that doesn't just find data, it understands data relationships and business impact.
+
+‍ **3\. Remediation Automation**: Customers love our visibility but want more automated remediation. We're moving beyond recommendations to actual risk mitigation.
+
+## A Personal Thank You
+
+To the customers who contributed to our Sentra Gartner Peer Insights success: thank you. Building a startup is often a lonely journey of best guesses and gut instincts. Your feedback is the compass that keeps us pointed toward solving real problems.
+
+To the security professionals reading this: your honest feedback (both praise and criticism) makes our products better. If you're using Sentra, please keep telling us what's working and what isn't. If you're not, I'd love to show you what earned us Customer Choice 2025 recognition and why 98% of our customers recommend us.
+
+The data security landscape is evolving rapidly. But with customers as partners and recognition like Gartner Peer Insights Customer Choice 2025, I'm confident we're building tools that don't just keep up with threats, they help organizations stay ahead of them.
+
+### Secure AI Adoption for Enterprise Data Protection: Are You Prepared?
+
+### Secure AI Adoption for Enterprise Data Protection: Are You Prepared?
+
+In today’s fast-moving digital landscape, enterprise AI adoption presents a fascinating paradox for leaders: AI isn’t just a tool for innovation; it’s also a gateway to new security challenges. Organizations are walking a tightrope: Adopt AI to remain competitive, or hold back to protect sensitive data.
+
+With nearly [two-thirds of security leaders even considering a ban on AI-generated code](https://www.techrepublic.com/article/leaders-banning-ai-generated-code/) due to potential security concerns, it’s clear that this tension is creating real barriers to AI adoption.
+
+A data-first security approach provides solid guarantees for enterprises to innovate with AI safely. Since AI thrives on data - absorbing it, transforming it, and creating new insights - the key is to secure the data at its very source.
+
+Let’s explore how data security for AI can build robust guardrails throughout the AI lifecycle, allowing enterprises to pursue AI innovation confidently.
+
+## Data Security Concerns with AI
+
+Every AI system is only as strong as its weakest data link. Modern [AI models rely on enormous data sets](https://www.sentra.io/learn/ai-balancing-innovation-with-data-security) for both training and inference, expanding the attack surface and creating new vulnerabilities. Without tight data governance, even the most advanced AI models can become entry points for cyber threats.
+
+### How Does AI Store And Process Data?
+
+The AI lifecycle includes multiple steps, each introducing unique vulnerabilities. Let’s consider the three main high-level stages in the AI lifecycle:
+
+- **Training**: AI models extract and learn patterns from data, sometimes memorizing sensitive information that could later be exposed through various attack vectors.
+
+‍
+- **Storage**: Security gaps can appear in model weights, vector databases, and document repositories containing valuable enterprise data.
+
+‍
+- **Inference**: This prediction phase introduces significant leakage risks, particularly with [retrieval-augmented generation (RAG)](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) systems that dynamically access external data sources.
+
+Data is everywhere in AI. And if sensitive data is accessible at any point in the AI lifecycle, ensuring complete data protection becomes significantly harder.
+
+### AI Adoption Challenges
+
+Reactive measures just won’t cut it in the rapidly evolving world of AI. Proactive security is now a must. Here’s why:
+
+1. **AI systems evolve faster than traditional security models can adapt.**
+
+New AI models (like [DeepSeek](https://www.nature.com/articles/d41586-025-00229-6) and Qwen) are popping up constantly, each introducing novel attack surfaces and vulnerabilities that can change with every model update..
+
+Legacy security approaches that merely react to known threats simply can't keep pace, as AI demands forward-thinking safeguards.
+
+1. **Reactive approaches usually try to remediate at the last second.**
+
+Reactive approaches usually rely on low-latency inline AI output monitoring, which is the last step in a chain of failures that lead to data loss and exfiltration, and the most challenging position to prevent data-related incidents.
+
+Instead, data security posture management (DSPM) for AI addresses the issue at its source, mitigating and remediating sensitive data exposure and enforcing a least-privilege, multi-layered approach from the outset.
+
+1. **AI adoption is highly interoperable, expanding risk surfaces.**
+
+Most enterprises now integrate multiple AI models, frameworks, and environments (on-premise AI platforms, cloud services, external APIs) into their operations. These AI systems dynamically ingest and generate data across organizational boundaries, challenging consistent security enforcement without a unified approach.
+
+Traditional security strategies, which only respond to known threats, can’t keep pace. Instead, a proactive, data-first security strategy is essential. By protecting information before it reaches AI systems, organizations can ensure AI applications process only properly secured data throughout the entire lifecycle and prevent data leaks before they materialize into costly breaches.
+
+Of course, you should not stop there: You should also extend the data-first security layer to support multiple AI-specific controls (e.g., model security, endpoint threat detection, access governance).
+
+## What Are the Security Concerns with AI for Enterprises?
+
+Unlike conventional software, AI systems continuously learn, adapt, and generate outputs, which means new security risks emerge at every stage of AI adoption. Without strong security controls, AI can expose sensitive data, be manipulated by attackers, or violate compliance regulations.
+
+For organizations pursuing AI for organization-wide transformation, understanding AI-specific risks is essential:
+
+- **Data loss and exfiltration**: AI systems essentially share information contained in their training data and RAG knowledge sources and can act as a “tunnel” through existing data access governance (DAG) controls, with the ability to find and output sensitive data that the user is not authorized to access.
+
+In addition, Sentra’s rich best-of-breed sensitive data detection and classification empower AI to perform DLP (data loss prevention) measures autonomously by using sensitivity labels.
+
+- **Compliance & privacy risks**: AI systems that process regulated information without appropriate controls create substantial regulatory exposure. This is particularly true in heavily regulated sectors like healthcare and financial services, where penalties for AI-related data breaches can reach millions of dollars.
+
+‍
+- **Data poisoning**: Attackers can subtly manipulate training and RAG data to compromise AI model performance or introduce hidden backdoors, gradually eroding system reliability and integrity.
+
+‍
+- **Model theft**: Proprietary AI models represent significant intellectual property investments. Inadequate security can leave such valuable assets vulnerable to extraction, potentially erasing years of AI investment advantage.
+
+‍ **‍**
+- **Adversarial attacks**: These increasingly prevalent threats involve strategic manipulations of AI model inputs designed to hijack predictions or extract confidential information. Adequate machine learning endpoint security has become non-negotiable.
+
+All these risks stem from a common denominator: **a weak data security foundation allowing for unsecured, exposed, or manipulated data**.
+
+The solution? A strong data security posture management (DSPM) coupled with comprehensive visibility into the AI assets in the system and the data they can access and expose. This will ensure AI models only train on and access trusted data, interact with authorized users and safe inputs, and prevent unintended exposure.
+
+## AI Endpoint Security Risks
+
+Organizations seeking to balance innovation with security must implement strategic approaches that protect data throughout the AI lifecycle without impeding development.
+
+### Choosing an AI security solution: ‘DSPM for AI’ vs. AI-SPM
+
+When evaluating security solutions for AI implementation, organizations typically consider two primary approaches:
+
+- **Data security posture management (DSPM) for AI** implements data-related AI security features while extending capabilities to encompass broader data governance requirements. ‘DSPM for AI’ focuses on securing data before it enters any AI pipeline and the identities that are exposed to it through Data Access Governance. It also evaluates the security posture of the AI in terms of data (e.g., a CoPilot with access to sensitive data, that has public access enabled).
+
+‍
+- **AI security posture management (AI-SPM)** focuses on securing the entire AI pipeline, encompassing models and MLOps workflows. AI-SPM features include AI training infrastructure posture (e.g., the configuration of the machine on which training runs) and AI endpoint security.
+
+While both have merits, ‘DSPM for AI’ offers a more focused safety net earlier in the failure chain by protecting the very foundation on which AI operatesーdata. Its key functionalities include data discovery and classification, data access governance, real-time leakage and anomalous “data behavior” detection, and policy enforcement across both AI and non-AI environments.
+
+### Best Practices for AI Security Across Environments
+
+AI security frameworks must protect various deployment environments—on-premise, cloud-based, and third-party AI services. Each environment presents unique security challenges that require specialized controls.
+
+#### On-Premise AI Security ‍
+
+On-premise AI platforms handle proprietary or regulated data, making them attractive for sensitive use cases. However, they require stronger internal security measures to prevent insider threats and unauthorized access to model weights or training data that could expose business-critical information.
+
+- **Encrypt AI data** at multiple stages—training data, model weights, and inference data. This prevents exposure even if storage is compromised.
+
+‍
+- **Set up role-based access control (RBAC)** to ensure only authorized parties can gain access to or modify AI models.
+
+‍
+- **Perform AI model integrity checks** to detect any unauthorized modifications to training data or model parameters (protecting against data poisoning).
+
+#### Cloud-Based AI Security ‍
+
+While home-grown cloud AI services offer enhanced abilities to leverage proprietary data, they also expand the threat landscape. Since AI services interact with multiple data sources and often rely on external integrations, they can lead to risks such as unauthorized access, API vulnerabilities, and potential data leakage.
+
+- **Follow a zero-trust security model** that enforces continuous authentication for AI interactions, ensuring only verified entities can query or fine-tune models.
+
+‍
+- **Moni** tor for suspicious activity via audit logs and endpoint threat detection to prevent data exfiltration attempts.
+
+‍
+- **Establish robust data access governance (DAG)** to track which users, applications, and AI models access what data.
+
+#### Third-Party AI & API Security ‍
+
+Third-party AI models (like OpenAI's GPT, DeepSeek, or Anthropic's Claude) offer quick wins for various use cases. Unfortunately, they also introduce shadow AI and supply chain risks that must be managed due to a lack of visibility.
+
+- **Restrict sensitive data input to third-party AI models** using automated data classification tools.
+
+‍
+- **Monitor external AI API interactions** to detect if proprietary data is being unintentionally shared.
+
+‍
+- **Implement AI-specific DSPM controls** to ensure that third-party AI integrations comply with enterprise security policies.
+
+Common AI implementation challenges arise when organizations attempt to maintain consistent security standards across these diverse environments. For enterprises navigating a complex AI adoption, a cloud-native DSPM solution with AI security controls offers a solid AI security strategy.
+
+The [Sentra platform](https://www.sentra.io/learn/how-sentra-built-a-data-security-platform-for-the-ai-era) is adaptable, consistent across environments, and compliant with frameworks like GDPR, CCPA, and industry-specific regulations.
+
+### Use Case: Securing GenAI at Scale with Sentra
+
+Consider a marketing platform using generative AI to create branded content for multiple enterprise clients—a common scenario facing organizations today.
+
+- AI models processing proprietary brand data require robust enterprise data protection.
+- Prompt injections could potentially leak confidential company messaging.
+- Scalable security that doesn't impede creative workflows is a must.
+
+Sentra’s data-first security approach tackles these issues head-on via:
+
+- **Data discovery & classification**: Specialized AI models identify and safeguard sensitive information.
+
+Figure 1: A view of the specialized AI models that power data classification at Sentra
+
+- **Data access governance (DAG)**: The platform tracks who accesses training and RAG data, and when, establishing accountability and controlling permissions at a granular level.  In addition, access to the AI agent (and its underlying information) is controlled and minimized.
+
+‍
+- **Real-time leakage detection**: Sentra’s best-of-breed data labeling engine feeds internal DLP mechanisms that are part of the AI agents (as well as external 3rd-party DLP and DDR tools).  In addition, Sentra monitors the interaction between the users and the AI agent, allowing for the detection of sensitive outputs, malicious inputs, or anomalous behavior.
+
+‍
+- **Scalable endpoint threat detection**: The solution protects API interactions from adversarial attacks, securing both proprietary and third-party AI services.
+
+‍
+- **Automated security alerts**: Sentra integrates with ServiceNow and Jira for rapid incident response, streamlining security operations.
+
+The outcome: Sentra provides a scalable DSPM solution for AI that secures enterprise data while enabling AI-powered innovation, helping organizations address the [complex challenges of enterprise AI adoption](https://www.forbes.com/sites/bernardmarr/2024/09/27/how-to-embrace-the-enterprise-ai-era/).
+
+AI security starts at the data layer - without securing enterprise data, even the most sophisticated AI implementations remain vulnerable to attacks and data exposure. As organizations develop their [data security strategies for AI](https://www.publicissapient.com/insights/data-security-for-ai), prioritizing data observability, governance, and protection creates the foundation for responsible innovation.
+
+Sentra's DSPM provides cutting-edge AI security solutions at the scale required for enterprise adoption, helping organizations implement AI security best practices while maintaining compliance with evolving regulations.
+
+Learn more about how Sentra [has built a data security platform designed for the AI era](https://www.sentra.io/learn/how-sentra-built-a-data-security-platform-for-the-ai-era).
+
+### Why I Joined Sentra: A Data Defender’s Journey
+
+### Why I Joined Sentra: A Data Defender’s Journey
+
+After nearly two decades immersed in cybersecurity, spanning Fortune 500 enterprises, defense contractors, manufacturing giants, consulting, and the vendor ecosystem, I’ve seen firsthand how elusive true data security remains. I've built and led data security programs from scratch in some of the world’s most demanding environments. But when I met the team from Sentra, something clicked in a way that’s rare in this industry.
+
+Let me tell you why I joined Sentra and why I’m more excited than ever about the future of data security.
+
+## From Visibility to Vulnerability
+
+In every role I've held, one challenge has consistently stood out: understanding data.
+
+Not just securing it but truly knowing what data we have, where it lives, how it moves, how it's used, and who touches it. This sounds basic, yet it’s one of the least addressed problems in security.
+
+Now, we layer on the proliferation of cloud environments and SaaS sprawl (without mentioning the increasing proliferation of AI agents). The traditional approaches simply don’t cut it. Most organizations either ignore cloud data discovery altogether or lean on point solutions that can’t scale, lack depth, or require endless manual tuning and triage.
+
+That’s exactly where Sentra shines.
+
+When I first engaged with Sentra, what struck me was that this wasn’t another vendor trying to slap a new UI on an old problem. Sentra understands the problem deeply and is solving it holistically across all environments. They’re not just keeping up; they’re setting the pace.
+
+The AI-powered data classification engine at the heart of Sentra’s platform is, quite frankly, the best I’ve seen in the market. It automates what previously required a small army of analysts and does so with an accuracy and scale that’s unmatched. It's not just smart, it’s operationally scalable.
+
+But technology alone wasn’t what sold me. It was the people.
+
+The Sentra founders are visionaries who live and breathe this space. They’re not building in a vacuum, they’re listening to customers, responding to real-world friction, and delivering solutions that security teams will actually adopt. That’s rare. That’s powerful.
+
+And finally, there’s the culture. Sentra radiates innovation, agility, and relentless focus on impact. Every person here knows the importance of their role and how it aligns with our mission. That energy is infectious and it’s exactly where I want to be.
+
+## Two Decades. One Mission: Secure the Data.
+
+At Sentra, I’m bringing the scars, stories, and successes from almost 20 years “in the trenches”:
+
+- Deep experience building and maturing data security programs within highly regulated, high-stakes environments
+- A commitment to the full people-process-technology stack, because securing data isn’t just about tools
+- A background stitching together integrated solutions across silos and toolsets
+- A unique perspective shaped by my time as a practitioner, leader, consultant, and vendor
+
+This blend helps me speak the language of security teams, empathize with their challenges, and design strategies that actually work.
+
+Joining Sentra isn’t just the next step in my career; it’s a chance to help lead the next chapter of data security. We’re not here to incrementally improve what exists. We’re here to rethink it. Redefine it. Solve it.
+
+If you’re passionate about protecting what matters most, your data. I’d love to connect.
+
+This is more than a job; it’s a mission. And I couldn’t be prouder to be part of it.
+
+### What the HIPAA Compliance Updates Mean for Your Security
+
+### What the HIPAA Compliance Updates Mean for Your Security
+
+The Health Insurance Portability and Accountability Act ( [HIPAA](https://www.sentra.io/cloud-data-security-glossary/hipaa)) has long been a cornerstone of safeguarding sensitive health information in the U.S., particularly electronic protected health information (ePHI). As healthcare organizations continue to face growing cybersecurity challenges, ensuring the protection of ePHI has never been more critical.
+
+In response, for the first time in two decades, the U.S. Department of Health and Human Services ( [HHS](https://www.hhs.gov/)) has proposed significant amendments to the HIPAA Security Rule, aimed at strengthening cybersecurity measures across the healthcare sector. These proposed changes are designed to address emerging threats and ensure that healthcare organizations have robust systems in place to protect patient data from unauthorized access and potential breaches. This blog presents the major changes that are coming soon and how you can prepare for them.
+
+Instead of considering compliance as a one-time effort, with Sentra you can [monitor your compliance status](https://www.sentra.io/blog/the-need-for-continuous-compliance) at any given moment, streamline reporting, and remediate compliance violations instantly.
+
+## **How Sentra Can Help You Stay Compliant**
+
+Sentra’s data security platform equips healthcare organizations with the necessary tools to stay compliant with the new HIPAA Security Rule amendments. By providing continuous monitoring of ePHI data locations and assessing associated risks, Sentra helps organizations maintain full visibility and control over sensitive data.
+
+### **Key Benefits of Using Sentra for HIPAA Compliance:**
+
+- Automated Data Discovery & Classification: Instantly locate and classify ePHI across cloud and on-prem environments.
+- Real-time Risk Assessment: Continuously assess vulnerabilities and flag security gaps related to HIPAA requirements.
+- Access Control & Encryption Monitoring: Ensure compliance with mandatory MFA, encryption policies, and access termination requirements.
+- Smart Compliance Alerts: Sentra doesn’t just detect generic cloud misconfigurations. Instead, it pinpoints security issues affecting sensitive data, helping teams focus on what truly matters.
+
+Without a solution such as Sentra, organizations waste valuable time manually searching for and classifying sensitive data, diverting key employees from higher-priority security tasks. With Sentra, security teams gain an ongoing, real-time dashboard that ensures efficient compliance and faster risk mitigation.
+
+### **What You Need to Know About the Proposed HIPAA Security Rule Updates**
+
+The latest proposed updates to the HIPAA Security Rule represent some of the most significant changes in years. These updates aim to modernize data protection practices and ensure healthcare organizations are better equipped to handle today’s security challenges. Below are the key highlights compliance and security teams should focus on:
+
+**Mandatory Implementation Specifications** All implementation specifications under the HIPAA Security Rule will become mandatory. Covered entities and business associates must now fully comply with all safeguards—no more "addressable" exceptions.
+
+**Stricter Encryption Requirements** Encryption of electronic protected health information (ePHI) will be required both at rest and in transit. Organizations must ensure encryption is in place across all systems handling sensitive data.
+
+**Required Multifactor Authentication (MFA)** MFA will become mandatory to protect access to ePHI. This added security layer significantly reduces the risk of unauthorized access and credential compromise.
+
+**Network Segmentation for Threat Containment** Organizations must implement network segmentation to isolate sensitive systems and limit the spread of cyber threats in the event of a breach.
+
+‍ **Timely Termination of Access** Access to ePHI must be revoked within 24 hours when an employee leaves or changes roles. This reduces the risk of insider threats and unauthorized access.
+
+**Comprehensive Documentation Requirements** Healthcare organizations must maintain detailed, up-to-date documentation of all security policies, procedures, risk assessments, and incident response plans.
+
+**Asset Inventories and Network Mapping** Annual updates to technology asset inventories and network maps will be required to ensure accurate tracking of where and how ePHI is stored and transmitted.
+
+**Enhanced Risk Analysis** Organizations must conduct regular, thorough risk assessments to identify vulnerabilities and assess threats across all systems that interact with ePHI.
+
+**Stronger Incident Response Plans** Entities must be able to restore lost systems and data within 72 hours after a cyber incident. Regular testing and refinement of incident response protocols will be essential.
+
+**Annual Compliance Audits** Healthcare organizations will be required to conduct annual audits of their HIPAA Security Rule compliance, covering all technical and administrative safeguards.
+
+**Mandatory Technical Controls** Technical safeguards like anti-malware tools, firewalls, and port restrictions must be in place and regularly reviewed to protect systems from evolving threats.
+
+The proposed changes to the HIPAA Security Rule are currently in the Notice of Proposed Rulemaking (NPRM) stage, with a 60-day public comment period that opened on January 6, 2025. During this period, stakeholders can provide feedback on the amendments, which may influence the final rule. Organizations should actively monitor the comment period, engage in the feedback process, and stay informed on any potential adjustments before the rule is finalized.
+
+### **Steps Organizations Should Take Now:**
+
+- Review the proposed changes and understand how they impact your current security posture.
+- Engage in the public comment process to share concerns or recommendations.
+- Start assessing security gaps to align with HIPAA’s evolving compliance requirements.
+
+The new HIPAA compliance amendments represent a major shift in how healthcare organizations must protect electronic Protected Health Information (ePHI). The introduction of enhanced encryption standards, mandatory multi-factor authentication (MFA), and stricter access control measures means organizations must act swiftly to maintain compliance and reduce cybersecurity risks.
+
+Compliance is not just about meeting regulations, it is about efficiency. Organizations relying on manual processes to locate and secure sensitive data waste valuable time and resources, making compliance efforts less effective.
+
+With Sentra, healthcare organizations gain a powerful, automated data security solution that:
+
+- Eliminates manual data discovery by providing a real-time, continuous inventory of sensitive data.
+- Prioritizes relevant data security risks instead of overwhelming teams with unnecessary alerts.
+- Ensures compliance readiness by automating key processes like access control monitoring and encryption verification.
+
+Now is the time for healthcare organizations to take proactive steps toward compliance. Stay informed, participate in the public comment process, and start implementing security enhancements today.
+
+To learn how Sentra can help your organization achieve HIPAA compliance efficiently, [request a demo](https://www.sentra.io/demo) today and take control of your sensitive data.
 
 ### Your AI Is Only as Secure as Your Data: Celebrating a $100M Milestone
 
@@ -113,8 +684,6 @@ We’re not just building a product, we’re setting the gold standard for data 
 
 Innovation without security isn’t progress. Let’s shape a future where both go together!
 
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
-
 ### How to Scale DSAR Compliance (Without Breaking Your Team)
 
 ### How to Scale DSAR Compliance (Without Breaking Your Team)
@@ -139,8 +708,6 @@ But among the many privacy requirements, Data Subject Access Requests ( [**DSARs
 
 Sentra is a modern [data security platform](https://www.sentra.io/learn/how-sentra-built-a-data-security-platform-for-the-ai-era) dedicated to helping organizations gain complete visibility and control over their sensitive data. By continuously scanning and classifying data across all environments (including cloud, SaaS, and on-premises systems) Sentra maintains an always up-to-date data map, giving organizations a clear understanding of where sensitive data resides, how it flows, and who has access to it. This data map forms the foundation for efficient DSAR automation, enabling Sentra’s DSAR module to search for user identifiers only in locations where relevant data actually exists - ensuring high accuracy, completeness, and fast response times.
 
-![Data Security Platform example of US SSN finding](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/68065ab1242ad1a96b94a733_image%20(60).webp)
-
 Another key factor in managing DSAR requests is ensuring that sensitive customer PII doesn’t end up in unauthorized or unintended environments. When data is copied between systems or environments, it’s essential to apply tokenization or masking to prevent unintentional sprawl of PII. Sentra helps identify misplaced or duplicated sensitive data and alerts when it isn’t properly protected. This allows organizations to focus DSAR processing within authorized operational environments, **significantly reducing both risk and response time.**
 
 ## Smart Search of Individual Data
@@ -149,22 +716,15 @@ To initiate the generation of a Data Subject Access Request (DSAR) report, users
 
 Leveraging its advanced classification and correlation capabilities, Sentra identifies all relevant records associated with the provided identifiers. Once the scan is complete, it compiles a comprehensive DSAR report that consolidates all discovered personal data linked to the data subject that can be downloaded as a PDF for manual review or securely retrieved via Sentra’s API.
 
-![DSAR Requests](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/68065b01d2afe88fdb25bd27_image%20(59).webp)
-
 ## Establishing a DSAR Processing Pipeline ‍
 
 Large organizations that receive a high volume of DSAR (Data Subject Access Request) submissions typically implement a robust, end-to-end DSAR processing pipeline. This pipeline is often initiated through a self-service privacy portal, allowing individuals to easily submit requests for access or deletion of their personal data. Once a request is received, an automated or semi-automated workflow is triggered to handle the request efficiently and in compliance with regulatory timelines.
 
 1. **Requester Identity Verification:** Confirm the identity of the data subject to prevent unauthorized access (e.g., via email confirmation or secure login).
-
 2. **Mapping Identifiers:** Collect and map all known identifiers for the individual across systems (e.g., email, user ID, customer number).
-
 3. **Environment-Wide Data Discovery (via Sentra):** Use Sentra to search all relevant environments — cloud, SaaS, on-prem — for personal data tied to the individual. By using Sentra’s automated discovery and classification, Sentra can automatically identify where to search for.
-
 4. **DSAR Report Generation (via Sentra):** Compile a detailed report listing all personal data found and where it resides.
-
 5. **Data Deletion & Verification:** Remove or anonymize personal data as required, then rerun a search to verify deletion is complete.
-
 6. **Final Response to Requester:** Send a confirmation to the requester, outlining the actions taken and closing the request.
 
 Sentra plays a key role in the DSAR pipeline by exposing a powerful API that enables automated, organization-wide searches for personal data. The search results can be programmatically used to trigger downstream actions like data deletion. After removal, the API can initiate a follow-up scan to verify that all data has been successfully deleted.
@@ -186,8 +746,6 @@ By using Sentra to intelligently locate PII across all environments, organizatio
 As privacy expectations grow and regulatory pressure intensifies, DSARs are no longer just a checkbox. They are a reflection of how seriously an organization takes user trust. Manual, reactive processes simply can’t keep up with the scale and complexity of modern data environments.
 
 By automating DSAR workflows with tools like Sentra, organizations can achieve faster response times, lower operational costs, and sustained compliance - while freeing up teams to focus on higher-value privacy initiatives.
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### The Rise of Next-Generation DSPs
 
@@ -259,8 +817,6 @@ Data security challenges are only becoming more complex, but new Data Security P
 
 [Request a demo](https://www.sentra.io/demo) to discover how a modern DSP can strengthen your security and support your goals.
 
-![Ran Shister](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00d980d97203c730de307_Shister%20(1)%202.webp)
-
 ### Empowering Users to Self-Protect Their Data
 
 ### Empowering Users to Self-Protect Their Data
@@ -292,8 +848,6 @@ Sapir also suggests that to ensure compliance and effective security management,
 Streamlined communication between security platforms, such as Jira and Microsoft Teams, can significantly improve incident resolution. Automating alert closures based on predefined criteria will reduce the workload on security teams. Addressing existing bugs, such as shadow IT detection issues, will further refine security processes. By fostering a culture of proactive security and leveraging automation, organizations can empower users to self-protect, ensuring a robust defense against evolving cyber threats.
 
 Operationalizing data security is an ongoing effort that blends automation, user education, and process refinement. By taking a strategic user-enablement approach, organizations can create a security-aware culture while minimizing risks and optimizing their security response. Since implementing [Sentra’s DSPM solution](https://www.sentra.io/data-security-posture-management), Global-e has seen significant improvement in the strength of its data security posture. The company is now able to protect its cloud data more effectively, saving its security, IT, DevOps and engineering teams time, and ensuring it remains compliant with regulatory requirements. Empowering users and data owners to take responsibility for their data security, and providing the right tools to do so easily, is a game changer to the organization.
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
 
 ### Data Loss Prevention for Google Workspace
 
@@ -389,8 +943,6 @@ Beyond insights, Sentra provides robust data protection through comprehensive in
 No matter where your unstructured data resides, whether in Google Drive or any other cloud service, Sentra ensures it is accurately identified, classified, and protected with over 95% precision.
 
 If you’re ready to take control of your data security, [book a demo](https://www.sentra.io/demo) to discover how Sentra’s AI-driven protection secures your most valuable information across Google Workspace and beyond.
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### AI in Data Security: Guardian Angel or Trojan Horse?
 
@@ -499,8 +1051,6 @@ By implementing strategies such as data minimization, strong governance, and sec
 
 To learn how Sentra can strengthen your organization’s AI security posture with continuous discovery, automated classification, threat monitoring, and real-time remediation, [request a demo](https://www.google.com/search?q=sentra+request+a+demo&ie=UTF-8#:~:text=Sentra%27s%20Data%20Lifecycle,io%20%E2%80%BA%20demo) today.
 
-![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)
-
 ### The Importance of Data Security for Growth: A Blueprint for Innovation
 
 ### The Importance of Data Security for Growth: A Blueprint for Innovation
@@ -577,8 +1127,6 @@ Final thought: In my work with organizations across industries, I’ve seen firs
 
 If you're interested in learning how Sentra's Data Security Platform can help you understand and protect your data to drive success in today’s competitive landscape, request a [demo](https://www.sentra.io/demo) today.
 
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
-
 ### Automating Sensitive Data Classification in Audio, Image and Video Files
 
 ### Automating Sensitive Data Classification in Audio, Image and Video Files
@@ -617,10 +1165,6 @@ The Sentra Cloud-Native Platform integrates tools like serverless computing, dis
 
 Sentra is rapidly adopting advancements in AI-driven text extraction. A few examples of recent advancements are Optical Character Recognition (OCR) that works seamlessly on dynamic video streams and robust Automatic Speech Recognition (ASR) models capable of transcribing multilingual and domain-specific content with high accuracy. Additionally, innovations in pre-trained transformer models, like Vision-Language and Speech-Language models, enable context-aware extractions, such as identifying key information from complex layouts or detecting sentiment in spoken text. These breakthroughs are pushing the boundaries of accessibility and automation across industries, and enable data security and privacy teams to achieve what was previously thought impossible.
 
-![Large volume of sensitive data was copied into a shared drive](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/677fb2459a340389d368b705_677fb1b9ead6492731b227e1_MP4%2520blog%2520internal%2520image1.webp)
-
-![Data at Risk - Data Activity Overview](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/677fb2459a340389d368b708_677fb214d2b0a8c8db56bc51_MP4%2520blog%2520internal%2520image2.webp)
-
 ## **Sentra: An Innovator in Sensitive Data Discovery within Video & Audio**
 
 Sentra’s innovative approach to sensitive data discovery goes beyond traditional text-based formats, leveraging advanced ML and AI algorithms to extract and classify data from audio, video, and images. Extracting and understanding unstructured data from media files is increasingly critical in today’s data-driven world. These files often contain valuable and sensitive information that, when properly processed, can unlock powerful insights and drive better decision-making across industries. Sentra’s solution contextualizes multimedia content to highlight what matters most for your unique needs, delivering instant answers with a single click—capabilities we believe set us apart as the only DSPM solution offering this level of functionality.
@@ -628,8 +1172,6 @@ Sentra’s innovative approach to sensitive data discovery goes beyond tradition
 As threats continue to evolve across multiple vectors, including text, audio, and video—solution providers must constantly adopt new techniques for accurate classification and detection. AI plays a critical role in enhancing these capabilities, offering powerful tools to improve precision and scalability. Sentra is committed to driving innovation by leveraging these advanced technologies to keep data secure.
 
 Want to see it in action? [Request a demo](https://www.sentra.io/demo) today and discover how Sentra can help you protect sensitive data wherever it resides, even in image and audio formats.
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### 8 Holiday Data Security Tips for Businesses
 
@@ -663,8 +1205,6 @@ Despite our best protective measures, bad things happen. A user’s credentials 
 By taking the time to review and update your data security practices before the year wraps up, you can start the new year with confidence, knowing that your systems are secure and your data is protected. Implementing these simple but effective measures will help mitigate risks and set a strong foundation for 2025. Don't let the holiday season be an excuse for lax security - use this time wisely to ensure your organization is prepared for any data security challenges the new year may bring.
 
 Visit [Sentra's demo page](https://www.sentra.io/demo) to learn more about how you can ensure your organization can stay ahead and start 2025 with a stronger data security posture.
-
-![Romi Minin](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00de69386d650cd4c8d53_Asaf-1.webp)
 
 ### Top Data Security Resolutions
 
@@ -706,8 +1246,6 @@ By embracing these resolutions, organizations can gain a holistic framework to f
 
 To learn more, [**schedule a demo with one of our experts.**](https://sentra.io/demo)
 
-![Gilad Golani](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/673f3cfe08e501fb052fbc76_gilad%20NB%20Profile.png)
-
 ### New Healthcare Cyber Regulations: What Security Teams Need to Know
 
 ### New Healthcare Cyber Regulations: What Security Teams Need to Know
@@ -746,7 +1284,7 @@ Together, these developments—New York’s rapid reporting requirements and the
 
 ### Penalties for Healthcare Cybersecurity Non-Compliance in NY
 
-Non-compliance with any health law or regulation in New York State, including cybersecurity requirements, may [result in penalties](https://www.bankinfosecurity.com/nys-regs-a-26504). However, the primary goal of these regulations is not to impose financial penalties but to ensure that healthcare facilities are equipped with the necessary resources and guidance to defend against cyberattacks. Under Section 12 of [health law regulations](https://www.nysenate.gov/legislation/laws/PBH/12) in New York State, violations can result in civil penalties of up to $2,000 per offense, with increased fines for more severe or repeated infractions. If a violation is repeated within 12 months and poses a serious health threat, the fine can rise to $5,000. For violations directly causing serious physical harm to a patient, penalties may reach $10,000. A portion of fines exceeding $2,000 is allocated to the Patient Safety Center to support its initiatives. These penalties aim to ensure compliance, with enforcement actions carried out by the Commissioner or the Attorney General. Additionally, penalties may be negotiated or settled under certain circumstances, providing flexibility while maintaining accountability.
+Non-compliance with any health law or regulation in New York State, including cybersecurity requirements, may result in penalties. However, the primary goal of these regulations is not to impose financial penalties but to ensure that healthcare facilities are equipped with the necessary resources and guidance to defend against cyberattacks. Under Section 12 of [health law regulations](https://www.nysenate.gov/legislation/laws/PBH/12) in New York State, violations can result in civil penalties of up to $2,000 per offense, with increased fines for more severe or repeated infractions. If a violation is repeated within 12 months and poses a serious health threat, the fine can rise to $5,000. For violations directly causing serious physical harm to a patient, penalties may reach $10,000. A portion of fines exceeding $2,000 is allocated to the Patient Safety Center to support its initiatives. These penalties aim to ensure compliance, with enforcement actions carried out by the Commissioner or the Attorney General. Additionally, penalties may be negotiated or settled under certain circumstances, providing flexibility while maintaining accountability.
 
 ## Importance of Prioritizing Breach Reporting
 
@@ -760,11 +1298,7 @@ A proper [classification solution](https://www.sentra.io/learn/5-data-classifica
 
 Sentra can help you to adhere to many compliance frameworks, including PCI, GDPR, SOC2 and more, that may be applicable to your sensitive data as it travels around the organization. It automatically will alert you to violations, provide insight into the impact of any compromise, help you to prioritize associated risks, and integrate with common IR tools to streamline remediation. Sentra automates these processes so you can focus energies on eliminating risks.
 
-![Data Breach Report November 2024](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/6748812bd0df707f6f86fab2_6748811294e2f6a4f10498f4_Data%2520Breach_November%2520(1).webp)
-
 If you want to learn more about Sentra's Data Security Platform, and how you can get started with adhering to the different compliance frameworks, please visit [Sentra's demo page.](https://www.sentra.io/demo)
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### Enhancing AI Governance: The Crucial Role of Data Security
 
@@ -861,8 +1395,6 @@ To learn how Sentra can streamline your data and AI compliance efforts, explore 
 
 Or, see Sentra in action today by [signing up for a demo](https://www.sentra.io/demo).
 
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
-
 ### Understanding the Value of DSPM in Today’s Cloud Ecosystem
 
 ### Understanding the Value of DSPM in Today’s Cloud Ecosystem
@@ -907,10 +1439,6 @@ This shift towards data-centric protection is the future of AI-era security, hel
 
 Want to learn more about DSPM? Request a [demo](https://www.sentra.io/demo) today!
 
-[iframe](https://www.youtube.com/embed/8PHUGF-GYHg?start=21)
-
-![Daniel Suissa](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e10fec39de8a1da4bd1_daniel.webp)
-
 ### Top 5 GCP Security Tools for Cloud Security Teams
 
 ### Top 5 GCP Security Tools for Cloud Security Teams
@@ -944,8 +1472,6 @@ GCP’s Web Security Scanner was designed to identify vulnerabilities in App Eng
 Securing the cloud ecosystem is an ongoing challenge, partly because traditional security solutions are ineffective in the cloud – if they can even be deployed at all. That’s why the built-in security controls in GCP and other cloud platforms are so important.
 
 The solutions above, and many others baked-in to GCP, help GCP customers properly configure and secure their cloud environments - addressing the ever-expanding cloud threat landscape.
-
-![Haim Roth](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/675954558b16c627e8bcb4d7_haim%20profile%20nbg.png)
 
 ### Spooky Stories of Data Breaches
 
@@ -1003,8 +1529,6 @@ As technology continues to evolve and regulations grow stricter, it’s vital fo
 
 **‍** Sentra enables security teams to gain full visibility and control of data, as well as protect against sensitive data breaches across the entire public cloud stack. By discovering where all the sensitive data is, how it's secured, and where it's going, Sentra reduces the 'data attack surface', the sum of all places where sensitive or critical data is stored or traveling to.Sentra’s cloud-native design combines powerful Data Discovery and Classification, DSPM, DAG, and DDR capabilities into a complete Data Security Platform ( [DSP](https://www.sentra.io/learn/how-sentra-built-a-data-security-platform-for-the-ai-era)). With this, Sentra customers achieve enterprise-scale data protection and answer the important questions about their data. Sentra DSP provides a crucial layer of protection distinct from other infrastructure-dependent layers. It allows organizations to scale data protection across multi-clouds to meet enterprise demands and keep pace with ever-evolving business needs. And it does so very efficiently - without creating undue burdens on the personnel who must manage it.
 
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
-
 ### The Need for Continuous Compliance
 
 ### The Need for Continuous Compliance
@@ -1053,11 +1577,7 @@ First, Sentra's automated [data discovery and classification engine](https://www
 
 Sentra also can automate the process of identifying regulatory violations and ensuring adherence to compliance requirements using pre-built policies that update and evolve with compliance changes (including policies that map to [common compliance frameworks](https://www.sentra.io/use-cases/compliance)). It ensures that sensitive data stays within the correct environments and doesn’t travel to regions in violation of retention policies or without data encryption.
 
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/670783d8a6a3b06931f28aa0_670783b4b2eaf116e8eb08cb_Compliance%2520internal%2520history.webp)
-
 In contrast, manually tracking data inventory is inefficient, difficult to scale, and prone to errors and inaccuracies. This often results in delayed detection of risks, which can require significant time and effort to resolve as compliance audits approach.
-
-![Karin Zano](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/672bc649ea94ca5c41c11fa2_Frame%2051.png)
 
 ### 5 Cybersecurity Tips for Cybersecurity Awareness Month
 
@@ -1090,8 +1610,6 @@ Today, a business's “world” is extremely complex and ever-changing. Users ca
 Sentra helps by giving businesses a vantage point of their entire data estate, including multi-cloud and on-premises environments. We combine all of the above practices—granular discovery and classification, end-to-end data security posture management, data access governance, and continuous data detection and response into a single platform.
 
 To celebrate Cybersecurity Awareness Day, check out how our [data security platform](https://www.sentra.io/product) can help improve your security posture.
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### Top Advantages and Benefits of DSPM
 
@@ -1157,8 +1675,6 @@ The rise of DSPM in the past few years highlights its importance in enhancing se
 
 To learn more about DSPM, request a [demo](https://www.sentra.io/demo) today.
 
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
-
 ### GDPR Compliance Failures Lead to Surge in Fines
 
 ### GDPR Compliance Failures Lead to Surge in Fines
@@ -1167,15 +1683,27 @@ In recent years, the landscape of data privacy and protection has become increas
 
 The latest high-profile case involves Uber, which was recently fined a staggering €290 million ($324 million) by the Dutch Data Protection Authority (DPA) for violations related to the General Data Protection Regulation ( [GDPR](https://www.sentra.io/cloud-data-security-glossary/gdpr)). This is a wake up call for multinational companies.
 
-![Graph showing the rise of GDPR fines from 2018-2024](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e956818b868636d5caee5d_66e9566c838459b847121a14_GDPR%2520infographic%2520final.webp)
-
 The General Data Protection Regulation (GDPR) is a data protection law that came into effect in the EU in May 2018. Its goal is to give individuals more control over their personal data and unify data protection rules across the EU.
 
 GDPR gives extra protection to special categories of sensitive data. Both 'controllers' (who decide how data is processed) and 'processors' (who act on their behalf) must comply. Joint controllers may share responsibility when multiple entities manage data.
 
 #### **Who Does the GDPR Apply To?**
 
-GDPR applies to both EU-based and non-EU organizations that handle the data of EU residents. The regulation requires organizations to get clear consent for data collection and processing, and it gives individuals rights to access, correct, and delete their data. Organizations must also ensure strong data security and report any data breaches promptly.
+GDPR applies to both EU-based and non-EU organizations that handle the data of EU residents. The regulation requires organizations to obtain clear consent for data collection and processing, and it gives individuals rights to access, correct, and delete their data. Organizations must also ensure strong data security and report any data breaches promptly.
+
+#### What Are Data Subject Access Requests (DSARs)?
+
+One of the core rights granted to individuals under GDPR is the ability to understand and control how their personal data is used. This is made possible through [Data Subject Access Requests (DSARs)](https://www.sentra.io/blog/how-to-scale-dsar-compliance-without-breaking-your-team).
+
+A DSAR allows any EU resident to request access to the personal data an organization holds about them. In response, the organization must provide a comprehensive overview, including:
+
+- What personal data is being processed
+- The purpose of processing
+- Data sources and recipients
+- Retention periods
+- Information about automated decision-making
+
+Organizations are required to respond to DSARs within one month, making them a time-sensitive and resource-intensive obligation, especially for companies with complex data environments.
 
 ## What Are the Penalties for Non-Compliance with GDPR?
 
@@ -1239,13 +1767,9 @@ Sentra helps organizations maintain GDPR compliance by effectively tagging data 
 
 When EU citizens' Personally Identifiable Information ( [PII](https://www.sentra.io/cloud-data-security-glossary/personally-identifiable-information-pii)) is moved or stored outside of EU data centers, Sentra will detect and alert you in near real-time. Our continuous monitoring and scanning capabilities ensure that any data violations are identified and flagged promptly.
 
-![Example of EU citizens PII stored outside of EU data centers](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e83332a8d80f80268cf77d_66e8328532a01a90b9087c6d_GDPR%2520internal%2520image1.webp)
-
 Unlike traditional methods where data replication can obscure visibility and lead to issues during audits, Sentra provides ongoing visibility into data storage. This proactive approach significantly reduces the risk by alerting you to potential compliance issues as they arise.
 
 Sentra does automatic classification of localized data - specifically in this case, EU data. Below you can see an example of how we do this.
-
-![Sentra's automatic classification of localized data](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e83332a8d80f80268cf779_66e8324bb5e39c42ba7a8034_GDPR%2520internal%2520image2.webp)
 
 ## **The Rise of Compliance Violations: A Wake-up Call**
 
@@ -1254,8 +1778,6 @@ The increasing number of compliance violations and the related hefty fines shoul
 Solutions such as Sentra provide a cost-effective means to ensure sensitive data always has the right posture and security controls - no matter where the data travels - and can alert on exceptions that require rapid remediation. In this way, organizations can remain regulatory compliant, avoid the steep penalties for violations, and ensure the proper, secure use of data throughout their ecosystem.
 
 To learn more about how Sentra's Data Security Platform can help you stay compliant, avoid GDPR penalties, and ensure the proper, secure use of data, request a [demo](https://www.sentra.io/demo) today.
-
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
 
 ### How Does DSPM Safeguard Your Data When You Have CSPM/CNAPP
 
@@ -1323,8 +1845,6 @@ All of this complex analysis requires a holistic, data-centric view of your data
 
 To learn more about Sentra’s approach to data security posture management, read about how we use LLMs to [classify structured and unstructured sensitive data at scale](https://www.sentra.io/learn/how-sentra-accurately-classifies-sensitive-data-at-scale).
 
-![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)
-
 ### Sentra’s 3-Year Journey: From DSPM to Data Security Platform
 
 ### Sentra’s 3-Year Journey: From DSPM to Data Security Platform
@@ -1371,8 +1891,6 @@ We’re excited to continue to push the boundaries of what’s possible in data 
 
 A heartfelt thank you to our incredible team, loyal customers, supportive investors, and dedicated partners. We’re excited to keep driving innovation in data security and to continue our mission of making the digital world a safer place for everyone.
 
-![Daniel Suissa](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e10fec39de8a1da4bd1_daniel.webp)
-
 ### Overcoming Gartner’s Obstacles for DSPM Mass Adoption
 
 ### Overcoming Gartner’s Obstacles for DSPM Mass Adoption
@@ -1406,10 +1924,6 @@ While Gartner's 2024 Hype Cycle for Data Security outlines several obstacles to 
 Curious about how Sentra can elevate your data security?
 
 Request a [demo here](https://www.sentra.io/demo).
-
-[iframe](https://www.youtube.com/embed/9G7IPTMt5JE?start=11)
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### Data: The Unifying Force Behind Disparate GRC Functions
 
@@ -1467,8 +1981,6 @@ Curious about how Sentra can elevate your data security?
 
 Talk to our data security experts and [request a demo](https://www.sentra.io/demo) today.
 
-![Roy Levine](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00ef999fe4c1f9b7df1e8_66a20beb268b7516c4eca9b1_Roy%20Profile%20NB%201.webp)
-
 ### How Contextual Data Classification Complements Your Existing DLP
 
 ### How Contextual Data Classification Complements Your Existing DLP
@@ -1523,8 +2035,6 @@ In addition, we offer a simple, agentless deployment and prioritize the security
 
 ‍ [Watch a one-minute video](https://www.sentra.io/videos?name=connecting-your-cloud-accounts-to-sentra-for-robust-data-classification) to learn more about how Sentra discovers and classifies nuanced, sensitive data in a cloud environment.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### AI & Data Privacy: Challenges and Tips for Security Leaders
 
 ### AI & Data Privacy: Challenges and Tips for Security Leaders
@@ -1569,8 +2079,6 @@ These technologies have an increasing effect on various aspects of our lives, fr
 
 ## Secure LLMs Across the Entire Development Pipeline With Sentra
 
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/67890f6c69b2d55c102eaef2_667acac2897d9017494f4985_image%2520(42).webp)
-
 **Gain Comprehensive** **Visibility and Secure Training Data (** [**Sentra’s DSPM**](https://www.sentra.io/data-security-posture-management) **)**
 
 - Automatically discover and classify sensitive information within your training datasets.
@@ -1590,8 +2098,6 @@ Finally, Sentra helps you effortlessly comply with industry regulations like NIS
 As AI continues to redefine industries, prioritizing data privacy is essential for responsible AI development. Implementing stringent data protection measures, adhering to evolving regulatory frameworks, and maintaining proactive monitoring throughout the AI lifecycle are crucial.
 
 By prioritizing strong privacy measures from the start, developers not only build trust in AI technologies but also maintain ethical standards essential for long-term use and societal approval.
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
 
 ### Understanding the FTC Data Breach Reporting Requirements
 
@@ -1648,8 +2154,6 @@ Sentra’s [Data Security Posture Management](https://www.sentra.io/data-securit
 
 Below you can see the different data stores on the Sentra dashboard.
 
-![Sentra Dashboard data stores](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b2008f6c4932a4c6e31920_6666a4b3e447afc8697c3f18_FTC_data%2520catalog%2520image.webp)
-
 ## **Sentra Makes Data Access Governance (DAG) Easy**
 
 Sentra helps you understand which users have access to what data and enrich metadata catalogs for comprehensive data governance. The accurate classification of cloud data provides advanced classification labels, including business context regarding the purpose of data, and automatic discovery, enabling organizations to gain deeper insights into their data landscape. This both enhances data governance while also providing a solid foundation for informed decision-making.
@@ -1658,19 +2162,13 @@ Sentra's detection capabilities can pinpoint over permissioning to sensitive dat
 
 Below you can see an example of a user’s access and privileges to which sensitive data.
 
-![An example of a user’s access and privileges to which sensitive data](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b2008f6c4932a4c6e3191c_6666a4e0e32c77256f207a63_FTC_data%2520access%2520image.webp)
-
 ## **Breach Reporting With Sentra**
 
 Having a proper classification solution helps you understand what kind of data you have at all times.
 
 With Sentra, it's easier to pull the information for the report and understand whether there was sensitive data at the time of breach,  what kind of data there was, and who/what had access to it, in order to have an accurate report.
 
-![Example of Sentra's Data Breach Report](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b2008f6c4932a4c6e31918_66701a79427081f18861f8c2_DataBreach_filecut.webp)
-
 To learn more about how you can gain full coverage and an up-to-date data catalog with classification of sensitive data, [schedule a live demo](https://www.sentra.io/demo) with our experts.
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
 
 ### Key Practices for Responding to Compliance Framework Updates
 
@@ -1751,8 +2249,6 @@ Find out how Sentra can help your business [achieve data and privacy compliance 
 
 If you want to learn more, request a [demo](https://www.sentra.io/demo) with our data security experts.
 
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
-
 ### Retail Data Breaches: How to Secure Customer Data With DSPM
 
 ### Retail Data Breaches: How to Secure Customer Data With DSPM
@@ -1781,21 +2277,15 @@ Ensuring compliance with data security and privacy regulations is paramount in t
 
 You can also simplify the translation of requirements from various regulatory frameworks such as PCI-DSS, GDPR, CCPA, DPDPA, among others, using straightforward rules and policies. For instance, you'll receive notifications if regulated data is transferred between regions or to an insecure environment.
 
-![Sentra Dashboard Issues showing top compliance frameworks](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/676d3d96df6434dcb519cb74_6655e5957961b7f6605bbe2f_compliance%2520screenshot.webp)
-
 Furthermore, our system detects specific policy violations, such as [uncovering PCI-DSS violations](https://www.sentra.io/blog/how-pci-dss-4-0-improves-your-security-posture) that indicate classified information, including credit cards and bank account numbers, being publicly accessible or located outside of a PCI compliant environment. Finally, we generate comprehensive compliance reports containing all necessary evidence, including sensitive data categories, regulatory measures, security posture, and the status of relevant regulatory standards.
 
 ### **Mitigate Supply Chain Risks and Emerging Threats**
 
 Addressing supply chain risks and emerging threats is critical for safeguarding your organization. Sentra leverages real-time threat monitoring, [Data Detection and Response (DDR)](https://www.sentra.io/data-detection-and-response) to prevent fraud, data exfiltration, or breaches, thereby reducing downtime and ensuring the security of sensitive customer data.
 
-![Sentra dashboard example of sensitive data accessed from suspicious IP address](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e045301dbfc2793075483d_65a9053c4ff22249bc755dcf_Differences%2520Between%2520EDR%252C%2520XDR%252C%2520and%2520DDR%2520Blog%2520inner.webp)
-
 Sentra’s DSPM solution offers automated detection capabilities to alert you when third parties gain access to sensitive account and customer data, empowering you to take immediate action. By implementing least privilege access based on necessity, we help minimize supply chain risks, ensuring that only authorized individuals can access sensitive information.
 
 Additionally, Sentra’s DSPM enables you to enforce security posture and retention policies, thereby mitigating the risks associated with abandoned data. You'll receive instant alerts regarding suspicious data movements or accesses, such as those from unknown IP addresses, enabling you to promptly investigate and respond. In the event of a breach, our solution facilitates swift evaluation of its impact and enables you to initiate remedial actions promptly, thereby limiting potential damage to your organization.
-
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
 
 ### How to Prevent Data Breaches in Healthcare and Protect PHI
 
@@ -1808,8 +2298,6 @@ The hardest part about preventing data breaches in healthcare is continuously kn
 Healthcare organizations are facing a heightened risk of data breaches, posing a significant threat to trust and reputation. According to a recent study by [Cybersecurity Ventures](https://cybersecurityventures.com/), healthcare is the most targeted industry for cyberattacks, with a projected cost of $25 billion annually by 2024.
 
 The reality is that healthcare cyber attacks come at nearly double the cost of data breaches in other industries. Data breaches in the healthcare industry were the costliest at [$10.93 million](https://www.techtarget.com/whatis/34-Cybersecurity-Statistics-to-Lose-Sleep-Over-in-2020) on average, whereas the financial services were at an average of $5.90 million. This discrepancy can be attributed to the expansive attack surface within the healthcare domain, where organizations prioritize operational outcomes over security. The value of [Protected Health Information (PHI)](https://www.sentra.io/learn/pii-compliance-checklist) data to threat actors and the stringent regulatory landscape further contribute to the higher costs associated with healthcare breaches.
-
-![Healthcare data breaches 2009-2023](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/678e8784d95f72666e79b37e_6644bc75d74bab0ff6e1ffc9_Healthcare%2520Infographic-1.webp)
 
 The advent of cloud-based data sharing, while fostering collaboration, introduces a spectrum of risks. These include the potential for excessive permissions, unauthorized access, and the challenge of accurately classifying the myriad combinations of Protected Health Information (PHI).
 
@@ -1863,15 +2351,11 @@ Sentra is your solution for reducing data risks and preventing data breaches by 
 
 Sentra’s Data Security Posture Management (DSPM) solution streamlines and automates the management of your regulated patient data, preparing you for significant security audits. Gain a comprehensive view of all sensitive patient data, allowing our platform to automatically identify compliance gaps for proactive and swift resolution.
 
-![Sentra dashboard showing compliance frameworks](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/678e8784d95f72666e79b37b_6645e925b0e12e84c5fe9557_Compliance_HIPAA.webp)
-
 Sentra Dashboard shows the issues grouped by compliance frameworks, such as HIPAA and what the compliance posture is
 
 Easily translate your compliance requirements for HIPAA, GDPR, and HITECH into actionable rules and policies, receiving notifications when data is copied or moved between regions. With Sentra, running compliance reports becomes a breeze, providing you with all the necessary evidence, including sensitive data types, regulatory controls, and compliance status for relevant regulatory frameworks.
 
 To learn more about how you can enhance your data security posture, [**schedule a demo**](https://www.sentra.io/demo) with one of our data security experts.
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### Securing Your Microsoft 365 Environment with Sentra
 
@@ -1890,8 +2374,6 @@ A cloud-native approach is one viable, scalable solution to address the multitud
 ## The Challenge of Protecting Your Microsoft 365 Environment
 
 When employees use Microsoft 365, they can copy, move, or delete data instantly, making it challenging to keep track of where sensitive data resides and who has access to it. For instance, sensitive data can easily be stored improperly or left behind in a OneDrive after an employee leaves an organization. This is commonplace when using Teams and/or SharePoint for document collaborations. This misplaced sensitive data can become ammunition for an insider threat, such as a disgruntled employee who wants to cause company damage.
-
-![Assets contain plain text credit card numbers](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/67879f60711d8f15f052e48e_66389764bf5202509a5f2694_Microsoft%2520blog%2520screenshot.webp)
 
 Defending your Microsoft 365 environment against these risks can be difficult because Microsoft 365 stores data, such as Teams messages or OneDrive documents, in a free-form layout. It’s far more challenging to classify this unstructured data than it is to classify structured data because it doesn’t follow a clear schema and formatting protocol. For instance, in a structured database, sensitive information like names and birthdates would be stored in neighboring columns labeled “names” and “birthdates.” However, in an unstructured data environment like Microsoft 365, someone might share their birthdate or other PII in a quick Teams message to an HR staff member, which is then stored in SharePoint behind the scenes.
 
@@ -1912,8 +2394,6 @@ Its new integration with Microsoft 365 offers unmatched discovery and classifica
 ### Advanced ML/AI analysis for accurate data discovery.
 
 Sentra’s data security platform can autonomously discover data across your entire environment, including shadow data (i.e., misplaced, abandoned, or unknown data) or migrated data (data that may have sprawled to a lesser protected environment). It can then accurately rank data sensitivity levels by conducting in-depth analysis based on nuanced contextual information such as metadata, location, neighboring assets, and file path.
-
-![Sensitive data that is stored on-premise was found in a cloud environment](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/67879f60711d8f15f052e491_663897b6414b18d1b860466d_Screenshot%2520for%2520MS%2520365%2520Blog%25202024-05-02%2520at%252018.57.56.webp)
 
 This contextual approach differs from traditional security methods, which rely on very prescriptive data formats and overlook unstructured data that doesn’t fit into these formats. Sentra’s high level of accuracy minimizes the number of false positives, requiring less hands-on validation from your team.
 
@@ -1948,8 +2428,6 @@ After talking with many customers and prospects facing challenges securing Micro
 Dive deeper into the world of Data Security Posture Management ( [DSPM](https://www.sentra.io/data-security-posture-management)) and discover how it helps organizations secure their entire data estate, including cloud, on-prem, and SaaS data stores (like Microsoft 365).
 
 To learn more about Sentra's DSPM, and how you can secure your entire data estate, please visit [Sentra's demo page.](https://www.sentra.io/demo)
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### How to Meet the Security Challenges of Hybrid Data Environments
 
@@ -2005,8 +2483,6 @@ Because of this complexity, [legacy tools originally created for on prem environ
 
 Because it’s built for the complexity of the cloud but includes support for on prem infrastructure, a cloud-native data security platform can follow your data across your entire hybrid environment and compile complex security posture information into a single location. Sentra approaches this concept in a unique way, enabling teams to see data similarity and movement between on prem and cloud stores. By understanding data movement, organizations can minimize the risks associated with data sprawl, while simultaneously securely enabling the business.
 
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b201b3793e97fe21ee28d5_6630da14a9263b0730cd79ab_image%2520(37).webp)
-
 With a unified platform, teams can see a complete picture of their data security posture without needing to jump back and forth between the contexts and differing interfaces of on premises and cloud tools. A centralized platform also enables teams to consistently define and enforce policies for all types of data across all types of environments. In addition, it makes it easier to generate audit-ready reports and feed data into remediation tools from a single integration point.
 
 ## ‍ Sentra’s Cloud-Native Approach to Hybrid Environments
@@ -2028,8 +2504,6 @@ Sentra also won’t interrupt your production flow of data, as it works asynchro
 Dive deeper into how Sentra’s [data security posture management (DSPM)](https://www.sentra.io/data-security-posture-management) helps hybrid organizations secure data everywhere.
 
 To learn more about DSPM, [schedule a demo](https://www.sentra.io/demo) with one of our experts.
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
 
 ### How PCI DSS 4.0 Improves Your Security Posture
 
@@ -2087,15 +2561,9 @@ In today's threat landscape, security is an ongoing process. PCI DSS v4.0 emphas
 
 Here you can see a detected S3 bucket which contains credit card numbers and personal information which are not properly encrypted.
 
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b201981e2d4b41b6a69a41_667c1ffd31c7ee91dd56baeb_pci%2520dss%2520internal%2520image%25203.webp)
-
 This is an example of how Sentra creates a threat in real time, detecting suspicious activity in a sensitive AWS S3 bucket.
 
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b201981e2d4b41b6a69a1d_667c215f8e2e22a8c580c4eb_pci%2520dss%2520internal%2520image%25204.webp)
-
 In the dashboard below, you can see open security issues grouped by different compliances frameworks.
-
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b201981e2d4b41b6a69a23_667c22b4ab147de9b05c3618_pci%2520dss%2520internal%2520image%25205.webp)
 
 ## **Proactive Integration of New Compliance Controls**
 
@@ -2114,8 +2582,6 @@ Sentra plays a pivotal role in this ongoing compliance effort. Its comprehensive
 Furthermore, Sentra's [Data Security and Posture Management (DSPM)](https://www.sentra.io/data-security-posture-management) module facilitates the review of user accounts and access privileges, ensuring that access remains appropriate based on job function and addressing any inappropriate access, in line with PCI DSS v4.0 requirements. In addition, Sentra's scanning and classification engine, coupled with its DataTreks module, assists in incident response procedures by detecting all types of sensitive data, including PAN, across cloud accounts and tracking the movement of sensitive data, aiding in the remediation of data leaks or process gaps.
 
 By leveraging these capabilities, organizations can streamline their compliance efforts, mitigate risks, and maintain the security and integrity of cardholder data in accordance with PCI DSS v4.0 requirements.
-
-![Ran Shister](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00d980d97203c730de307_Shister%20(1)%202.webp)
 
 ### Understanding Data Movement to Avert Proliferation Risks
 
@@ -2173,7 +2639,7 @@ Detecting redundant data helps reduce cloud storage costs and drive up operation
 
 This not only enhances data security posture, but also contributes to a more streamlined and efficient data management strategy.
 
-“Sentra has helped us to reduce our risk of data breaches and to save money on cloud storage costs.”
+_“Sentra has helped us to reduce our risk of data breaches and to save money on cloud storage costs.”_
 
 -Benny Bloch, CISO at Global-e
 
@@ -2194,9 +2660,9 @@ This not only enhances data security posture, but also contributes to a more str
 
 1. Discover and accurately classify the most sensitive data and provide extensive context about it, for example:
 
-- Where it lives
-- Where it has been copied or moved to
-- Who has access to it
+- **Where it lives**
+- **Where it has been copied or moved to**
+- **Who has access to it**
 
 1. Highlight misconfigurations by correlating similar data that has different security posture. This helps you pinpoint the issue and adjust it according to the right posture.
 2. Quickly identify compliance violations, such as GDPR - when European customer data moves outside of the allowed region, or when financial data moves outside a PCI compliant environment.
@@ -2209,8 +2675,6 @@ Leveraging [Data Security Posture Management (DSPM)](https://www.sentra.io/data-
 Our innovative [cloud DLP](https://www.sentra.io/blog/its-time-to-embrace-cloud-dlp-and-dspm) tooling takes the lead in this scenario, offering a unified approach by integrating static and dynamic monitoring through DSPM and DDR. This integration provides a comprehensive view of sensitive data within your cloud account, offering an updated inventory and mapping of data flows. Our agentless solution automatically detects new sensitive records, classifies them, and identifies relevant policies. In case of a policy violation, it promptly alerts your security team in real time, safeguarding your crucial data assets.
 
 In addition to our robust data identification methods, we prioritize the implementation of access control measures. This involves establishing Role-based Access Control (RBAC) and Attribute-based Access Control (ABAC) policies, so that the right users have permissions at the right times.
-
-![Identifying data movement with Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b202f72a014e3eda6b9fad_660bdde1f2da09db43250b68_2.webp)
 
 ## **Identifying Data Movement With Sentra**
 
@@ -2228,8 +2692,6 @@ These are the 3 methods we are leveraging:
 
 Another example would be if PII is found in a lower environment, Sentra could detect if this is real or mock customer PII, based on whether this PII was also found in the production environment.
 
-![PII found in a lower environment](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66b202f72a014e3eda6b9faa_660bde1664db4067615044d8_1.webp)
-
 Understanding and managing data sprawl are critical tasks in the dynamic business landscape. Monitoring data movement, access, and posture enable teams to comprehend the full impact of data sprawl, connecting the dots for security analysts in assessing true risks and threats.
 
 Sentra addresses the challenge of data movement by utilizing advanced methods like hash, schema, and entity similarity to identify duplicate or similar data across different locations. Sentra's holistic Data Security Posture Management (DSPM) solution not only enhances data security but also contributes to a streamlined data management strategy.
@@ -2237,8 +2699,6 @@ Sentra addresses the challenge of data movement by utilizing advanced methods li
 The identified challenges and Sentra's robust methods emphasize the importance of proactive data management and security in the dynamic digital landscape.
 
 To learn more about how you can enhance your data security posture, [schedule a demo](https://www.sentra.io/demo) with one of our experts.
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### It's Time to Embrace Cloud DLP and DSPM
 
@@ -2303,8 +2763,6 @@ While Cloud Data Loss Prevention (DLP) helps to secure data in multi-cloud envir
 
 ‍ [Request a demo](https://www.sentra.io/demo) to learn more about our cloud DLP, DSPM and DDR offerings.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### New AI-Assistant, Sentra Jagger, Is a Game Changer for DSPM and DDR
 
 ### New AI-Assistant, Sentra Jagger, Is a Game Changer for DSPM and DDR
@@ -2339,8 +2797,6 @@ Sentra Jagger is an essential tool for simplifying the complexities of both [Dat
 
 When it comes to data security posture management (DSPM), Sentra Jagger empowers users to articulate security-related queries in plain language, seeking insights into cybersecurity strategies, vulnerability assessments, and proactive threat management.
 
-![Meet Sentra Jagger, your new data security assistant](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e93f64d664faab025c60a2_65e586918be4c3781d7adcba_Screen%25201B.webp)
-
 The language models not only comprehend the linguistic nuances but also translate these queries into actionable insights, making data security more accessible to a broader audience. This democratization of security knowledge is a pivotal step forward, enabling organizations to empower diverse teams (including privacy, governance, and compliance roles) to actively engage in bolstering their data security posture without requiring specialized cybersecurity training.
 
 ### **Data Detection and Response (DDR)**
@@ -2363,8 +2819,6 @@ The LLM-assistant, Sentra Jagger, communicates, "Hi Sara, it seems like a valuab
 
 Having captured all the necessary information, Sentra Jagger compiles a summary of the proposed policy and sends it to Sara for her review and confirmation. After Sara confirms the details, the LLM-assistant, Sentra Jagger seamlessly incorporates the new policy into the system. This streamlined interaction with LLMs enhances the efficiency of policy management for CISOs, enabling them to easily navigate, customize, and implement security measures in their organizations.
 
-![Create a policy with Sentra Jagger ](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e93f64d664faab025c60a6_65e58661862c36125d86bf01_Screen%25202A.webp)
-
 Creating a policy with Sentra Jagger
 
 The advent of Large Language Models (LLMs) has changed the way we interact with and understand technology. Building on the legacy of search engines, LLMs eliminate the learning curve, seamlessly translating natural language queries into software and technical actions. This innovation removes friction between users and technology, making intricate systems nearly invisible to the end user.
@@ -2372,10 +2826,6 @@ The advent of Large Language Models (LLMs) has changed the way we interact with 
 For Chief Information Security Officers (CISOs) and ITSecOps, LLMs offer a game-changing approach to cybersecurity. By interpreting natural language queries, Sentra Jagger bridges the comprehension gap between cybersecurity professionals and the intricate worlds of DSPM and DDR. This standardization of security knowledge allows organizations to empower a wider audience to actively engage in bolstering their data security posture and responding to security incidents, revolutionizing the cybersecurity landscape.
 
 To learn more about Sentra, [schedule a demo](https://www.sentra.io/demo) with one of our experts.
-
-[iframe](https://www.youtube.com/embed/svh5vkW9cDY)
-
-![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)
 
 ### Emerging Data Security Challenges In the LLM Era
 
@@ -2437,8 +2887,6 @@ AI has the remarkable capacity to reshape our world, yet this must be balanced w
 
 To learn more about DSPM, [**request a demo today.**](https://sentra.io/demo)
 
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
-
 ### Solving M&A Integration Challenges with Sentra's DSPM
 
 ### Solving M&A Integration Challenges with Sentra's DSPM
@@ -2465,8 +2913,6 @@ Failure to address data security challenges can result in not only financial los
 ## Rapid Assessment of Data Risk
 
 DSPM provides a rapid and straightforward assessment of data exposure risks, ensuring compliance with standards throughout the acquisition and integration efforts. Its unique capabilities include unparalleled detection of both known and unknown [shadow data](https://www.sentra.io/blog/securing-shadow-data) repositories, exceptional granular data classification, and posture and risk assessment for data, regardless of its location.
-
-![security posture score](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/65ba07330ddd65327fc55d56_fa3zG_uGxWvAjB-VaiJkAj38IOCGrUvGD8weRJPPqW48Lzg5Yp35gi0zLeM48kULyAFdjRvP7IZzI6xhwI05Io8IamJ-52roL3V2gkPIfULmZ1AdAuQRcuUc9iW1XLD9FiuyTdiJDyLZWiVhNW4pfRc.png)
 
 Cloud-native Data Security Posture Management (DSPM) requires no connectors, agents, or credentials for operation. This simplicity makes it a valuable asset for organizations seeking a comprehensive and efficient solution to enhance their data security measures throughout the intricate process of M&A integrations. Set up is quick and easy and no data ever leaves the target environment - so there is no impact to operations or increased security risk.
 
@@ -2500,8 +2946,6 @@ The Risk Sensitivity Score provided by Sentra's DSPM solution enables granular e
 In the dynamic multi-cloud landscape, where sensitive data is in constant motion, DSPM becomes indispensable. It addresses challenges such as unknown data risks, undetected data movement, and misconfigurations, providing the needed visibility and control for compliance with global regulations. In essence, a proactive approach, coupled with tools like DSPM, is essential for secure M&A integrations. Failure to address data security challenges not only poses financial threats but also jeopardizes reputational integrity. Prioritizing data security throughout the integration journey is crucial for success.
 
 _To learn more about DSPM,_ [_schedule a demo_](https://www.sentra.io/demo) _with one of our experts._
-
-![Alex Molotsky](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/67595942ca6a22e4fa891e2e_alex%20nbg.png)
 
 ### Prevent Sensitive Data Breaches With Data Detection & Response (DDR)
 
@@ -2558,11 +3002,21 @@ DDR provides rich near real-time context to complement DSPM. Sentra’s DDR is n
 
 Sentra takes a dual-pronged approach, combining proactive and reactive controls to fortify data security at every stage of a potential cyberattack:
 
-- ‍ **Weakening Defenses Detection:** Continuously monitor for unauthorized changes to data security posture, identifying escalated access privileges or changes in encryption levels. **‍**
+- ‍ **Weakening Defenses Detection:** Continuously monitor for unauthorized changes to data security posture, identifying escalated access privileges or changes in encryption levels.
+
+‍ **‍**
 - **Suspicious Access Detection:** Instant alerts are triggered when a third party or insider accesses sensitive information, enabling swift action to prevent potential malicious activities.
-- **Reconnaissance:** Detect an early stage of the attack when an attacker moves sensitive data across and within cloud networks in order to prepare for the data exfiltration stage. **‍**
-- **Data Loss and Ransomware Prevention:** Real-time monitoring and alerts for accidental or unauthorized data movement, coupled with the enforcement of least privilege data access, prevent potential breaches. **‍**
-- **Data Exfiltration Detection:** Sentra detects anomalous sensitive data movement in near real-time, providing quick notification and remediation before significant damages occur. **‍**
+
+‍
+- **Reconnaissance:** Detect an early stage of the attack when an attacker moves sensitive data across and within cloud networks in order to prepare for the data exfiltration stage.
+
+‍ **‍**
+- **Data Loss and Ransomware Prevention:** Real-time monitoring and alerts for accidental or unauthorized data movement, coupled with the enforcement of least privilege data access, prevent potential breaches.
+
+‍ **‍**
+- **Data Exfiltration Detection:** Sentra detects anomalous sensitive data movement in near real-time, providing quick notification and remediation before significant damages occur.
+
+‍ **‍**
 - **Breach Recovery Acceleration:** In the unfortunate event of a breach, Sentra provides guidance and contextual information, streamlining post-incident analysis and remediation.
 
 ### Seamless Integration for Enhanced Efficiency
@@ -2585,13 +3039,9 @@ Companies need these technologies for different reasons:
 - CDR for cloud infrastructure
 - DDR for cloud data stores
 
-![sensitive data that was accessed from suspicious IP address](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e045301dbfc2793075483d_65a9053c4ff22249bc755dcf_Differences%2520Between%2520EDR%252C%2520XDR%252C%2520and%2520DDR%2520Blog%2520inner.webp)
-
 With Sentra, organizations get the best of both worlds – proactive and reactive controls integrated for complete data protection. Sentra combines DDR with powerful Data Security Posture Management (DSPM), allowing users to detect and remediate data security risks efficiently. It's time to revolutionize data security with Sentra’s Data Detection and Response (DDR) – your comprehensive solution to safeguarding your most valuable asset: your data.
 
 To learn more, [schedule a demo](https://www.sentra.io/demo) with one of our data security experts.
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
 
 ### Navigating the SEC's New Cybersecurity and Incident Disclosure Rules
 
@@ -2639,8 +3089,6 @@ To minimize the impact of a data breach, the first crucial step is knowing the l
 
 From encryption to access controls, adopting a comprehensive security approach safeguards your organization against potential breaches. It’s crucial to conduct a thorough risk assessment to measure vulnerabilities and potential threats to your data. Understanding the risks allows for targeted and proactive risk management strategies.
 
-![Security posture score, which includes the data and issues overview, highlighting the top data classes at risk.](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/659fd442d564e345e4c5ea7a_6Mtv0smiTS3hbIVsrpSm_riQglm7QoI8f5RLfMipPaLXSLPpSj1ssAkaoATMs-MgRsDW05utL8z8wdbCpgzhmy2zMIyFkT_tgyXNMe6n0hLYSLVZ9lTzShuJWwJbyMfZgJ4NFEPr4nCPQ3nyAhbCrVU.png)
-
 _An example of a security posture score, which includes the data and issues overview, highlighting the top data classes at risk._
 
 ### The Day After: Maximizing the Pace to Handle the Impact (reputation, money, recovery, etc)
@@ -2648,8 +3096,6 @@ _An example of a security posture score, which includes the data and issues over
 In the aftermath of a breach, having a “Data Catalog” with data sensitivity ranking helps with understanding the materiality of the breach and quick resolution and reporting within the 4-day window.
 
 Swift incident response is also paramount; and this can be accomplished by establishing a rapid plan for mitigating the impact on reputation, finances, and overall recovery. This is where the data catalog comes into play again, by helping you understand which data was extracted, facilitating quick and accurate resolution. The next step for the ‘day after’ is actively managing your organization's reputation post-incident through transparent communication and decisive action, which contributes to trust and credibility rebuilding.
-
-![A complete catalog, showing the data stores, the account, the sensitivity and category of the data, as well as the data context.](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/659fd4b19391cf86bac95acb_0WW6PBFobbM5r5Sj1WOryJgxFZ9jE21KHQ_FKOaguioe44dYMQF_xXcRsCmSaI3cKxXn1dmnzvKg0Q-JdO7prHaXSroMNkCjOACMcJBeCFaCI8c9zNa_Dovu16O1xLC3LHDqT4xzbj4pSXAqIS6C9FE.png)
 
 _An example of a complete catalog, showing the data stores, the account, the sensitivity and category of the data, as well as the data context._
 
@@ -2664,8 +3110,6 @@ Efficient impact analysis enables compliance professionals to gauge materiality 
 By integrating Sentra, organizations meet regulatory demands, fortify data security, and navigate evolving compliance requirements. As the SEC shapes the cybersecurity landscape, Sentra guides towards a future where proactive incident management is a strategic imperative.
 
 To learn more, [schedule a demo](https://www.sentra.io/demo) with one of our experts.
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### What Is Shadow Data? Examples, Risks and How to Detect It
 
@@ -2775,8 +3219,6 @@ Stay informed, and take the necessary steps to protect your valuable data assets
 
 To learn more about how Sentra can help you eliminate the risks of shadow data, [schedule a demo](https://sentra.io/demo) with us today.
 
-![Aviv Zisso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df0de745f19f659c778_Asaf-2.webp)
-
 ### SoFi's Cloud Data Security Journey with Sentra
 
 ### SoFi's Cloud Data Security Journey with Sentra
@@ -2807,21 +3249,13 @@ SoFi's experience with Sentra formed a core part of the discussion, highlighting
 
 - **Data Catalog Creation**: Utilizing Sentra's discovery and classification capabilities, SoFi developed a centralized data catalog, enhancing the visibility and management of their data. Zach shared, “The next almost natural step to that is like the creation of a single place to understand and direct you to where all this data actually exists.”
 
-![data catalog creation](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e04557eb6948a6d94083fd_659689637a5c132fe032f25f_658065eb604de30583ea77b0_Screenshot%25202023-12-18%2520at%252017.27.26.webp)
-
 - **Compliance Adherence**: The webinar explored how SoFi used Sentra to map data to various compliance frameworks. Zach discussed the importance of custom data classes and policies, allowing for alignment with both industry standards and internal requirements. Sentra's capabilities extended beyond mere automation, becoming an integral part of SoFi's proactive approach to meeting and exceeding compliance expectations.
 
-![compliance adherence](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e04557eb6948a6d9408405_65968986c1d5c1ea1829e3c8_65806630c0b85dfc81302faf_Screenshot%25202023-12-18%2520at%252017.28.47.webp)
-
 - **Data Access Governance**: The conversation also covered how Sentra improved SoFi’s [data access governance](https://www.sentra.io/blog/cloud-data-governance-is-a-security-enabler). Pritam highlighted, “being able to go from a different lens and answer those questions is super nice.” This reflects the depth of insight and control that Sentra provided in managing data access.
-
-![data access governance](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e04557eb6948a6d94083ee_659689b1a31aa73c7b0e2cbb_6580664d97c81a2ed424d25d_Screenshot%25202023-12-18%2520at%252017.29.32.webp)
 
 ## The Critical Role of Accurate Data Classification
 
 Accurate data classification was a key topic, with the speakers discussing the challenges and importance of correctly identifying sensitive data. They stressed that accurate classification is foundational to successful data security programs, as it directly impacts the effectiveness of protection strategies. Further, they discussed how automating [data classification with Sentra](https://www.sentra.io/blog/building-a-better-dspm) proved crucial in their diverse data ecosystem, spanning various stores and cloud environments. Manual classification, given the complexity, would have taken a very long time, making the automated approach significantly valuable in streamlining the process and ensuring timely and accurate identification of sensitive data.
-
-![SoFi's data classification with Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e04557eb6948a6d94083f1_659689cf1e600bdd59b43c86_658066bd7c0060ddf38ea772_SoFi%2520Webinar%2520Quote%25201%2520-%2520Blog.webp)
 
 ## Integrating Sentra into SoFi’s Security Framework
 
@@ -2830,8 +3264,6 @@ The webinar concluded with reflections on the integration of Sentra into SoFi's 
 The insights from SoFi’s journey provide valuable lessons for organizations looking to enhance their data security in cloud-native environments. The discussion highlighted the importance of visibility, accurate classification, and a structured approach to data security, underlining the benefits of integrating advanced tools like Sentra into security strategies.
 
 Watch the [full SoFi webinar recording.](https://www.sentra.io/reports/securing-sensitive-data-starts-with-discovery-and-classification-sofis-dspm-story?utm_campaign=SoFi%20Webinar&utm_source=linkedin&utm_medium=social) ‍
-
-![Aviv Zisso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df0de745f19f659c778_Asaf-2.webp)
 
 ### Navigating Data Security Challenges: Tales from the Front Lines
 
@@ -2851,15 +3283,11 @@ Sentra's expertise in the ability to reduce the data attack surface by mitigatin
 
 A Fintech startup witnessed a significant reduction in storage utilization and costs by leveraging Sentra's data lifecycle policies. The platform's unique ability to group objects on Blob storage (such as S3, GCS and Azure Blob) provides a one-of-a-kind high level view of groups of objects which are not being used and are stored in an expensive storage tier. Sentra detected multiple cases of inefficient storage for such archives, which resulted in an increase of $50,000 a month in their monthly cloud bill, and this was quickly remediated.
 
-![Sentra sheds light on significant storage costs of unused shadow data](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e04569fdde4550e8ec9fec_6577013b875a275ad602b07d_Internal%2520blog%2520visual.jpeg)
-
 ## Fintech Startup Implements Least Privilege Access and Access Governance
 
 In the realm of sensitive data, implementing Least Privilege Access and Access Governance is paramount. Sentra empowers organizations to fortify their defenses by ensuring that only authorized personnel have access to sensitive information, and by creating a crystal clear data access graph for every identity. The [accurate classification of cloud data enhances](https://www.sentra.io/videos?name=sofi-dspm-webinar) control over data, supporting routine access reviews, reducing the potential blast radius of a security incident.
 
 In response to a suspected security incident, one of our forward-thinking financial customers leveraged Sentra to enhance their access governance. Sentra's detection capabilities pinpointed unnecessary permissions, prompting the organization to swiftly reduce them. This proactive measure not only mitigated the risk of potential breaches but also elevated the overall security posture.
-
-![Data Access Governance](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/6577010fb56db3a924283a9d_32Mvu-Bf8swN7VxojJLSvZht5Yd5rpU8CYVhFcl4lU8wgSWf00I_nQ7FdBh_G5ZMEm-BY--nnAQXSiZO_w7pvaKkzIIeU0_YqOI5R3GIgpGtpvKqAQruuwz88SC2SVJoiB_umLzDz_Y-giO7TouOOfY.png)
 
 Data Access Governance
 
@@ -2872,8 +3300,6 @@ I'm thrilled to share the success of an ongoing cataloging project with another 
 At Sentra, I believe we go beyond providing a solution; we're here to help you build a secure and compliant data environment. The [data security success stories](https://www.sentra.io/case-studies/papaya-global-embraces-a-data-centric-approach-to-enforce-data-security-policies) shared here underscore the dedication and innovation our customers bring to the table, and I’m honored to be a part of it.
 
 If you are eager to explore how Sentra can elevate your data security posture, don't hesitate to [reach out and get a live demo](https://www.sentra.io/demo). Let's embark on this journey together, where security meets success.
-
-![David Stuart](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00df8debdc808f3bdc224_DaveS-headshot-copy-1%201.webp)
 
 ### Safeguarding Data Integrity and Privacy in the Age of AI-Powered Large Language Models (LLMs)
 
@@ -2896,8 +3322,6 @@ Finally, organizations must be mindful of the potential for bias or error in LLM
 ## ‍ **OWASP Top 10 for LLM Applications**
 
 The [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/) identifies and prioritizes critical vulnerabilities that can arise in LLM applications. Among these, LLM03 Training Data Poisoning, LLM06 Sensitive Information Disclosure, LLM08 Excessive Agency, and LLM10 Model Theft pose significant risks that cybersecurity professionals must address. Let's dive into these:
-
-![OWASP Top 10 for LLM Applications](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e0457ea27afe62f29b94ec_659686cdd79db75764e742e2_657ed301640c34b60990a598_image%2520for%2520LLM%2520blog.webp)
 
 **LLM03: Training Data Poisoning**
 
@@ -2963,9 +3387,7 @@ LLMs are now also built into Sentra’s classification engine and [data security
 
 AI holds immense potential to transform our world, but its development and deployment must be accompanied by a steadfast commitment to data integrity and privacy. Protecting the integrity and privacy of data in LLMs is essential for building responsible and ethical AI applications. By implementing data protection best practices, organizations can mitigate the risks associated with data leakage, unauthorized access, and bias. Sentra's [DSPM solution](https://www.sentra.io/data-security-posture-management) provides a comprehensive approach to data security and privacy, enabling organizations to develop and deploy LLMs with speed and confidence.
 
-If you want to learn more about Sentra's Data Security Platform and how LLMs are now integrated into our classification engine to deliver unmatched accuracy for unstructured data, request a [**demo today**](https://www.sentra.io/demo)
-
-![Meni Besso](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00dde0d97203c730e37c1_20220203_061905918_iOS%201.webp)
+If you want to learn more about Sentra's Data Security Platform and how LLMs are now integrated into our classification engine to deliver unmatched accuracy for unstructured data, request a [**demo today.**](https://www.sentra.io/demo)
 
 ### Manage Data Security and Compliance Risks with DSPM - A Deep Dive into Common Data Regulations
 
@@ -3013,13 +3435,9 @@ This is how DSPM is indispensable in achieving HIPPA compliance:
 
 DSPM's advanced visibility into the entire multi-cloud data estate, combined with its classification accuracy, ensures no data is overlooked, even at the most granular level, automatically strengthening compliance posture and readiness.
 
-![Sentra Dashboard](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e0458e84128a7aa4c56586_6552fe389db1071c9d2b74bd_Dashboard.webp)
-
 Here you can see how Sentra measures an organization’s compliance posture in relation to industry benchmarks.
 
 To learn more, [book a demo](https://www.sentra.io/demo) and talk to a DSPM expert.
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### Why DSPM Should Take A Slice of Your Cyber Security Budget
 
@@ -3062,8 +3480,6 @@ Let's break it down and bottom line why DSPM should have a spot in your budget:
 
 2024 is approaching fast, and DSPM is an investment in long-term resilience against the ever-evolving data risk landscape.  In planning 2024's cybersecurity budget, it's essential to find a balance between simplification, innovation and cost reduction.  DSPM plays an important part in this intricate budgeting dance and stands ready to play its part.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### Transforming Data Security with Large Language Models (LLMs): Sentra’s Innovative Approach
 
 ### Transforming Data Security with Large Language Models (LLMs): Sentra’s Innovative Approach
@@ -3101,8 +3517,6 @@ Key developments of Sentra's classification engine encompass:
 - The capability for enterprises to train their LLMs and seamlessly integrate them into Sentra's classification engine for improved proprietary data classification.
 
 We are excited about the possibilities that this advancement will unlock for our customers as we continue to innovate and redefine [cloud data security](https://www.sentra.io/cloud-data-security). To learn more about Sentra’s LMM-powered classification engine, [request a demo](https://www.sentra.io/demo) today.
-
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
 
 ### Why Legacy Data Classification Tools Don't Work Well in the Cloud (But DSPM Does)
 
@@ -3172,8 +3586,6 @@ Second, Sentra’s modern architecture leverages the benefits of cloud ephemeral
 3. Data is likely to continue to be the most important asset of every business, as more organizations embrace the power of the cloud. Therefore, a DSPM will be a pivotal tool in realizing the true value of the data while ensuring it is always secured
 4. Accuracy is key and AI is an enabler for a good data classification tool
 
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
-
 ### Why Data is the New Center of Gravity in a Connected Cloud Security Ecosystem
 
 ### Why Data is the New Center of Gravity in a Connected Cloud Security Ecosystem
@@ -3218,8 +3630,6 @@ The value of this approach becomes evident when security professionals are empow
 
 The connection between [cloud security](https://www.sentra.io/cloud-data-security) and data is profound, shaping the future of cybersecurity practices. A [data-centric approach](https://www.youtube.com/watch?v=kYwIKEEGIKA&t=4s) to cloud security will empower organizations to harness the full potential of the cloud while safeguarding the most valuable asset: their data.
 
-![Catherine Gurwitz](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/666ead5f05d9b460c7b07a1c_catherine.webp)
-
 ### Sentra Featured in Gartner’s 2023 Hype Cycle for Data Security for Second Consecutive Year
 
 ### Sentra Featured in Gartner’s 2023 Hype Cycle for Data Security for Second Consecutive Year
@@ -3243,8 +3653,6 @@ Other highlights from the report include:
 
 To learn more about DSPM capabilities, check out this [2023 Gartner Report - Innovation Insight: Data Security Posture Management](https://www.sentra.io/reports/sentra-acknowledged-in-recent-gartner-report-innovation-insight-data-security-posture-management)
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### Why ChatGPT is a Data Loss Disaster: ChatGPT Data Privacy Concerns
 
 ### Why ChatGPT is a Data Loss Disaster: ChatGPT Data Privacy Concerns
@@ -3260,8 +3668,6 @@ What happens if sensitive data is pasted into ChatGPT? OpenAI's models continuou
 This situation creates a Data Loss Disaster, where employees are highly motivated and encouraged to copy and paste potentially sensitive information into systems that may store the submitted information indefinitely, without the ability to remove it or know exactly what information is stored within the complex models.
 
 This has led companies such as Apple, Samsung, Verizon, JPMorgan, Bank of America, and others to completely ban the use of ChatGPT across their organizations. The goal is to prevent employees from accidentally leaking sensitive data while performing their everyday tasks. This approach helps minimize the risk of sensitive data being leaked through ChatGPT or similar tools.
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### Why We Built ChatDLP: Because Banning Productivity Tools Isn't the Answer
 
@@ -3287,8 +3693,6 @@ In the past few months, we were approached by dozens of CISOs and security profe
 
 So we’ve developed [ChatDLP](https://chrome.google.com/webstore/detail/chatdlp-anonymizer-by-sen/mhbbkmkomifopjaejcnlnbfiijkaobcd?hl=en&authuser=0), a plugin for chrome and [Edge add-on](https://microsoftedge.microsoft.com/addons/detail/chatdlp-anonymizer-by-sen/gljdliklbnhbejoojmoeldbckilndbnn) that anonymizes sensitive data typed into ChatGPT _before_ it’s submitted to the model.
 
-![Example of ChatDLP](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e0464df33aa435672d61b9_64816f3786ceab8c7b4f103c_Screenshot%25202023-06-08%2520at%25209.03.23.png)
-
 _On the bottom of the image is the original query with sensitive data. Above you can see that it's been redacted._
 
 Sentra’s engine provides the ability to ensure with high accuracy that no sensitive data will be leaked from your organization, if ChatDLP is installed, allowing you to stay compliant with privacy regulations and avoid sensitive data leaks caused by letting employees use ChatGPT.
@@ -3308,8 +3712,6 @@ Sensitive data anonymized by ChatDLP includes:
 We built Chat DLP using Sentra's AI-based classification engine which detects both pattern-based and free text sensitive data using advanced LLM (Large Language Model) techniques - the same technology used by ChatGPT itself.
 
 You know that there’s no business case to be made for blocking ChatGPT in your organization. And now with ChatDLP - there’s no security reason either. Unleash the power of ChatGPT securely.
-
-![Alex Molotsky](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/67595942ca6a22e4fa891e2e_alex%20nbg.png)
 
 ### Sentra Integrates with Amazon Security Lake, Providing a Data First Security Approach
 
@@ -3334,8 +3736,6 @@ Sentra's technology allows security teams to easily discover, classify, and asse
 The Open Cybersecurity Schema Framework (OCSF) is a set of standards and best practices for defining, sharing, and using cybersecurity-related data. By adopting OCSF, Sentra seamlessly exchanges cybersecurity-related data with various security tools, enhancing the efficiency and effectiveness of these solutions. Security Lake is one of the vendors that supports OCSF, enabling mutual customers to enjoy the benefit of the integration.
 
 This powerful integration ultimately offers organizations a smart and more efficient way to prioritize and address security risks based on the sensitivity of their data. With Sentra's data-first security approach and Security Lake's analytics enabling capabilities, organizations can now effectively protect their most valuable assets and improve their overall security posture. By leveraging the power of both platforms, security teams can focus on what truly matters: securing their most sensitive data and reducing risk across their organization.
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### Cloud Data Hygiene is an Underrated Security Enabler
 
@@ -3383,8 +3783,6 @@ Finally, keep cloud API and data storage expenses in check by continuously track
 
 Cloud data is a means to a very valuable end. Adopting technology and processes that facilitate effective cloud data hygiene enables [cloud data security](https://www.sentra.io/cloud-data-security). And seamless cloud data security enables enterprises to unlock the vast yet often hidden value of their data.
 
-![Veronica Marinov](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e9a24e91777a7b8ea3b_66c45219029f885465f05c2e_veronica%20new%20nobackground.webp)
-
 ### Use Redshift Data Scrambling for Additional Data Protection
 
 ### Use Redshift Data Scrambling for Additional Data Protection
@@ -3404,8 +3802,6 @@ So how to protect yourself against these attacks and minimize your [data attack 
 ## What is Redshift Data Masking?
 
 Redshift data masking is a technique used to protect sensitive data in [Amazon Redshift](https://aws.amazon.com/redshift/); a cloud-based data warehousing and analytics service. Redshift data masking involves replacing sensitive data with fictitious, realistic values to protect it from unauthorized access or exposure. It is possible to enhance [data security](https://www.sentra.io/cloud-data-security-glossary/data-security-compliance) by utilizing Redshift data masking in conjunction with other security measures, such as access control and encryption, in order to create a comprehensive data protection plan.
-
-![What is Redshift Data Masking](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e0466f6969aa8f7af180d4_645264cef5d46b40fa19bbc0_Screenshot%25202023-05-03%2520at%252016.42.28.png)
 
 ## What is Redshift Data Scrambling?
 
@@ -3431,8 +3827,6 @@ The following steps are explained using an example code just for a better unders
 
 [Create a new Redshift cluster](https://docs.aws.amazon.com/ses/latest/dg/event-publishing-redshift-cluster.html) or use an existing cluster if available.
 
-![Redshift create cluster](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/644f5ad44feacc7c911269dd_39bcb4e8.png)
-
 ### Step 2: Define a scrambling key
 
 Define a scrambling key that will be used to scramble the sensitive data.
@@ -3454,9 +3848,8 @@ scramble_key VARCHAR := 'MyScramblingKey';
 BEGIN
 -- Scramble the input string using the key
 -- and return the scrambled output
-RETURN ;
-END;
-$$ LANGUAGE plpgsql;
+RETURN
+```
 
 Here, we are creating a UDF named scramble that takes a string input and returns the scrambled output. The function is defined as STABLE, which means that it will always return the same result for the same input, which is important for data scrambling. You will need to input your own scrambling logic.
 
@@ -3490,27 +3883,22 @@ Utilizing a random number generator, the Random option quickly secures data, alt
 import random
 import string
 import psycopg2
-
 def random_scramble(data):
  scrambled = ""
  for char in data:
  scrambled += random.choice(string.ascii_letters + string.digits)
  return scrambled
-
 # Connect to your Redshift cluster
 conn = psycopg2.connect(host='your_host', port='your_port', dbname='your_dbname', user='your_user', password='your_password')
 cursor = conn.cursor()
 # Fetch data from your table
 cursor.execute("SELECT sensitive_column FROM your_table;")
 rows = cursor.fetchall()
-
 # Scramble the data
 scrambled_rows = [(random_scramble(row[0]),) for row in rows]
-
 # Update the data in the table
 cursor.executemany("UPDATE your_table SET sensitive_column = %s WHERE sensitive_column = %s;", [(scrambled, original) for scrambled, original in zip(scrambled_rows, rows)])
 conn.commit()
-
 # Close the connection
 cursor.close()
 conn.close()
@@ -3519,23 +3907,17 @@ The Shuffle option enhances security by rearranging data characters. However, it
 
 import random
 import psycopg2
-
 def shuffle_scramble(data):
  data_list = list(data)
  random.shuffle(data_list)
  return ''.join(data_list)
-
 conn = psycopg2.connect(host='your_host', port='your_port', dbname='your_dbname', user='your_user', password='your_password')
 cursor = conn.cursor()
-
 cursor.execute("SELECT sensitive_column FROM your_table;")
 rows = cursor.fetchall()
-
 scrambled_rows = [(shuffle_scramble(row[0]),) for row in rows]
-
 cursor.executemany("UPDATE your_table SET sensitive_column = %s WHERE sensitive_column = %s;", [(scrambled, original) for scrambled, original in zip(scrambled_rows, rows)])
 conn.commit()
-
 cursor.close()
 conn.close()
 
@@ -3553,18 +3935,14 @@ def caesar_cipher(data, key):
  else:
  encrypted += char
  return encrypted
-
 conn = psycopg2.connect(host='your_host', port='your_port', dbname='your_dbname', user='your_user', password='your_password')
 cursor = conn.cursor()
-
 cursor.execute("SELECT sensitive_column FROM your_table;")
 rows = cursor.fetchall()
-
 key = 5
 encrypted_rows = [(caesar_cipher(row[0], key),) for row in rows]
 cursor.executemany("UPDATE your_table SET sensitive_column = %s WHERE sensitive_column = %s;", [(encrypted, original) for encrypted, original in zip(encrypted_rows, rows)])
 conn.commit()
-
 cursor.close()
 conn.close()
 
@@ -3596,16 +3974,16 @@ CREATE TABLE encrypted_table (  sensitive_data VARCHAR(255) ENCODE ZSTD ENCRYPT
 
 Access to encryption keys should be restricted to authorized personnel to prevent unauthorized access to sensitive data. You can achieve this by setting up an AWS KMS (Key Management Service) to manage your encryption keys. Here's an example of how to restrict access to an encryption key using KMS in Python:
 
+import boto3
 kms = boto3.client('kms')
-
 key_id = 'your_key_id_here'
 grantee_principal = 'arn:aws:iam::123456789012:user/jane'
-
 response = kms.create_grant(
  KeyId=key_id,
  GranteePrincipal=grantee_principal,
  Operations=['Decrypt']
 )
+print(response)
 
 ### Regularly Rotate Encryption Keys
 
@@ -3627,7 +4005,7 @@ To track user access to sensitive data and identify any unwanted access, logging
 You may use the following SQL statement to make query logging available in Amazon Redshift:
 
 ```
-ALTER DATABASE SET enable_user_activity_logging=true;
+ALTER DATABASE
 ```
 
 The stl query system table may be used to retrieve the logs once query logging has been enabled. For instance, the SQL query shown below will display all queries that reached a certain table:
@@ -3636,17 +4014,11 @@ The stl query system table may be used to retrieve the logs once query logging h
 
 Data scrambling is often a resource-intensive practice, so it’s good to monitor CPU usage, memory usage, and disk I/O to ensure your cluster isn’t being overloaded. In Redshift, you can use the svl\_query\_summary and svl\_query\_report system views to monitor query performance. You can also use [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) to monitor metrics such as CPU usage and disk space.
 
-![Amazon CloudWatch](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/644f5af04feacc627d126a3f_a8ee3771.png)
-
 ### Establishing Backup and Disaster Recovery
 
 In order to prevent data loss in the case of a disaster, backup and disaster recovery mechanisms should be put in place. Automated backups and manual snapshots are only two of the backup and recovery methods offered by Amazon Redshift. Automatic backups are taken once every eight hours by default.
 
 Moreover, you may always manually take a snapshot of your cluster. In the case of a breakdown or disaster, your cluster may be restored using these backups and snapshots. Use this SQL query to manually take a snapshot of your cluster in Amazon Redshift:
-
-```
-CREATE SNAPSHOT ;
-```
 
 To restore a snapshot, you can use the RESTORE command. For example:
 
@@ -3696,8 +4068,6 @@ Redshift data scrambling is an effective tool for additional data protection and
 
 Once you begin to accustom to Redshift data scrambling, you can upgrade your security techniques with different techniques for scrambling data and best practices including encryption practices, logging, and performance monitoring. Organizations may improve their data security posture management ( [DSPM](https://www.sentra.io/data-security-posture-management)) and reduce the risk of possible breaches by adhering to these recommendations and using an efficient strategy.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### Cloud Data Governance is a Security Enabler
 
 ### Cloud Data Governance is a Security Enabler
@@ -3744,8 +4114,6 @@ It’s crucial for cloud-facing organizations to remember that the distributed n
 
 _To learn more about how Sentra and Data Lifecycle Security can help you apply effective cloud data governance,_ [_watch a demo here._](https://www.sentra.io/demo)
 
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
-
 ### Sentra Named a Representative Vendor in Gartner’s Innovation Insight: Data Security Posture Management Report
 
 ### Sentra Named a Representative Vendor in Gartner’s Innovation Insight: Data Security Posture Management Report
@@ -3782,8 +4150,6 @@ Let's take a look at some of the key findings, taken directly from Gartner's Inn
 
 This is just the beginning of a fast growing and flourishing category that will continue to evolve and mature in addressing the challenges and complexity of accurately securing dynamic cloud data.
 
-![Yair Cohen](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e01b4a3b2161fc6d75d_yair%202.webp)
-
 ### How DSPM Reduces the Risk of Data Breaches
 
 ### How DSPM Reduces the Risk of Data Breaches
@@ -3801,16 +4167,13 @@ Because of this, DSPM is well-positioned to reduce the risk of catastrophic data
 1. **Finding and eliminating shadow data to reduce the data attack surface:**
 
 **‍** [Shadow data](https://www.sentra.io/blog/securing-shadow-data) is any data that has been stored, copied, or backed up in a way that does not subject it to your organization’s data management framework or data security policies. Shadow data may also not be housed according to your preferred security structure, may not be subject to your access control limitations, and it may not even be visible to the tools you use to monitor and log data access.
-
 Shadow data is basically data in the wrong place, at the wrong time. And it is _gold_ for attackers – publicly accessible sensitive data that nobody really knows is there. Aside from the risk of breach, shadow data is an extreme compliance risk. Even if an organization is unaware of the existence of data that contains customer or employee data, intellectual property, financial or other confidential information – it is still responsible for it.
 
 Where is all this shadow data coming from? Aside from data that was copied and abandoned, consider sources like decommissioned legacy applications – where historical customer data or PII is often just left sitting where it was originally stored. And there is also data produced by shadow IT applications, or databases used by niche app. And what about cloud architecture changes? When data is lifted and shifted, unmanaged or orphaned backups that contain sensitive information often remain.
 
 DSPM solutions locate shadow data by looking for it where it’s not supposed to be. Then, DSPM solutions provide actionable guidance for deletion and/or remediation. Advanced DSPM solutions search for sensitive information across different security postures, and can also discover when multiple copies of data exist. What’s more, DSPM solutions scrutinize privileges across multiple copies of data, identifying who can access data and who should not be able to.
 
-‍
 2. ‍ **‍** ‍ **Identifying over-privileged users and third parties:**
-
 **‍** [Controlling access to data](https://www.sentra.io/access-controls-that-move-the-power-of-data-security-posture-management) has always been one of the basics of cybersecurity hygiene. Traditionally, enterprises have relied on three basic types of access controls for internal users and third parties:
 
 **·** Access Control Lists - Straight lists of which users have read/write access
@@ -3821,9 +4184,7 @@ DSPM solutions locate shadow data by looking for it where it’s not supposed to
 
 Yet traditional data access controls are tied to one or more data stores or databases – like a specific S3 bucket. RBAC or ABAC policies ensure only the right users have permissions at the right times to these assets. But if someone copies and pastes data from that bucket to somewhere else in the cloud environment, what happens to the RBAC or ABAC policy? The answer is simple: it no longer applies to the copied data. DSPM solves this by ensuring that access control policy travels with data, across both cloud environments. Essentially, DSPM extends access control across any environment by enabling admins to understand where data came from, who originally had access to it, and who has access now.
 
-‍
 3. ‍ **Identifying data movement, making sure security posture follows:**
-
 **‍** Data moves through the public cloud – it’s the reason the cloud is so efficient and productive. It lets people use data in interesting ways. Yet the distributed nature of cloud computing means that organizations may not understand exactly where all applications and data are stored. Third-party hosting places serious limits on the visibility of data access and sharing, and multi-cloud environments frequently suffer from inconsistent security regimes.
 
 Basically, similar to the access control challenges - when data moves across the cloud, its security posture doesn’t necessarily follow. DSPM solves this by noticing when data moves and how its security posture changes. By focusing on finding and securing sensitive data, as opposed to securing cloud infrastructure or applications, DSPM solutions first discover sensitive data (including shadow or abandoned data), classify data types using AI models, then determine whether the data has the proper security posture. If it doesn’t, DSPM solutions notify the relevant teams and coordinate remediation.
@@ -3833,8 +4194,6 @@ Basically, similar to the access control challenges - when data moves across the
 Data security in the cloud is  a growing challenge. And contrary to some perceptions – the security for data created in the cloud, sent to the cloud, or downloaded from the cloud is not the responsibility of the cloud provider ( [AWS](https://www.sentra.io/8-aws-security-tools-and-features-everyone-should-know), [Azure](https://www.sentra.io/blog/azure-security-tools), [GCP](https://www.sentra.io/cloud-data-security-glossary/google-cloud-platform), etc.). This responsibility falls squarely on the shoulders of the cloud customer.
 
 More and more organizations are choosing the [DSPM](https://thehackernews.com/2023/08/what-is-data-security-posture.html) paradigm to secure cloud data. In this dynamic and highly-complex ecosystem, DSPM ensures that sensitive data always has the correct security posture – no matter where it’s been duplicated or moved to. This dramatically lowers the risk of catastrophic data leaks, and dramatically raises user and admin confidence in data security.
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### 5 Key Findings for Cloud Data Security Professionals from ESG's Survey
 
@@ -3885,8 +4244,6 @@ It’s clear that as organizations plan for a future with increasing amounts of 
 
 86% of organizations surveyed now have a cloud security architect role, and 11% more are hiring for this role in the next 12-24 months - and for good reason. Of course, the other teams, including infrastructure and development continue to play a major role. But there is finally some agreement that sensitive data requires its own focus and is best secured by the cloud security architect.
 
-![Asaf Kochan](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e58fec39de8a1da8f5b_1714768436023%20(1)%201.webp)
-
 ### Thoughts on Sentra and the Data Security Landscape After Our Series A
 
 ### Thoughts on Sentra and the Data Security Landscape After Our Series A
@@ -3925,8 +4282,6 @@ These questions are valid, and any cyber company operating in a new space must a
 
 I want to end by again emphasizing how thankful I am for having amazing investors, partners, and team members join us over the last 18 months. So much has been accomplished already, but the industry shift to data centric security has only just begun. I’m looking forward to continuing to protect the most important business asset in the world - our data.
 
-![Yoav Regev](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e428d6e6aaf336ea1f5_Yoav%20Regev%201.webp)
-
 ### Sentra Raises $30M Series A to Lead the Data-Centric Approach to Cloud Security
 
 ### Sentra Raises $30M Series A to Lead the Data-Centric Approach to Cloud Security
@@ -3961,8 +4316,6 @@ In the future, organizations will be able to move quickly and securely at the sa
 
 We’re building this future right now.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### Cloud Data Breaches: Cloud vs On Premise Security
 
 ### Cloud Data Breaches: Cloud vs On Premise Security
@@ -3981,8 +4334,6 @@ An on-premise architecture is the traditional way organizations manage their net
 
 Despite these advantages, around half of data breaches are still from on-premise architectures rather than cloud. This is caused by a number of factors. Most importantly, cloud providers like Amazon Web Services, [Azure](https://www.sentra.io/blog/azure-security-tools), and [GCP](https://www.sentra.io/blog/gcp-security-tools) are responsible for some aspects of security. Additionally, while securing a perimeter might be more straightforward than the defense in depth approach required for the cloud, it’s also easier for attackers to find and exploit on-premise vulnerabilities by easily searching public exploit databases and then finding organizations that haven’t patched the relevant vulnerability.
 
-## _Data Security in the Cloud_
-
 Infrastructure as a Service (IaaS) Cloud computing runs on a ‘shared responsibility model’. The cloud provider is responsible for the hardware, so they provide the physical security, but protecting the software, applications, and data is still the enterprise’s responsibility. And while some data leaks are the result of poor physical security, many of the major leaks today are the result of [misconfigurations and vulnerabilities](https://www.sentra.io/learn/cloud-vulnerability-management), not someone physically accessing a hard drive.
 
 So when people claim the cloud is better for data security than on premises, what exactly do they mean?
@@ -3990,8 +4341,6 @@ So when people claim the cloud is better for data security than on premises, wha
 Essentially they’re saying that data in the cloud is more secure **when the cloud is correctly set up.** And no, this is not as obvious as it sounds. Because by definition the cloud needs to be accessed through the internet, that also makes it shockingly easy to accidentally expose data to everyone through the internet.
 
 For example, S3 buckets that are improperly configured have been responsible for some of the most well known cloud data breaches, including Booz Allen Hamilton , Accenture, and Prestige Software. This just isn’t a concern for on-prem organizations.  There’s also the matter of the _quantity_ of data being created in the cloud. Because the cloud is provisioned on demand, developers and engineers can easily duplicate databases and applications, and accidentally expose the duplicates to the internet.
-
-![](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66dd88ad46ca8103cfa4ecc2_6641cb0925cd55cf53515fe2_63ece000fd04588d8b353a4d_image-png.webp)
 
 _Amazon’s warning against leaving buckets exposed to the internet_
 
@@ -4006,8 +4355,6 @@ So what’s the verdict on data breaches in the cloud vs data breaches on premis
 ## Is the Cloud More Secure Than On Premise?
 
 Like we warned in the beginning, the answer is an unsatisfying “it depends”. If your organization properly manages the cloud, configures the basic security features, limits data sprawl, and has cloud experts managing your environment, the cloud can be a fortress. Ultimately though, this may not be a conversation most enterprises are having in the coming years. With the advantages of scalability and speed, many new enterprises are cloud-first and the question won’t be ‘is the cloud secure’ but is _our cloud’s data_ secure.
-
-![Sagit Dotan](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e38fec39de8a1da6c70_sagit.webp)
 
 ### No DevOps? No Problem (For a While, At Least)
 
@@ -4037,8 +4384,6 @@ We knew it was time to bring on dedicated DevOps pros when we got to the point w
 For example, just before GA, our team needed to make absolutely sure that our infrastructure was stable, that the product was monitored and we had full visibility of issues. To make this happen, we had to put a hold on new features and focus solely on infrastructure. Lesson learned: it was time for DevOps.
 
 Not having DevOps is perfectly OK…until it’s not. One big takeaway here is that you need to watch scale carefully between handling infrastructure and handling features. Once it tips too far towards features, it’s time to consider DevOps. The other takeaway is that you need to consider everything in terms of dev velocity versus costs. Engineer time is expensive, on one hand, but so is slower dev velocity. The question is, where is the breaking point for your organization?
-
-![Daniel Suissa](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e10fec39de8a1da4bd1_daniel.webp)
 
 ### Protecting Source Code in the Cloud
 
@@ -4077,8 +4422,6 @@ Source code is the data that absolutely cannot be allowed to leak. By taking the
 
 [Book a demo](https://www.sentra.io/demo) and learn how Sentra’s solution can redefine your cloud data security landscape.
 
-![Hanan Zaichyk](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00f39bdd9030b778f5195_66b355152f7ed61b4ead8674_66aa1c6511ae957e581c2f47_Hanan_nb%201.webp)
-
 ### Building a Better DSPM by Combining Data Classification Techniques
 
 ### Building a Better DSPM by Combining Data Classification Techniques
@@ -4114,14 +4457,11 @@ There are a number of ways we can confirm this.
 - **Verify the integrity of the results:** Credit cards have a check digit, the last digit in any card number, designed to avoid typos. We can verify it is correct. We can also verify the first few digits are in the ranges allowed for credit cards.
 - **Model internal structure of the data:** If data is in tabular form, such as a .csv file, we can create models of relationships between column values, so that only if, for example, 50% of values are valid credit card numbers will the whole column be labeled as such.
 - **Look at the data’s ‘detection context’:** If data is in tabular form, such as a .csv file, we can increase our certainty of a credit card detection if the column is named “credit card number”. The relationships between different columns can be used to add missing context, so a column suspected to hold credit card numbers will seem much more probable if there’s an expiration date column and a CVV column in the same table. When the data is in free form text format (as in a .docx file) this is much more complicated, and tools such as natural language understanding and keywords must be applied to accurately classify the data.
-
 These are a few examples of methods that when combined together appropriately can yield results that are not only much more accurate, but also much more useful for explaining and understanding the reasoning behind these decisions.
 
 Data classification has long been a challenge because of the limitations in different models. Only by using different methods in conjunction are we able to classify with the level of accuracy required to assist data and security teams responsible for securing large quantities of cloud data.
 
 To learn more about our approach to cloud data security, [**get a demo of the Sentra platform here.**](https://go.sentra.io/demo-video)
-
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
 
 ### Minimizing your Data Attack Surface in the Cloud
 
@@ -4200,8 +4540,6 @@ Database Governance proxies such as Satori and Immuta control how developers int
 
 Reducing the data attack surface reflects the reality of the attackers mindset. They’re not trying to get into your infrastructure to breach the network. They’re doing it to find the sensitive data. By ensuring that sensitive data always is secured, tokenized, encrypted, and  with least privilege access, they’ll be nothing valuable for an attacker to find - even in the event of a breach.
 
-![Ron Reiter](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e2ea31cc6c1e939a9e9_Ron%20Reiter.webp)
-
 ### Top 6 Azure Security Tools, Features, and Best Practices
 
 ### Top 6 Azure Security Tools, Features, and Best Practices
@@ -4211,8 +4549,6 @@ Nowadays, it is evident that the rapid growth of cloud computing has changed how
 However, as the dependence on cloud service providers continues, the need for security also increases. One needs to measure and safeguard [sensitive data](https://www.sentra.io/blog/types-of-sensitive-data-what-cloud-security-teams-should-know) to protect against possible threats. Remember that security is a shared responsibility - even if your cloud provider secures your data, the security will not be absolute. Thus, understanding the security features of a particular cloud service provider becomes significant.
 
 ## **Introduction to Microsoft Azure Security Services**
-
-![Image of Microsoft Azure, explaining how to strengthen security posture with Azure](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da1342bd_6486e6b715126ca2778284cd_microsoft-azure.png)
 
 [Microsoft Azure](https://azure.microsoft.com/en-us/explore/security/) offers services and tools for businesses to manage their applications and infrastructure. Utilizing Azure ensures robust security measures are in place to protect sensitive data, maintain privacy, and mitigate potential threats.
 
@@ -4235,8 +4571,6 @@ Let’s explore some features and tools, and discuss their key features and best
 
 ## Azure Active Directory Identity Protection
 
-![Image of Azure’s Identity Protection page, explaining what is identity protection](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da1342c8_6486e821499884b3b3aa697f_azure-identity-protection.png)
-
 [Identity protection](https://learn.microsoft.com/en-us/azure/active-directory/identity-protection/overview-identity-protection) is a cloud-based service for the Azure AD suite. It focuses on helping organizations protect their user identities and detect potential security risks. Moreover, it uses advanced machine learning algorithms and security signals from various sources to provide proactive and adaptive security measures. Furthermore, leveraging machine learning and data analytics can identify risky sign-ins, compromised credentials, and malicious or suspicious user behavior. How’s that? Sounds great, right?
 
 #### 1\. Risk-Based User Sign-In Policies
@@ -4249,8 +4583,6 @@ The service detects and alerts organizations about potentially compromised or ri
 
 - **Educate Users About Identity Protection** \- Educating users is crucial for maintaining a secure environment. Most large organizations now provide security training to increase the awareness of users. Training and awareness help users protect their identities, recognize phishing attempts, and follow security best practices.
 - **Regularly Review and Refine Policies** \- Regularly assessing policies helps ensure their effectiveness, which is why it is good to continuously improve the organization’s Azure AD Identity Protection policies based on the changing threat landscape and your organization's evolving security requirements.
-
-![Image of Azure Firewall page, explaining what is Azure Firewall](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da1342cb_6486e8bbfdb473690e86824d_azure-firewall-page.png)
 
 Microsoft offers an [Azure Firewall](https://learn.microsoft.com/en-us/azure/firewall/overview), which is a cloud-based network security service. It acts as a barrier between your Azure virtual networks and the internet. Moreover, it provides centralized network security and protection against unauthorized access and threats. Furthermore, it operates at the network and application layers, allowing you to define and enforce granular access control policies.
 
@@ -4274,8 +4606,6 @@ Azure Firewall is highly available and scalable. It can automatically scale with
 
 ## Azure Resource Locks
 
-![Image of Azure Resource Locks page, explaining how to lock your resources to protect your infrastructure](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b8247586f1da1342b2_6486e93568e2e57dbcc0ad7f_azure-resource-locks-page.png)
-
 [Azure Resource Locks](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json) is a Microsoft Azure feature that allows you to restrict Azure resources to prevent accidental deletion or modification. It provides an additional layer of control and governance over your Azure resources, helping mitigate the risk of critical changes or deletions.
 
 Two types of locks can be applied:
@@ -4292,8 +4622,6 @@ This lock type provides the highest level of protection by preventing both modif
 - **Leverage Azure Policy for Lock Enforcement** \- Use Azure Policy alongside Resource Locks to enforce compliance with your governance policies. It is because Azure Policy can automatically apply locks to resources based on predefined rules, reducing the risk of misconfigurations.
 
 ## Azure Secure SQL Database Always Encrypted
-
-![Image of Azure Always Encrypted page, explaining how it works](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da13430f_6486e9d370b81eb787f96506_azure-always-encrypted-page.png)
 
 [Azure Secure SQL Database Always Encrypted](https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver16) is a feature of Microsoft Azure SQL Database that provides another security-specific layer for sensitive data. Moreover, it protects data at rest and in transit, ensuring that even database administrators or other privileged users cannot access the plaintext values of the encrypted data.
 
@@ -4314,8 +4642,6 @@ The organization needs to plan and manage encryption keys carefully. This is bec
 - **Use a Secure and Centralized Key Management System**\- Store encryption keys in a safe and centralized location, separate from the database. Azure Key Vault is a recommended option for managing keys securely.
 - **Implement Key Rotation and Backup** \- Regularly rotate encryption keys to mitigate the risks of key compromise. Moreover, establish a key backup strategy to recover encrypted data due to a lost or inaccessible key.
 - **Control Access to Encryption Keys** \- Ensure that only authorized individuals or applications have access to the encryption keys. Applying the principle of least privilege and robust access control will prevent unauthorized access to keys.
-
-![Image of Azure Key Vault page](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da1342b7_6486ea3c914d03b3ab8ff0c9_azure-key-vault-page.png)
 
 [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/) is a cloud service provided by Microsoft Azure that helps safeguard cryptographic keys, secrets, and sensitive information. It is a centralized storage and management system for keys, certificates, passwords, connection strings, and other confidential information required by applications and services. It allows developers and administrators to securely store and tightly control access to their application secrets without exposing them directly in their code or configuration files.
 
@@ -4341,8 +4667,6 @@ Key Vault provides fine-grained access control to manage who can perform operati
 
 ## Azure AD Multi-Factor Authentication
 
-![Image of Azure AD Multi-Factor Authentication page, explaining how it works](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e046b9247586f1da134312_6486ed6a54c5257f75a83dcd_azure-ad-multi-factor-authentication-page.png)
-
 It is a security feature provided by Microsoft Azure that adds an extra layer of protection to user sign-ins and helps safeguard against unauthorized access to resources. Users must give additional authentication factors beyond just a username and password.
 
 #### 1\. Multiple Authentication Methods
@@ -4365,8 +4689,6 @@ In this post, we have introduced the importance of cybersecurity in the cloud sp
 **‍** While Azure provides powerful built-in security features, securing sensitive data across multi-cloud environments requires deeper visibility and control.
 
 [Request a demo](https://www.sentra.io/demo) with Sentra to see how our platform complements Azure by discovering, classifying, and protecting sensitive data - automatically and continuously.
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### Top 8 AWS Cloud Security Tools and Features
 
@@ -4410,8 +4732,6 @@ AWS aptly calls their secrets management service Secrets Manager. It’s designe
 
 There are many more important utilities we couldn’t cover in this blog, including [AWS Audit Manager](https://www.sentra.io/cloud-data-security-glossary/aws-audit-manager), which are equally important in their own rights. Yet the key takeaway is this: even though AWS customers are responsible for their own [data security](https://www.sentra.io/data-security-posture-management), AWS makes a real effort to help meet and exceed security standards and expectations.
 
-![Galia Nedvedovich](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e23f42e19898037022d_1615111549441.webp)
-
 ### Sentra Arrives in the US, Announces New Technology Partnership with Wiz
 
 ### Sentra Arrives in the US, Announces New Technology Partnership with Wiz
@@ -4435,8 +4755,6 @@ Sentra's agentless solution easily integrates into a customer’s infrastructure
 A proud member of the Cloud Security Alliance, you can learn more about Sentra's [Data Security Posture Management](https://www.sentra.io/demo) solution.
 
 _GARTNER and HYPE CYCLE are registered trademarks and service marks of Gartner, Inc. and/or its affiliates in the U.S. and internationally and are used herein with permission. All rights reserved. Gartner does not endorse any vendor, product or service depicted in its research publications and does not advise technology users to select only those vendors with the highest ratings or other designation. Gartner research publications consist of the opinions of Gartner’s Research & Advisory organization and should not be construed as statements of fact. Gartner disclaims all warranties, expressed or implied, with respect to this research, including any warranties of merchantability or fitness for a particular purpose._
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### Access Controls that Move - The Power of Data Security Posture Management
 
@@ -4496,8 +4814,6 @@ Sentra’s DSPM solution is able to understand who has access to the data and cl
 
 Access control and authorization remains one of the most important ways of securing sensitive cloud data. A data centric security solution can help ensure that the right access controls always follow your cloud data.
 
-![Daniel Suissa](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e10fec39de8a1da4bd1_daniel.webp)
-
 ### How Sensitive Cloud Data Gets Exposed
 
 ### How Sensitive Cloud Data Gets Exposed
@@ -4541,8 +4857,6 @@ Data Security Posture Management solves many of the most common reasons sensitiv
 
 To learn more about Data Security Posture Management, check out our **full introduction to** [**DSPM**](https://www.sentra.io/data-security-posture-management) **,** or [**see it for yourself**](https://go.sentra.io/demo) **.**
 
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
-
 ### Types of Sensitive Data: What Cloud Security Teams Should Know
 
 ### Types of Sensitive Data: What Cloud Security Teams Should Know
@@ -4584,8 +4898,6 @@ Data Security Posture Management (DSPM) was created for this new challenge. Rece
 
 To learn more about Sentra’s DSPM solution, [**you can request a demo here.**](https://go.sentra.io/demo)
 
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
-
 ### Data Context is the Missing Ingredient for Security Teams
 
 ### Data Context is the Missing Ingredient for Security Teams
@@ -4597,8 +4909,6 @@ Of course, the capabilities of cyber solutions have grown. We have more informat
 The same can be said for SIEMs and SOAR solutions. If in the past we received alerts and made decisions based on log and event data from the SIEM, now we can factor in threat intelligence and third party sources to better understand compromises and [vulnerabilities](https://www.sentra.io/learn/cloud-vulnerability-management). But again, when it comes to what to remediate to best **protect your specific business** these tools aren’t able to prioritize.
 
 The deeper level of analysis we’ve been conducting for the last 5-10 years is still missing what’s needed to make effective remediation recommendations - **context about the data at risk.** We get all these alerts, and while we might know which endpoints and applications are affected, we’re blind when it comes to the data. That ‘severe’ endpoint vulnerability your team is frantically patching? It might not contain any sensitive data that could affect the business. Meanwhile, the reverse might be true - that less severe vulnerability at the bottom of your to-do list might affect data stores with customer info or source code.
-
-![AWS](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/63ecdfffa4a783e0cd342864_iws1tHT1I8lpn34fwHiqSjJLHL9k4dMZIiuxKXFEhZekce415VbIWB-gadJDqb1iZLXEnasX_eb873N3hYncNM90dWzRyMnHNc62uy_KyX2O0iHM3uhJPwvSJfSvoD_kQR3xoN3JKMh-D-jsG7JiDW8.jpeg)
 
 _AWS CISO Stephen Schmidt, showing data as the core layer of defense at this years AWS Reinforce_
 
@@ -4623,8 +4933,6 @@ This data context is the promise of [data security posture management](https://w
 In a clear example of the benefits offered by DSPM, Sentra [has identified source code in open S3 buckets of a major ecommerce company.](https://blog.sentra.io/finding-sensitive-cloud-data-in-all-the-wrong-places) By leveraging machine learning and smart metadata scanning, Sentra quickly identified the valuable nature of the exposed asset and ensured it was quickly remediated.
 
 If you’re interested in learning more about DSPM or Sentra specifically, [request a demo here.](https://go.sentra.io/demo)
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### Cloud Data Security Means Shrinking the “Data Attack Surface”
 
@@ -4656,8 +4964,6 @@ The final step shrinking the attack surface involves remediating the data vulner
 
 The data attack surface might be a relatively new concept, but it’s based on principles security teams are well aware of: limiting exposure by eliminating attack vectors. When it comes to the cloud, the most important way to accomplish this is by focusing on the data first. With a smaller data attack surface, the less likely it is that valuable company data will be compromised.
 
-![Jason Chan](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e1caed5d1cd8c7e7518_1573020318579%201.webp)
-
 ### Cloud Data Security Should Be About Guardrails, not Gates
 
 ### Cloud Data Security Should Be About Guardrails, not Gates
@@ -4676,8 +4982,6 @@ Back to my guardrail metaphor. When you drive along a road you’ll notice that 
 
 [Cloud data security](https://www.sentra.io/cloud-data-security) is about helping your company leverage the cloud. The whole point of the cloud is speed and scalability. Security leaders for cloud first enterprises that don’t get in the way are the ones that are going to prosper in their careers and allow their companies to reach their full potential.
 
-![Daniel Suissa](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e10fec39de8a1da4bd1_daniel.webp)
-
 ### Finding Sensitive Cloud Data in all the Wrong Places
 
 ### Finding Sensitive Cloud Data in all the Wrong Places
@@ -4692,8 +4996,6 @@ As we often do, we discovered many issues, but really there were 7 that needed t
 
 The most severe data vulnerability was **source code in an open S3 bucket with 7.5 TB worth of data**. This file was hiding in a 600 MB .zip file in another .zip file. We also found recordings of client meetings and a tiny 8.9KB excel file with all of their existing current and potential customer data.
 
-![source code in an open S3 bucket with 7.5 TB worth of data.](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/63ecdfffab68906437f1b1bf_Screen%2520Shot%25202022-07-10%2520at%252014.53.54.png)
-
 _Examples of sensitive data alerts displayed on Sentra's dashboard_
 
 So how did such a serious data vulnerability go unnoticed? In this specific case, one of the principal architects at the company had backed up his primary device to their cloud. This isn’t as uncommon as you might think - particularly in the early days of cloud based companies, data is frequently ‘dumped’ into the cloud as the founders and developers are naturally more concerned about speed than security. There’s no CISO on board to build policies. Everyone is just trusted with the data that they have. The early Facebook motto of ‘move fast and break things’ is very much alive in early stage companies. Of course, if they’re successful at building a major company, the problem is now there’s all this data traveling around their cloud environment that no one is tracking, no one is responsible for, and in the case above, no one even knew existed.
@@ -4707,8 +5009,6 @@ The rise of [Data Security Posture Management platforms](https://www.sentra.io/d
 Want to find out what sensitive data is publicly accessible in your cloud?
 
 **Get in touch with Sentra** [**here to see our DSPM in action.**](https://go.sentra.io/demo)
-
-![Team Sentra](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e4ebc4bb796cc970ea4_Group%201261158726.webp)
 
 ### Why It’s Time to Adopt a Data Centric Approach to Security
 
@@ -4762,7 +5062,41 @@ DSPM allows organizations to accurately find and classify their cloud data while
 
 _Want to see what data centric security looks like with Sentra’s DSPM?_ [**_Request a demo here_**](https://go.sentra.io/demo)
 
-![Guy Spilberg](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/63fc9166b794f23fef66ad3c_guy.png)
+### Data Security Posture Management vs Cloud Security Posture Management
+
+### Data Security Posture Management vs Cloud Security Posture Management
+
+## What is Cloud Security Posture Management (CSPM)?
+
+CSPM tools are built to secure cloud infrastructures - including IaaS, PaaS, and SaaS architectures. Misconfigurations, vulnerabilities, and basic compliance violations are identified across an organization's cloud, and alerts are generated for their SOC team members to sift through, prioritize and remediate. Most CSPMs also offer some sort of basic data discovery tools, such as discovering credit card or social security numbers.
+
+The size of organizations’ cloud infrastructures coupled with the difficulty of finding experienced cloud security professionals has driven adoption of CSPM across most cloud-first organizations and led to an increased focus on automation and remediation of cloud infrastructure vulnerabilities. But despite additions and upgrades, CSPM essentially remains a misconfiguration detection tool for cloud infrastructure.
+
+So what’s missing from your average CSPM? Context.
+
+Let’s say you find a number of misconfigured cloud resources. A CSPM won’t be able to tell you what data is actually at risk. It’s data agnostic. It also won’t know what security posture it’s supposed to have - who’s the data’s original owner and who is supposed to have access to it. The result is that now you need to spend time sifting through your alerts, finding the critical data at risk.
+
+### What is Data Security Posture Management (DSPM)?
+
+It’s this missing context that DSPM has been developed to provide. Unlike data agnostic CSPM, DSPM acknowledges the new reality that because not all data is equally valuable, they don’t all need the same security posture. But the problem DSPM solves goes beyond discovery and classification of [cloud data](https://www.sentra.io/cloud-data-security). In order to provide actionable insights (and not just be yet another ‘alert generating security tool’), it’s not enough to find unsecured data. DSPMs can also leverage Machine Learning to understand what its data security posture is _supposed to be_.
+
+Data in the cloud doesn’t stay in one place indefinitely. Data stores are continuously being replicated and moved throughout the public cloud. Data travels. But the security posture doesn’t follow the data to its new location. So if sensitive data is moved to a lower environment, it now has a weaker security posture - even though the data itself is still just as sensitive as it was before!
+
+If an asset with sensitive data is replicated in a lower environment, a DSPM tool will not only send an alert, it will let you know how to match the security posture of the original environment and who the data’s owner is. This way, you spend less time sifting through logs trying to find out who owns the data and how exactly it's meant to be secured.  Another key difference from CSPM is that as opposed to finding cloud infrastructure vulnerabilities, DSPM goes a step further and identifies _data_ vulnerabilities. These can include:
+
+- Exposed PII
+- Exposed developer secrets, including company source code
+- Privileged data that’s been replicated in a lower environment with an inappropriate security posture.
+
+Next let's look at how they reduce the attack surface of an organization’s public cloud. CSPM reduces the infrastructure’s attack surface by helping remediate misconfigurations and vulnerabilities. In theory, this results in fewer attack paths which could lead to damaging breaches. DSPM also reduces the attack surface - but the way it accomplishes this is by reducing the risk from vulnerable and valuable data. For example, DSPM can ensure PCI data stays in a specific VPC, so attack paths can be reduced to a single VPC only.  This way, _even_ if there is an infrastructure breach, the valuable data has the right security posture and cannot be leaked.
+
+Finally, DSPMs can also see where CSPMs can’t - including data stores like RDS instances or cloud-native databases. And of course, it needs to work at huge scales - think petabytes, not terabytes - without breaking your cloud bill. Using smart metadata clustering, these scans can provide the total visibility security teams need at a fraction of the cost of scanning every bit of data in your cloud.
+
+On a technical level, there’s already a significant difference between the two solutions. But at its core, it's a difference of cloud security philosophy. Relying exclusively on protecting the cloud infrastructure is essentially taking ‘on-prem era’ security approaches and trying to shoehorn it into the cloud era. When everything was on-prem, security was about protecting the infrastructure by defending the perimeter. After all, if threats were stopped at the perimeter, the data was safe.
+
+But as the cliche says, ‘in the cloud there is no perimeter’. Data is constantly being created, replicated, and moved throughout the cloud. Trying to ‘copy/paste’ from the previous era is natural, and partly effective. But it’s time to acknowledge the fact that what we’re defending isn’t a network. It’s not the ‘network’ that malicious actors are after. It’s the data. So why are we still obsessed with infrastructure? DSPM is the solution that recognizes this new paradigm.
+
+_If you’re interested in seeing Sentra’s DSPM in action,_ [_you can request a demo here_](https://go.sentra.io/demo)
 
 ### If You Could Only Ask One Question About Your Data, It Should be This
 
@@ -4793,8 +5127,6 @@ When it comes to quantitative data, it’s much easier to find and classify this
 Qualitative data classification and security can’t work like this. There’s no such thing as ‘50% of a certificate’. It’s either a cert or not. For this reason, identifying qualitative data is much more of a challenge, but securing it is simpler because it doesn’t need to move.
 
 This method of thinking about data security can be helpful when trying to understand how different security tools find, classify, and protect sensitive data. Tools that rely \*only\* probabilities will have trouble recognizing when qualitative data moves or is at risk. Similarly, any approach that focuses on keeping qualitative data secure might neglect data in movement. Understanding the differences between qualitative and quantitative data is an easy framework for measuring the effectiveness of your organization’s data protection tools and policies
-
-![Jason Chan](https://cdn.prod.website-files.com/63e90e1d8c09975c98c58fad/66e00e1caed5d1cd8c7e7518_1573020318579%201.webp)
 
 ### Rising to the Challenge of Data Security Leadership
 

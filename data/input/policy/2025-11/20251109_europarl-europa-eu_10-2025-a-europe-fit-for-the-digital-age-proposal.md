@@ -2,7 +2,7 @@
 title: 10 2025 | A Europe Fit for the Digital Age | Proposal for a Regulation on European Data Governance
 url: https://www.europarl.europa.eu/legislative-train/carriage/data-governance-act/report?sid=9601
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:32.814684
+collected_date: 2025-11-16T02:36:45.630184
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: European Parliament

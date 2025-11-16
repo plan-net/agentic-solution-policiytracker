@@ -2,7 +2,7 @@
 title: The ‘E’ of ESG: Sustainable products - new EU Ecodesign rules for unsold consumer products
 url: https://www.lexology.com/library/detail.aspx?g=8744666d-4452-43bc-ac2d-8241019f530d
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-11T12:26:24.263478
+collected_date: 2025-11-16T02:36:37.404223
 source: Lexology
 source_url: https://www.lexology.com
 author: Jonas Köster, Tobias Klatt, Juliane Hilf, Sam Houshower

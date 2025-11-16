@@ -2,7 +2,7 @@
 title: Making the EU's digital regulatory reset count: Four recommendations
 url: https://www.cer.eu/insights/making-eus-digital-regulatory-reset-count-four-recommendations
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-11T12:26:32.814761
+collected_date: 2025-11-16T02:36:45.630845
 source: Cer
 source_url: https://www.cer.eu
 author: Hannes Berggren

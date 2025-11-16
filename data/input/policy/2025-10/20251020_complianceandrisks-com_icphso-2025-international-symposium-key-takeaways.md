@@ -2,7 +2,7 @@
 title: ICPHSO 2025 International Symposium: Key Takeaways
 url: https://www.complianceandrisks.com/cr-news/accelerating-pace-of-product-safety-change-key-takeaways-from-the-icphso-2025-international-symposium/
 published_date: 2025-10-20T00:00:00
-collected_date: 2025-11-11T12:26:17.830841
+collected_date: 2025-11-16T02:36:30.367497
 source: Complianceandrisks
 source_url: https://www.complianceandrisks.com
 author: Compliance & Risks

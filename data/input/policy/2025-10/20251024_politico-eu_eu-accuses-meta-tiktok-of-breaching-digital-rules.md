@@ -2,7 +2,7 @@
 title: EU accuses Meta, TikTok of breaching digital rules
 url: https://www.politico.eu/article/eu-accuses-meta-tiktok-of-breaching-digital-rules/
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-11T12:26:35.549622
+collected_date: 2025-11-16T02:36:48.943725
 source: Politico
 source_url: https://www.politico.eu
 author: Eliza Gkritsi

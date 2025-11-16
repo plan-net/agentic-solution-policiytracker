@@ -2,7 +2,7 @@
 title: Europe Flexes Its Regulatory Muscle: Meta and TikTok Face Historic DSA Enforcement Action
 url: https://www.compliancehub.wiki/europe-flexes-its-regulatory-muscle-meta-and-tiktok-face-historic-dsa-enforcement-action/
 published_date: 2025-10-28T00:00:00
-collected_date: 2025-11-11T12:26:35.549436
+collected_date: 2025-11-16T02:36:48.943481
 source: Compliancehub
 source_url: https://www.compliancehub.wiki
 author: Compliance Hub

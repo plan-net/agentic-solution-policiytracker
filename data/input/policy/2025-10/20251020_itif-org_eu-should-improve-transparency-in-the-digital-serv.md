@@ -2,7 +2,7 @@
 title: EU Should Improve Transparency in the Digital Services Act
 url: https://itif.org/publications/2025/10/20/eu-should-improve-transparency-in-the-digital-services-act/
 published_date: 2025-10-20T00:00:00
-collected_date: 2025-11-11T12:26:17.663626
+collected_date: 2025-11-16T02:36:31.875876
 source: Itif
 source_url: https://itif.org
 author: Ash Johnson, Puja Roy

@@ -2,7 +2,7 @@
 title: Shaping Europe’s digital future
 url: https://digital-strategy.ec.europa.eu
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-03T03:50:34.939058
+collected_date: 2025-11-16T02:36:45.630901
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)
@@ -35,21 +35,21 @@ AI is transforming how businesses operate, reshaping public services, and revolu
 
 [European AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office)
 
-- Press release \| 27 October 2025
+- Press release \| 10 November 2025
 
-#### [Commission makes €13.8 million available for cross-border journalism partnerships and pluralism](https://digital-strategy.ec.europa.eu/en/news/commission-makes-eu138-million-available-cross-border-journalism-partnerships-and-pluralism)
+#### [Executive Vice-President Virkkunen discusses EU support for tech industry at Web Summit 2025 in Lisbon](https://digital-strategy.ec.europa.eu/en/news/executive-vice-president-virkkunen-discusses-eu-support-tech-industry-web-summit-2025-lisbon)
 
-- Press release \| 24 October 2025
+- Digibyte \| 07 November 2025
 
-#### [Commission preliminarily finds TikTok and Meta in breach of their transparency obligations under the Digital Services Act](https://digital-strategy.ec.europa.eu/en/news/commission-preliminarily-finds-tiktok-and-meta-breach-their-transparency-obligations-under-digital)
+#### [Commission agrees to advance child safety online with Australia’s eSafety Commissioner and the UK’s Ofcom](https://digital-strategy.ec.europa.eu/en/news/commission-agrees-advance-child-safety-online-australias-esafety-commissioner-and-uks-ofcom)
 
-- Digibyte \| 23 October 2025
+- Press release \| 05 November 2025
 
-#### [Security of Cables: Commission publishes landmark report and funding for Cable Hubs](https://digital-strategy.ec.europa.eu/en/news/security-cables-commission-publishes-landmark-report-and-funding-cable-hubs)
+#### [Commission launches work on a code of practice on marking and labelling AI-generated content](https://digital-strategy.ec.europa.eu/en/news/commission-launches-work-code-practice-marking-and-labelling-ai-generated-content)
 
-- Press release \| 23 October 2025
+- Press release \| 04 November 2025
 
-#### [Commission presents new funding worth €20 million and outlines progress in strengthening Europe’s security of submarine cables](https://digital-strategy.ec.europa.eu/en/news/commission-presents-new-funding-worth-eu20-million-and-outlines-progress-strengthening-europes)
+#### [Member States and Commission test collective cybersecurity crisis response](https://digital-strategy.ec.europa.eu/en/news/member-states-and-commission-test-collective-cybersecurity-crisis-response)
 
 [All news](https://digital-strategy.ec.europa.eu/en/news?type=5%7C13)
 

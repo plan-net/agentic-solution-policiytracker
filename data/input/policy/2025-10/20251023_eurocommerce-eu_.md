@@ -1,7 +1,7 @@
 ---
 url: https://www.eurocommerce.eu/app/uploads/2025/10/20251023-eurocommerce-pp-legal-recommendations-lpf-final.pdf
 published_date: 2025-10-23T00:00:00
-collected_date: 2025-11-11T12:26:10.612540
+collected_date: 2025-11-16T02:36:27.778030
 source: Eurocommerce
 source_url: https://www.eurocommerce.eu
 author: Ilya Bruggeman

@@ -2,7 +2,7 @@
 title: EU's Textile EPR Is Finally Here
 url: https://www.linkedin.com/pulse/eus-textile-epr-finally-here-ines-garcia-a71cf
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-11T12:26:23.931380
+collected_date: 2025-11-16T02:36:37.404695
 source: Linkedin
 source_url: https://www.linkedin.com
 author: Ines Garcia
@@ -20,6 +20,12 @@ Agree & Join LinkedIn
 Agree & Join LinkedIn
 
 By clicking Continue to join or sign in, you agree to LinkedIn’s [User Agreement](https://www.linkedin.com/legal/user-agreement?trk=linkedin-tc_auth-button_user-agreement), [Privacy Policy](https://www.linkedin.com/legal/privacy-policy?trk=linkedin-tc_auth-button_privacy-policy), and [Cookie Policy](https://www.linkedin.com/legal/cookie-policy?trk=linkedin-tc_auth-button_cookie-policy).
+
+LinkedIn is better on the app
+
+Don’t have the app? Get it in the Microsoft Store.
+
+[Open the app](ms-windows-store://pdp/?ProductId=9WZDNCRFJ4Q7&mode=mini&cid=guest_desktop_upsell)
 
 [Skip to main content](https://www.linkedin.com/www.linkedin.com#main-content)
 

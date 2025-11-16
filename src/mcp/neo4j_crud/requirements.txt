@@ -1,0 +1,7 @@
+fastapi==0.115.4
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+neo4j==5.26.0
+structlog==24.4.0
+kodosumi==0.9.2
+ray[serve]==2.46.0

@@ -2,7 +2,7 @@
 title: EU Data Act: 101
 url: https://iapp.org/resources/article/eu-data-act-101/
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:07.380119
+collected_date: 2025-11-16T02:36:21.124139
 source: Iapp
 source_url: https://iapp.org
 author: Laura Pliauškaitė

@@ -2,7 +2,7 @@
 title: EU Cracks Down on Non-EU E-Commerce Imports: What You Need to Know
 url: https://cross-border-magazine.com/non-eu-e-commerce-imports-regulation/
 published_date: 2025-10-22T00:00:00
-collected_date: 2025-11-11T12:26:08.040723
+collected_date: 2025-11-16T02:36:21.124044
 source: Cross Border Magazine
 source_url: https://cross-border-magazine.com
 description: Search
@@ -121,17 +121,17 @@ The message is clear: the age of unregulated low-value e-commerce imports into E
 
 Tagged with: [cross-border](https://cross-border-magazine.com/tag/cross-border/), [e-commerce](https://cross-border-magazine.com/tag/e-commerce/), [Europe](https://cross-border-magazine.com/tag/europe/), [European Commission](https://cross-border-magazine.com/tag/european-commission/), [laws](https://cross-border-magazine.com/tag/laws/), [logistics](https://cross-border-magazine.com/tag/logistics/), [online shopping](https://cross-border-magazine.com/tag/online-shopping/)
 
-[Zalando Enters Portugal: Expansion Strategy, Challenges, and Market Impact](https://cross-border-magazine.com/zalando-enters-portugal/)
+[Nordic E-Commerce on the Rise: Why Global E-Tailers Should Look North](https://cross-border-magazine.com/nordic-e-commerce-post-nord/)
 
-The European fashion and lifestyle e-commerce giant Zalando is entering Portugal as part of its 2025 expansion strategy. Alongside Greece and Bulgaria, Portugal is one of the new markets that...
+By PostNord - PostNord’s new report, titled "E-commerce in the Nordics, Autumn 2025," reveals a market full of opportunities for global e-tailers. Based on consumer surveys conducted across Sweden, Denmark, Norway, and Finland,...
 
-[Social Commerce Playbook for the Netherlands 2025](https://cross-border-magazine.com/social-commerce-playbook-netherlands-2025/)
+[Black Friday 2025 Forecast in the EU: Will European E-Commerce Growth Slow Down?](https://cross-border-magazine.com/black-friday-2025-forecast-in-the-eu/)
 
-Social commerce—selling goods directly via social platforms—is no longer just a buzzword; it’s fast becoming a core retail channel in the Netherlands. With shifts in consumer behavior, technology, and regulation,...
+Black Friday has become one of the most critical sales events in the European e-commerce calendar. What began as an American shopping phenomenon has evolved into a continental economic event...
 
-[Nvidia’s Impact on AI Development—and What It Means for E-commerce Over the Next Five Years](https://cross-border-magazine.com/nvidia-ai-ecommerce-impact/)
+[Europe’s logistics market is set to add roughly USD 48.4 billion by 2029](https://cross-border-magazine.com/europe-logistics-market-set-to-grow-usd-48-4-billion/)
 
-Nvidia has become the backbone of modern AI, combining cutting-edge GPUs with a mature software stack that makes training and serving large models faster and cheaper. This accelerating capability is...
+Europe’s logistics market is projected to expand steadily through 2029, adding roughly USD 48.4 billion at a moderate compound growth rate. The primary engine is e-commerce, driven by rising B2C...
 
 [Top](https://cross-border-magazine.com/cross-border-magazine.com)
 

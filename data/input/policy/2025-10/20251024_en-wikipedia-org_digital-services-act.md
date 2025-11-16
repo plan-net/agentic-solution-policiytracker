@@ -2,7 +2,7 @@
 title: Digital Services Act
 url: https://en.wikipedia.org/wiki/Digital_Services_Act
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-11T12:26:17.664391
+collected_date: 2025-11-16T02:36:31.876428
 source: En
 source_url: https://en.wikipedia.org
 author: Contributors to Wikimedia projects

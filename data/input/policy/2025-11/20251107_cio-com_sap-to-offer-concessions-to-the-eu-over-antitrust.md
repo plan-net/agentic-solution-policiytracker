@@ -1,8 +1,8 @@
 ---
 title: SAP to offer concessions to the EU over antitrust probe into ...
 url: https://www.cio.com/article/4086612/sap-to-offer-concessions-to-the-eu-over-antitrust-probe-into-erp-support-practices.html
-published_date: 2025-11-07T12:26:32.184000
-collected_date: 2025-11-11T12:26:32.820456
+published_date: 2025-11-07T00:00:00
+collected_date: 2025-11-16T02:36:46.801929
 source: Cio
 source_url: https://www.cio.com
 author: by Gyana Swain
@@ -114,35 +114,45 @@ Jun 13, 2025 5 mins](https://www.cio.com/article/4006723/pentagons-11b-it-modern
 
 PopularArticlesPodcastsVideos
 
-[brandpostSponsored by Cloudera\
-\
-**Private AI: The key to unlocking AI ROI in 2026** \
-\
-By Anu Mohan\
-\
-Nov 7, 20254 mins\
-\
-Artificial Intelligence](https://www.cio.com/article/4086929/private-ai-the-key-to-unlocking-ai-roi-in-2026.html)
-
 [news\
 \
-**SAP to offer concessions to the EU over antitrust probe into ERP support practices** \
+**Make boards responsible for AI failures, banking regulator suggests** \
 \
-By Gyana Swain\
+By John E. Dunn\
 \
-Nov 7, 20254 mins\
+Nov 13, 20255 mins\
 \
-ERP SystemsEnterprise ApplicationsSoftware Licensing](https://www.cio.com/article/4086612/sap-to-offer-concessions-to-the-eu-over-antitrust-probe-into-erp-support-practices.html)
+Financial Services IndustryIT GovernanceMarkets](https://www.cio.com/article/4089480/make-boards-responsible-for-ai-failures-banking-regulator-suggests.html)
 
 [feature\
 \
-**Who’s the real boss of your AI?** \
+**The biggest enterprise technology M&A deals of the year (so far)** \
 \
-By Maria Korolov\
+By Peter Sayer\
 \
-Nov 7, 20259 mins\
+Nov 13, 202511 mins\
 \
-C-SuiteCIOData Quality](https://www.cio.com/article/4081125/whos-the-real-boss-of-your-ai.html)
+Mergers and AcquisitionsTechnology Industry](https://www.cio.com/article/196371/the-biggest-enterprise-technology-ma-deals.html)
+
+[brandpostSponsored by PwC\
+\
+**Beyond outsourcing: How PwC drives outcomes, value, and innovation through managed services 2.0** \
+\
+By Foundry\
+\
+Nov 13, 20251 min\
+\
+Managed Service ProvidersMarketsTelecommunications Industry](https://www.cio.com/article/4088880/beyond-outsourcing-how-pwc-drives-outcomes-value-and-innovation-through-managed-services-2-0.html)
+
+[podcast\
+\
+**CIO Leadership Live ASEAN: Scaling AI Responsibly at Mondelez** \
+\
+By Estelle Quek\
+\
+Nov 9, 202519 mins\
+\
+CIODigital TransformationInnovation](https://www.cio.com/podcast/4083814/cio-leadership-live-asean-mondelez-on-scaling-ai-responsibly.html)
 
 [podcast\
 \
@@ -162,13 +172,23 @@ Nov 4, 202522 mins\
 \
 CIODigital TransformationTechnology Industry](https://www.cio.com/podcast/4083027/cio-leadership-live-asean-ai-at-scale-balancing-innovation-with-integrity.html)
 
-[podcast\
+[video\
 \
-**TIAA's Sastry Durvasula on AI innovations in the insurance space** \
+**Inside Genesys' AI Studio: How agentic AI enables business. users to build better bots** \
 \
-Oct 28, 202521 mins\
+Nov 12, 202512 mins\
 \
-CIO Leadership Live](https://www.cio.com/podcast/4080298/tiaas-sastry-durvasula-on-ai-innovations-in-the-insurance-space.html)
+Generative AINo Code and Low CodeRetail Industry](https://www.cio.com/video/4088944/inside-genesys-ai-studio-how-agentic-ai-enables-business-users-to-build-better-bots.html)
+
+[video\
+\
+**CIO Leadership Live ASEAN: Scaling AI Responsibly at Mondelez** \
+\
+By Estelle Quek\
+\
+Nov 9, 202519 mins\
+\
+CIODigital TransformationInnovation](https://www.cio.com/video/4083833/cio-leadership-live-asean-mondelez-on-scaling-ai-responsibly.html)
 
 [video\
 \
@@ -178,23 +198,7 @@ Nov 5, 202518 mins\
 \
 CIO Leadership LiveIT Leadership](https://www.cio.com/video/4085373/cio-leadership-live-australia-with-connie-beck-group-director-transformation-digital-urbis.html)
 
-[video\
-\
-**Inside EDB Postgres AI: The end-to-end platform for data, devops, and genAI readiness** \
-\
-Nov 5, 202519 mins\
-\
-Artificial IntelligenceData WarehousingPostgreSQL](https://www.cio.com/video/4085053/inside-edb-postgres-ai-the-end-to-end-platform-for-data-devops-and-genai-readiness.html)
-
-[video\
-\
-**How Orb Simulations helps enterprises price AI products with confidence** \
-\
-Oct 29, 202510 mins\
-\
-Artificial IntelligenceFinance and Accounting SystemsPricing](https://www.cio.com/video/4081272/how-orb-simulations-helps-enterprises-price-ai-products-with-confidence.html)
-
-- [Solve your most complex IT challenges with solutions that simplify your modernization journey.](http://pubads.g.doubleclick.net/gampad/clk?id=7038222634&iu=/8456/IDG.G_B2B_CIO.com)
-- [CIO Think Tank Roadmap Report: Information management in the age of AI](http://pubads.g.doubleclick.net/gampad/clk?id=7111096023&iu=/8456/IDG.G_B2B_CIO.com)
 - [Reimagine tomorrow. Become a future-ready, AI-powered enterprise with EY Consulting.](http://pubads.g.doubleclick.net/gampad/clk?id=7026733850&iu=/8456/IDG.G_B2B_CIO.com)
+- [CIO Think Tank Roadmap Report: Information management in the age of AI](http://pubads.g.doubleclick.net/gampad/clk?id=7111096023&iu=/8456/IDG.G_B2B_CIO.com)
 - [Fuel innovation with unified content, process and application intelligence.](http://pubads.g.doubleclick.net/gampad/clk?id=7084037684&iu=/8456/IDG.G_B2B_CIO.com)
+- [Solve your most complex IT challenges with solutions that simplify your modernization journey.](http://pubads.g.doubleclick.net/gampad/clk?id=7038222634&iu=/8456/IDG.G_B2B_CIO.com)
