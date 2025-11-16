@@ -1,25 +1,29 @@
 ---
 title: Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness
-url: https://www.scribd.com/document/880575202/Council-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-EU-competitiveness
+url: https://scribd.com/document/880575202/Council-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-EU-competitiveness
 published_date: 2025-10-23T00:00:00
-collected_date: 2025-11-11T12:26:35.442233
+collected_date: 2025-11-16T02:36:49.036064
 source: Scribd
-source_url: https://www.scribd.com
-description: [Open navigation menu](https://www.scribd.com/www.scribd.com#sidebar)
+source_url: https://scribd.com
+description: Opens in a new windowOpens an external websiteOpens an external website in a new window
 language: en
 collection_type: policy_landscape
 ---
 
 # Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness
 
-[Open navigation menu](https://www.scribd.com/www.scribd.com#sidebar)
+Opens in a new windowOpens an external websiteOpens an external website in a new window
 
-[Open navigation menu](https://www.scribd.com/www.scribd.com#sidebar)
+Opens in a new windowOpens an external websiteOpens an external website in a new window
+
+This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics, personalization, and targeted advertising. To learn more, view the following link: [Privacy Policy](https://support.scribd.com/hc/articles/210129366-Privacy-policy)
+
+[Open navigation menu](https://scribd.com/scribd.com#sidebar)
 
 Close suggestionsSearchSearch
 
 enChange Language
-[Upload](https://www.scribd.com/upload-document)
+[Upload](https://scribd.com/upload-document)
 Sign in
 
 Sign in
@@ -27,7 +31,7 @@ Download free for days
 
 0 ratings0% found this document useful (0 votes)
 
-# Council Agrees Position On Sustainability Reporting and Due Diligence Requirements To Boost EU Competitiveness
+# Council Agrees Position On Sustainability Reporting and Due Diligence Requirements To Boost EU Competitiveness Show full title
 
 The document outlines a proposal for a directive amending existing EU directives related to corporate sustainability reporting and due diligence requirements, aimed at simplifying legislatio…
 
@@ -38,12 +42,6 @@ AI-enhanced title and description
 - SaveSave Council agrees position on sustainability reportin... For Later
 
 - 0%0% found this document useful, undefined
-
-0 ratings0% found this document useful (0 votes)
-
-# Council Agrees Position On Sustainability Reporting and Due Diligence Requirements To Boost EU Competitiveness
-
-The document outlines a proposal for a directive amending existing EU directives related to corporate sustainability reporting and due diligence requirements, aimed at simplifying legislation and reducing administrative burdens. It discusses the progress of negotiations and key compromise elements, including adjustments to the scope of companies required to report and the responsibilities of audit firms. The Permanent Representatives Committee is invited to agree on a mandate for further negotiations with the European Parliament based on the revised proposal.
 
 0 ratings0% found this document useful (0 votes)
 
@@ -129,11 +127,37 @@ In accordance with the approach to legislative transparency endorsed by Coreper 
 
 Procedure, the text of the mandate thus agreed will be made public unless the Permanent Representatives Committee objects.
 
+2025/0045 (COD) Proposal for a
+
+DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL amending Directives 2006/43/EC, 2013/34/EU, (EU) 2022/2464 and (EU) 2024/1760 as regards certain corporate sustainability reporting and due diligence requirements
+
+(Text with EEA relevance) THE EUROPEAN PARLIAMENT AND THE COUNCIL OF THE EUROPEAN UNION, Having regard to the Treaty on the Functioning of the European Union, and in particular Articles 50 and 114 thereof, Having regard to the proposal from the European Commission, After transmission of the draft legislative act to the national parliaments, Having regard to the opinion of the European Economic and Social Committee
+
+, Acting in accordance with the ordinary legislative procedure, Whereas: (1)
+
+In its Communication of 11 February 2025 entitled ‘A simpler and faster Europe: Communication on implementation and simplification’,
+
+the European Commission set out a vision for an implementation and simplification agenda that delivers fast and visible improvements for people and business on the ground. This requires more than an incremental approach and the Union must take bold action to achieve this goal. The Commissi
+
+on, the European Parliament, the Council, Member States’ authorities at all levels
+
+and stakeholders need to work together to streamline and simplify EU, national and regional rules and implement policies more effectively.
+
+OJ C \[…\], \[…\], p. \[…\].
+
+Communication from the Commission to the European Parliament, the Council, the European Economic and Social
+
+Committee and the Committee of the Regions of 11 February 2025, ‘A simpler and
+
+faster Europe: Communication on
+
+implementation and simplification’, COM/2025/47 final.
+
 ## Share this document
 
-- [Share on Facebook, opens a new window](https://www.scribd.com/www.scribd.com)
-- [Share on LinkedIn, opens a new window](https://www.scribd.com/www.scribd.com)
-- [Share with Email, opens mail client](mailto://www.scribd.com?subject=Read Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness on Scribd&body=I’m reading Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness on Scribd: https%3A%2F%2Fwww.scribd.com%2Fdocument%2F880575202%2FCouncil-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-EU-competitiveness)
+- [Share on Facebook, opens a new window](https://scribd.com/scribd.com)
+- [Share on LinkedIn, opens a new window](https://scribd.com/scribd.com)
+- [Share with Email, opens mail client](mailto://scribd.com?subject=Read Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness on Scribd&body=I’m reading Council agrees position on sustainability reporting and due diligence requirements to boost EU competitiveness on Scribd: https%3A%2F%2Fwww.scribd.com%2Fdocument%2F880575202%2FCouncil-agrees-position-on-sustainability-reporting-and-due-diligence-requirements-to-boost-EU-competitiveness)
 - Copy link
 
 [Millions of documents at your fingertips, ad-free Subscribe with a free trial](https://www.scribd.com/oauth/signup?doc_id=880575202)

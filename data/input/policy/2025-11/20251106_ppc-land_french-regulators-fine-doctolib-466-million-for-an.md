@@ -1,8 +1,8 @@
 ---
 title: French regulators fine Doctolib €4.66 million for antitrust ...
 url: https://ppc.land/french-regulators-fine-doctolib-eu4-66-million-for-antitrust-violations/
-published_date: 2025-11-06T12:26:29.390000
-collected_date: 2025-11-11T12:26:30.039234
+published_date: 2025-11-06T00:00:00
+collected_date: 2025-11-16T02:36:43.241132
 source: Ppc
 source_url: https://ppc.land
 author: Luis Rijo

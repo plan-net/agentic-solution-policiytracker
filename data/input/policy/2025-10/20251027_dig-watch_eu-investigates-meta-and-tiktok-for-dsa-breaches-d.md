@@ -2,7 +2,7 @@
 title: EU investigates Meta and TikTok for DSA breaches | Digital Watch Observatory
 url: https://dig.watch/updates/eu-investigates-meta-and-tiktok-for-dsa-breaches
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-11T12:26:39.804286
+collected_date: 2025-11-16T02:36:48.943554
 source: Dig
 source_url: https://dig.watch
 author: iliasd@diplomacy.edu
@@ -43,17 +43,17 @@ The [Commission](https://dig.watch/actor/european-commission) has launched 14 su
 
 [EU's Digital Services Act (DSA) & Digital Markets Act (DMA)](https://dig.watch/processes/eu-digital-service-act-dsa-digital-market-act-dma)
 
-### [Church of Greece launches AI tool LOGOS for believers](https://dig.watch/updates/church-of-greece-launches-ai-tool-logos-for-believers)
+### [Australian influencer family moves to UK over child social media ban](https://dig.watch/updates/australian-influencer-family-moves-to-uk-over-child-social-media-ban)
 
-### [AI deepfake videos spark ethical and environmental concerns](https://dig.watch/updates/ai-deepfake-videos-spark-ethical-and-environmental-concerns)
+### [UK traffic to Pornhub plunges after age-verification law](https://dig.watch/updates/uk-traffic-to-pornhub-plunges-after-age-verification-law)
 
-### [Meta expands AI safety tools for teens](https://dig.watch/updates/meta-expands-ai-safety-tools-for-teens)
+### [Australian police create AI tool to decode predators’ slang](https://dig.watch/updates/australian-police-create-ai-tool-to-decode-predators-slang)
 
-### [Australia demands answers from AI chatbot providers over child safety](https://dig.watch/updates/australia-demands-answers-from-ai-chatbot-providers-over-child-safety)
+### [Denmark drops Chat Control proposal amid backlash](https://dig.watch/updates/denmark-drops-chat-control-proposal-amid-backlash)
 
-### [Zuckerberg to testify in landmark trial over social media’s harm to youth](https://dig.watch/updates/zuckerberg-to-testify-in-landmark-trial-over-social-medias-harm-to-youth)
+### [Character.ai restricts teen chat access on its platform](https://dig.watch/updates/character-ai-restricts-teen-chat-access-on-its-platform)
 
-### [EU states split over children’s social media rules](https://dig.watch/updates/eu-states-split-over-childrens-social-media-rules)
+### [ChatGPT offers wellness checks for long chat sessions](https://dig.watch/updates/chatgpt-offers-wellness-checks-for-long-chat-sessions)
 
 - [WordPress.org](https://wordpress.org/)
 - [Documentation](https://wordpress.org/documentation/)

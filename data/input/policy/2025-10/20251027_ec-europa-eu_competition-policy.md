@@ -2,7 +2,7 @@
 title: Competition Policy
 url: https://ec.europa.eu/competition/digital_markets_act/cases/202522/DMA_100109_906.pdf
 published_date: 2025-10-27T00:00:00
-collected_date: 2025-11-11T12:26:27.019320
+collected_date: 2025-11-16T02:36:40.434268
 source: Ec
 source_url: https://ec.europa.eu
 description: [Skip to main content](https://ec.europa.eu/ec.europa.eu#main-content)

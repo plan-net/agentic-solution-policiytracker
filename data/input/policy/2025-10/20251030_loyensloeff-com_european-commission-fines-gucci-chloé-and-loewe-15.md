@@ -2,7 +2,7 @@
 title: European Commission fines Gucci, Chloé, and Loewe €157 million for RPM violations: a landmark enforcement of EU competition law
 url: https://www.loyensloeff.com/insights/news--events/news/the-european-commission-sanctions-luxury-fashion-brands-for-resale-price-maintenance-practices/
 published_date: 2025-10-30T00:00:00
-collected_date: 2025-11-11T12:26:38.873748
+collected_date: 2025-11-16T02:36:42.865428
 source: Loyensloeff
 source_url: https://www.loyensloeff.com
 author: Loyens & Loeff
@@ -22,6 +22,12 @@ search
 [Pillar One & Pillar Two](https://www.loyensloeff.com/insights/topics/pillar-one--two/) [Substance & Tax Law](https://www.loyensloeff.com/insights/topics/substance-and-tax-law/) [Environmental, Social & Governance (ESG)](https://www.loyensloeff.com/insights/topics/esg--sustainable-investment/) [Digital Economy](https://www.loyensloeff.com/insights/topics/digital-economy/) [Show more](https://www.loyensloeff.com/insights/topics/)
 
 [News](https://www.loyensloeff.com/insights/news--events/news/) [Events, Webinars & Training](https://www.loyensloeff.com/insights/news--events/events--webinars/) [Podcasts](https://www.loyensloeff.com/insights/news--events/podcasts/)
+
+[Event\
+\
+30-10-2025 - 09:00 CET\
+\
+Private Equity Expert Series](https://www.loyensloeff.com/insights/news--events/events--webinars/private-equity-expert-series/)
 
 [Private Equity & Funds](https://www.loyensloeff.com/services/sectors-and-markets/private-equity-funds/) [Life Sciences & Healthcare](https://www.loyensloeff.com/services/sectors-and-markets/life-sciences--healthcare/) [Energy & Infrastructure](https://www.loyensloeff.com/services/sectors-and-markets/energy--infrastructure/) [Real Estate](https://www.loyensloeff.com/services/sectors-and-markets/real-estate/) [Show more](https://www.loyensloeff.com/services/sectors-and-markets/)
 

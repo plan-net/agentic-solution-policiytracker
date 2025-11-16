@@ -2,7 +2,7 @@
 title: EU Set the Global Standard on Privacy and AI. Now It’s Pulling Back
 url: https://techpolicy.press/eu-set-the-global-standard-on-privacy-and-ai-now-its-pulling-back
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-11T12:26:07.606236
+collected_date: 2025-11-16T02:36:45.484022
 source: Techpolicy
 source_url: https://techpolicy.press
 author: Ramsha Jahangir

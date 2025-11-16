@@ -2,7 +2,7 @@
 title: Interplay between the AI Act and the EU digital legislative framework
 url: https://www.europarl.europa.eu/RegData/etudes/STUD/2025/778575/ECTI_STU(2025)778575_EN.pdf
 published_date: 2025-10-23T00:00:00
-collected_date: 2025-11-11T12:26:32.814825
+collected_date: 2025-11-16T02:36:45.630359
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: Hans GRAUX, Krzysztof GARSTKA, Nayana MURALI,

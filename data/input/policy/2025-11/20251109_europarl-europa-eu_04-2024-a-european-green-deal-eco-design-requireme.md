@@ -2,7 +2,7 @@
 title: 04 2024 | A European Green Deal | Eco-design requirements for sustainable products
 url: https://www.europarl.europa.eu/legislative-train/carriage/sustainable-products-initiative/report?sid=8001
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:24.154244
+collected_date: 2025-11-16T02:36:37.929163
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: European Parliament

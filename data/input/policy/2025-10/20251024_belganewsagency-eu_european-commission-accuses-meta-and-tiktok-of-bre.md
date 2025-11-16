@@ -2,7 +2,7 @@
 title: European Commission accuses Meta and TikTok of breaching EU digital rules
 url: https://www.belganewsagency.eu/european-commission-accuses-meta-and-tiktok-of-breaching-eu-digital-rules
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:38.182893
+collected_date: 2025-11-16T02:36:48.943575
 source: Belganewsagency
 source_url: https://www.belganewsagency.eu
 description: [EU](https://www.belganewsagency.eu/category/eu)

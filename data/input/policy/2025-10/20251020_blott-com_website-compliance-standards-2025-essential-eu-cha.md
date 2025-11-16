@@ -2,7 +2,7 @@
 title: Website Compliance Standards 2025: Essential EU Changes for Marketing Sites
 url: https://www.blott.com/blog/post/website-compliance-standards-2025-essential-eu-changes-for-marketing-sites
 published_date: 2025-10-20T00:00:00
-collected_date: 2025-11-11T12:26:08.040827
+collected_date: 2025-11-16T02:36:21.124064
 source: Blott
 source_url: https://www.blott.com
 author: Benjamin Yang

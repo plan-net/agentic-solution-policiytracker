@@ -2,7 +2,7 @@
 title: EU Digital Services Act: 101
 url: https://iapp.org/resources/article/eu-digital-services-act-101
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:17.142985
+collected_date: 2025-11-16T02:36:29.879461
 source: Iapp
 source_url: https://iapp.org
 author: Isabelle Roccia, CIPP/E

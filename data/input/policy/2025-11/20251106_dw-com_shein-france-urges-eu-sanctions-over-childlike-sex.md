@@ -1,8 +1,8 @@
 ---
 title: Shein: France urges EU sanctions over 'childlike' sex dolls
 url: https://www.dw.com/en/shein-france-urges-eu-sanctions-over-childlike-sex-dolls/a-74648063
-published_date: 2025-11-06T12:26:19.589000
-collected_date: 2025-11-11T12:26:19.828681
+published_date: 2025-11-06T00:00:00
+collected_date: 2025-11-16T02:36:33.931950
 source: Dw
 source_url: https://www.dw.com
 author: Maren Sass

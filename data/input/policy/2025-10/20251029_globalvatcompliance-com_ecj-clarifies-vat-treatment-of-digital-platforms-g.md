@@ -2,7 +2,7 @@
 title: ECJ clarifies VAT treatment of digital platforms - Global VAT Compliance
 url: https://www.globalvatcompliance.com/globalvatnews/ecj-vat-treatment-digital-platforms/
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-11T12:26:14.245913
+collected_date: 2025-11-16T02:36:24.700075
 source: Globalvatcompliance
 source_url: https://www.globalvatcompliance.com
 author: Victoria

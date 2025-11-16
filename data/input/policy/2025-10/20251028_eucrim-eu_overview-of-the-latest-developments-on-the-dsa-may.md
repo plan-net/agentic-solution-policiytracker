@@ -2,7 +2,7 @@
 title: Overview of the Latest Developments on the DSA: May – Mid-October 2025
 url: https://eucrim.eu/news/overview-of-the-latest-developments-on-the-dsa-may-mid-october-2025/
 published_date: 2025-10-28T00:00:00
-collected_date: 2025-11-11T12:26:10.612421
+collected_date: 2025-11-16T02:36:24.699999
 source: Eucrim
 source_url: https://eucrim.eu
 author: Dr. Anna Pingen

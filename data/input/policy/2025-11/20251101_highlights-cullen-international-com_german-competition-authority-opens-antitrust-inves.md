@@ -2,7 +2,7 @@
 title: German competition authority opens antitrust investigation into online market place Temu
 url: https://highlights.cullen-international.com/2025-10-13/index.html
 published_date: 2025-11-01T00:00:00
-collected_date: 2025-11-11T12:26:38.873228
+collected_date: 2025-11-16T02:36:42.865450
 source: Highlights
 source_url: https://highlights.cullen-international.com
 description: "| |

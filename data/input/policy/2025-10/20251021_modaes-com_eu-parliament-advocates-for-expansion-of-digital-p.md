@@ -2,7 +2,7 @@
 title: EU Parliament Advocates for Expansion of Digital Passport to All Consumer Goods - Modaes Global
 url: https://www.modaes.com/global/markets/european-parliament-urges-extension-of-digital-passport-to-all-products
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-11T12:26:26.829720
+collected_date: 2025-11-16T02:36:37.929264
 source: Modaes
 source_url: https://www.modaes.com
 author: Modaes

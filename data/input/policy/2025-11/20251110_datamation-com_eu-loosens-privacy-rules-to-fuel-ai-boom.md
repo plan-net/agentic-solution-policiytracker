@@ -2,7 +2,7 @@
 title: EU Loosens Privacy Rules to Fuel AI Boom
 url: https://www.datamation.com/big-data/eu-privacy-rules-ai-boom/
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-11T12:26:07.606169
+collected_date: 2025-11-16T02:36:21.334643
 source: Datamation
 source_url: https://www.datamation.com
 author: Datamation Staff
@@ -215,6 +215,22 @@ By reopening the law, Brussels risks undermining that legacy — and, critics sa
 
 [Big Data](https://www.datamation.com/big-data/)
 
+[What Is Sentiment Analysis?](https://www.datamation.com/big-data/sentiment-analysis/)
+
+Learn about how it works, the types, top tools, practical examples, challenges, and more.
+
+[Kezia Grace Jungco](https://www.datamation.com/author/kezia-grace-jungco/)
+
+[AI](https://www.datamation.com/artificial-intelligence/)
+
+[Google Unveils Private AI Compute for Data Privacy](https://www.datamation.com/artificial-intelligence/google-private-ai-compute/)
+
+This is a cloud-based processing system designed to deliver more powerful Gemini-model intelligence without compromising user privacy.
+
+[Datamation Staff](https://www.datamation.com/author/datamation-staff/)
+
+[Big Data](https://www.datamation.com/big-data/)
+
 [The 5 Stages of Data Lifecycle Management](https://www.datamation.com/big-data/data-lifecycle-phases/)
 
 Learn the five stages of the data lifecycle from creation to obsolescence.
@@ -226,22 +242,6 @@ Learn the five stages of the data lifecycle from creation to obsolescence.
 [What Is Data Modeling?](https://www.datamation.com/big-data/what-is-data-modeling/)
 
 Data modeling is the process of creating a data structure that describes the data in a database. Learn more about data modeling and its benefits.
-
-[Amadie Hart](https://www.datamation.com/author/amadie-hart/)
-
-[Big Data](https://www.datamation.com/big-data/)
-
-[7 Best Practices for Data Science](https://www.datamation.com/big-data/data-science-best-practices/)
-
-Data science is a rapidly evolving field. Learn the best practices to stay ahead of the curve and maximize your data's potential.
-
-[Avya Chaudhary](https://www.datamation.com/author/avya-chaudhary/)
-
-[Big Data](https://www.datamation.com/big-data/)
-
-[What Is Predictive Analytics?](https://www.datamation.com/big-data/what-is-predictive-analytics/)
-
-Predictive analytics is the process of using data and machine learning algorithms to make predictions about future events. Learn more with this guide.
 
 [Amadie Hart](https://www.datamation.com/author/amadie-hart/)
 

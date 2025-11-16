@@ -2,7 +2,7 @@
 title: EU Commission Adopts New Rules for Distribution Agreements: What’s to Come for Distribution Relationships in the Digital Age?
 url: https://crowell.com/en/insights/client-alerts/eu-commission-adopts-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:10.612468
+collected_date: 2025-11-16T02:36:27.038754
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)

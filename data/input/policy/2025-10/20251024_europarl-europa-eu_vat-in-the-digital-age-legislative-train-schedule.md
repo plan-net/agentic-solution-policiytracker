@@ -2,7 +2,7 @@
 title: VAT in the digital age | Legislative Train Schedule
 url: https://www.europarl.europa.eu/legislative-train/package-tax-action-plan/file-vat-in-the-digital-age
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-11T12:26:14.245872
+collected_date: 2025-11-16T02:36:26.669973
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: European Parliament

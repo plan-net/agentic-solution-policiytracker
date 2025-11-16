@@ -1,0 +1,20 @@
+---
+title: German court rules Google must pay €572M for violating antitrust rules in price comparison sector
+url: https://www.yahoo.com/news/articles/german-court-rules-google-must-154013006.html
+published_date: 2025-11-14T00:00:00
+collected_date: 2025-11-16T02:36:46.801675
+source: Yahoo
+source_url: https://www.yahoo.com
+author: Ram Iyer
+description: Ram Iyer Fri, November 14, 2025 at 3:40 PM UTC 2 min read 31 January 2025, Bavaria, Munich: The Google logo and lettering can be seen on the facade of the company's Munich headquarters on January 31, 2025 in Munich (Bavaria). The company's development center is located in Arnulfpark. More than...
+language: en
+collection_type: policy_landscape
+---
+
+# German court rules Google must pay €572M for violating antitrust rules in price comparison sector
+
+*By Ram Iyer*
+
+Ram Iyer Fri, November 14, 2025 at 3:40 PM UTC 2 min read 31 January 2025, Bavaria, Munich: The Google logo and lettering can be seen on the facade of the company's Munich headquarters on January 31, 2025 in Munich (Bavaria). The company's development center is located in Arnulfpark. More than...
+
+Ram Iyer Fri, November 14, 2025 at 3:40 PM UTC 2 min read 31 January 2025, Bavaria, Munich: The Google logo and lettering can be seen on the facade of the company's Munich headquarters on January 31, 2025 in Munich (Bavaria). The company's development center is located in Arnulfpark. More than 2,500 employees work for the US company at various locations in Germany. The parent company of Google LLC is Alphabet Inc. Photo: Matthias Balk/dpa (Photo by Matthias Balk/picture alliance via Getty Images) | Image Credits:Matthias Balk/picture alliance / Getty Images A German court has found that Google has abused its dominant market position in the price comparison sector and ruled that the company must pay a total of €572 million ($665.6 million) in damages to two German price comparison companies, according to a report by Reuters. Google must pay the price comparison platform Idealo about €465 million (about $540 million) in damages, and €107 million (about $124 million) to Producto, another price comparison tool, the report said. Idealo had claimed damages of €3.3 billion from Google, arguing that its lawsuit was a direct response to the European Court of Justice’s ruling in 2024 that found the search giant was self-preferencing its own shopping comparison service, breaking competition rules, and fined it about $2.7 billion. Idealo said on Friday that it intends to continue its case against Google and seek the full damages it had sued for. “We welcome the court holding Google accountable. But the consequences of self-favoring go far beyond the amount awarded. We will continue to fight – because market abuse must have consequences and must not become a lucrative business model that is worthwhile despite fines and compensation payments,” Idealo’s co-founder and CEO Albrecht von Sonntag said in a statement. Google said it intends to appeal both rulings. “The changes we made in 2017 are working well, with no intervention from the European Commission. The number of price comparison sites in Europe using the remedy Shopping Unit has multiplied from seven then to 1,550 today,” a Google spokesperson said in an emailed statement. The company added that it offers rival comparison shopping services the same opportunity as Google Shopping to display ads, and said Google Shopping operates as if it were a separate business, participating in auctions the same as everyone else. The ruling follows close on the heels of an EU investigation into how Google’s spam policy affects publishers’ search rankings. The company was recently fined €2.95 billion (just under $3.5 billion) by the EU for allegedly breaching EU antitrust rules by favoring its own advertising services. Note: This story was updated to add a comment from Google.

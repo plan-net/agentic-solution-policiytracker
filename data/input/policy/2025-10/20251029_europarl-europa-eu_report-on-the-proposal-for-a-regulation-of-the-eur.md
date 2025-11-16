@@ -2,7 +2,7 @@
 title: REPORT on the proposal for a regulation of the European Parliament and of the Council amending Regulations (EU) No 1024/2012 and (EU) 2018/1724 as regards certain requirements laid down by Directive (EU) XXXX/XXXX | A10-0209/2025 | European Parliament
 url: https://www.europarl.europa.eu/doceo/document/A-10-2025-0209_EN.html
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-03T03:50:17.606635
+collected_date: 2025-11-16T02:36:24.699975
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: Adina VĂLEAN

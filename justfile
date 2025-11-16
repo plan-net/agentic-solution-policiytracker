@@ -217,6 +217,55 @@ etl-reset-all:
     @echo "🔄 Resetting ALL ETL collectors..."
     uv run python scripts/etl_init_manager.py reset-all
 
+# === BundestagPerson Manager (CRUD System) ===
+
+# Run complete BundestagPerson Manager demo
+demo-crud:
+    @echo "🎯 Running BundestagPerson Manager demo..."
+    uv run python scripts/demo_bundestag_person_manager.py
+
+# Sync all BundestagPerson records (with mock DIP API)
+sync-persons:
+    @echo "🔄 Syncing BundestagPerson records..."
+    uv run python -c "import asyncio; from src.skills.bundestag_person_manager import BundestagPersonManager; import json; result = asyncio.run(BundestagPersonManager(use_mock_dip=True).sync_all_persons()); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check BundestagPerson sync status
+check-sync:
+    @echo "📊 Checking sync status..."
+    uv run python -c "import asyncio; from src.skills.bundestag_person_manager import BundestagPersonManager; import json; m = BundestagPersonManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
+
+# Dry run sync (preview changes without applying)
+sync-persons-dry:
+    @echo "👀 Performing dry run..."
+    uv run python -c "import asyncio; from src.skills.bundestag_person_manager import BundestagPersonManager; import json; result = asyncio.run(BundestagPersonManager(use_mock_dip=True).sync_all_persons(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check MCP server health
+crud-health:
+    @echo "🏥 Checking CRUD system health..."
+    @curl -s http://localhost:8002/health | python -m json.tool || echo "❌ MCP server not accessible"
+
+# === BundestagVorgang Manager (CRUD System) ===
+
+# Run complete BundestagVorgang Manager demo
+demo-vorgang:
+    @echo "🎯 Running BundestagVorgang Manager demo..."
+    uv run python scripts/demo_bundestag_vorgang_manager.py
+
+# Sync all Vorgang records (with mock DIP API)
+sync-vorgaenge:
+    @echo "🔄 Syncing Vorgang records..."
+    uv run python -c "import asyncio; from src.skills.bundestag_vorgang_manager import BundestagVorgangManager; import json; result = asyncio.run(BundestagVorgangManager(use_mock_dip=True).sync_all_vorgaenge()); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Check Vorgang sync status
+check-vorgang-sync:
+    @echo "📊 Checking Vorgang sync status..."
+    uv run python -c "import asyncio; from src.skills.bundestag_vorgang_manager import BundestagVorgangManager; import json; m = BundestagVorgangManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Vorgang Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
+
+# Dry run Vorgang sync (preview changes without applying)
+sync-vorgaenge-dry:
+    @echo "👀 Performing Vorgang dry run..."
+    uv run python -c "import asyncio; from src.skills.bundestag_vorgang_manager import BundestagVorgangManager; import json; result = asyncio.run(BundestagVorgangManager(use_mock_dip=True).sync_all_vorgaenge(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
 # === Development ===
 
 # Run tests

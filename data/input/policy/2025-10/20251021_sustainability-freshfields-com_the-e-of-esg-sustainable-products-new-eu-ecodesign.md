@@ -2,7 +2,7 @@
 title: The ‘E’ of ESG: Sustainable products - new EU Ecodesign rules for unsold consumer products
 url: https://sustainability.freshfields.com/post/102lqlo/the-e-of-esg-sustainable-products-new-eu-ecodesign-rules-for-unsold-consumer
 published_date: 2025-10-21T00:00:00
-collected_date: 2025-11-11T12:26:24.263450
+collected_date: 2025-11-16T02:36:37.929205
 source: Sustainability
 source_url: https://sustainability.freshfields.com
 author: Jonas Köster, Tobias Klatt, Juliane Hilf, Sam Houshower

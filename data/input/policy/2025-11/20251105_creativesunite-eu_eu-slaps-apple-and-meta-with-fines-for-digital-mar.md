@@ -2,7 +2,7 @@
 title: EU Slaps Apple and Meta with Fines for Digital Markets Act Violations
 url: https://creativesunite.eu/generate_pdf.php?slug=eu-slaps-apple-and-meta-with-fines-for-digital-markets-act-violations
 published_date: 2025-11-05T00:00:00
-collected_date: 2025-11-11T12:26:35.549543
+collected_date: 2025-11-16T02:36:48.943711
 source: Creativesunite
 source_url: https://creativesunite.eu
 author: Creativesunite

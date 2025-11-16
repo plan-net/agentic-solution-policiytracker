@@ -2,7 +2,7 @@
 title: European Commission moves to loosen GDPR for AI and cookie tracking
 url: https://www.csoonline.com/article/4087355/european-commission-moves-to-loosen-gdpr-for-ai-and-cookie-tracking-2.html
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-11T12:26:10.612869
+collected_date: 2025-11-16T02:36:21.250344
 source: Csoonline
 source_url: https://www.csoonline.com
 author: by Gyana Swain

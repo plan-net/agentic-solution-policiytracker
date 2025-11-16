@@ -1,8 +1,8 @@
 ---
 title: France urges EU to sanction e-commerce giant Shein after ...
 url: https://www.france24.com/en/live-news/20251106-france-urges-eu-to-sanction-shein-platform
-published_date: 2025-11-06T12:26:17.014000
-collected_date: 2025-11-11T12:26:17.663568
+published_date: 2025-11-06T00:00:00
+collected_date: 2025-11-16T02:36:31.875953
 source: France24
 source_url: https://www.france24.com
 author: By:

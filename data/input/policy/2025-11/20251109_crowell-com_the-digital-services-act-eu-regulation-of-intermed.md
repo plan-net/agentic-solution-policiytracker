@@ -2,7 +2,7 @@
 title: The Digital Services Act: EU Regulation of Intermediary Service Providers Imminent
 url: https://crowell.com/en/insights/client-alerts/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:13.751407
+collected_date: 2025-11-16T02:36:31.876344
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -26,7 +26,7 @@ collection_type: policy_landscape
 - [PDF Link](https://crowell.com/print/v2/content/61482/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent.pdf)
 - Share
 
-- [Email](mailto://crowell.com?subject=The%20Digital%20Services%20Act%3A%20EU%20Regulation%20of%20Intermediary%20Service%20Providers%20Imminent&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
+- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent?subject=The%20Digital%20Services%20Act%3A%20EU%20Regulation%20of%20Intermediary%20Service%20Providers%20Imminent&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 
@@ -120,33 +120,37 @@ _The authors thank Ms Florence Nieuwbourg for her assistance in preparing this a
 
 - [Sari Depreeuw](https://www.crowell.com/en/professionals/sari-depreeuw)
 
+- [Brussels](https://www.crowell.com/en/locations/brussels)
+
 - D \| [+32.2.282.18.49](tel:%2B32.2.282.18.49)
 
 [c2RlcHJlZXV3QGNyb3dlbGwuY29t](mailto:c2RlcHJlZXV3QGNyb3dlbGwuY29t)
 
 - [Karl Stas](https://www.crowell.com/en/professionals/karl-stas)
 
+- [Brussels](https://www.crowell.com/en/locations/brussels)
+
 - D \| [+32.2.214.2888](tel:%2B32.2.214.2888)
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 3 min read \| 11.06.25
+Client Alert \| 9 min read \| 09.11.25
 
-[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
+[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
 
-In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
+About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
 
-- Client Alert \| 2 min read \| 11.06.25
+- Client Alert \| 1 min read \| 09.10.25
 
-[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
+[FAR from Alone: GSA Releases New FAR Companion Guide](https://www.crowell.com/en/insights/client-alerts/far-from-alone-gsa-releases-new-far-companion-guide)
 
-- Client Alert \| 3 min read \| 11.06.25
+- Client Alert \| 7 min read \| 09.10.25
 
-[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
+[Finally, the CMMC Final Rule: DoD Completes CMMC Rulemaking, Ushering in New Era in DoD Cybersecurity](https://www.crowell.com/en/insights/client-alerts/finally-the-cmmc-final-rule-dod-completes-cmmc-rulemaking-ushering-in-new-era-in-dod-cybersecurity)
 
-- Client Alert \| 13 min read \| 11.06.25
+- Client Alert \| 3 min read \| 09.10.25
 
-[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
+[No Opt-Out for State Data Privacy Compliance: California, Colorado and Connecticut Keep Data Privacy Enforcement Pressure on with Joint Enforcement Sweep](https://www.crowell.com/en/insights/client-alerts/no-opt-out-for-state-data-privacy-compliance-california-colorado-and-connecticut-keep-data-privacy-enforcement-pressure-on-with-joint-enforcement-sweep)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

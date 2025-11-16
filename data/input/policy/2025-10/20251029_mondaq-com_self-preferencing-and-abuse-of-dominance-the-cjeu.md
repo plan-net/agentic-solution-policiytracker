@@ -2,7 +2,7 @@
 title: Self-Preferencing And Abuse Of Dominance: The CJEU Judgment In Google Shopping And Beyond
 url: https://www.mondaq.com/antitrust-eu-competition/1697700/self-preferencing-and-abuse-of-dominance-the-cjeu-judgment-in-google-shopping-and-beyond
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-11T12:26:27.019362
+collected_date: 2025-11-16T02:36:40.434233
 source: Mondaq
 source_url: https://www.mondaq.com
 author: Katrien  Veranneman

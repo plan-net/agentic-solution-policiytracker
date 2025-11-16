@@ -2,7 +2,7 @@
 title: European Digital Compliance: Key Digital Regulation & Compliance Developments (November 2025)
 url: https://www.mofo.com/resources/insights/251103-european-digital-compliance-key-digital-regulation
 published_date: 2025-11-04T00:00:00
-collected_date: 2025-11-11T12:26:07.606277
+collected_date: 2025-11-16T02:36:24.700017
 source: Mofo
 source_url: https://www.mofo.com
 author: Christoph Nüßing, Sana Ashcroft, Alistair Maughan, Andreas Grünwald, Stephan Kreß, Mercedes Samavi, Nina Graw, Jasmin Dajana Kuehner, Michelle Si-Ting Luo, Zoé Menkhoff, Florian Werkmeister, Georgia Wright

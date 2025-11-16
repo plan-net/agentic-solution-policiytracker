@@ -2,7 +2,7 @@
 title: Commission sends request for information to Meta under the Digital Services Act
 url: https://digital-strategy.ec.europa.eu/en/node/12526/printable/pdf
 published_date: 2025-11-07T00:00:00
-collected_date: 2025-11-11T12:26:17.664619
+collected_date: 2025-11-16T02:36:29.879381
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: "Commission sends request for information to
@@ -28,7 +28,7 @@ Today, the Commission has formally sent Meta a request for information (RFI) und
 Services Act (DSA). The Commission is requesting Meta to provide more information related to the
 Subscription for no Ads options for both Facebook and Instagram.
 European Commission
-In particular, Meta should provide additional information on the measures it has taken to comply
+ In particular, Meta should provide additional information on the measures it has taken to comply
 with its obligations concerning Facebook and Instagram's advertising practices, recommender
 systems and risk assessments related to the introduction of that subscription option.
 The RFI also addresses several topics which were already included in RFIs sent to Meta since

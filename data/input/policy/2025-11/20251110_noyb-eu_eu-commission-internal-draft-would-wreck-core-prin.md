@@ -2,7 +2,7 @@
 title: EU Commission internal draft would wreck core principles of the GDPR
 url: https://noyb.eu/en/eu-commission-about-wreck-core-principles-gdpr
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-11T12:26:07.606142
+collected_date: 2025-11-16T02:36:23.625776
 source: Noyb
 source_url: https://noyb.eu
 description: [Skip to main content](https://noyb.eu/noyb.eu#main-content)
@@ -18,9 +18,11 @@ collection_type: policy_landscape
 
 # EU Commission internal draft would wreck core principles of the GDPR
 
-[National Administrative Procedures and DPA inactivity](https://noyb.eu/en/project/national-administrative-procedure)
-
 **As gradually leaked the last days by various news outlets, the EU Commission has secretly set in motion a potentially massive reform of the GDPR. If internal drafts become reality, this would have significant impact on people's fundamental right to privacy and data protection. The reform would be part of the so-called "Digital Omnibus" which was supposed to only bring targeted adjustments to simplify compliance for businesses. Now, the Commission proposes changes to core elements like the definition of "personal data" and all data subject's rights under the GDPR. The leaked draft also suggests to give AI companies (like Google, Meta or OpenAI) a blank check to suck up European's personal data. In addition, the special protection of sensitive data like health data, political views or sexual orientation would be significantly reduced. Also, remote access to personal data on PCs or smart phones without consent of the user would be enabled** _**.**_ **Many elements of the envisaged reform would overturn CJEU case law, violate European Conventions and the European Charter of Fundamental Rights. If this extreme draft will become the official position of the European Commission, will only become clear on 19 November, when the "Digital Omnibus" will be officially presented. Schrems: "** _**This would be a massive downgrading of European's privacy ten years after the GDPR was adopted**_ **."**
+
+_**noyb's work is only possible thanks to our 5,287 Supporting Members. Would you like to support us too?**_
+
+[Become a member!](https://noyb.eu/en/support-us)
 
 - [Overview Table of the Draft & Comments by _noyb_](https://noyb.eu/sites/default/files/2025-11/GDPR_Reform_Draft_Analysis_v2.pdf)
 - [Leaked Paper on Member State Positions](http://noyb.eu/sites/default/files/2025-11/Member%20States%20on%20GDPR%20Changes.pdf)(largely not asking for reforms)
@@ -96,9 +98,9 @@ Bottom line: Google, Meta, Microsoft or OpenAI can continue to make Trillions (!
 
 This would lead to a grotesque situation: If personal data is processed via a traditional database, Excel sheet or software, a company has to find a legal basis under Article 6(1) GDPR. However, if the _same_ processing is done via an AI system, it can qualify as a "legitimate interest" under Article 6(1)(f) GDPR. This would privilege _one_(risky) technology over all other forms of data processing and be contrary to the "tech neutral" approach of the GDPR.
 
-**(5) Sensitive Data like Health, Politics or Sex Life only covered if "directly revealed"?** Article 9 GDPR specifically protects "sensitive" data regarding people's health, political believes, sex life, sexual orientation or trade union membership. So far, the CJEU held that such information is also protected if it can only be deducted from other information. The Commission now tries to overturn the law and wants to limit Article 9 protections only if such sensitive information is "directly revealed".
+**(5) Sensitive Data like Health, Politics or Sex Life only covered if "directly revealed"?** Article 9 GDPR specifically protects "sensitive" data regarding people's health, political believes, sex life, sexual orientation or trade union membership. So far, the CJEU held that such information is also protected if it can only be deduced from other information. The Commission now tries to overturn the law and wants to limit Article 9 protections only if such sensitive information is "directly revealed".
 
-However, people who "directly reveal" that they are pregnant, have cancer or are gay usually need this protection less than people about whom such sensitive information can only be "deducted" from other information. A classic example for this are [employers who use "big data" to deduce that a woman is pregnant](https://fortune.com/2016/02/17/castlight-pregnancy-data/) – to then fire that person quickly to avoid social payment and alike. Right now, this would fall under Article 9 GDPR. In the future, it would be reduced to protections under Article 6 GDPR – while a person publicly announcing their pregnancy would fall under Article 9 GDPR.
+However, people who "directly reveal" that they are pregnant, have cancer or are gay usually need this protection less than people about whom such sensitive information can only be "deduced" from other information. A classic example for this are [employers who use "big data" to deduce that a woman is pregnant](https://fortune.com/2016/02/17/castlight-pregnancy-data/) – to then fire that person quickly to avoid social payment and alike. Right now, this would fall under Article 9 GDPR. In the future, it would be reduced to protections under Article 6 GDPR – while a person publicly announcing their pregnancy would fall under Article 9 GDPR.
 
 From the perspective of individuals, such a limitation makes no sense, but the Commission seems to be mainly concerned with companies that want to use such data for AI training. Filtering for "I am pregnant" is easier than filtering the 1000 signals that allow Meta or Google to figure out that a person is pregnant.
 
@@ -110,33 +112,35 @@ However, the Commission proposal now allows - depending on the reading of the dr
 
 In addition, all legal bases under Article 6(1) GDPR would be available. In combination this could lead to absurd results: AI training would be a "legitimate interest", and companies can now remotely access personal data on your device for such a "legitimate interest". Consequently, it would be a possible reading of the law that companies such as [Google can use data from any Android apps to train it's Gemini AI](https://www.malwarebytes.com/blog/news/2025/07/no-thanks-google-lets-its-gemini-ai-access-your-apps-including-messages). Especially "Big Tech" companies would very likely have an even more expansive reading of the draft text. It is questionable whether the authors of this draft law have ever thought about these combinations.
 
-- [18.09.2025\
+_**This analysis is only possible thanks to the support of our members and donors. Would you like to support us too?**_
+
+[Find out more](https://noyb.eu/en/donations-other-support-options)
+
+- [11.11.2025\
 \
-National Administrative Procedures and DPA inactivity\
+**Open letter: Digital omnibus brings deregulation, not simplification** \
 \
-**Former Meta lobbyist named DPC Commissioner: Meta now officially regulates itself** \
+EDRi, the ICCL and noyb send a letter to the Commission expressing their concerns regarding the suggested Omnibus reform.\
 \
-According to reports in the Irish news, Niamh Sweeney, a former senior Meta lobbyist, is set to join the Irish Data Protection Commission (DPC) as a commissioner in October\
+Read more](https://noyb.eu/en/open-letter-digital-omnibus-brings-deregulation-not-simplification)
+- [28.10.2025\
 \
-Read more](https://noyb.eu/en/former-meta-lobbyist-named-dpc-commissioner-meta-now-officially-regulates-itself)
-- [18.09.2025\
+Biometric Data\
 \
-National Administrative Procedures and DPA inactivity\
+**Criminal complaint against facial recognition company Clearview AI** \
 \
-**Budget cuts paralyse Austrian DPA: NGO complaint to the EU Commission** \
+Clearview AI is known for scraping billions of photos of people around the world on the internet – and selling its facial recognition system to law enforcement and state actors\
 \
-The Austrian DPA has announced a restriction of its activities\
+Read more](https://noyb.eu/en/criminal-complaint-against-facial-recognition-company-clearview-ai)
+- [10.10.2025\
 \
-Read more](https://noyb.eu/en/budget-cuts-paralyse-austrian-dpa-ngo-complaint-eu-commission)
-- [20.05.2025\
+Data Subject Rights\
 \
-National Administrative Procedures and DPA inactivity\
+**noyb win: Microsoft 365 Education may not track school children** \
 \
-**EU to make GDPR procedures unworkable** \
+Favorable decision by the Austrian DSB: Microsoft Education 365 may not track school kids and Microsoft is ordered to provide full access to kids' data.\
 \
-The Procedure Regulation that should harmonise GDPR enforcement but will introduce excessively long deadlines and overly complex procedures. noyb considers annulment procedure\
-\
-Read more](https://noyb.eu/en/eu-make-gdpr-procedures-unworkable)
+Read more](https://noyb.eu/en/noyb-win-microsoft-365-education-tracks-school-children)
 
 Subscribe to noyb newsletter
 

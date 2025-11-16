@@ -2,7 +2,7 @@
 title: GDPR’s economic footprint: rising costs, falling investment, and shifting data quality
 url: https://www.aboutamazon.eu/news/policy/gdprs-economic-footprint-rising-costs-falling-investment-and-shifting-data-quality
 published_date: 2025-11-06T00:00:00
-collected_date: 2025-11-11T12:26:08.040769
+collected_date: 2025-11-16T02:36:21.250324
 source: Aboutamazon
 source_url: https://www.aboutamazon.eu
 author: About Amazon Team

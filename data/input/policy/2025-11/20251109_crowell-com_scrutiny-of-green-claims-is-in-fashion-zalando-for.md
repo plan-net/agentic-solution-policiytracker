@@ -2,7 +2,7 @@
 title: Scrutiny of Green Claims is in Fashion: Zalando Forced to Overhaul Sustainability Claims
 url: https://crowell.com/en/insights/client-alerts/scrutiny-of-green-claims-is-in-fashion-zalando-forced-to-overhaul-sustainability-claims
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:24.263507
+collected_date: 2025-11-16T02:36:37.929364
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)

@@ -2,7 +2,7 @@
 title: Analysis: Consumers have greater choice with the Digital Markets Act
 url: https://www.heise.de/en/news/Analysis-Consumers-have-greater-choice-with-the-Digital-Markets-Act-11071224.html
 published_date: 2025-11-08T00:00:00
-collected_date: 2025-11-11T12:26:20.767834
+collected_date: 2025-11-16T02:36:43.026157
 source: Heise
 source_url: https://www.heise.de
 author: Stefan Krempl

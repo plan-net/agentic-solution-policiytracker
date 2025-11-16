@@ -2,7 +2,7 @@
 title: Apple Faces New EU Antitrust Complaint Over App Store Practices | PYMNTS.com
 url: https://www.pymnts.com/cpi-posts/apple-faces-new-eu-antitrust-complaint-over-app-store-practices/
 published_date: 2025-10-22T00:00:00
-collected_date: 2025-11-11T12:26:39.892146
+collected_date: 2025-11-16T02:36:51.695463
 source: Pymnts
 source_url: https://www.pymnts.com
 author: CPI

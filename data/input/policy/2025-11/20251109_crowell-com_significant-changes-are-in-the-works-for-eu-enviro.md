@@ -2,7 +2,7 @@
 title: Significant Changes Are in the Works for EU Environmental, Social, and Governance (ESG) Laws
 url: https://crowell.com/en/insights/client-alerts/a-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:24.263529
+collected_date: 2025-11-16T02:36:37.929473
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -26,7 +26,7 @@ collection_type: policy_landscape
 - [PDF Link](https://crowell.com/print/v2/content/116603/a-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws.pdf)
 - Share
 
-- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws?subject=Significant%20Changes%20Are%20in%20the%20Works%20for%20EU%20Environmental%2C%20Social%2C%20and%20Governance%20(ESG)%20Laws&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
+- [Email](mailto://crowell.com?subject=Significant%20Changes%20Are%20in%20the%20Works%20for%20EU%20Environmental%2C%20Social%2C%20and%20Governance%20(ESG)%20Laws&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 
@@ -128,105 +128,62 @@ Crowell & Moring is continuing to track these developments, which are likely to 
 
 - [Juge Gregg](https://www.crowell.com/en/professionals/juge-gregg)
 
-- [Washington, D.C.](https://www.crowell.com/en/locations/washington-d-c)
-
 - D \| [+1.202.250.9931](tel:%2B1.202.250.9931)
 
-[jgregg@crowell.com](mailto:jgregg@crowell.com)
+[amdyZWdnQGNyb3dlbGwuY29t](mailto:amdyZWdnQGNyb3dlbGwuY29t)
 
 - [Elizabeth B. Dawson](https://www.crowell.com/en/professionals/elizabeth-b-dawson)
 
-- [Washington, D.C.](https://www.crowell.com/en/locations/washington-d-c)
-
 - D \| [+1.202.624.2508](tel:%2B1.202.624.2508)
 
-[edawson@crowell.com](mailto:edawson@crowell.com)
+[ZWRhd3NvbkBjcm93ZWxsLmNvbQ==](mailto:ZWRhd3NvbkBjcm93ZWxsLmNvbQ==)
 
 - [Marcus Navin-Jones](https://www.crowell.com/en/professionals/marcus-navin-jones)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.897.0872](tel:%2B32.2.897.0872)
 
-[mnavinjones@crowell.com](mailto:mnavinjones@crowell.com)
+[bW5hdmluam9uZXNAY3Jvd2VsbC5jb20=](mailto:bW5hdmluam9uZXNAY3Jvd2VsbC5jb20=)
 
 - [Jean-Baptiste Blancardi](https://www.crowell.com/en/professionals/jean-baptiste-blancardi)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.214.2872](tel:%2B32.2.214.2872)
 
-[jblancardi@crowell.com](mailto:jblancardi@crowell.com)
+[amJsYW5jYXJkaUBjcm93ZWxsLmNvbQ==](mailto:amJsYW5jYXJkaUBjcm93ZWxsLmNvbQ==)
 
 - [Anna Gergely](https://www.crowell.com/en/professionals/dr-anna-gergely)
 
 Senior Regulatory and Scientific Consultant
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.897.0867](tel:%2B32.2.897.0867)
 
-[agergely@crowell.com](mailto:agergely@crowell.com)
+[YWdlcmdlbHlAY3Jvd2VsbC5jb20=](mailto:YWdlcmdlbHlAY3Jvd2VsbC5jb20=)
 
 - [Emily Werkmann](https://www.crowell.com/en/professionals/emily-werkmann)
 
-- [New York](https://www.crowell.com/en/locations/new-york)
-
 - D \| [+1.212.803.4056](tel:%2B1.212.803.4056)
 
-[ewerkmann@crowell.com](mailto:ewerkmann@crowell.com)
+[ZXdlcmttYW5uQGNyb3dlbGwuY29t](mailto:ZXdlcmttYW5uQGNyb3dlbGwuY29t)
 
-Client Alert \| 9 min read \| 09.11.25
+Client Alert \| 3 min read \| 11.06.25
 
-[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
+[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
 
-About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from nationalcompetition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
+In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
 
-- Client Alert \| 1 min read \| 09.10.25
+- Client Alert \| 2 min read \| 11.06.25
 
-[FAR from Alone: GSA Releases New FAR Companion Guide](https://www.crowell.com/en/insights/client-alerts/far-from-alone-gsa-releases-new-far-companion-guide)
+[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
 
-- Client Alert \| 8 min read \| 09.09.25
+- Client Alert \| 3 min read \| 11.06.25
 
-[FTC Stops Defending Rule Banning Noncompete Agreements, Opting Instead for “Aggressive” Case-by-Case Enforcement](https://www.crowell.com/en/insights/client-alerts/ftc-stops-defending-rule-banning-noncompete-agreements-opting-instead-for-aggressive-case-by-case-enforcement)
+[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
 
-- Client Alert \| 12 min read \| 09.09.25
+- Client Alert \| 13 min read \| 11.06.25
 
-[The Month in International Trade – August 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-august-2025)
+[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 
 to the latest insights from our team
 
 [Subscribe Now](https://crowell.com/en/subscribe)
-
-## Privacy Preference Center
-
-- ### Functional Cookies
-
-- ### Performance Cookies
-
-- ### Targeting Cookies
-
-- ### Strictly Necessary Cookies
-
-This website uses cookies. The strictly necessary and functional cookies are necessary for the proper functioning of the website and cannot be refused. Other cookies are used to measure and improve the performance of our site (performance cookies) and are only placed after you have made a choice. Click on the different category headings to find out more and change our default settings. However, blocking some types of cookies may impact your experience of the site and the services we are able to offer. Read more about it in our cookie policy.
-[Cookie Policy](https://www.crowell.com/Privacy-Statement#cookies)
-
-### Functional Cookies
-
-These cookies enable the website to provide enhanced functionality. They may be set by us or by third party providers whose services we have added to our pages. If you do not allow these cookies then some or all of these services may not function properly.
-
-### Performance Cookies
-
-These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site. All information these cookies collect is aggregated and therefore anonymous. If you do not allow these cookies we will not know when you have visited our site, and will not be able to monitor its performance.
-
-### Targeting Cookies
-
-These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites.    They do not store directly personal information, but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.
-
-### Strictly Necessary Cookies
-
-These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in or filling in forms. You can set your browser to block or alert you about these cookies, but some parts of the site will not then work. These cookies do not store any personally identifiable information.
-
-View Third Party Cookies

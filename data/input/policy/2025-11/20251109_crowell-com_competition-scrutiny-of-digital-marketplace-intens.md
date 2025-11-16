@@ -2,7 +2,7 @@
 title: Competition Scrutiny of Digital Marketplace Intensifies as EU Signals Potential Enforcement of Vertical Restraints on E-commerce
 url: https://crowell.com/en/insights/client-alerts/competition-scrutiny-of-digital-marketplace-intensifies-as-eu-signals-potential-enforcement-of-vertical-restraints-on-e-commerce
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:27.018430
+collected_date: 2025-11-16T02:36:40.434096
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)

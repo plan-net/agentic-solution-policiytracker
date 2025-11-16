@@ -2,7 +2,7 @@
 title: European regulators crack down on Big Tech
 url: https://www.tradingview.com/news/reuters.com,2025:newsml_L8N3W31P0:0-european-regulators-crack-down-on-big-tech/
 published_date: 2025-10-24T00:00:00
-collected_date: 2025-11-03T03:50:34.629300
+collected_date: 2025-11-16T02:36:43.241099
 source: Tradingview
 source_url: https://www.tradingview.com
 description: Search

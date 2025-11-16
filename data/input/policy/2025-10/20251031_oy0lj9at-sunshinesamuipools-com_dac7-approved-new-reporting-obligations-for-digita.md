@@ -2,7 +2,7 @@
 title: DAC7 approved: New reporting obligations for digital platforms
 url: https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/10696-dac7-approved-new-reporting-obligations-for-digital-platforms?source=articles-index
 published_date: 2025-10-31T00:00:00
-collected_date: 2025-11-11T12:26:14.245892
+collected_date: 2025-11-16T02:36:26.670020
 source: Oy0Lj9At
 source_url: https://oy0lj9at.sunshinesamuipools.com
 author: Loyens & Loeff
@@ -66,20 +66,20 @@ We will keep you informed about further developments. Should you have any questi
 
 ### More News & Articles
 
-##### Coalition agreement: update
+##### Belgium’s New Exit Tax on Shareholders
 
-On 27 March 2025, the parliament approved the act to increase the limit for student work to 650 hours per year (instead of 475 hours/year). This chang…
+As of 1 July 2025, Belgium will implement a new exit tax regime that will significantly alter the tax treatment of cross-border corporate mobility. Th…
 
-[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14104-coalition-agreement-update?source=similar_article)
+[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14228-belgium-s-new-exit-tax-on-shareholders?source=similar_article)
 
-##### New Legislation Simplifies and Optimizes the VAT Chain
+##### European Union’s first use of the International Procurement Instrument against China: what it means for the me…
 
-As of January 1, 2025, new legislation has come into force aimed at simplifying and optimizing the VAT chain (the mechanism by which VAT is collected …
+On 24 April 2024, the European Commission (‘EC’) initiated on its own initiative an investigation into measures and practices in the public procuremen…
 
-[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14210-new-legislation-simplifies-and-optimizes-the-vat-chain?source=similar_article)
+[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14278-european-union-s-first-use-of-the-international-procurement-instrument-against-china-what-it-means-for-the-medical-devices-market?source=similar_article)
 
-##### Constitutional Court clips the wings of the Belgian Cayman Tax 2.1
+##### European Court of Human Rights confirms importance of fundamental rights in tax raids
 
-Key elements of Belgium’s Cayman Tax 2.1 annulled, enhancing legal certainty for taxpayers.
+On 6 February 2025, the European Court of Human Rights (ECHR) issued an important judgment in the case Italgomme Pneumatici S.R.L. and others v Italy.…
 
-[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14369-constitutional-court-clips-the-wings-of-the-belgian-cayman-tax-2-1?source=similar_article)
+[Read More](https://oy0lj9at.sunshinesamuipools.com/en/news-and-articles/14281-european-court-of-human-rights-confirms-importance-of-fundamental-rights-in-tax-raids?source=similar_article)
