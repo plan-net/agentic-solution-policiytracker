@@ -59,12 +59,16 @@ Bundestag DIP API → Collectors (8 types) → Transformers → Knowledge Graph
 ### 4. Plenarprotokoll (Plenary Protocol)
 - **Endpoint**: `/plenarprotokoll`
 - **Entity Type**: `Plenarprotokoll`
-- **Description**: Verbatim records of plenary sessions
+- **Description**: Verbatim records of plenary sessions from Bundestag and Bundesrat
+- **Composite Key**: `sitzungsnummer` + `wahlperiode`
 - **Key Fields**:
-  - `sitzungsnummer`: Session number
-  - `tagesordnungspunkte`: Agenda items
-  - `reden`: Speeches delivered
+  - `sitzungsnummer`: Session number (extracted from dokumentnummer)
+  - `wahlperiode`: Electoral period number
+  - `herausgeber`: Publishing body (BT=Bundestag, BR=Bundesrat)
+  - `tagesordnungspunkte`: Agenda items (JSON)
+  - `vorgangsbezug`: Linked procedures
   - `pdf_url`: Protocol document link
+- **Detailed Documentation**: [Flow 5d: Plenarprotokoll](./bundestag_plenarprotokoll.md)
 
 ### 5. Vorgangsposition (Procedure Position/Step)
 - **Endpoint**: `/vorgangsposition`
@@ -138,20 +142,26 @@ Bundestag DIP API → Collectors (8 types) → Transformers → Knowledge Graph
 
 10. **Plenarprotokoll → Wahlperiode** (`IN_WAHLPERIODE`)
     - Links protocols to electoral periods
+    - Properties: `entity_type`, `active_from` (session date)
 
-11. **Person → Vorgang** (`INITIATES_VORGANG`)
+11. **Plenarprotokoll → Vorgang** (`REFERENCES_VORGANG`)
+    - Links protocols to procedures discussed in session
+    - Properties: `reference_type="debated_in_plenum"`, `context`
+    - Multiple: One protocol can reference many Vorgänge
+
+12. **Person → Vorgang** (`INITIATES_VORGANG`)
     - Links MPs to procedures they initiated
 
-12. **Person → Aktivitaet** (`PARTICIPATES_IN_ACTIVITY`)
+13. **Person → Aktivitaet** (`PARTICIPATES_IN_ACTIVITY`)
     - Links MPs to activities they participated in
 
-13. **Drucksache → Person** (`AUTHORED_BY`)
+14. **Drucksache → Person** (`AUTHORED_BY`)
     - Links documents to their authors
 
-14. **Vorgang → Vorgang** (`RELATED_TO_VORGANG`)
+15. **Vorgang → Vorgang** (`RELATED_TO_VORGANG`)
     - Links related procedures
 
-15. **Fraktion → Vorgang** (`FRAKTION_POSITION_ON`)
+16. **Fraktion → Vorgang** (`FRAKTION_POSITION_ON`)
     - Links factions to their positions on procedures
 
 ## Configuration
