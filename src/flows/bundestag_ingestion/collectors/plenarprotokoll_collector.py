@@ -70,6 +70,12 @@ class PlenarprotokollCollector(BaseCollector):
         errors = []
 
         try:
+            # Debug: Log collection start
+            with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                f.write(f"\n\n=== NEW COLLECTION RUN ===\n")
+                f.write(f"Filters: {filters}\n")
+                f.write(f"Limit: {limit}\n")
+
             logger.info(
                 "Starting Plenarprotokoll collection",
                 filters=filters,
@@ -79,6 +85,10 @@ class PlenarprotokollCollector(BaseCollector):
 
             # Collect protocols with pagination
             items, duration = await self._collect_with_timing(filters, limit)
+
+            # Debug: Log what API returned
+            with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                f.write(f"API returned {len(items)} items in {duration}s\n")
 
             logger.info(
                 "Collected plenary protocols",
@@ -95,17 +105,25 @@ class PlenarprotokollCollector(BaseCollector):
 
             # Transform to entities
             entities = await self._transform_to_entities(items)
+            logger.info(f"DEBUG: Transformed {len(entities)} entities, types: {[type(e).__name__ for e in entities[:3]]}")
 
             # Transform to edges
             edges = await self._transform_to_edges(items, entities)
+            logger.info(f"DEBUG: Transformed {len(edges)} edges")
+
+            # Save to Neo4j
+            logger.info(f"DEBUG: About to call save_to_neo4j with {len(entities)} entities and {len(edges)} edges")
+            logger.info(f"DEBUG: neo4j_driver is {'SET' if self.neo4j_driver else 'NOT SET'}")
+            save_result = await self.save_to_neo4j(entities, edges)
+            logger.info(f"DEBUG: save_to_neo4j returned: {save_result}")
 
             # Calculate total duration
             total_duration = self._measure_duration(start_time)
 
             # Return statistics
             return self._create_statistics(
-                entities_created=len(entities),
-                edges_created=len(edges),
+                entities_created=save_result.get("entities_saved", len(entities)),
+                edges_created=save_result.get("edges_saved", len(edges)),
                 duration=total_duration,
                 items_collected=len(items),
                 errors=errors
@@ -269,12 +287,35 @@ class PlenarprotokollCollector(BaseCollector):
         """
         entities = []
 
+        # Debug: Log what we received from API
+        with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+            f.write(f"\n=== _create_entities_directly called with {len(items)} items ===\n")
+            if items:
+                f.write(f"Sample item keys: {list(items[0].keys())}\n")
+                f.write(f"Sample item: {items[0]}\n")
+
         for item in items:
             try:
                 # Extract core fields
                 wahlperiode = item.get("wahlperiode", 0)
-                sitzungsnummer = item.get("sitzungsnummer", "")
+                # Use dokumentnummer as sitzungsnummer (API doesn't return sitzungsnummer field)
+                sitzungsnummer = item.get("dokumentnummer", "")
                 datum = item.get("datum", "")
+                herausgeber = item.get("herausgeber", "BT")
+
+                with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                    f.write(f"Item: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={herausgeber}, titel={item.get('titel', 'N/A')[:50]}\n")
+
+                # Filter out protocols without sitzungsnummer
+                if not sitzungsnummer:
+                    with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                        f.write(f"  -> SKIPPED: No sitzungsnummer\n")
+                    logger.warning(
+                        "Skipping protocol without sitzungsnummer",
+                        titel=item.get("titel"),
+                        herausgeber=herausgeber
+                    )
+                    continue
 
                 # Create entity
                 entity = Plenarprotokoll(
@@ -334,27 +375,39 @@ class PlenarprotokollCollector(BaseCollector):
         if self.edge_builder:
             return await super()._transform_to_edges(items, entities)
 
-        # Create edges directly
+        # Create edges directly with from_id and to_id
         edges = []
 
         for item, entity in zip(items, entities):
             try:
-                # Create IN_WAHLPERIODE edge
-                wahlperiode_edge = InWahlperiode(
-                    entity_type="Plenarprotokoll",
-                    active_from=item.get("datum"),
-                    active_until=None
-                )
+                # Create IN_WAHLPERIODE edge: Plenarprotokoll -> Wahlperiode
+                # Use composite key for Plenarprotokoll as from_id
+                plenarprotokoll_id = f"{entity.sitzungsnummer}_{entity.wahlperiode}"
+                wahlperiode_id = str(entity.wahlperiode)
+
+                wahlperiode_edge = {
+                    "type": "IN_WAHLPERIODE",
+                    "from_id": plenarprotokoll_id,
+                    "to_id": wahlperiode_id,
+                    "entity_type": "Plenarprotokoll",
+                    "active_from": item.get("datum"),
+                    "active_until": None
+                }
                 edges.append(wahlperiode_edge)
 
                 # Create REFERENCES_VORGANG edges for each related procedure
                 vorgaenge = item.get("vorgangsbezug", [])
                 for vorgang_ref in vorgaenge:
-                    vorgang_edge = ReferencesVorgang(
-                        reference_type="debated_in_plenum",
-                        context=f"Discussed in plenary session {entity.sitzungsnummer}"
-                    )
-                    edges.append(vorgang_edge)
+                    vorgang_id = vorgang_ref.get("id")
+                    if vorgang_id:
+                        vorgang_edge = {
+                            "type": "REFERENCES_VORGANG",
+                            "from_id": plenarprotokoll_id,
+                            "to_id": vorgang_id,
+                            "reference_type": "debated_in_plenum",
+                            "context": f"Discussed in plenary session {entity.sitzungsnummer}"
+                        }
+                        edges.append(vorgang_edge)
 
             except Exception as e:
                 logger.error(

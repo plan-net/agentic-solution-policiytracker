@@ -1,0 +1,16 @@
+---
+title: Seller Day: Falabella brings together 450 brands to address e‑commerce challenges for 2025 | Member News | Member Site
+url: https://www.iads.org/iads-member-news/seller-day-falabella-brings-together-450-brands-to-address-e-commerce-challenges-for-2025
+published_date: 2025-11-17T04:29:07.709861
+collected_date: 2025-11-17T04:29:07.709963
+source: Iads
+source_url: https://www.iads.org
+description: What: Falabella brings together 450 brands to address e-commerce challenges, highlighting 74% marketplace contribution to GMV. Why it is important: The success of Falabella's marketplace strategy, with 74% GMV from sellers and 60% of orders delivered within 48 hours, sets new standards for...
+language: en
+---
+
+# Seller Day: Falabella brings together 450 brands to address e‑commerce challenges for 2025 | Member News | Member Site
+
+What: Falabella brings together 450 brands to address e-commerce challenges, highlighting 74% marketplace contribution to GMV. Why it is important: The success of Falabella's marketplace strategy, with 74% GMV from sellers and 60% of orders delivered within 48 hours, sets new standards for...
+
+What: Falabella brings together 450 brands to address e-commerce challenges, highlighting 74% marketplace contribution to GMV. Why it is important: The success of Falabella's marketplace strategy, with 74% GMV from sellers and 60% of orders delivered within 48 hours, sets new standards for e-commerce efficiency in Latin America. Falabella's fourth Seller Day convened 450 brands to address key e-commerce challenges in an increasingly demanding retail landscape. The event concentrated on operational efficiency, technological development, and omnichannel strategy enhancement. The company's first-quarter performance showed strong momentum, with GMV up 17%, predominantly driven by marketplace sellers. The achievement of 48-hour delivery for 60% of orders demonstrates significant progress in meeting regional logistics standards. Industry experts, including AI specialist Sebastián Cisterna and Cadem's general manager Roberto Izikson, provided valuable insights on retail transformation and consumer behaviour trends. Pedro Jiménez, Sell-In E-commerce Manager, emphasised their commitment to building comprehensive propositions that support brand growth through technological and logistical capabilities. The gathering identified crucial challenges facing digital retail, particularly in logistics optimisation, technology support for SMEs, and maintaining commercial momentum beyond peak seasons. IADS Notes: Falabella's marketplace success builds upon significant developments throughout the past year. In December 2024, the company announced a $650 million investment plan, with $166 million dedicated to technological capabilities. This digital transformation yielded impressive results, as seen in February 2025 when the group reported an eight-fold profit increase to €486 million. Their commitment to innovation was further demonstrated in April 2025, when their Fmedia retail media platform achieved 30% sales growth for participating brands. Seller Day: Falabella brings together 450 brands to address e‑commerce challenges for 2025

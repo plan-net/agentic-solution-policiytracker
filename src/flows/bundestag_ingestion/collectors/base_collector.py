@@ -123,7 +123,27 @@ class BaseCollector(ABC):
         Returns:
             Dictionary with counts: {"entities_saved": int, "edges_saved": int}
         """
+        # Debug logging to file (since stdout isn't captured)
+        import os
+        debug_file = "/tmp/plenarprotokoll_save_debug.log"
+        with open(debug_file, "a") as f:
+            f.write(f"\n=== save_to_neo4j CALLED at {time.time()} ===\n")
+            f.write(f"Entities: {len(entities)}, Edges: {len(edges)}\n")
+            f.write(f"Has driver: {self.neo4j_driver is not None}\n")
+            if entities:
+                f.write(f"First entity type: {type(entities[0]).__name__}\n")
+                if hasattr(entities[0], 'model_dump'):
+                    f.write(f"First entity: {entities[0].model_dump()}\n")
+
+        logger.info(
+            "save_to_neo4j called",
+            entities_count=len(entities),
+            edges_count=len(edges),
+            has_driver=self.neo4j_driver is not None
+        )
+
         if not self.neo4j_driver:
+            print("=== NO NEO4J DRIVER - SKIPPING ===")
             logger.warning("No Neo4j driver configured, skipping persistence")
             return {"entities_saved": 0, "edges_saved": 0}
 
@@ -147,16 +167,109 @@ class BaseCollector(ABC):
                         entity_type = entity.__class__.__name__
 
                         # Find unique identifier field (try common patterns)
+                        # Special handling for Plenarprotokoll (uses composite key)
+                        if entity_type == 'Plenarprotokoll':
+                            sitzungsnummer = entity_dict.get('sitzungsnummer')
+                            wahlperiode = entity_dict.get('wahlperiode')
+
+                            # Debug to file
+                            with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                                f.write(f"Processing Plenarprotokoll: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={entity_dict.get('herausgeber')}\n")
+
+                            logger.info(
+                                "Processing Plenarprotokoll entity",
+                                sitzungsnummer=sitzungsnummer,
+                                wahlperiode=wahlperiode,
+                                entity_dict_keys=list(entity_dict.keys())
+                            )
+
+                            # Skip if sitzungsnummer is empty (can't create node without key)
+                            if not sitzungsnummer or wahlperiode is None:
+                                herausgeber = entity_dict.get('herausgeber', 'unknown')
+                                with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                                    f.write(f"⚠️  SKIPPED: Empty sitzungsnummer, herausgeber={herausgeber}, name={entity_dict.get('plenarprotokoll_name', 'unknown')}\n")
+                                logger.warning(
+                                    "Plenarprotokoll missing sitzungsnummer, skipping",
+                                    sitzungsnummer=sitzungsnummer,
+                                    wahlperiode=wahlperiode,
+                                    herausgeber=herausgeber,
+                                    name=entity_dict.get('plenarprotokoll_name')
+                                )
+                                continue
+
+                            # Convert sitzungsnummer to int to match existing nodes in Neo4j
+                            # (schema says str, but existing nodes use int)
+                            # Handle format "20/214" by extracting the session number after the slash
+                            try:
+                                if '/' in str(sitzungsnummer):
+                                    # Extract session number from "20/214" format
+                                    sitzungsnummer_int = int(sitzungsnummer.split('/')[-1])
+                                else:
+                                    sitzungsnummer_int = int(sitzungsnummer)
+
+                                with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                                    f.write(f"Converted sitzungsnummer '{sitzungsnummer}' to int {sitzungsnummer_int}\n")
+
+                            except (ValueError, TypeError) as e:
+                                with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                                    f.write(f"❌ Cannot convert sitzungsnummer '{sitzungsnummer}' to int: {e}\n")
+                                logger.warning(
+                                    "Cannot convert sitzungsnummer to int, skipping",
+                                    sitzungsnummer=sitzungsnummer,
+                                    error=str(e)
+                                )
+                                continue
+
+                            # CRITICAL: Also convert sitzungsnummer in properties to int
+                            # Otherwise SET n += $properties will overwrite it back to string!
+                            entity_dict['sitzungsnummer'] = sitzungsnummer_int
+
+                            # Use composite key for Plenarprotokoll
+                            query = f"""
+                            MERGE (n:{entity_type} {{sitzungsnummer: $sitzungsnummer, wahlperiode: $wahlperiode}})
+                            SET n += $properties
+                            RETURN n
+                            """
+
+                            logger.info(
+                                "Executing Plenarprotokoll MERGE query",
+                                sitzungsnummer=sitzungsnummer_int,
+                                wahlperiode=wahlperiode
+                            )
+
+                            result = session.run(query, sitzungsnummer=sitzungsnummer_int, wahlperiode=wahlperiode, properties=entity_dict)
+                            result_record = result.single()
+
+                            with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
+                                if result_record:
+                                    entities_saved += 1
+                                    f.write(f"✅ SAVED Plenarprotokoll sitzung={sitzungsnummer_int}, wp={wahlperiode}\n")
+                                    logger.info(
+                                        "Successfully saved Plenarprotokoll",
+                                        sitzungsnummer=sitzungsnummer_int,
+                                        wahlperiode=wahlperiode
+                                    )
+                                else:
+                                    f.write(f"❌ MERGE RETURNED NOTHING for sitzung={sitzungsnummer_int}, wp={wahlperiode}\n")
+                                    logger.warning(
+                                        "Plenarprotokoll MERGE returned no result",
+                                        sitzungsnummer=sitzungsnummer_int,
+                                        wahlperiode=wahlperiode
+                                    )
+                            continue
+
+                        # Standard handling for other entity types
                         unique_id = (
                             entity_dict.get('person_id') or
                             entity_dict.get('vorgang_id') or
                             entity_dict.get('drucksache_id') or
+                            entity_dict.get('aktivitaet_id') or
                             entity_dict.get('id') or
                             entity_dict.get('name')
                         )
 
                         if not unique_id:
-                            logger.warning(f"No unique identifier found for {entity_type}, skipping")
+                            logger.warning(f"No unique identifier found for {entity_type}, skipping", entity_dict=entity_dict)
                             continue
 
                         # Determine the ID field name for this entity type
@@ -166,6 +279,8 @@ class BaseCollector(ABC):
                             id_field = 'vorgang_id'
                         elif 'drucksache_id' in entity_dict:
                             id_field = 'drucksache_id'
+                        elif 'aktivitaet_id' in entity_dict:
+                            id_field = 'aktivitaet_id'
                         elif 'id' in entity_dict:
                             id_field = 'id'
                         else:
@@ -205,7 +320,35 @@ class BaseCollector(ABC):
                             logger.warning(f"Edge missing from_id or to_id, skipping: {edge_dict}")
                             continue
 
-                        # Create relationship query - match nodes by any ID field
+                        # Special handling for Plenarprotokoll edges (composite key: sitzungsnummer_wahlperiode)
+                        if '_' in str(from_id) and from_id.replace('_', '').replace('/', '').isdigit():
+                            # Plenarprotokoll composite key format: "214_20" or "20/214_20"
+                            parts = str(from_id).rsplit('_', 1)
+                            if len(parts) == 2:
+                                sitzung_raw = parts[0]
+                                wahlperiode = parts[1]
+
+                                # Extract session number from "20/214" format if needed
+                                if '/' in sitzung_raw:
+                                    sitzungsnummer = int(sitzung_raw.split('/')[-1])
+                                else:
+                                    sitzungsnummer = int(sitzung_raw)
+
+                                query = f"""
+                                MATCH (a:Plenarprotokoll), (b)
+                                WHERE a.sitzungsnummer = $sitzungsnummer AND a.wahlperiode = $wahlperiode
+                                  AND (b.person_id = $to_id OR b.vorgang_id = $to_id OR b.drucksache_id = $to_id OR b.id = $to_id OR b.name = $to_id)
+                                MERGE (a)-[r:{rel_type}]->(b)
+                                SET r += $properties
+                                RETURN r
+                                """
+
+                                result = session.run(query, sitzungsnummer=sitzungsnummer, wahlperiode=int(wahlperiode), to_id=to_id, properties=properties)
+                                if result.single():
+                                    edges_saved += 1
+                                continue
+
+                        # Standard handling for other entity types
                         query = f"""
                         MATCH (a), (b)
                         WHERE (a.person_id = $from_id OR a.vorgang_id = $from_id OR a.drucksache_id = $from_id OR a.id = $from_id OR a.name = $from_id)
