@@ -44,6 +44,18 @@ AI-powered political monitoring with chat interface, knowledge graphs, and autom
 @.claude/commands/deploy.md
 @.claude/commands/test.md
 
+## Claude Skills (Autonomous)
+
+Claude can proactively invoke these skills when troubleshooting or assisting with development. Skills are detailed instructions that Claude follows automatically when certain conditions are detected.
+
+### Ray Log Analysis Skill
+@.claude/skills/ray-log-analysis.md
+
+**Auto-invoke when**: Deployment fails, flows error, user reports issues with Ray/Kodosumi
+**Quick actions**:
+- `uv run --active ray logs | grep -iE "(error|exception)" | tail -50`
+- `uv run --active ray logs | grep -i "[flow_name]" | tail -50`
+
 ## Quick Reference v0.2.0
 - **Chat Interface**: http://localhost:3000 (Open WebUI)
 - **Kodosumi Admin**: http://localhost:3370 (admin/admin)

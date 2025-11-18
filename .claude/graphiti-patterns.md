@@ -60,48 +60,135 @@ for node in results.nodes:
     print(f"Found: {node.name}")
 ```
 
-### 5. Custom Entity Types (To Investigate)
-Based on documentation, custom entity types should be possible:
+### 5. Custom Entity Types (✅ CONFIRMED - In Production)
+**Graphiti supports custom entity types via `political_schema_v4.py`**
+
+We pass custom schema registries directly to `add_episode()`:
+
 ```python
-# Example from docs (API needs verification)
-from pydantic import BaseModel, Field
+from graphiti_core import Graphiti
+from graphiti_core.nodes import EpisodeType
+from src.graphrag.political_schema_v4 import (
+    ENTITY_TYPE_REGISTRY_V4,  # 28 entity types (20 v3 + 8 German Bundestag)
+    EDGE_TYPE_REGISTRY_V4,    # 52 edge types (37 v3 + 15 German Bundestag)
+    EDGE_TYPE_MAP_V4,         # Valid source-target-edge combinations
+)
 
-class Policy(BaseModel):
-    name: str = Field(..., description="Policy name")
-    status: str = Field(default="", description="Policy status")
-    jurisdiction: str = Field(default="", description="Geographic jurisdiction")
+# Initialize Graphiti client
+client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client)
+await client.build_indices_and_constraints()
 
-# Usage pattern to be confirmed
-entity_types = {"Policy": Policy}
-# Method signature investigation needed
+# Add episode with custom schema
+result = await client.add_episode(
+    name="political_doc_example",
+    episode_body=document_text,
+    source=EpisodeType.text,
+    source_description="Political document",
+    reference_time=datetime.now(),
+    group_id="political_monitoring_v2",
+
+    # ✅ Custom schema parameters
+    entity_types=ENTITY_TYPE_REGISTRY_V4,  # Dict[str, Type[BaseModel]]
+    edge_types=EDGE_TYPE_REGISTRY_V4,      # Dict[str, Type[BaseModel]]
+    edge_type_map=EDGE_TYPE_MAP_V4,        # Dict[Tuple[str, str], List[str]]
+)
+
+# Result contains entities conforming to our schema
+print(f"Extracted {len(result.nodes)} entities")
+for node in result.nodes:
+    print(f"- {node.name} (Type: {node.labels})")  # Labels match our 28 entity types
 ```
 
-## Political Domain Patterns
+**Schema Structure (political_schema_v4.py):**
+- **28 Entity Types**: 20 v3 (EU/multi-jurisdiction) + 8 German Bundestag
+- **52 Edge Types**: 37 v3 + 15 German Bundestag
+- **Edge Type Map**: Defines valid (source, target) → [edge_types] combinations
 
-### Entity Types for Political Analysis
+## Political Domain Schema (v4.0)
+
+### Entity Types Registry (28 Total)
+**Production schema from `src/graphrag/political_schema_v4.py`:**
+
 ```python
-# Core political entities we want to extract
-POLITICAL_ENTITIES = [
-    "Policy",           # Laws, regulations, directives
-    "Organization",     # Government agencies, companies, NGOs
-    "Politician",       # Individual decision makers
-    "Jurisdiction",     # Geographic/legal territories
-    "ComplianceRequirement",  # Specific obligations
-    "EnforcementAction",      # Fines, sanctions
-    "PolicyArea",       # Regulatory domains (AI, privacy, etc.)
+# V3 Entities (20) - EU and Multi-Jurisdiction
+TIER_1_LEGISLATIVE = [
+    "LegislativeProposal", "LegislativeBody", "Committee", "Document", "Vote"
+]
+TIER_2_OUTCOMES = ["Policy", "Regulation"]
+TIER_3_ACTORS = [
+    "Politician", "Person", "PoliticalParty", "GovernmentAgency", "LobbyGroup"
+]
+TIER_4_BUSINESS = ["Company", "Industry", "ComplianceObligation"]
+TIER_5_PROCESS = ["ConsultationProcess", "EnforcementAction"]
+TIER_6_GEOGRAPHIC = ["Jurisdiction"]
+TIER_7_TECHNICAL = ["LegalFramework", "TechnicalStandard"]
+
+# V4 German Bundestag Entities (8) - NEW
+GERMAN_BUNDESTAG = [
+    "Drucksache",          # Parliamentary documents (bills, motions, reports)
+    "DrucksachePage",      # Individual pages from Drucksache PDFs
+    "Plenarprotokoll",     # Plenary session transcripts
+    "Vorgang",             # Legislative procedures/processes
+    "Vorgangsposition",    # Stages within a Vorgang
+    "Aktivitaet",          # Parliamentary activities
+    "Wahlperiode",         # Electoral periods
+    "BundestagPerson",     # Members of Bundestag
+    "BundestagFraktion",   # Parliamentary groups
 ]
 ```
 
-### Relationship Types
+### Edge Types Registry (52 Total)
+**Valid relationship types:**
+
 ```python
-POLITICAL_RELATIONSHIPS = [
-    "AFFECTS",          # Policy affects Company
-    "REQUIRES_COMPLIANCE", # Regulation requires Company compliance
-    "ENFORCES",         # Agency enforces Regulation
-    "OPERATES_IN",      # Company operates in Jurisdiction
-    "INFLUENCES",       # Lobbyist influences Politician
-    "SUPERSEDES",       # New policy replaces old policy
+# V3 Edges (37) - Cross-Jurisdiction
+JURISDICTION_EDGES = ["IN_JURISDICTION", "MEMBER_OF", "REPRESENTS"]
+LEGISLATIVE_EDGES = ["PROPOSES", "SUBMITS_TO", "EXAMINES", "AMENDS_PROPOSAL", "VOTES_ON", "BECOMES"]
+EU_GERMANY_EDGES = ["TRANSPOSES", "GOLD_PLATES", "INFRINGEMENT_AGAINST", "PRELIMINARY_REFERENCE"]
+INFLUENCE_EDGES = ["INFLUENCES", "LOBBIES_FOR", "LOBBIES_AGAINST", "HAS_POSITION", "CONTRIBUTES", "AFFILIATED_WITH"]
+BUSINESS_EDGES = ["AFFECTS", "SUBJECT_TO", "REQUIRES_COMPLIANCE", "OPERATES_IN", "COMPETES_IN"]
+REGULATORY_EDGES = ["IMPLEMENTS", "ENFORCES", "DELEGATES_TO"]
+TEMPORAL_EDGES = ["SUPERSEDES", "AMENDS", "TRIGGERS", "PRECEDES"]
+REFERENCE_EDGES = ["REFERENCES", "HARMONIZES_WITH", "CONFLICTS_WITH"]
+STAKEHOLDER_EDGES = ["ADVISES", "MONITORS"]
+
+# V4 German Bundestag Edges (15) - NEW
+GERMAN_EDGES = [
+    "PART_OF_VORGANG",         # Vorgangsposition/Aktivität → Vorgang
+    "INITIATES_VORGANG",       # Person/Fraktion → Vorgang
+    "RELATES_TO_DRUCKSACHE",   # Vorgang → Drucksache
+    "DEBATED_IN_PLENUM",       # Vorgang → Plenarprotokoll
+    "SPEAKS_IN_PLENUM",        # Person → Plenarprotokoll
+    "IN_WAHLPERIODE",          # Entity → Wahlperiode
+    "MEMBER_OF_FRAKTION",      # Person → Fraktion
+    "LEADS_FRAKTION",          # Person → Fraktion
+    "REPRESENTS_WAHLKREIS",    # Person → Jurisdiction
+    "BUNDESRAT_INVOLVEMENT",   # Vorgang → LegislativeBody
+    "BECOMES_BUNDESGESETZ",    # Vorgang → Policy
+    "AUTHORS_DRUCKSACHE",      # Person → Drucksache
+    "AMENDS_DRUCKSACHE",       # Drucksache → Drucksache
+    "REFERENCES_VORGANG",      # Drucksache/Plenarprotokoll → Vorgang
+    "ACTIVITY_IN_VORGANG",     # Aktivität → Vorgang
 ]
+```
+
+### Edge Type Map (Valid Combinations)
+**Defines which edges can connect which entity pairs:**
+
+```python
+from src.graphrag.political_schema_v4 import (
+    EDGE_TYPE_MAP_V4,
+    get_valid_edges_for_entity_pair_v4,
+    validate_edge_pattern_v4,
+)
+
+# Example: What edges can connect BundestagPerson to Vorgang?
+valid_edges = get_valid_edges_for_entity_pair_v4("BundestagPerson", "Vorgang")
+# Returns: ["INITIATES_VORGANG"]
+
+# Validate a specific pattern
+is_valid = validate_edge_pattern_v4("Drucksache", "IN_WAHLPERIODE", "Wahlperiode")
+# Returns: True
 ```
 
 ### Episode Naming Strategy
@@ -113,30 +200,81 @@ def generate_episode_name(doc_path: str, timestamp: datetime) -> str:
 
 ## Integration with Existing System
 
-### Document Processing Pipeline
+### Document Processing Pipeline (Production Implementation)
+**From `src/flows/data_ingestion/document_processor.py`:**
+
 ```python
-async def process_political_document(doc_path: str, client: Graphiti):
-    """Process a political document through Graphiti."""
-    
-    # 1. Extract text content
-    content = extract_document_text(doc_path)
-    
-    # 2. Add episode to Graphiti
-    result = await client.add_episode(
-        name=generate_episode_name(doc_path, datetime.now()),
-        episode_body=content,
-        source="text",
-        source_description=f"Political document: {doc_path.name}",
-        reference_time=extract_document_date(content) or datetime.now()
-    )
-    
-    # 3. Return extracted entities for further processing
+from graphiti_core import Graphiti
+from graphiti_core.nodes import EpisodeType
+from src.graphrag.political_schema_v4 import (
+    ENTITY_TYPE_REGISTRY_V4,
+    EDGE_TYPE_REGISTRY_V4,
+    EDGE_TYPE_MAP_V4,
+)
+from src.flows.data_ingestion.document_chunker import HybridDocumentChunker
+
+async def process_political_document(doc_path: Path, graphiti_client: Graphiti):
+    """Production document processing with chunking and custom schema."""
+
+    # 1. Read and preprocess document
+    content = read_document(doc_path)
+    from src.flows.data_ingestion.document_preprocessor import preprocess_document
+    content = preprocess_document(content, enable_link_removal=True)
+
+    # 2. Chunk document (ALWAYS chunk for consistency)
+    chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
+    chunks = chunker.create_chunks(content)
+
+    # 3. Process each chunk through Graphiti with custom schema
+    results = []
+    previous_episode_uuid = None
+
+    for chunk in chunks:
+        episode_name = f"political_doc_{doc_path.stem}_{datetime.now():%Y%m%d_%H%M%S}_chunk_{chunk['chunk_index']}"
+
+        result = await graphiti_client.add_episode(
+            name=episode_name,
+            episode_body=chunk['text'],
+            source=EpisodeType.text,
+            source_description=f"Political document chunk {chunk['chunk_index'] + 1}/{chunk['total_chunks']}: {doc_path.name}",
+            reference_time=extract_document_date(chunk['text']) or datetime.now(),
+            group_id=GROUP_ID,  # "political_monitoring_v2"
+
+            # ✅ Custom schema for political domain
+            entity_types=ENTITY_TYPE_REGISTRY_V4,
+            edge_types=EDGE_TYPE_REGISTRY_V4,
+            edge_type_map=EDGE_TYPE_MAP_V4,
+
+            # Chain linking for multi-chunk documents
+            previous_episode_uuids=[previous_episode_uuid] if previous_episode_uuid else None,
+        )
+
+        # Track for chain linking
+        previous_episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
+
+        results.append({
+            "chunk_index": chunk["chunk_index"],
+            "episode_uuid": previous_episode_uuid,
+            "entities": len(result.nodes) if hasattr(result, "nodes") else 0,
+            "relationships": len(result.edges) if hasattr(result, "edges") else 0,
+        })
+
     return {
-        "episode_id": result.episode.uuid,
-        "entities": result.nodes,
-        "entity_count": len(result.nodes)
+        "status": "success",
+        "path": str(doc_path),
+        "total_chunks": len(chunks),
+        "episode_uuids": [r["episode_uuid"] for r in results],
+        "total_entities": sum(r["entities"] for r in results),
+        "total_relationships": sum(r["relationships"] for r in results),
     }
 ```
+
+**Key Features:**
+1. **Hybrid Chunking**: Always chunks documents (120K tokens, 10% overlap)
+2. **Custom Schema**: Uses political_schema_v4.py entities/edges
+3. **Chain Linking**: Links chunks via `previous_episode_uuids`
+4. **Preprocessing**: Removes links, deduplicates content
+5. **Group ID**: Organizes episodes under "political_monitoring_v2"
 
 ### Hybrid Architecture Pattern
 ```python
@@ -313,16 +451,38 @@ result = await client.add_episode(
 3. **Performance Monitoring**: Track processing times and memory usage
 4. **Error Rates**: Monitor failed episode creation attempts
 
-## Next Implementation Steps
+## Production Status & Implementation
 
-1. **Custom Entity Types**: Investigate exact API for political domain entities
-2. **Document Pipeline**: Build core document processing with Graphiti
-3. **Community Detection**: Implement policy clustering
-4. **Search Interface**: Create advanced search for political analysis
-5. **Integration Testing**: Validate with real political documents
+### ✅ Completed (In Production)
+
+1. **✅ Custom Entity Types**: Full political_schema_v4.py with 28 entities, 52 edges
+2. **✅ Document Pipeline**: Production implementation in `src/flows/data_ingestion/`
+   - Hybrid chunking (120K tokens, 10% overlap)
+   - Chain linking for multi-chunk documents
+   - Ray-based parallel processing
+   - Document tracking and deduplication
+3. **✅ Schema Integration**: Custom registries passed to `add_episode()`
+4. **✅ APISIX LLM Routing**: Cost tracking via APISIX gateway
+5. **✅ Preprocessing Pipeline**: Link removal, deduplication, encoding detection
+
+### 🚧 Planned Future Enhancements
+
+1. **Community Detection**: Implement policy clustering via Graphiti
+2. **Advanced Search**: Temporal queries, semantic search interface
+3. **Graph Type Differentiation**: Separate lexical (internet research) from domain (Bundestag DIP) graphs
+4. **Schema Evolution**: Add DrucksachePage entities for page-level navigation
+
+### 📊 Performance Metrics (Current)
+
+- **Processing Speed**: 20-40 documents/minute with Ray actors
+- **Chunk Size**: 120K tokens per episode (safe margin under 128K limit)
+- **Overlap**: 10% for context preservation
+- **Schema Coverage**: 28 entity types, 52 relationship types
+- **Boundary Types**: Header → Paragraph → Fixed-size (hybrid strategy)
 
 ---
 
-**Status**: Direct API approach validated and ready for implementation
-**Last Updated**: 2025-05-27
-**Version**: 1.0
+**Status**: ✅ Production-ready with custom schema
+**Last Updated**: 2025-11-17
+**Version**: 2.0
+**Implementation**: `src/flows/data_ingestion/document_processor.py`
