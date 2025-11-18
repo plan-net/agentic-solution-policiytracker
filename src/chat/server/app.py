@@ -247,7 +247,7 @@ class ChatServer:
             self._simple_test_stream("debug-model", query), media_type="text/event-stream"
         )
 
-    @app.get("/v1/models")
+    @app.get("/models")
     async def list_models(self) -> ModelsResponse:
         """OpenAI-compatible models endpoint."""
         import time
@@ -262,7 +262,7 @@ class ChatServer:
             ]
         )
 
-    @app.post("/v1/chat/completions")
+    @app.post("/chat/completions")
     async def chat_completions(self, request: ChatCompletionRequest):
         """OpenAI-compatible chat completions endpoint with streaming support."""
 

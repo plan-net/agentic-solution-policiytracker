@@ -424,22 +424,40 @@ class SimilarEntitesTool(BaseTool):
             similar_entities = {}
 
             for result in results:
-                fact = result.fact
+                # Handle both edges (with .fact) and nodes (with .summary)
+                content = ""
+                if hasattr(result, "fact") and result.fact:
+                    content = result.fact
+                elif hasattr(result, "summary") and result.summary:
+                    content = result.summary
+                elif hasattr(result, "name") and result.name:
+                    # If it's a node entity, use its name as potential similar entity
+                    entity_name_candidate = result.name
+                    if entity_name_candidate != entity_name and len(entity_name_candidate) > 2:
+                        if entity_name_candidate not in similar_entities:
+                            similar_entities[entity_name_candidate] = []
+                        similar_entities[entity_name_candidate].append(
+                            getattr(result, "summary", f"Entity: {entity_name_candidate}")
+                        )
+                    continue
+
+                if not content:
+                    continue
 
                 # Extract entity names that appear with the target entity
                 # This is a simplified approach - in practice would need NER
-                words = fact.lower().split()
+                words = content.lower().split()
 
                 # Look for capitalized phrases that might be entity names
                 import re
 
-                entity_patterns = re.findall(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b", fact)
+                entity_patterns = re.findall(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b", content)
 
                 for potential_entity in entity_patterns:
                     if potential_entity != entity_name and len(potential_entity) > 2:
                         if potential_entity not in similar_entities:
                             similar_entities[potential_entity] = []
-                        similar_entities[potential_entity].append(fact)
+                        similar_entities[potential_entity].append(content)
 
             # Rank by frequency of co-occurrence
             ranked_similar = sorted(

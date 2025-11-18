@@ -17,7 +17,12 @@ from ..tools.entity import (
 )
 from ..tools.search import GraphitiSearchTool
 from ..tools.temporal import ConcurrentEventsTool, DateRangeSearchTool, PolicyEvolutionTool
-from ..tools.traverse import FindPathsTool, ImpactAnalysisTool, TraverseFromEntityTool
+from ..tools.traverse import (
+    FindPathsTool,
+    GetNeighborsTool,
+    ImpactAnalysisTool,
+    TraverseFromEntityTool,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +51,7 @@ class ToolIntegrationManager:
 
             # Graph traversal tools
             self.tools["traverse_from_entity"] = TraverseFromEntityTool(self.client)
+            self.tools["get_entity_neighbors"] = GetNeighborsTool(self.client)
             self.tools["find_paths_between_entities"] = FindPathsTool(self.client)
             self.tools["analyze_entity_impact"] = ImpactAnalysisTool(self.client)
 
