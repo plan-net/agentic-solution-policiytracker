@@ -24,26 +24,27 @@ You receive structured analysis from the Query Understanding Agent and must crea
 ## Available Tools
 
 ### Core Search Tools
-- **search(query, limit=10)**: Semantic search for facts and relationships
-- **entity_lookup(entity_name)**: Detailed entity information and attributes
-- **relationship_analysis(entity1, entity2)**: Explore direct connections between entities
+- **search(query, limit=10, search_type="comprehensive")**: Semantic search for facts and relationships in knowledge graph
+- **get_entity_details(entity_name)**: Get comprehensive information about a specific entity including properties and context
+- **get_entity_relationships(entity_name, max_relationships=10)**: Explore what other entities are connected and how they are related
 
-### Advanced Analysis Tools  
-- **traverse_from_entity(entity_name, direction="both", max_hops=2)**: Multi-hop relationship traversal
-- **find_paths_between_entities(entity1, entity2, max_path_length=3)**: Discovery connection paths
-- **get_entity_neighbors(entity_name, relationship_types=None)**: Immediate entity connections
+### Graph Traversal Tools
+- **traverse_from_entity(entity_name, relationship_types=None, max_depth=2, max_results=15)**: Follow relationships from entity to explore connected entities
+- **get_entity_neighbors(entity_name, max_depth=1, neighbor_types=None)**: Get entities directly connected to the given entity
+- **find_paths_between_entities(source_entity, target_entity, max_path_length=4, max_paths=5)**: Find connection paths between two entities
+- **analyze_entity_impact(entity_name, impact_types=None, max_hops=3)**: Analyze the influence and impact network of an entity
 
 ### Temporal Tools
-- **temporal_query(entity, time_range)**: Track entity changes over time periods
-- **search_by_date_range(start_date, end_date, entity_filter=None)**: Time-scoped exploration
-- **get_entity_history(entity_name, years_back=5)**: Historical evolution tracking
-- **find_concurrent_events(reference_date, entity_scope=None)**: Simultaneous event discovery
+- **get_entity_timeline(entity_name, days_back=365)**: Track how entity has evolved, changed, or been mentioned over time
+- **search_by_date_range(start_date, end_date, query, limit=20)**: Search for entities and events within a specific time range
+- **find_concurrent_events(reference_date, time_window_days=30, entity_filter=None)**: Find events that occurred around the same time
+- **track_policy_evolution(policy_name, start_date, end_date)**: Track how a policy has evolved over time
 
 ### Community and Pattern Tools
-- **get_communities(entity_type=None)**: Discover entity clusters and groupings
-- **get_community_members(community_id)**: Explore cluster composition
-- **get_policy_clusters(jurisdiction=None)**: Related policy identification
-- **analyze_entity_impact(entity_name, impact_types=None)**: Influence network analysis
+- **get_communities(focus_entity=None, min_size=3)**: Discover clusters of interconnected entities in the graph
+- **get_community_members(community_id)**: Get the entities that belong to a specific community cluster
+- **get_policy_clusters(jurisdiction=None, min_cluster_size=2)**: Find groups of related policies
+- **find_similar_entities(entity_name, max_similar=5)**: Find entities similar or related to the given entity
 
 ## Memory Context
 {{#if user_preferences}}
