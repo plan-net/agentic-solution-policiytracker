@@ -3,6 +3,7 @@
 Test that failed document tracking works correctly.
 """
 from pathlib import Path
+
 from src.flows.data_ingestion.document_tracker import DocumentTracker
 
 
@@ -50,13 +51,14 @@ def test_failed_document_tracking():
     # Test 5: Verify file contents
     print("\n📄 Test 5: Verify file structure")
     import json
+
     with open(tracking_file) as f:
         data = json.load(f)
 
     for path, entry in data.items():
-        status = entry.get('status', 'unknown')
+        status = entry.get("status", "unknown")
         name = Path(path).name
-        if status == 'failed':
+        if status == "failed":
             print(f"   ❌ {name}: {entry.get('error', 'no error')}")
         else:
             print(f"   ✅ {name}: {entry.get('entity_count', 0)} entities")
@@ -65,9 +67,9 @@ def test_failed_document_tracking():
     print("\n" + "=" * 60)
     print("🎯 Validation")
 
-    assert stats['total_processed'] == 4, f"Expected 4 total, got {stats['total_processed']}"
-    assert stats['completed'] == 2, f"Expected 2 completed, got {stats['completed']}"
-    assert stats['failed'] == 2, f"Expected 2 failed, got {stats['failed']}"
+    assert stats["total_processed"] == 4, f"Expected 4 total, got {stats['total_processed']}"
+    assert stats["completed"] == 2, f"Expected 2 completed, got {stats['completed']}"
+    assert stats["failed"] == 2, f"Expected 2 failed, got {stats['failed']}"
     assert len(failed_docs) == 2, f"Expected 2 failed docs, got {len(failed_docs)}"
 
     print("✅ All validations passed!")

@@ -5,8 +5,9 @@ This builder creates Wahlperiode entities from static data rather than API calls
 Wahlperioden are known historical and current legislative terms of the Bundestag.
 """
 
+from typing import Any, Optional
+
 import structlog
-from typing import Any, Dict, Optional
 
 logger = structlog.get_logger()
 
@@ -208,7 +209,7 @@ class WahlperiodeBuilder:
         """Initialize the Wahlperiode builder."""
         logger.info("Initialized WahlperiodeBuilder", total_periods=len(WAHLPERIODEN))
 
-    async def build_wahlperiode_entities(self, entity_builder: Any) -> Dict[str, Any]:
+    async def build_wahlperiode_entities(self, entity_builder: Any) -> dict[str, Any]:
         """
         Build Wahlperiode entities for all known electoral periods.
 
@@ -273,7 +274,7 @@ class WahlperiodeBuilder:
 
         return stats
 
-    def get_wahlperiode_data(self, wahlperiode_nummer: int) -> Optional[Dict[str, Any]]:
+    def get_wahlperiode_data(self, wahlperiode_nummer: int) -> Optional[dict[str, Any]]:
         """
         Get data for a specific Wahlperiode.
 
@@ -285,7 +286,7 @@ class WahlperiodeBuilder:
         """
         return WAHLPERIODEN.get(wahlperiode_nummer)
 
-    def get_all_wahlperioden(self) -> Dict[int, Dict[str, Any]]:
+    def get_all_wahlperioden(self) -> dict[int, dict[str, Any]]:
         """
         Get all Wahlperiode data.
 

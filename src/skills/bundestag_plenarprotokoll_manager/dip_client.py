@@ -1,6 +1,6 @@
 """Bundestag DIP API Client for fetching Plenarprotokoll (plenary protocol) data."""
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -23,7 +23,7 @@ class BundestagPlenarprotokollDIPClient:
 
         logger.info(f"BundestagPlenarprotokollDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_plenarprotokoll_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_plenarprotokoll_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all Plenarprotokoll IDs from DIP API.
 
         Args:
@@ -55,16 +55,14 @@ class BundestagPlenarprotokollDIPClient:
                     logger.info(f"Retrieved {len(protokoll_ids)} Plenarprotokoll IDs from DIP API")
                     return protokoll_ids
                 else:
-                    logger.error(
-                        f"DIP API error: {response.status_code} - {response.text}"
-                    )
+                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
                     return []
 
         except Exception as e:
             logger.error(f"Error fetching Plenarprotokoll IDs from DIP API: {e}")
             return []
 
-    async def get_plenarprotokoll_by_id(self, plenarprotokoll_id: str) -> Optional[Dict[str, Any]]:
+    async def get_plenarprotokoll_by_id(self, plenarprotokoll_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Plenarprotokoll data by ID.
 
         Args:
@@ -103,7 +101,7 @@ class BundestagPlenarprotokollDIPClient:
             logger.error(f"Error fetching Plenarprotokoll {plenarprotokoll_id} from DIP API: {e}")
             return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for API requests.
 
         Returns:
@@ -116,7 +114,7 @@ class BundestagPlenarprotokollDIPClient:
 
         return headers
 
-    def _transform_dip_plenarprotokoll(self, dip_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dip_plenarprotokoll(self, dip_data: dict[str, Any]) -> dict[str, Any]:
         """Transform DIP API Plenarprotokoll data to internal format.
 
         This method maps DIP API field names to our internal field names.
@@ -130,7 +128,9 @@ class BundestagPlenarprotokollDIPClient:
         # Map DIP API fields to our schema
         plenarprotokoll = {
             "id": dip_data.get("id"),
-            "plenarprotokoll_id": dip_data.get("id"),  # Use plenarprotokoll_id for Neo4j (matches ENTITY_ID_FIELDS)
+            "plenarprotokoll_id": dip_data.get(
+                "id"
+            ),  # Use plenarprotokoll_id for Neo4j (matches ENTITY_ID_FIELDS)
             "titel": dip_data.get("titel", ""),
             "datum": dip_data.get("datum"),
             "wahlperiode": dip_data.get("wahlperiode"),
@@ -202,7 +202,7 @@ class MockBundestagPlenarprotokollDIPClient:
             },
         }
 
-    async def get_all_plenarprotokoll_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_plenarprotokoll_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all mock Plenarprotokoll IDs.
 
         Args:
@@ -219,7 +219,7 @@ class MockBundestagPlenarprotokollDIPClient:
         logger.info(f"Returning {len(protokoll_ids)} mock Plenarprotokoll IDs")
         return protokoll_ids
 
-    async def get_plenarprotokoll_by_id(self, plenarprotokoll_id: str) -> Optional[Dict[str, Any]]:
+    async def get_plenarprotokoll_by_id(self, plenarprotokoll_id: str) -> Optional[dict[str, Any]]:
         """Get mock Plenarprotokoll data by ID.
 
         Args:

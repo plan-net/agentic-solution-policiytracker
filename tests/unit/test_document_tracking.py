@@ -2,7 +2,6 @@
 """
 Test script to verify document tracking works correctly.
 """
-import asyncio
 from pathlib import Path
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
@@ -29,7 +28,7 @@ def test_document_tracker():
         tracker.mark_processed(doc_path, episode_id, entities, relationships)
         print(f"   • {Path(doc_path).name}: {entities} entities, {relationships} relationships")
 
-    print(f"\n📊 Stats after processing:")
+    print("\n📊 Stats after processing:")
     stats = tracker.get_stats()
     for key, value in stats.items():
         print(f"   {key}: {value}")
@@ -42,10 +41,11 @@ def test_document_tracker():
 
         # Read and display first entry
         import json
+
         with open(tracking_file) as f:
             data = json.load(f)
 
-        print(f"\n📄 Sample entry structure:")
+        print("\n📄 Sample entry structure:")
         first_key = list(data.keys())[0]
         first_entry = data[first_key]
         print(f"   Path: {first_key}")
@@ -53,13 +53,19 @@ def test_document_tracker():
             print(f"   {key}: {value}")
 
         # Check structure is correct
-        required_fields = ["episode_id", "processed_at", "status", "entity_count", "relationship_count"]
+        required_fields = [
+            "episode_id",
+            "processed_at",
+            "status",
+            "entity_count",
+            "relationship_count",
+        ]
         missing_fields = [f for f in required_fields if f not in first_entry]
 
         if missing_fields:
             print(f"\n❌ Missing fields: {missing_fields}")
         else:
-            print(f"\n✅ All required fields present!")
+            print("\n✅ All required fields present!")
 
         # Check no nested dicts
         has_nested = any(isinstance(v, dict) for v in first_entry.values())
@@ -68,7 +74,7 @@ def test_document_tracker():
         else:
             print("✅ No nested dictionaries (correct structure)")
     else:
-        print(f"\n❌ Tracking file not created!")
+        print("\n❌ Tracking file not created!")
 
 
 if __name__ == "__main__":

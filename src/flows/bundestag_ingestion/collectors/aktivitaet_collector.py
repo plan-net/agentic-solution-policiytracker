@@ -7,7 +7,7 @@ such as committee meetings, hearings, expert testimonies, and procedural motions
 
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -40,7 +40,7 @@ class AktivitaetCollector(BaseCollector):
         """Entity type for Aktivitaet."""
         return "Aktivitaet"
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect Aktivitaet data and transform into entities and edges.
 
@@ -84,17 +84,11 @@ class AktivitaetCollector(BaseCollector):
             # Add specific filters from inputs
             if "aktivitaetsart" in inputs:
                 filters["f.aktivitaetsart"] = inputs["aktivitaetsart"]
-                logger.info(
-                    "Filtering by aktivitaetsart",
-                    aktivitaetsart=inputs["aktivitaetsart"]
-                )
+                logger.info("Filtering by aktivitaetsart", aktivitaetsart=inputs["aktivitaetsart"])
 
             if "datum_von" in inputs:
                 filters["f.datum"] = f"gte:{inputs['datum_von']}"
-                logger.info(
-                    "Filtering by datum_von",
-                    datum_von=inputs["datum_von"]
-                )
+                logger.info("Filtering by datum_von", datum_von=inputs["datum_von"])
 
             if "datum_bis" in inputs:
                 # Combine with datum_von if present
@@ -102,30 +96,17 @@ class AktivitaetCollector(BaseCollector):
                     filters["f.datum"] = f"{filters['f.datum']}|lte:{inputs['datum_bis']}"
                 else:
                     filters["f.datum"] = f"lte:{inputs['datum_bis']}"
-                logger.info(
-                    "Filtering by datum_bis",
-                    datum_bis=inputs["datum_bis"]
-                )
+                logger.info("Filtering by datum_bis", datum_bis=inputs["datum_bis"])
 
             if "vorgang_id" in inputs:
                 filters["f.vorgang_id"] = inputs["vorgang_id"]
-                logger.info(
-                    "Filtering by vorgang_id",
-                    vorgang_id=inputs["vorgang_id"]
-                )
+                logger.info("Filtering by vorgang_id", vorgang_id=inputs["vorgang_id"])
 
             if "wahlperiode" in inputs:
                 filters["f.wahlperiode"] = inputs["wahlperiode"]
-                logger.info(
-                    "Filtering by wahlperiode",
-                    wahlperiode=inputs["wahlperiode"]
-                )
+                logger.info("Filtering by wahlperiode", wahlperiode=inputs["wahlperiode"])
 
-            logger.info(
-                "Starting Aktivitaet collection",
-                filters=filters,
-                limit=limit
-            )
+            logger.info("Starting Aktivitaet collection", filters=filters, limit=limit)
 
             # Fetch data with pagination
             items, fetch_duration = await self._collect_with_timing(filters, limit)
@@ -133,7 +114,7 @@ class AktivitaetCollector(BaseCollector):
             logger.info(
                 "Completed data collection",
                 items_collected=len(items),
-                fetch_duration=fetch_duration
+                fetch_duration=fetch_duration,
             )
 
             # Transform to entities
@@ -158,17 +139,14 @@ class AktivitaetCollector(BaseCollector):
                 edges_created=edges_created,
                 duration=duration,
                 items_collected=len(items),
-                errors=errors
+                errors=errors,
             )
 
             # Add relationship statistics
             stats["activities_with_vorgang"] = activities_with_vorgang
             stats["activities_with_drucksache"] = activities_with_drucksache
 
-            logger.info(
-                "Aktivitaet collection complete",
-                **stats
-            )
+            logger.info("Aktivitaet collection complete", **stats)
 
             return stats
 
@@ -183,14 +161,12 @@ class AktivitaetCollector(BaseCollector):
                 edges_created=edges_created,
                 duration=duration,
                 items_collected=0,
-                errors=errors
+                errors=errors,
             )
 
     async def collect_by_activity_type(
-        self,
-        aktivitaetsart: str,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, aktivitaetsart: str, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect activities filtered by activity type.
 
@@ -201,25 +177,15 @@ class AktivitaetCollector(BaseCollector):
         Returns:
             Collection statistics dictionary
         """
-        logger.info(
-            "Collecting Aktivitaeten by type",
-            aktivitaetsart=aktivitaetsart,
-            limit=limit
-        )
+        logger.info("Collecting Aktivitaeten by type", aktivitaetsart=aktivitaetsart, limit=limit)
 
-        inputs = {
-            "aktivitaetsart": aktivitaetsart,
-            "limit": limit
-        }
+        inputs = {"aktivitaetsart": aktivitaetsart, "limit": limit}
 
         return await self.collect_and_transform(inputs)
 
     async def collect_by_date_range(
-        self,
-        datum_von: str,
-        datum_bis: str,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, datum_von: str, datum_bis: str, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect activities within a date range.
 
@@ -235,7 +201,7 @@ class AktivitaetCollector(BaseCollector):
             "Collecting Aktivitaeten by date range",
             datum_von=datum_von,
             datum_bis=datum_bis,
-            limit=limit
+            limit=limit,
         )
 
         # Validate date formats
@@ -250,22 +216,16 @@ class AktivitaetCollector(BaseCollector):
                 edges_created=0,
                 duration=0.0,
                 items_collected=0,
-                errors=[error_msg]
+                errors=[error_msg],
             )
 
-        inputs = {
-            "datum_von": datum_von,
-            "datum_bis": datum_bis,
-            "limit": limit
-        }
+        inputs = {"datum_von": datum_von, "datum_bis": datum_bis, "limit": limit}
 
         return await self.collect_and_transform(inputs)
 
     async def collect_by_vorgang(
-        self,
-        vorgang_id: str,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, vorgang_id: str, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect all activities related to a specific Vorgang.
 
@@ -276,25 +236,15 @@ class AktivitaetCollector(BaseCollector):
         Returns:
             Collection statistics dictionary
         """
-        logger.info(
-            "Collecting Aktivitaeten by Vorgang",
-            vorgang_id=vorgang_id,
-            limit=limit
-        )
+        logger.info("Collecting Aktivitaeten by Vorgang", vorgang_id=vorgang_id, limit=limit)
 
-        inputs = {
-            "vorgang_id": vorgang_id,
-            "limit": limit
-        }
+        inputs = {"vorgang_id": vorgang_id, "limit": limit}
 
         return await self.collect_and_transform(inputs)
 
     async def collect_recent_activities(
-        self,
-        days: int = 7,
-        aktivitaetsart: Optional[str] = None,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, days: int = 7, aktivitaetsart: Optional[str] = None, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect recent activities from the last N days.
 
@@ -319,21 +269,17 @@ class AktivitaetCollector(BaseCollector):
             datum_von=datum_von,
             datum_bis=datum_bis,
             aktivitaetsart=aktivitaetsart,
-            limit=limit
+            limit=limit,
         )
 
-        inputs = {
-            "datum_von": datum_von,
-            "datum_bis": datum_bis,
-            "limit": limit
-        }
+        inputs = {"datum_von": datum_von, "datum_bis": datum_bis, "limit": limit}
 
         if aktivitaetsart:
             inputs["aktivitaetsart"] = aktivitaetsart
 
         return await self.collect_and_transform(inputs)
 
-    async def get_activity_types(self) -> List[str]:
+    async def get_activity_types(self) -> list[str]:
         """
         Get a list of available activity types from the API.
 
@@ -359,22 +305,18 @@ class AktivitaetCollector(BaseCollector):
             logger.info(
                 "Retrieved activity types",
                 count=len(activity_types_list),
-                types=activity_types_list
+                types=activity_types_list,
             )
 
             return activity_types_list
 
         except Exception as e:
-            logger.error(
-                "Error fetching activity types",
-                error=str(e)
-            )
+            logger.error("Error fetching activity types", error=str(e))
             return []
 
     async def get_collection_statistics(
-        self,
-        filters: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, filters: Optional[dict[str, Any]] = None
+    ) -> dict[str, Any]:
         """
         Get statistics about available activities without collecting them.
 
@@ -393,17 +335,11 @@ class AktivitaetCollector(BaseCollector):
 
         filters = filters or {}
 
-        logger.info(
-            "Getting Aktivitaet statistics",
-            filters=filters
-        )
+        logger.info("Getting Aktivitaet statistics", filters=filters)
 
         try:
             # Create pagination helper
-            pagination_helper = PaginationHelper(
-                api_client=self.api_client,
-                max_items=None
-            )
+            pagination_helper = PaginationHelper(api_client=self.api_client, max_items=None)
 
             # Get count without retrieving items
             total_count = await pagination_helper.count_items(self.endpoint, filters)
@@ -411,24 +347,18 @@ class AktivitaetCollector(BaseCollector):
             stats = {
                 "total_count": total_count,
                 "endpoint": self.endpoint,
-                "filters_applied": filters
+                "filters_applied": filters,
             }
 
-            logger.info(
-                "Retrieved Aktivitaet statistics",
-                **stats
-            )
+            logger.info("Retrieved Aktivitaet statistics", **stats)
 
             return stats
 
         except Exception as e:
-            logger.error(
-                "Error getting Aktivitaet statistics",
-                error=str(e)
-            )
+            logger.error("Error getting Aktivitaet statistics", error=str(e))
             return {
                 "total_count": 0,
                 "endpoint": self.endpoint,
                 "filters_applied": filters,
-                "error": str(e)
+                "error": str(e),
             }

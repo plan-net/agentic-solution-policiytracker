@@ -44,7 +44,9 @@ async def ingest_bundestag_plenarprotokolle(request: fastapi.Request, inputs: di
         if not wahlperioden:
             error.add(wahlperioden="At least one Wahlperiode must be specified")
     except Exception:
-        error.add(wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)")
+        error.add(
+            wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)"
+        )
 
     # Validate date filters if provided
     start_date = (inputs.get("start_date") or "").strip()

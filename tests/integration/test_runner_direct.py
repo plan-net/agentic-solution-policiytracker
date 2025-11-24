@@ -2,12 +2,13 @@
 Test calling the processor through a Runner actor directly.
 """
 import asyncio
+
 import ray
-from unittest.mock import AsyncMock
 
 # Initialize Ray
 if not ray.is_initialized():
     ray.init(address="auto")
+
 
 async def test_via_runner():
     """Test via Kodosumi Runner actor."""
@@ -26,7 +27,7 @@ async def test_via_runner():
             "extract_full_text": False,
             "max_concurrent_downloads": 3,
             "create_relationships": False,
-        }
+        },
     )
 
     print(f"Runner created with fid: {fid}")
@@ -42,10 +43,11 @@ async def test_via_runner():
     print("Checking if processor was called...")
     # Check logs for "PROCESSOR STARTED"
     import subprocess
+
     result = subprocess.run(
         ["grep", "-r", "PROCESSOR STARTED", "/tmp/ray/session_latest/logs/"],
         capture_output=True,
-        text=True
+        text=True,
     )
 
     if result.stdout:
@@ -55,6 +57,7 @@ async def test_via_runner():
         print("❌ PROCESSOR WAS NOT CALLED")
 
     return fid
+
 
 if __name__ == "__main__":
     fid = asyncio.run(test_via_runner())

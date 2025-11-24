@@ -82,7 +82,7 @@ class EntityDetailsTool(BaseTool):
 
         Handles DateTime, Date, Time, Duration, and other Neo4j types.
         """
-        from datetime import datetime, date, time
+        from datetime import date, datetime, time
 
         if obj is None:
             return None
@@ -329,7 +329,9 @@ class EntityDetailsTool(BaseTool):
             properties = await self._get_entity_properties(entity_uuid)
 
             # Step 3: Get relationships summary
-            relationships = await self._get_entity_relationships_summary(entity_uuid, max_relationships=10)
+            relationships = await self._get_entity_relationships_summary(
+                entity_uuid, max_relationships=10
+            )
 
             # Step 4: Extract source documents
             sources = await self._extract_entity_sources(entity_uuid)
@@ -345,9 +347,15 @@ class EntityDetailsTool(BaseTool):
                 for edge in search_results.edges[:10]:
                     if hasattr(edge, "fact") and edge.fact:
                         # Use UUID matching instead of string matching
-                        if hasattr(edge, "source_node_uuid") and edge.source_node_uuid == entity_uuid:
+                        if (
+                            hasattr(edge, "source_node_uuid")
+                            and edge.source_node_uuid == entity_uuid
+                        ):
                             entity_facts.append(edge.fact)
-                        elif hasattr(edge, "target_node_uuid") and edge.target_node_uuid == entity_uuid:
+                        elif (
+                            hasattr(edge, "target_node_uuid")
+                            and edge.target_node_uuid == entity_uuid
+                        ):
                             entity_facts.append(edge.fact)
 
             # Format response based on output_format

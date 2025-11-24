@@ -3,7 +3,9 @@
 
 import asyncio
 import json
+
 from graphiti_core import Graphiti
+
 from src.chat.tools.entity import EntityRelationshipsTool
 
 

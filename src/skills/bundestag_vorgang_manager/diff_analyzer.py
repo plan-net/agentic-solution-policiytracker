@@ -1,9 +1,7 @@
 """DiffAnalyzer - Compare Neo4j Vorgang data with Bundestag DIP API."""
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
-
-from neo4j import GraphDatabase
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,9 @@ class VorgangDiff:
         self,
         vorgang_id: str,
         diff_type: str,  # "missing", "outdated", "relationship_missing"
-        neo4j_data: Optional[Dict] = None,
-        dip_data: Optional[Dict] = None,
-        changed_fields: Optional[Set[str]] = None,
+        neo4j_data: Optional[dict] = None,
+        dip_data: Optional[dict] = None,
+        changed_fields: Optional[set[str]] = None,
     ):
         self.vorgang_id = vorgang_id
         self.diff_type = diff_type
@@ -60,9 +58,7 @@ class VorgangDiffAnalyzer:
 
         logger.info("VorgangDiffAnalyzer initialized")
 
-    async def analyze_all_vorgaenge(
-        self, limit: Optional[int] = None
-    ) -> List[VorgangDiff]:
+    async def analyze_all_vorgaenge(self, limit: Optional[int] = None) -> list[VorgangDiff]:
         """Analyze all Vorgänge and find differences.
 
         Args:
@@ -87,9 +83,7 @@ class VorgangDiffAnalyzer:
 
         # 4. Find potentially outdated Vorgänge (in both)
         existing_ids = set(dip_vorgang_ids) & set(neo4j_vorgang_ids)
-        logger.info(
-            f"Found {len(existing_ids)} existing Vorgänge to check for updates"
-        )
+        logger.info(f"Found {len(existing_ids)} existing Vorgänge to check for updates")
 
         # 5. Analyze differences
         all_diffs = []
@@ -114,9 +108,7 @@ class VorgangDiffAnalyzer:
         logger.info(f"Analysis complete: {len(all_diffs)} differences found")
         return all_diffs
 
-    async def analyze_specific_vorgaenge(
-        self, vorgang_ids: List[str]
-    ) -> List[VorgangDiff]:
+    async def analyze_specific_vorgaenge(self, vorgang_ids: list[str]) -> list[VorgangDiff]:
         """Analyze specific Vorgänge.
 
         Args:
@@ -150,9 +142,7 @@ class VorgangDiffAnalyzer:
 
         if not neo4j_data and dip_data:
             # Vorgang missing in Neo4j
-            return VorgangDiff(
-                vorgang_id=vorgang_id, diff_type="missing", dip_data=dip_data
-            )
+            return VorgangDiff(vorgang_id=vorgang_id, diff_type="missing", dip_data=dip_data)
 
         if not dip_data:
             # Vorgang not in DIP API (shouldn't happen, but handle it)
@@ -183,7 +173,7 @@ class VorgangDiffAnalyzer:
 
         return None
 
-    async def _get_neo4j_vorgang_ids(self) -> List[str]:
+    async def _get_neo4j_vorgang_ids(self) -> list[str]:
         """Get all Vorgang IDs from Neo4j.
 
         Returns:
@@ -200,7 +190,7 @@ class VorgangDiffAnalyzer:
             result = session.run(query)
             return [record["vorgang_id"] for record in result]
 
-    async def _get_neo4j_vorgang(self, vorgang_id: str) -> Optional[Dict[str, Any]]:
+    async def _get_neo4j_vorgang(self, vorgang_id: str) -> Optional[dict[str, Any]]:
         """Get Vorgang data from Neo4j.
 
         Args:
@@ -222,7 +212,7 @@ class VorgangDiffAnalyzer:
                 return dict(record["v"])
             return None
 
-    def generate_summary(self, diffs: List[VorgangDiff]) -> Dict[str, Any]:
+    def generate_summary(self, diffs: list[VorgangDiff]) -> dict[str, Any]:
         """Generate a summary of differences.
 
         Args:
@@ -241,7 +231,7 @@ class VorgangDiffAnalyzer:
 
         return summary
 
-    def _count_changed_fields(self, diffs: List[VorgangDiff]) -> Dict[str, int]:
+    def _count_changed_fields(self, diffs: list[VorgangDiff]) -> dict[str, int]:
         """Count which fields changed most frequently.
 
         Args:

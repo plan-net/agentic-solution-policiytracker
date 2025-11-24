@@ -8,51 +8,54 @@ Tests all 8 collectors following good testing patterns:
 - Test with realistic sample data
 """
 
-import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
-from typing import Dict, Any
+from unittest.mock import AsyncMock, MagicMock
 
-from src.flows.bundestag_ingestion.collectors.vorgang_collector import VorgangCollector
-from src.flows.bundestag_ingestion.collectors.drucksache_collector import DrucksacheCollector
-from src.flows.bundestag_ingestion.collectors.person_collector import PersonCollector
-from src.flows.bundestag_ingestion.collectors.plenarprotokoll_collector import PlenarprotokollCollector
-from src.flows.bundestag_ingestion.collectors.vorgangsposition_collector import VorgangspositionCollector
+import pytest
+
 from src.flows.bundestag_ingestion.collectors.aktivitaet_collector import AktivitaetCollector
 from src.flows.bundestag_ingestion.collectors.base_collector import BaseCollector
-
-from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
+from src.flows.bundestag_ingestion.collectors.drucksache_collector import DrucksacheCollector
+from src.flows.bundestag_ingestion.collectors.person_collector import PersonCollector
+from src.flows.bundestag_ingestion.collectors.plenarprotokoll_collector import (
+    PlenarprotokollCollector,
+)
+from src.flows.bundestag_ingestion.collectors.vorgang_collector import VorgangCollector
+from src.flows.bundestag_ingestion.collectors.vorgangsposition_collector import (
+    VorgangspositionCollector,
+)
 from src.flows.bundestag_ingestion.transformers.edge_builder import BundestagEdgeBuilder
+from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.flows.bundestag_ingestion.utils.api_client import BundestagAPIClient
-
 from tests.fixtures.bundestag_sample_data import (
-    SAMPLE_VORGANG_RESPONSE,
-    SAMPLE_DRUCKSACHE_RESPONSE,
-    SAMPLE_PERSON_RESPONSE,
-    SAMPLE_PLENARPROTOKOLL_RESPONSE,
-    SAMPLE_VORGANGSPOSITION_RESPONSE,
     SAMPLE_AKTIVITAET_RESPONSE,
+    SAMPLE_DRUCKSACHE_RESPONSE,
     SAMPLE_PAGINATED_RESPONSE_PAGE_1,
     SAMPLE_PAGINATED_RESPONSE_PAGE_2,
     SAMPLE_PAGINATED_RESPONSE_PAGE_3,
+    SAMPLE_PERSON_RESPONSE,
+    SAMPLE_PLENARPROTOKOLL_RESPONSE,
+    SAMPLE_VORGANG_RESPONSE,
+    SAMPLE_VORGANGSPOSITION_RESPONSE,
     get_sample_vorgaenge,
 )
-
 
 # ===================================================================
 # INTERFACE CONTRACT TESTS
 # ===================================================================
+
 
 class TestCollectorInterfaceContracts:
     """Validate that all collectors implement the correct interface."""
 
     def test_base_collector_interface(self):
         """Test BaseCollector defines required abstract methods."""
-        assert hasattr(BaseCollector, 'endpoint')
-        assert hasattr(BaseCollector, 'entity_type')
-        assert hasattr(BaseCollector, 'collect_and_transform')
+        assert hasattr(BaseCollector, "endpoint")
+        assert hasattr(BaseCollector, "entity_type")
+        assert hasattr(BaseCollector, "collect_and_transform")
 
         # Verify these are abstract properties/methods
         import inspect
+
         assert inspect.isabstract(BaseCollector)
 
     def test_vorgang_collector_interface(self):
@@ -64,13 +67,13 @@ class TestCollectorInterfaceContracts:
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
         # Verify properties
-        assert hasattr(collector, 'endpoint')
-        assert hasattr(collector, 'entity_type')
-        assert collector.endpoint == 'vorgang'
-        assert collector.entity_type == 'Vorgang'
+        assert hasattr(collector, "endpoint")
+        assert hasattr(collector, "entity_type")
+        assert collector.endpoint == "vorgang"
+        assert collector.entity_type == "Vorgang"
 
         # Verify methods
-        assert hasattr(collector, 'collect_and_transform')
+        assert hasattr(collector, "collect_and_transform")
         assert callable(collector.collect_and_transform)
 
     def test_all_collectors_have_consistent_interface(self):
@@ -90,21 +93,22 @@ class TestCollectorInterfaceContracts:
 
         for collector in collectors:
             # All must have these properties
-            assert hasattr(collector, 'endpoint')
-            assert hasattr(collector, 'entity_type')
-            assert hasattr(collector, 'api_client')
-            assert hasattr(collector, 'entity_builder')
-            assert hasattr(collector, 'edge_builder')
+            assert hasattr(collector, "endpoint")
+            assert hasattr(collector, "entity_type")
+            assert hasattr(collector, "api_client")
+            assert hasattr(collector, "entity_builder")
+            assert hasattr(collector, "edge_builder")
 
             # All must have these methods
-            assert hasattr(collector, 'collect_and_transform')
-            assert hasattr(collector, 'fetch_with_pagination')
-            assert hasattr(collector, 'health_check')
+            assert hasattr(collector, "collect_and_transform")
+            assert hasattr(collector, "fetch_with_pagination")
+            assert hasattr(collector, "health_check")
 
 
 # ===================================================================
 # VORGANG COLLECTOR TESTS
 # ===================================================================
+
 
 class TestVorgangCollector:
     """Test VorgangCollector with real internal logic."""
@@ -136,10 +140,7 @@ class TestVorgangCollector:
         # Mock only external API call
         api_client.get = AsyncMock(return_value=SAMPLE_VORGANG_RESPONSE)
 
-        inputs = {
-            "filters": {"f.wahlperiode": "20"},
-            "limit": 10
-        }
+        inputs = {"filters": {"f.wahlperiode": "20"}, "limit": 10}
 
         # Test real processing
         result = await collector.collect_and_transform(inputs)
@@ -157,11 +158,13 @@ class TestVorgangCollector:
     async def test_fetch_with_pagination_integration(self, collector, api_client):
         """Test pagination integration with real PaginationHelper."""
         # Mock API to return paginated responses
-        api_client.get = AsyncMock(side_effect=[
-            SAMPLE_PAGINATED_RESPONSE_PAGE_1,
-            SAMPLE_PAGINATED_RESPONSE_PAGE_2,
-            SAMPLE_PAGINATED_RESPONSE_PAGE_3,
-        ])
+        api_client.get = AsyncMock(
+            side_effect=[
+                SAMPLE_PAGINATED_RESPONSE_PAGE_1,
+                SAMPLE_PAGINATED_RESPONSE_PAGE_2,
+                SAMPLE_PAGINATED_RESPONSE_PAGE_3,
+            ]
+        )
 
         filters = {"f.wahlperiode": "20"}
 
@@ -214,6 +217,7 @@ class TestVorgangCollector:
 # DRUCKSACHE COLLECTOR TESTS
 # ===================================================================
 
+
 class TestDrucksacheCollector:
     """Test DrucksacheCollector with real internal logic."""
 
@@ -250,6 +254,7 @@ class TestDrucksacheCollector:
 # PERSON COLLECTOR TESTS
 # ===================================================================
 
+
 class TestPersonCollector:
     """Test PersonCollector with real internal logic."""
 
@@ -282,6 +287,7 @@ class TestPersonCollector:
 # ===================================================================
 # PLENARPROTOKOLL COLLECTOR TESTS
 # ===================================================================
+
 
 class TestPlenarprotokollCollector:
     """Test PlenarprotokollCollector with real internal logic."""
@@ -316,6 +322,7 @@ class TestPlenarprotokollCollector:
 # VORGANGSPOSITION COLLECTOR TESTS
 # ===================================================================
 
+
 class TestVorgangspositionCollector:
     """Test VorgangspositionCollector with real internal logic."""
 
@@ -349,6 +356,7 @@ class TestVorgangspositionCollector:
 # AKTIVITAET COLLECTOR TESTS
 # ===================================================================
 
+
 class TestAktivitaetCollector:
     """Test AktivitaetCollector with real internal logic."""
 
@@ -381,6 +389,7 @@ class TestAktivitaetCollector:
 # ===================================================================
 # PAGINATION AND ERROR HANDLING TESTS
 # ===================================================================
+
 
 class TestCollectorPaginationAndErrors:
     """Test pagination and error handling across collectors."""
@@ -418,7 +427,9 @@ class TestCollectorPaginationAndErrors:
     @pytest.mark.asyncio
     async def test_empty_response_handling(self, collector):
         """Test collector handles empty API responses."""
-        collector.api_client.get = AsyncMock(return_value={"documents": [], "numFound": 0, "cursor": None})
+        collector.api_client.get = AsyncMock(
+            return_value={"documents": [], "numFound": 0, "cursor": None}
+        )
 
         inputs = {"filters": {}, "limit": 10}
 
@@ -431,6 +442,7 @@ class TestCollectorPaginationAndErrors:
 # ===================================================================
 # FILTER BUILDER INTEGRATION TESTS
 # ===================================================================
+
 
 class TestCollectorFilterIntegration:
     """Test collectors integrate correctly with FilterBuilder."""
@@ -448,10 +460,7 @@ class TestCollectorFilterIntegration:
 
         # Use convenience method
         result = await collector.collect_with_filters(
-            wahlperiode="20",
-            datum_von="2024-01-01",
-            datum_bis="2024-12-31",
-            limit=10
+            wahlperiode="20", datum_von="2024-01-01", datum_bis="2024-12-31", limit=10
         )
 
         # Verify it executed successfully
@@ -462,6 +471,7 @@ class TestCollectorFilterIntegration:
 # ===================================================================
 # STATISTICS TRACKING TESTS
 # ===================================================================
+
 
 class TestCollectorStatistics:
     """Test statistics tracking across collectors."""
@@ -489,7 +499,7 @@ class TestCollectorStatistics:
             "collector_type",
             "endpoint",
             "entity_type",
-            "errors"
+            "errors",
         ]
 
         for field in required_fields:

@@ -1,9 +1,8 @@
 """Text-to-Cypher conversion service using LangChain and OpenAI."""
 
 import logging
-import re
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from langchain.chains import GraphCypherQAChain
 from langchain_community.graphs import Neo4jGraph
@@ -104,17 +103,27 @@ class TextToCypherService:
                     )
                     self.structured_schema = {
                         "node_props": {
-                            "Policy": [{"property": "name", "type": "STRING"},
-                                      {"property": "status", "type": "STRING"},
-                                      {"property": "jurisdiction", "type": "STRING"}],
-                            "Politician": [{"property": "name", "type": "STRING"},
-                                          {"property": "party", "type": "STRING"}],
-                            "Organization": [{"property": "name", "type": "STRING"},
-                                            {"property": "type", "type": "STRING"}],
-                            "Document": [{"property": "name", "type": "STRING"},
-                                        {"property": "source", "type": "STRING"}],
-                            "News": [{"property": "title", "type": "STRING"},
-                                    {"property": "date", "type": "DATE"}],
+                            "Policy": [
+                                {"property": "name", "type": "STRING"},
+                                {"property": "status", "type": "STRING"},
+                                {"property": "jurisdiction", "type": "STRING"},
+                            ],
+                            "Politician": [
+                                {"property": "name", "type": "STRING"},
+                                {"property": "party", "type": "STRING"},
+                            ],
+                            "Organization": [
+                                {"property": "name", "type": "STRING"},
+                                {"property": "type", "type": "STRING"},
+                            ],
+                            "Document": [
+                                {"property": "name", "type": "STRING"},
+                                {"property": "source", "type": "STRING"},
+                            ],
+                            "News": [
+                                {"property": "title", "type": "STRING"},
+                                {"property": "date", "type": "DATE"},
+                            ],
                         },
                         "rel_props": {},
                         "relationships": [
@@ -122,7 +131,7 @@ class TextToCypherService:
                             {"start": "Document", "type": "MENTIONS", "end": "Policy"},
                             {"start": "Politician", "type": "AUTHORED_BY", "end": "Policy"},
                             {"start": "News", "type": "RELATED_TO", "end": "Policy"},
-                        ]
+                        ],
                     }
 
                 def query(self, cypher_query, params=None):
@@ -163,7 +172,7 @@ class TextToCypherService:
 
         logger.info("Text-to-Cypher service initialized")
 
-    def validate_cypher(self, cypher: str) -> Tuple[bool, Optional[str]]:
+    def validate_cypher(self, cypher: str) -> tuple[bool, Optional[str]]:
         """
         Validate that a Cypher query is safe to execute (read-only).
 
@@ -176,7 +185,10 @@ class TextToCypherService:
         # Check for forbidden keywords
         for keyword in self.FORBIDDEN_KEYWORDS:
             if keyword in cypher_upper:
-                return False, f"Forbidden operation detected: {keyword}. Only read operations are allowed."
+                return (
+                    False,
+                    f"Forbidden operation detected: {keyword}. Only read operations are allowed.",
+                )
 
         # Check if query contains at least one MATCH or RETURN
         if "MATCH" not in cypher_upper and "RETURN" not in cypher_upper:
@@ -186,7 +198,7 @@ class TextToCypherService:
 
     async def convert_and_execute(
         self, text: str, limit: int = 50, driver: Optional[AsyncDriver] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convert natural language to Cypher, validate, and execute the query.
 
@@ -266,7 +278,7 @@ class TextToCypherService:
 
     async def _execute_cypher(
         self, cypher: str, driver: AsyncDriver
-    ) -> Tuple[List[GraphNode], List[GraphEdge]]:
+    ) -> tuple[list[GraphNode], list[GraphEdge]]:
         """Execute Cypher query using async driver and convert results to graph format."""
         nodes_dict = {}
         links = []
@@ -286,7 +298,13 @@ class TextToCypherService:
                                 node_props = dict(value)
                                 nodes_dict[node_id] = GraphNode(
                                     id=node_id,
-                                    name=node_props.get("name", node_props.get("politician_name", node_props.get("company_name", f"Node-{node_id[:8]}"))),
+                                    name=node_props.get(
+                                        "name",
+                                        node_props.get(
+                                            "politician_name",
+                                            node_props.get("company_name", f"Node-{node_id[:8]}"),
+                                        ),
+                                    ),
                                     type=list(value.labels)[0] if value.labels else "Entity",
                                     properties=node_props,
                                 )
@@ -302,7 +320,15 @@ class TextToCypherService:
                                 start_node_props = dict(value.start_node)
                                 nodes_dict[source_id] = GraphNode(
                                     id=source_id,
-                                    name=start_node_props.get("name", start_node_props.get("politician_name", start_node_props.get("company_name", f"Node-{source_id[:8]}"))),
+                                    name=start_node_props.get(
+                                        "name",
+                                        start_node_props.get(
+                                            "politician_name",
+                                            start_node_props.get(
+                                                "company_name", f"Node-{source_id[:8]}"
+                                            ),
+                                        ),
+                                    ),
                                     type=(
                                         list(value.start_node.labels)[0]
                                         if value.start_node.labels
@@ -315,7 +341,15 @@ class TextToCypherService:
                                 end_node_props = dict(value.end_node)
                                 nodes_dict[target_id] = GraphNode(
                                     id=target_id,
-                                    name=end_node_props.get("name", end_node_props.get("politician_name", end_node_props.get("company_name", f"Node-{target_id[:8]}"))),
+                                    name=end_node_props.get(
+                                        "name",
+                                        end_node_props.get(
+                                            "politician_name",
+                                            end_node_props.get(
+                                                "company_name", f"Node-{target_id[:8]}"
+                                            ),
+                                        ),
+                                    ),
                                     type=(
                                         list(value.end_node.labels)[0]
                                         if value.end_node.labels
@@ -341,7 +375,7 @@ class TextToCypherService:
         nodes = list(nodes_dict.values())
         return nodes, links
 
-    async def _execute_cypher_sync(self, cypher: str) -> Tuple[List[GraphNode], List[GraphEdge]]:
+    async def _execute_cypher_sync(self, cypher: str) -> tuple[list[GraphNode], list[GraphEdge]]:
         """Fallback: Execute Cypher using synchronous Neo4jGraph."""
         nodes_dict = {}
         links = []

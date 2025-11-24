@@ -2,9 +2,7 @@
 """
 Test concurrent document tracking to simulate Ray actors.
 """
-import asyncio
 import concurrent.futures
-import time
 from pathlib import Path
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
@@ -61,16 +59,10 @@ def test_concurrent_writes():
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         # Submit successful processing tasks
-        success_futures = [
-            executor.submit(mark_document, i)
-            for i in range(num_workers)
-        ]
+        success_futures = [executor.submit(mark_document, i) for i in range(num_workers)]
 
         # Submit failed processing tasks
-        failed_futures = [
-            executor.submit(mark_failed_document, i)
-            for i in range(num_failed)
-        ]
+        failed_futures = [executor.submit(mark_failed_document, i) for i in range(num_failed)]
 
         # Wait for all to complete
         all_futures = success_futures + failed_futures
@@ -86,7 +78,7 @@ def test_concurrent_writes():
     print(f"Expected: {num_workers + num_failed}")
 
     stats = tracker.get_stats()
-    print(f"\n📈 Stats:")
+    print("\n📈 Stats:")
     for key, value in stats.items():
         print(f"   {key}: {value}")
 
@@ -97,7 +89,7 @@ def test_concurrent_writes():
     missing_success = [doc for doc in success_docs if doc not in tracker.processed_docs]
     missing_failed = [doc for doc in failed_docs if doc not in tracker.processed_docs]
 
-    print(f"\n🔍 Data Integrity Check:")
+    print("\n🔍 Data Integrity Check:")
     if not missing_success and not missing_failed:
         print("   ✅ All documents tracked!")
         print("   ✅ No data lost during concurrent writes!")
@@ -117,7 +109,7 @@ def test_concurrent_writes():
 
     # Show sample entry
     if tracker.processed_docs:
-        print(f"\n📄 Sample Entry:")
+        print("\n📄 Sample Entry:")
         first_key = list(tracker.processed_docs.keys())[0]
         first_entry = tracker.processed_docs[first_key]
         print(f"   Path: {first_key}")

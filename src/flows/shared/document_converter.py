@@ -5,11 +5,9 @@ Converts various document formats to markdown for processing through
 the political monitoring pipeline.
 """
 
-import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Tuple
 
 import structlog
 
@@ -26,7 +24,7 @@ class DocumentConverter:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Initialized DocumentConverter with output: {self.output_dir}")
 
-    def convert_to_markdown(self, file_path: Path) -> Tuple[str, str]:
+    def convert_to_markdown(self, file_path: Path) -> tuple[str, str]:
         """
         Convert document to markdown format.
 
@@ -102,7 +100,9 @@ class DocumentConverter:
         try:
             import docx
         except ImportError:
-            raise ImportError("python-docx is required for DOCX conversion. Install: pip install python-docx")
+            raise ImportError(
+                "python-docx is required for DOCX conversion. Install: pip install python-docx"
+            )
 
         try:
             doc = docx.Document(str(file_path))
@@ -134,7 +134,7 @@ class DocumentConverter:
     def _convert_txt(self, file_path: Path) -> str:
         """Convert TXT to markdown text."""
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read().strip()
 
             if not content:
@@ -145,7 +145,7 @@ class DocumentConverter:
         except UnicodeDecodeError:
             # Try different encoding
             try:
-                with open(file_path, "r", encoding="latin-1") as f:
+                with open(file_path, encoding="latin-1") as f:
                     content = f.read().strip()
                 return content
             except Exception as e:
@@ -160,7 +160,9 @@ class DocumentConverter:
         try:
             from pptx import Presentation
         except ImportError:
-            raise ImportError("python-pptx is required for PPT/PPTX conversion. Install: pip install python-pptx")
+            raise ImportError(
+                "python-pptx is required for PPT/PPTX conversion. Install: pip install python-pptx"
+            )
 
         try:
             prs = Presentation(str(file_path))
@@ -181,7 +183,9 @@ class DocumentConverter:
                     if hasattr(shape, "text"):
                         text = shape.text.strip()
                         # Avoid duplicating title
-                        if text and (not slide.shapes.title or text != slide.shapes.title.text.strip()):
+                        if text and (
+                            not slide.shapes.title or text != slide.shapes.title.text.strip()
+                        ):
                             slide_content.append(text)
 
                 if len(slide_content) > 1:  # More than just the slide number
@@ -210,7 +214,8 @@ class DocumentConverter:
         # Build frontmatter with policy-compatible fields
         frontmatter_data = {
             # Core metadata (policy-compatible)
-            "title": metadata.get("title") or file_path.stem.replace("_", " ").replace("-", " ").title(),
+            "title": metadata.get("title")
+            or file_path.stem.replace("_", " ").replace("-", " ").title(),
             "url": metadata.get("url") or "not available",
             "published_date": metadata.get("published_date") or now,
             "collected_date": now,
@@ -262,6 +267,7 @@ class DocumentConverter:
         """Extract metadata from PDF document properties."""
         try:
             import pypdf
+
             reader = pypdf.PdfReader(str(file_path))
             info = reader.metadata or {}
 
@@ -278,6 +284,7 @@ class DocumentConverter:
         """Extract metadata from DOCX document properties."""
         try:
             import docx
+
             doc = docx.Document(str(file_path))
             props = doc.core_properties
 
@@ -299,6 +306,7 @@ class DocumentConverter:
         """Extract metadata from PPTX presentation properties."""
         try:
             from pptx import Presentation
+
             prs = Presentation(str(file_path))
             props = prs.core_properties
 

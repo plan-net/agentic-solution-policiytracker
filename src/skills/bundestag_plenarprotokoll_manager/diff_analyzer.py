@@ -1,9 +1,7 @@
 """DiffAnalyzer - Compare Neo4j Plenarprotokoll data with Bundestag DIP API."""
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
-
-from neo4j import GraphDatabase
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,9 @@ class PlenarprotokollDiff:
         self,
         plenarprotokoll_id: str,
         diff_type: str,  # "missing", "outdated", "relationship_missing"
-        neo4j_data: Optional[Dict] = None,
-        dip_data: Optional[Dict] = None,
-        changed_fields: Optional[Set[str]] = None,
+        neo4j_data: Optional[dict] = None,
+        dip_data: Optional[dict] = None,
+        changed_fields: Optional[set[str]] = None,
     ):
         self.plenarprotokoll_id = plenarprotokoll_id
         self.diff_type = diff_type
@@ -63,7 +61,7 @@ class PlenarprotokollDiffAnalyzer:
 
     async def analyze_all_plenarprotokolle(
         self, limit: Optional[int] = None
-    ) -> List[PlenarprotokollDiff]:
+    ) -> list[PlenarprotokollDiff]:
         """Analyze all Plenarprotokolln and find differences.
 
         Args:
@@ -88,9 +86,7 @@ class PlenarprotokollDiffAnalyzer:
 
         # 4. Find potentially outdated Plenarprotokolln (in both)
         existing_ids = set(dip_plenarprotokoll_ids) & set(neo4j_plenarprotokoll_ids)
-        logger.info(
-            f"Found {len(existing_ids)} existing Plenarprotokolln to check for updates"
-        )
+        logger.info(f"Found {len(existing_ids)} existing Plenarprotokolln to check for updates")
 
         # 5. Analyze differences
         all_diffs = []
@@ -116,8 +112,8 @@ class PlenarprotokollDiffAnalyzer:
         return all_diffs
 
     async def analyze_specific_plenarprotokolle(
-        self, plenarprotokoll_ids: List[str]
-    ) -> List[PlenarprotokollDiff]:
+        self, plenarprotokoll_ids: list[str]
+    ) -> list[PlenarprotokollDiff]:
         """Analyze specific Plenarprotokolln.
 
         Args:
@@ -136,7 +132,9 @@ class PlenarprotokollDiffAnalyzer:
 
         return all_diffs
 
-    async def _compare_single_plenarprotokoll(self, plenarprotokoll_id: str) -> Optional[PlenarprotokollDiff]:
+    async def _compare_single_plenarprotokoll(
+        self, plenarprotokoll_id: str
+    ) -> Optional[PlenarprotokollDiff]:
         """Compare a single Plenarprotokoll between Neo4j and DIP API.
 
         Args:
@@ -184,7 +182,7 @@ class PlenarprotokollDiffAnalyzer:
 
         return None
 
-    async def _get_neo4j_plenarprotokoll_ids(self) -> List[str]:
+    async def _get_neo4j_plenarprotokoll_ids(self) -> list[str]:
         """Get all Plenarprotokoll IDs from Neo4j.
 
         Returns:
@@ -201,7 +199,7 @@ class PlenarprotokollDiffAnalyzer:
             result = session.run(query)
             return [record["plenarprotokoll_id"] for record in result]
 
-    async def _get_neo4j_plenarprotokoll(self, plenarprotokoll_id: str) -> Optional[Dict[str, Any]]:
+    async def _get_neo4j_plenarprotokoll(self, plenarprotokoll_id: str) -> Optional[dict[str, Any]]:
         """Get Plenarprotokoll data from Neo4j.
 
         Args:
@@ -223,7 +221,7 @@ class PlenarprotokollDiffAnalyzer:
                 return dict(record["d"])
             return None
 
-    def generate_summary(self, diffs: List[PlenarprotokollDiff]) -> Dict[str, Any]:
+    def generate_summary(self, diffs: list[PlenarprotokollDiff]) -> dict[str, Any]:
         """Generate a summary of differences.
 
         Args:
@@ -242,7 +240,7 @@ class PlenarprotokollDiffAnalyzer:
 
         return summary
 
-    def _count_changed_fields(self, diffs: List[PlenarprotokollDiff]) -> Dict[str, int]:
+    def _count_changed_fields(self, diffs: list[PlenarprotokollDiff]) -> dict[str, int]:
         """Count which fields changed most frequently.
 
         Args:

@@ -5,19 +5,15 @@ This module provides the BundestagEntityBuilder class for creating entity object
 from raw Bundestag data according to the political_schema_v4 definitions.
 """
 
-import json
+from typing import Any, Optional
+
 import structlog
-from typing import Any, Dict, List, Optional
 
 from src.graphrag.political_schema_v4 import (
-    Wahlperiode,
     BundestagFraktion,
     BundestagPerson,
     Vorgang,
-    Drucksache,
-    Plenarprotokoll,
-    Vorgangsposition,
-    Aktivitaet,
+    Wahlperiode,
 )
 
 logger = structlog.get_logger()
@@ -102,7 +98,7 @@ class BundestagEntityBuilder:
         gruendungsdatum: Optional[str] = None,
         mitglieder_anzahl: Optional[int] = None,
         farbe: Optional[str] = None,
-        member_ids: Optional[List[str]] = None,
+        member_ids: Optional[list[str]] = None,
         **kwargs,
     ) -> BundestagFraktion:
         """
@@ -315,7 +311,7 @@ class BundestagEntityBuilder:
             logger.error("Failed to create Vorgang entity", vorgang=vorgang_name, error=str(e))
             raise
 
-    async def build(self, raw_data: Dict[str, Any]) -> Any:
+    async def build(self, raw_data: dict[str, Any]) -> Any:
         """
         Generic build method for creating entities from raw data.
 

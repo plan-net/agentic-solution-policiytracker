@@ -1,11 +1,10 @@
 """Predefined schema queries for political monitoring knowledge graph."""
 
-from typing import Dict
 
 from .models import SchemaQuery
 
 # Predefined schema queries for exploration
-SCHEMA_QUERIES: Dict[str, SchemaQuery] = {
+SCHEMA_QUERIES: dict[str, SchemaQuery] = {
     "policy_landscape": SchemaQuery(
         name="Policy Landscape",
         description="Overview of policy entities and their relationships in the knowledge graph",

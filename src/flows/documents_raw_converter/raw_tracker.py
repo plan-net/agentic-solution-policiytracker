@@ -8,7 +8,7 @@ to prevent duplicate processing.
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import structlog
 
@@ -20,14 +20,14 @@ class RawDocumentTracker:
 
     def __init__(self, tracking_file: str = "data/raw_documents_processed.json"):
         self.tracking_file = Path(tracking_file)
-        self.processed_docs: Dict[str, Dict] = {}
+        self.processed_docs: dict[str, dict] = {}
         self._load_tracking_data()
 
     def _load_tracking_data(self):
         """Load existing tracking data from JSON file."""
         if self.tracking_file.exists():
             try:
-                with open(self.tracking_file, "r", encoding="utf-8") as f:
+                with open(self.tracking_file, encoding="utf-8") as f:
                     self.processed_docs = json.load(f)
                 logger.info(
                     f"Loaded {len(self.processed_docs)} processed documents from tracker",
@@ -96,7 +96,7 @@ class RawDocumentTracker:
         self._save_tracking_data()
 
         logger.info(
-            f"Marked document as processed",
+            "Marked document as processed",
             filename=file_path.name,
             success=success,
             output_md=output_md_path.name,
@@ -104,7 +104,7 @@ class RawDocumentTracker:
 
     def get_unprocessed_documents(
         self, raw_docs_dir: str = "data/input/documents_raw"
-    ) -> List[Path]:
+    ) -> list[Path]:
         """
         Get list of unprocessed documents from raw documents directory.
 
@@ -139,7 +139,7 @@ class RawDocumentTracker:
 
         return unprocessed
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """
         Get statistics about processed documents.
 

@@ -8,16 +8,16 @@ biographical information.
 
 import json
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import structlog
 
 from src.flows.bundestag_ingestion.collectors.base_collector import BaseCollector
 from src.graphrag.political_schema_v4 import (
     BundestagPerson,
-    MemberOfFraktion,
     InWahlperiode,
-    RepresentsWahlkreis
+    MemberOfFraktion,
+    RepresentsWahlkreis,
 )
 
 logger = structlog.get_logger()
@@ -46,7 +46,7 @@ class PersonCollector(BaseCollector):
         """Entity type produced by this collector."""
         return "BundestagPerson"
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect person data and transform into entities and edges.
 
@@ -82,7 +82,7 @@ class PersonCollector(BaseCollector):
                 filters=filters,
                 limit=limit,
                 wahlperiode=wahlperiode,
-                current_only=current_only
+                current_only=current_only,
             )
 
             # Add Wahlperiode filter if specified
@@ -92,19 +92,12 @@ class PersonCollector(BaseCollector):
             # Collect persons with pagination
             items, duration = await self._collect_with_timing(filters, limit)
 
-            logger.info(
-                "Collected persons",
-                items_count=len(items),
-                duration=duration
-            )
+            logger.info("Collected persons", items_count=len(items), duration=duration)
 
             # Filter for current members if requested
             if current_only:
                 items = await self._filter_current_members(items)
-                logger.info(
-                    "Filtered to current members",
-                    current_count=len(items)
-                )
+                logger.info("Filtered to current members", current_count=len(items))
 
             # Extract detailed information
             items = await self._extract_fraktion_info(items)
@@ -128,7 +121,7 @@ class PersonCollector(BaseCollector):
                 edges_created=save_result.get("edges_saved", len(edges)),
                 duration=total_duration,
                 items_collected=len(items),
-                errors=errors
+                errors=errors,
             )
 
         except Exception as e:
@@ -141,10 +134,10 @@ class PersonCollector(BaseCollector):
                 edges_created=0,
                 duration=self._measure_duration(start_time),
                 items_collected=0,
-                errors=errors
+                errors=errors,
             )
 
-    async def _filter_current_members(self, persons: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _filter_current_members(self, persons: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Filter to only include current Bundestag members.
 
@@ -166,8 +159,7 @@ class PersonCollector(BaseCollector):
                 if isinstance(wahlperioden, list):
                     # Consider current if any Wahlperiode has no end date
                     has_current = any(
-                        wp.get("bis") is None or wp.get("bis") == ""
-                        for wp in wahlperioden
+                        wp.get("bis") is None or wp.get("bis") == "" for wp in wahlperioden
                     )
 
                     if has_current:
@@ -177,16 +169,12 @@ class PersonCollector(BaseCollector):
                     current_members.append(person)
 
             except Exception as e:
-                logger.error(
-                    "Error filtering person",
-                    person_id=person.get("id"),
-                    error=str(e)
-                )
+                logger.error("Error filtering person", person_id=person.get("id"), error=str(e))
                 continue
 
         return current_members
 
-    async def _extract_fraktion_info(self, persons: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _extract_fraktion_info(self, persons: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Extract Fraktion (parliamentary group) information for each person.
 
@@ -245,9 +233,7 @@ class PersonCollector(BaseCollector):
 
             except Exception as e:
                 logger.error(
-                    "Failed to extract Fraktion info",
-                    person_id=person.get("id"),
-                    error=str(e)
+                    "Failed to extract Fraktion info", person_id=person.get("id"), error=str(e)
                 )
                 person["current_fraktion"] = None
                 person["fraktion_history"] = []
@@ -256,7 +242,7 @@ class PersonCollector(BaseCollector):
 
         return persons
 
-    async def _extract_committee_info(self, persons: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _extract_committee_info(self, persons: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Extract committee (Ausschuss) membership information.
 
@@ -283,36 +269,33 @@ class PersonCollector(BaseCollector):
                             "ausschuss": ausschuss.get("ausschuss_name", ausschuss.get("name", "")),
                             "rolle": ausschuss.get("rolle", "Mitglied"),
                             "von": ausschuss.get("von"),
-                            "bis": ausschuss.get("bis")
+                            "bis": ausschuss.get("bis"),
                         }
                         parsed_ausschuesse.append(parsed_ausschuss)
 
                     # Store as JSON string for entity field
                     person["ausschuss_mitgliedschaften"] = json.dumps(
-                        parsed_ausschuesse,
-                        ensure_ascii=False
+                        parsed_ausschuesse, ensure_ascii=False
                     )
 
                     logger.debug(
                         "Parsed committee memberships",
                         person_id=person.get("id"),
-                        committee_count=len(parsed_ausschuesse)
+                        committee_count=len(parsed_ausschuesse),
                     )
                 else:
                     person["ausschuss_mitgliedschaften"] = None
 
             except Exception as e:
                 logger.error(
-                    "Failed to extract committee info",
-                    person_id=person.get("id"),
-                    error=str(e)
+                    "Failed to extract committee info", person_id=person.get("id"), error=str(e)
                 )
                 person["ausschuss_mitgliedschaften"] = None
                 continue
 
         return persons
 
-    async def _transform_to_entities(self, items: List[Dict[str, Any]]) -> List[BundestagPerson]:
+    async def _transform_to_entities(self, items: list[dict[str, Any]]) -> list[BundestagPerson]:
         """
         Transform person items into BundestagPerson entities.
 
@@ -326,7 +309,7 @@ class PersonCollector(BaseCollector):
         # The generic entity_builder doesn't recognize Person API structure
         return await self._create_entities_directly(items)
 
-    async def _create_entities_directly(self, items: List[Dict[str, Any]]) -> List[BundestagPerson]:
+    async def _create_entities_directly(self, items: list[dict[str, Any]]) -> list[BundestagPerson]:
         """
         Create BundestagPerson entities directly from API items.
 
@@ -351,8 +334,14 @@ class PersonCollector(BaseCollector):
                 wahlperioden_data = item.get("wahlperiode", [])
                 if isinstance(wahlperioden_data, list):
                     # API returns list of integers [16, 18, 19, 20, 21] not dicts
-                    wahlperioden_nummern = [wp if isinstance(wp, int) else wp.get("nummer") if isinstance(wp, dict) else None
-                                           for wp in wahlperioden_data]
+                    wahlperioden_nummern = [
+                        wp
+                        if isinstance(wp, int)
+                        else wp.get("nummer")
+                        if isinstance(wp, dict)
+                        else None
+                        for wp in wahlperioden_data
+                    ]
                     wahlperioden_nummern = [wp for wp in wahlperioden_nummern if wp is not None]
                 else:
                     wahlperioden_nummern = []
@@ -363,42 +352,40 @@ class PersonCollector(BaseCollector):
                     person_id=str(item.get("id", "")),
                     fraktion=item.get("current_fraktion"),
                     partei=item.get("current_partei"),
-                    wahlperioden=json.dumps(wahlperioden_nummern, ensure_ascii=False) if wahlperioden_nummern else None,
+                    wahlperioden=json.dumps(wahlperioden_nummern, ensure_ascii=False)
+                    if wahlperioden_nummern
+                    else None,
                     ausschuss_mitgliedschaften=item.get("ausschuss_mitgliedschaften"),
                     titel=item.get("titel"),
                     beruf=item.get("beruf"),
                     geburtsdatum=item.get("geburtsdatum"),
                     geburtsort=item.get("geburtsort"),
-                    wahlkreis=item.get("wahlkreis", {}).get("name") if isinstance(item.get("wahlkreis"), dict) else None,
+                    wahlkreis=item.get("wahlkreis", {}).get("name")
+                    if isinstance(item.get("wahlkreis"), dict)
+                    else None,
                     landesliste=item.get("landesliste"),
                     website=item.get("homepage"),
                     foto_url=item.get("foto_url"),
-                    aktualisiert=item.get("aktualisiert")
+                    aktualisiert=item.get("aktualisiert"),
                 )
 
                 entities.append(entity)
 
             except Exception as e:
                 logger.error(
-                    "Failed to create BundestagPerson entity",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to create BundestagPerson entity", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
         logger.info(
-            "Created BundestagPerson entities",
-            input_count=len(items),
-            output_count=len(entities)
+            "Created BundestagPerson entities", input_count=len(items), output_count=len(entities)
         )
 
         return entities
 
     async def _transform_to_edges(
-        self,
-        items: List[Dict[str, Any]],
-        entities: List[BundestagPerson]
-    ) -> List[Any]:
+        self, items: list[dict[str, Any]], entities: list[BundestagPerson]
+    ) -> list[Any]:
         """
         Create relationship edges for BundestagPerson entities.
 
@@ -428,7 +415,7 @@ class PersonCollector(BaseCollector):
                     fraktion_edge = MemberOfFraktion(
                         joined_date=fraktion_membership.get("von"),
                         left_date=fraktion_membership.get("bis"),
-                        role="Mitglied"  # Default role, could be enhanced
+                        role="Mitglied",  # Default role, could be enhanced
                     )
                     edges.append(fraktion_edge)
 
@@ -439,7 +426,7 @@ class PersonCollector(BaseCollector):
                         wp_edge = InWahlperiode(
                             entity_type="BundestagPerson",
                             active_from=wp.get("von"),
-                            active_until=wp.get("bis")
+                            active_until=wp.get("bis"),
                         )
                         edges.append(wp_edge)
 
@@ -451,21 +438,16 @@ class PersonCollector(BaseCollector):
                         wahlkreis_name=wahlkreis_data.get("name", ""),
                         wahlperiode=wahlkreis_data.get("wahlperiode", 0),
                         elected_directly=True,  # Assume true if wahlkreis exists
-                        vote_percentage=wahlkreis_data.get("vote_percentage")
+                        vote_percentage=wahlkreis_data.get("vote_percentage"),
                     )
                     edges.append(wahlkreis_edge)
 
             except Exception as e:
                 logger.error(
-                    "Failed to create edges for person",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to create edges for person", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
-        logger.info(
-            "Created edges for BundestagPerson entities",
-            total_edges=len(edges)
-        )
+        logger.info("Created edges for BundestagPerson entities", total_edges=len(edges))
 
         return edges

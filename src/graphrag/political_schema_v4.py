@@ -12,80 +12,81 @@ Graphiti Compatible: Yes
 """
 
 from typing import Optional
+
 from pydantic import BaseModel, Field
 
 # Import all v3 entities and edges
 from src.graphrag.political_schema_v3 import (
-    # Tier 1: Legislative Process
-    LegislativeProposal,
-    LegislativeBody,
+    Advises,
+    Affects,
+    AffiliatedWith,
+    Amends,
+    AmendsProposal,
+    Becomes,
     Committee,
-    Document,
-    Vote,
-    # Tier 2: Final Outcomes
-    Policy,
-    Regulation,
-    # Tier 3: Actors
-    Politician,
-    Person,
-    PoliticalParty,
-    GovernmentAgency,
-    LobbyGroup,
     # Tier 4: Business
     Company,
-    Industry,
+    CompetesIn,
     ComplianceObligation,
+    ConflictsWith,
     # Tier 5: Process Tracking
     ConsultationProcess,
+    Contributes,
+    DelegatesTo,
+    Document,
     EnforcementAction,
+    Enforces,
+    Examines,
+    GoldPlates,
+    GovernmentAgency,
+    HarmonizesWith,
+    HasPosition,
+    Implements,
+    Industry,
+    Influences,
+    InfringementAgainst,
+    # All v3 edges
+    InJurisdiction,
     # Tier 6: Geographic
     Jurisdiction,
     # Tier 7: Technical/Legal
     LegalFramework,
-    TechnicalStandard,
-    # All v3 edges
-    InJurisdiction,
-    MemberOf,
-    Represents,
-    Proposes,
-    SubmitsTo,
-    Examines,
-    AmendsProposal,
-    VotesOn,
-    Becomes,
-    Transposes,
-    GoldPlates,
-    InfringementAgainst,
-    PreliminaryReference,
-    Influences,
-    LobbiesFor,
+    LegislativeBody,
+    # Tier 1: Legislative Process
+    LegislativeProposal,
     LobbiesAgainst,
-    HasPosition,
-    Contributes,
-    AffiliatedWith,
-    Affects,
-    SubjectTo,
-    RequiresCompliance,
-    OperatesIn,
-    CompetesIn,
-    Implements,
-    Enforces,
-    DelegatesTo,
-    Supersedes,
-    Amends,
-    Triggers,
-    Precedes,
-    References,
-    HarmonizesWith,
-    ConflictsWith,
-    Advises,
+    LobbiesFor,
+    LobbyGroup,
+    MemberOf,
     Monitors,
+    OperatesIn,
+    Person,
+    # Tier 2: Final Outcomes
+    Policy,
+    PoliticalParty,
+    # Tier 3: Actors
+    Politician,
+    Precedes,
+    PreliminaryReference,
+    Proposes,
+    References,
+    Regulation,
+    Represents,
+    RequiresCompliance,
+    SubjectTo,
+    SubmitsTo,
+    Supersedes,
+    TechnicalStandard,
+    Transposes,
+    Triggers,
+    Vote,
+    VotesOn,
 )
-
 
 # ===================================================================
 # SECTION 1: NEW GERMAN BUNDESTAG ENTITY DEFINITIONS (8 Entity Types)
 # ===================================================================
+
 
 class Drucksache(BaseModel):
     """German parliamentary printed document - bills, motions, reports
@@ -94,17 +95,28 @@ class Drucksache(BaseModel):
     including legislative proposals (Gesetzentwürfe), motions (Anträge),
     committee recommendations (Beschlussempfehlungen), and reports (Berichte).
     """
+
     drucksache_name: str = Field(..., description="Document title in German")
-    drucksache_nummer: str = Field(..., description="Document number format: wahlperiode/nummer (e.g., 20/1234)")
+    drucksache_nummer: str = Field(
+        ..., description="Document number format: wahlperiode/nummer (e.g., 20/1234)"
+    )
     wahlperiode: int = Field(..., description="Electoral period number: 19, 20, 21, etc.")
-    dokumentart: str = Field(..., description="Document type: Gesetzentwurf, Antrag, Beschlussempfehlung, Bericht, Unterrichtung, Kleine Anfrage, Große Anfrage")
+    dokumentart: str = Field(
+        ...,
+        description="Document type: Gesetzentwurf, Antrag, Beschlussempfehlung, Bericht, Unterrichtung, Kleine Anfrage, Große Anfrage",
+    )
     drucksachetyp: Optional[str] = Field(None, description="Type classification from API")
 
     datum: Optional[str] = Field(None, description="Document publication date (ISO format)")
-    herausgeber: Optional[str] = Field(None, description="Publisher: BT (Bundestag), BR (Bundesrat), Ausschuss")
+    herausgeber: Optional[str] = Field(
+        None, description="Publisher: BT (Bundestag), BR (Bundesrat), Ausschuss"
+    )
 
     pdf_url: Optional[str] = Field(None, description="Direct link to PDF document")
-    full_text: Optional[str] = Field(None, description="Extracted full text content from drucksache-text endpoint (deprecated - use DrucksachePage entities)")
+    full_text: Optional[str] = Field(
+        None,
+        description="Extracted full text content from drucksache-text endpoint (deprecated - use DrucksachePage entities)",
+    )
 
     autoren_anzahl: Optional[int] = Field(None, description="Number of document authors")
     autoren_anzeige: Optional[str] = Field(None, description="Display string of author names")
@@ -112,18 +124,33 @@ class Drucksache(BaseModel):
     fundstelle: Optional[str] = Field(None, description="Official reference/citation")
     aktualisiert: Optional[str] = Field(None, description="Last updated timestamp from API")
 
-    vorgangsbezug_anzahl: Optional[int] = Field(None, description="Number of related Vorgang procedures")
-    related_vorgang_ids: Optional[str] = Field(None, description="JSON array of related Vorgang IDs")
+    vorgangsbezug_anzahl: Optional[int] = Field(
+        None, description="Number of related Vorgang procedures"
+    )
+    related_vorgang_ids: Optional[str] = Field(
+        None, description="JSON array of related Vorgang IDs"
+    )
 
     url: Optional[str] = Field(None, description="Link to document details on dip.bundestag.de")
 
     # Storage and extraction metadata (Flow 5c)
-    local_pdf_path: Optional[str] = Field(None, description="Local filesystem path to stored PDF: data/input/bundestag/drucksache/pdf/wahlperiode_20/20_1234.pdf")
-    local_markdown_path: Optional[str] = Field(None, description="Local filesystem path to extracted markdown: data/input/bundestag/drucksache/markdown/wahlperiode_20/20_1234.md")
-    has_full_text: bool = Field(False, description="Whether full text has been extracted page-by-page (creates DrucksachePage entities)")
+    local_pdf_path: Optional[str] = Field(
+        None,
+        description="Local filesystem path to stored PDF: data/input/bundestag/drucksache/pdf/wahlperiode_20/20_1234.pdf",
+    )
+    local_markdown_path: Optional[str] = Field(
+        None,
+        description="Local filesystem path to extracted markdown: data/input/bundestag/drucksache/markdown/wahlperiode_20/20_1234.md",
+    )
+    has_full_text: bool = Field(
+        False,
+        description="Whether full text has been extracted page-by-page (creates DrucksachePage entities)",
+    )
     page_count: Optional[int] = Field(None, description="Total number of pages extracted from PDF")
     file_size_bytes: Optional[int] = Field(None, description="PDF file size in bytes")
-    extraction_error: Optional[str] = Field(None, description="Error message if PDF extraction failed")
+    extraction_error: Optional[str] = Field(
+        None, description="Error message if PDF extraction failed"
+    )
 
 
 class DrucksachePage(BaseModel):
@@ -133,13 +160,21 @@ class DrucksachePage(BaseModel):
     Each page contains the extracted text from one page of the PDF document, enabling
     granular search and sequential navigation through documents.
     """
-    page_id: str = Field(..., description="Composite unique ID: drucksache_nummer_page_N (e.g., '20_1234_page_1')")
-    drucksache_nummer: str = Field(..., description="Parent document number format: wahlperiode/nummer (e.g., '20/1234')")
+
+    page_id: str = Field(
+        ..., description="Composite unique ID: drucksache_nummer_page_N (e.g., '20_1234_page_1')"
+    )
+    drucksache_nummer: str = Field(
+        ..., description="Parent document number format: wahlperiode/nummer (e.g., '20/1234')"
+    )
     page_number: int = Field(..., description="Page number within the document (1-indexed)")
 
     page_text: str = Field(..., description="Extracted text content from this page")
     char_count: int = Field(..., description="Character count for this page's text")
-    has_content: bool = Field(..., description="Whether page contains extractable text content (some pages may be blank/images only)")
+    has_content: bool = Field(
+        ...,
+        description="Whether page contains extractable text content (some pages may be blank/images only)",
+    )
 
 
 class Plenarprotokoll(BaseModel):
@@ -148,6 +183,7 @@ class Plenarprotokoll(BaseModel):
     Plenarprotokolle document complete plenary sessions including all speeches,
     votes, and procedural actions. They are the official record of parliamentary debates.
     """
+
     plenarprotokoll_name: str = Field(..., description="Protocol title (usually session number)")
     sitzungsnummer: str = Field(..., description="Session number within the Wahlperiode")
     wahlperiode: int = Field(..., description="Electoral period number")
@@ -155,11 +191,13 @@ class Plenarprotokoll(BaseModel):
 
     herausgeber: str = Field(..., description="Publisher (typically BT - Bundestag)")
     pdf_url: Optional[str] = Field(None, description="Link to PDF protocol")
-    full_text: Optional[str] = Field(None, description="Complete session transcript from plenarprotokoll-text endpoint")
+    full_text: Optional[str] = Field(
+        None, description="Complete session transcript from plenarprotokoll-text endpoint"
+    )
 
     tagesordnungspunkte: Optional[str] = Field(
         None,
-        description="JSON array of agenda items (TOPs): [{top_nummer: '1', titel: '...', vorgaenge: [...]}]"
+        description="JSON array of agenda items (TOPs): [{top_nummer: '1', titel: '...', vorgaenge: [...]}]",
     )
     reden_anzahl: Optional[int] = Field(None, description="Number of speeches delivered in session")
 
@@ -167,7 +205,9 @@ class Plenarprotokoll(BaseModel):
     aktualisiert: Optional[str] = Field(None, description="Last updated timestamp from API")
 
     vorgangsbezug_anzahl: Optional[int] = Field(None, description="Number of procedures discussed")
-    related_vorgang_ids: Optional[str] = Field(None, description="JSON array of Vorgang IDs discussed in session")
+    related_vorgang_ids: Optional[str] = Field(
+        None, description="JSON array of Vorgang IDs discussed in session"
+    )
 
     url: Optional[str] = Field(None, description="Link to protocol on dip.bundestag.de")
 
@@ -178,32 +218,53 @@ class Vorgang(BaseModel):
     A Vorgang represents the entire lifecycle of a legislative initiative,
     from proposal through committee work, plenary debates, votes, and final outcome.
     """
+
     vorgang_name: str = Field(..., description="Official procedure title in German")
-    vorgangstyp: str = Field(..., description="Procedure type: Gesetzgebung, Antrag, Große Anfrage, Kleine Anfrage, EU-Vorlage, etc.")
+    vorgangstyp: str = Field(
+        ...,
+        description="Procedure type: Gesetzgebung, Antrag, Große Anfrage, Kleine Anfrage, EU-Vorlage, etc.",
+    )
 
     wahlperiode: int = Field(..., description="Electoral period number")
-    vorgangsnummer: Optional[str] = Field(None, description="Unique procedure number within Wahlperiode")
+    vorgangsnummer: Optional[str] = Field(
+        None, description="Unique procedure number within Wahlperiode"
+    )
 
-    initiative: Optional[str] = Field(None, description="Initiator: Bundesregierung (Government), Fraktion (Parliamentary Group), Bundesrat, Länder")
-    beratungsstand: str = Field(..., description="Current status: Noch nicht beraten, In Beratung, Abgeschlossen, Erledigt, Zurückgezogen")
-    sachgebiet: Optional[str] = Field(None, description="Policy area: Digitalisierung, Innere Sicherheit, Wirtschaft, etc.")
+    initiative: Optional[str] = Field(
+        None,
+        description="Initiator: Bundesregierung (Government), Fraktion (Parliamentary Group), Bundesrat, Länder",
+    )
+    beratungsstand: str = Field(
+        ...,
+        description="Current status: Noch nicht beraten, In Beratung, Abgeschlossen, Erledigt, Zurückgezogen",
+    )
+    sachgebiet: Optional[str] = Field(
+        None, description="Policy area: Digitalisierung, Innere Sicherheit, Wirtschaft, etc."
+    )
 
     datum: Optional[str] = Field(None, description="Procedure start date (ISO format)")
-    abgeschlossen_datum: Optional[str] = Field(None, description="Completion/conclusion date if finished")
+    abgeschlossen_datum: Optional[str] = Field(
+        None, description="Completion/conclusion date if finished"
+    )
 
     abstract: Optional[str] = Field(None, description="Executive summary of the procedure")
     ziel: Optional[str] = Field(None, description="Stated objective or goal of the initiative")
 
     wichtige_drucksachen: Optional[str] = Field(
-        None,
-        description="JSON array of key document numbers: ['20/1234', '20/5678']"
+        None, description="JSON array of key document numbers: ['20/1234', '20/5678']"
     )
     plenum_anzahl: Optional[int] = Field(None, description="Number of plenary debates held")
-    ausschuss_federf: Optional[str] = Field(None, description="Lead committee (federführender Ausschuss)")
+    ausschuss_federf: Optional[str] = Field(
+        None, description="Lead committee (federführender Ausschuss)"
+    )
 
     inkrafttreten: Optional[str] = Field(None, description="Date law entered into force")
-    verkuendung_bundesgesetzblatt: Optional[str] = Field(None, description="Federal Law Gazette citation if enacted: BGBl. I S. 2097")
-    ratifikation: Optional[str] = Field(None, description="Ratification information for international treaties")
+    verkuendung_bundesgesetzblatt: Optional[str] = Field(
+        None, description="Federal Law Gazette citation if enacted: BGBl. I S. 2097"
+    )
+    ratifikation: Optional[str] = Field(
+        None, description="Ratification information for international treaties"
+    )
 
     gesta_id: Optional[str] = Field(None, description="GESTA database ID if applicable")
     aktualisiert: Optional[str] = Field(None, description="Last updated timestamp from API")
@@ -216,16 +277,23 @@ class Vorgangsposition(BaseModel):
     Vorgangspositionen track individual stages and actions within a Vorgang,
     such as committee referrals, readings, amendments, and votes.
     """
+
     vorgangsposition_name: str = Field(..., description="Position title/description")
-    zuordnung: str = Field(..., description="Classification: BT (Bundestag), BR (Bundesrat), Ausschuss, etc.")
+    zuordnung: str = Field(
+        ..., description="Classification: BT (Bundestag), BR (Bundesrat), Ausschuss, etc."
+    )
 
     vorgangstyp: Optional[str] = Field(None, description="Related procedure type")
     gang: Optional[str] = Field(None, description="Process stage or phase")
     fortsetzung: Optional[bool] = Field(None, description="Whether this is a continuation")
     nachtrag: Optional[bool] = Field(None, description="Whether this is an addendum/supplement")
 
-    related_vorgang_id: Optional[str] = Field(None, description="Parent Vorgang ID this position belongs to")
-    dokumentnummer: Optional[str] = Field(None, description="Associated Drucksache number if applicable")
+    related_vorgang_id: Optional[str] = Field(
+        None, description="Parent Vorgang ID this position belongs to"
+    )
+    dokumentnummer: Optional[str] = Field(
+        None, description="Associated Drucksache number if applicable"
+    )
 
     urheber: Optional[str] = Field(None, description="Originator of this procedural step")
     fundstelle: Optional[str] = Field(None, description="Where this step is documented")
@@ -239,6 +307,7 @@ class Aktivitaet(BaseModel):
     Aktivitäten represent discrete actions taken in the parliamentary process,
     such as committee meetings, hearings, expert testimonies, or procedural motions.
     """
+
     aktivitaet_name: str = Field(..., description="Activity title/description")
     aktivitaetsart: str = Field(..., description="Activity type from API classification")
 
@@ -246,7 +315,9 @@ class Aktivitaet(BaseModel):
     datum: Optional[str] = Field(None, description="Activity date (ISO format)")
 
     related_vorgang_id: Optional[str] = Field(None, description="Related Vorgang procedure ID")
-    related_drucksache_nummer: Optional[str] = Field(None, description="Related Drucksache document number")
+    related_drucksache_nummer: Optional[str] = Field(
+        None, description="Related Drucksache document number"
+    )
 
     urheber: Optional[str] = Field(None, description="Who initiated or performed the activity")
     fundstelle: Optional[str] = Field(None, description="Where activity details can be found")
@@ -261,21 +332,33 @@ class Wahlperiode(BaseModel):
     A Wahlperiode spans from one federal election to the next (typically 4 years),
     serving as the primary temporal organizing unit for German parliamentary data.
     """
-    wahlperiode_nummer: int = Field(..., description="Period number: 1 (1949), 19 (2017-2021), 20 (2021-2025), etc.")
+
+    wahlperiode_nummer: int = Field(
+        ..., description="Period number: 1 (1949), 19 (2017-2021), 20 (2021-2025), etc."
+    )
     von: str = Field(..., description="Start date of electoral period (ISO format)")
     bis: Optional[str] = Field(None, description="End date of period (null if current/ongoing)")
 
     bundeskanzler: Optional[str] = Field(None, description="Federal Chancellor during this period")
-    koalition: Optional[str] = Field(None, description="Governing coalition: e.g., 'SPD, GRÜNE, FDP'")
-
-    sitze_gesamt: Optional[int] = Field(None, description="Total number of Bundestag seats (varies by period)")
-    fraktionen: Optional[str] = Field(
-        None,
-        description="JSON array of parliamentary groups with seat counts: [{name: 'SPD', sitze: 206}, {name: 'CDU/CSU', sitze: 197}, ...]"
+    koalition: Optional[str] = Field(
+        None, description="Governing coalition: e.g., 'SPD, GRÜNE, FDP'"
     )
 
-    wahltag: Optional[str] = Field(None, description="Federal election date that initiated this period")
-    besonderheiten: Optional[str] = Field(None, description="Notable characteristics: e.g., 'First East-West unified Bundestag', 'Smallest majority since...', etc.")
+    sitze_gesamt: Optional[int] = Field(
+        None, description="Total number of Bundestag seats (varies by period)"
+    )
+    fraktionen: Optional[str] = Field(
+        None,
+        description="JSON array of parliamentary groups with seat counts: [{name: 'SPD', sitze: 206}, {name: 'CDU/CSU', sitze: 197}, ...]",
+    )
+
+    wahltag: Optional[str] = Field(
+        None, description="Federal election date that initiated this period"
+    )
+    besonderheiten: Optional[str] = Field(
+        None,
+        description="Notable characteristics: e.g., 'First East-West unified Bundestag', 'Smallest majority since...', etc.",
+    )
 
 
 class BundestagPerson(BaseModel):
@@ -284,28 +367,41 @@ class BundestagPerson(BaseModel):
     Represents current and former members of the Bundestag with German parliamentary
     context including Fraktion membership, committee assignments, and electoral information.
     """
+
     person_name: str = Field(..., description="Full name (Vorname Nachname)")
     person_id: str = Field(..., description="Unique person ID from Bundestag API")
 
-    fraktion: Optional[str] = Field(None, description="Current parliamentary group: CDU/CSU, SPD, GRÜNE, FDP, AfD, DIE LINKE, or fraktionslos")
-    partei: Optional[str] = Field(None, description="Political party affiliation (may differ from Fraktion)")
+    fraktion: Optional[str] = Field(
+        None,
+        description="Current parliamentary group: CDU/CSU, SPD, GRÜNE, FDP, AfD, DIE LINKE, or fraktionslos",
+    )
+    partei: Optional[str] = Field(
+        None, description="Political party affiliation (may differ from Fraktion)"
+    )
 
     wahlperioden: Optional[str] = Field(
-        None,
-        description="JSON array of Wahlperiode numbers served: [19, 20, 21]"
+        None, description="JSON array of Wahlperiode numbers served: [19, 20, 21]"
     )
     ausschuss_mitgliedschaften: Optional[str] = Field(
         None,
-        description="JSON array of committee memberships: [{ausschuss: 'Ausschuss Digitales', rolle: 'Mitglied/Vorsitzende/Obmann', von: '2021-11-01'}]"
+        description="JSON array of committee memberships: [{ausschuss: 'Ausschuss Digitales', rolle: 'Mitglied/Vorsitzende/Obmann', von: '2021-11-01'}]",
     )
 
-    titel: Optional[str] = Field(None, description="Academic or professional title: Dr., Prof. Dr., etc.")
+    titel: Optional[str] = Field(
+        None, description="Academic or professional title: Dr., Prof. Dr., etc."
+    )
     beruf: Optional[str] = Field(None, description="Professional occupation/background")
-    geburtsdatum: Optional[str] = Field(None, description="Date of birth (may be partially redacted for privacy)")
+    geburtsdatum: Optional[str] = Field(
+        None, description="Date of birth (may be partially redacted for privacy)"
+    )
     geburtsort: Optional[str] = Field(None, description="Place of birth")
 
-    wahlkreis: Optional[str] = Field(None, description="Directly elected constituency (Wahlkreis) if applicable")
-    landesliste: Optional[str] = Field(None, description="State list position if elected via proportional representation")
+    wahlkreis: Optional[str] = Field(
+        None, description="Directly elected constituency (Wahlkreis) if applicable"
+    )
+    landesliste: Optional[str] = Field(
+        None, description="State list position if elected via proportional representation"
+    )
 
     website: Optional[str] = Field(None, description="Personal or official website")
     foto_url: Optional[str] = Field(None, description="Link to official photo")
@@ -319,44 +415,62 @@ class BundestagFraktion(BaseModel):
     Fraktionen are officially recognized parliamentary groups that must have
     at least 5% of seats. They organize legislative work and represent ideological blocs.
     """
-    fraktion_name: str = Field(..., description="Full faction name: 'SPD', 'CDU/CSU', 'BÜNDNIS 90/DIE GRÜNEN', etc.")
-    kurz: str = Field(..., description="Short name/abbreviation: 'SPD', 'CDU/CSU', 'GRÜNE', 'FDP', 'AfD', 'LINKE'")
+
+    fraktion_name: str = Field(
+        ..., description="Full faction name: 'SPD', 'CDU/CSU', 'BÜNDNIS 90/DIE GRÜNEN', etc."
+    )
+    kurz: str = Field(
+        ..., description="Short name/abbreviation: 'SPD', 'CDU/CSU', 'GRÜNE', 'FDP', 'AfD', 'LINKE'"
+    )
 
     wahlperiode: int = Field(..., description="Electoral period this faction exists in")
     sitze: int = Field(..., description="Number of Bundestag seats held")
-    prozent: Optional[float] = Field(None, description="Percentage of total Bundestag seats (0-100)")
+    prozent: Optional[float] = Field(
+        None, description="Percentage of total Bundestag seats (0-100)"
+    )
 
     vorsitzende: Optional[str] = Field(
         None,
-        description="JSON array of faction leaders/chairs: [{name: 'Person Name', von: '2021-11-01', bis: null}]"
+        description="JSON array of faction leaders/chairs: [{name: 'Person Name', von: '2021-11-01', bis: null}]",
     )
     parlamentarische_geschaeftsfuehrer: Optional[str] = Field(
-        None,
-        description="JSON array of parliamentary managers/whips"
+        None, description="JSON array of parliamentary managers/whips"
     )
 
     koalition_opposition: str = Field(..., description="Status: 'Koalition' or 'Opposition'")
-    koalitionspartner: Optional[str] = Field(None, description="Coalition partners if in government: ['SPD', 'GRÜNE', 'FDP']")
+    koalitionspartner: Optional[str] = Field(
+        None, description="Coalition partners if in government: ['SPD', 'GRÜNE', 'FDP']"
+    )
 
     gruendungsdatum: Optional[str] = Field(None, description="Formation date in this Wahlperiode")
     mitglieder_anzahl: Optional[int] = Field(None, description="Total number of MdB members")
 
-    farbe: Optional[str] = Field(None, description="Traditional party color for visualization: '#E3000F' (SPD red), '#000000' (CDU black), etc.")
+    farbe: Optional[str] = Field(
+        None,
+        description="Traditional party color for visualization: '#E3000F' (SPD red), '#000000' (CDU black), etc.",
+    )
 
 
 # ===================================================================
 # SECTION 2: NEW GERMAN BUNDESTAG EDGE TYPE DEFINITIONS (15 Edge Types)
 # ===================================================================
 
+
 class PartOfVorgang(BaseModel):
     """Vorgangsposition or Aktivität is part of a Vorgang procedure"""
-    relationship_type: str = Field(default="PART_OF_VORGANG", description="Type of containment relationship")
+
+    relationship_type: str = Field(
+        default="PART_OF_VORGANG", description="Type of containment relationship"
+    )
     sequence_number: Optional[int] = Field(None, description="Order in procedure if applicable")
-    stage: Optional[str] = Field(None, description="Procedural stage: Einleitung, Beratung, Beschlussfassung, etc.")
+    stage: Optional[str] = Field(
+        None, description="Procedural stage: Einleitung, Beratung, Beschlussfassung, etc."
+    )
 
 
 class InitiatesVorgang(BaseModel):
     """Person or Fraktion initiates a legislative procedure"""
+
     date_initiated: Optional[str] = Field(None, description="When procedure was initiated")
     role: str = Field(..., description="Initiator role: Antragsteller, Einbringer, Urheber")
     co_initiators: Optional[str] = Field(None, description="JSON array of additional initiators")
@@ -364,94 +478,148 @@ class InitiatesVorgang(BaseModel):
 
 class RelatesToDrucksache(BaseModel):
     """Vorgang or Vorgangsposition relates to a specific Drucksache"""
-    relationship_type: str = Field(..., description="Type of relationship: hauptdrucksache, beratungsgrundlage, beschlussempfehlung")
+
+    relationship_type: str = Field(
+        ...,
+        description="Type of relationship: hauptdrucksache, beratungsgrundlage, beschlussempfehlung",
+    )
     relevance: Optional[str] = Field(None, description="Importance: primary, supporting, reference")
 
 
 class DebatedInPlenum(BaseModel):
     """Vorgang was debated in a plenary session"""
+
     debate_date: str = Field(..., description="Date of debate")
-    reading: Optional[str] = Field(None, description="Which reading: Erste Beratung, Zweite Beratung, Dritte Beratung")
+    reading: Optional[str] = Field(
+        None, description="Which reading: Erste Beratung, Zweite Beratung, Dritte Beratung"
+    )
     tagesordnungspunkt: Optional[str] = Field(None, description="Agenda item number (TOP)")
-    outcome: Optional[str] = Field(None, description="Result of debate: angenommen, abgelehnt, überwiesen, vertagt")
+    outcome: Optional[str] = Field(
+        None, description="Result of debate: angenommen, abgelehnt, überwiesen, vertagt"
+    )
 
 
 class SpeaksInPlenum(BaseModel):
     """Person delivers a speech in plenary session"""
+
     speech_date: str = Field(..., description="Date of speech")
     rede_nummer: Optional[str] = Field(None, description="Speech number in protocol")
     tagesordnungspunkt: Optional[str] = Field(None, description="Agenda item being addressed")
-    rede_art: Optional[str] = Field(None, description="Speech type: Hauptrede, Zwischenruf, Persönliche Erklärung, Kurzintervention")
-    dauer_minuten: Optional[int] = Field(None, description="Speech duration in minutes if available")
+    rede_art: Optional[str] = Field(
+        None,
+        description="Speech type: Hauptrede, Zwischenruf, Persönliche Erklärung, Kurzintervention",
+    )
+    dauer_minuten: Optional[int] = Field(
+        None, description="Speech duration in minutes if available"
+    )
 
 
 class InWahlperiode(BaseModel):
     """Entity exists within or is associated with an electoral period"""
+
     entity_type: str = Field(..., description="Type of entity linked to Wahlperiode")
     active_from: Optional[str] = Field(None, description="Start of activity in this period")
-    active_until: Optional[str] = Field(None, description="End of activity in this period (null if ongoing)")
+    active_until: Optional[str] = Field(
+        None, description="End of activity in this period (null if ongoing)"
+    )
 
 
 class MemberOfFraktion(BaseModel):
     """Person is a member of a parliamentary group"""
+
     joined_date: Optional[str] = Field(None, description="When person joined faction")
-    left_date: Optional[str] = Field(None, description="When person left faction (null if current member)")
-    role: Optional[str] = Field(None, description="Role in faction: Mitglied, Vorsitzende, Stellvertretende Vorsitzende, Parlamentarische Geschäftsführerin")
+    left_date: Optional[str] = Field(
+        None, description="When person left faction (null if current member)"
+    )
+    role: Optional[str] = Field(
+        None,
+        description="Role in faction: Mitglied, Vorsitzende, Stellvertretende Vorsitzende, Parlamentarische Geschäftsführerin",
+    )
 
 
 class LeadsFraktion(BaseModel):
     """Person leads a parliamentary group as chair/co-chair"""
-    leadership_role: str = Field(..., description="Vorsitzende, Stellvertretende Vorsitzende, Fraktionsvorsitzende")
+
+    leadership_role: str = Field(
+        ..., description="Vorsitzende, Stellvertretende Vorsitzende, Fraktionsvorsitzende"
+    )
     from_date: str = Field(..., description="Start of leadership")
     to_date: Optional[str] = Field(None, description="End of leadership (null if current)")
 
 
 class RepresentsWahlkreis(BaseModel):
     """Person represents an electoral constituency"""
+
     wahlkreis_nummer: str = Field(..., description="Constituency number")
     wahlkreis_name: str = Field(..., description="Constituency name")
     wahlperiode: int = Field(..., description="Electoral period of representation")
-    elected_directly: bool = Field(..., description="True if directly elected in constituency, False if via Landesliste")
-    vote_percentage: Optional[float] = Field(None, description="Percentage of votes received in constituency")
+    elected_directly: bool = Field(
+        ..., description="True if directly elected in constituency, False if via Landesliste"
+    )
+    vote_percentage: Optional[float] = Field(
+        None, description="Percentage of votes received in constituency"
+    )
 
 
 class BundesratInvolvement(BaseModel):
     """Vorgang involves Bundesrat (Federal Council) consultation or approval"""
-    involvement_type: str = Field(..., description="Type: Zustimmungsbedürftig (consent required), Einspruchsgesetz (objection possible), Stellungnahme (opinion)")
-    bundesrat_decision: Optional[str] = Field(None, description="Bundesrat decision: Zugestimmt, Einspruch eingelegt, Stellungnahme abgegeben")
+
+    involvement_type: str = Field(
+        ...,
+        description="Type: Zustimmungsbedürftig (consent required), Einspruchsgesetz (objection possible), Stellungnahme (opinion)",
+    )
+    bundesrat_decision: Optional[str] = Field(
+        None,
+        description="Bundesrat decision: Zugestimmt, Einspruch eingelegt, Stellungnahme abgegeben",
+    )
     date: Optional[str] = Field(None, description="Date of Bundesrat action")
 
 
 class BecomesBundesgesetz(BaseModel):
     """Vorgang becomes enacted federal law"""
+
     date_enacted: str = Field(..., description="Date of enactment")
-    bundesgesetzblatt_reference: str = Field(..., description="Federal Law Gazette citation: BGBl. I S. 2097")
+    bundesgesetzblatt_reference: str = Field(
+        ..., description="Federal Law Gazette citation: BGBl. I S. 2097"
+    )
     date_effective: str = Field(..., description="Date law takes effect")
     verkuendung_date: Optional[str] = Field(None, description="Date of promulgation")
 
 
 class AuthorsDrucksache(BaseModel):
     """Person is an author of a Drucksache document"""
+
     author_role: str = Field(..., description="Role: Hauptautor, Mitautor, Berichterstatter")
-    author_position: Optional[int] = Field(None, description="Position in author list (1 = first author)")
+    author_position: Optional[int] = Field(
+        None, description="Position in author list (1 = first author)"
+    )
 
 
 class AmendsDrucksache(BaseModel):
     """One Drucksache amends another"""
-    amendment_type: str = Field(..., description="Type: Änderungsantrag, Ergänzungsantrag, Alternativantrag")
+
+    amendment_type: str = Field(
+        ..., description="Type: Änderungsantrag, Ergänzungsantrag, Alternativantrag"
+    )
     date_proposed: Optional[str] = Field(None, description="When amendment was proposed")
 
 
 class ReferencesVorgang(BaseModel):
     """Drucksache or Plenarprotokoll references a Vorgang"""
-    reference_type: str = Field(..., description="Type of reference: direkter_bezug, thematischer_bezug, verfahrensbezug")
+
+    reference_type: str = Field(
+        ..., description="Type of reference: direkter_bezug, thematischer_bezug, verfahrensbezug"
+    )
     context: Optional[str] = Field(None, description="Context of the reference")
 
 
 class ActivityInVorgang(BaseModel):
     """Aktivität occurs as part of a Vorgang procedure"""
+
     activity_sequence: Optional[int] = Field(None, description="Order of activity in procedure")
-    activity_impact: Optional[str] = Field(None, description="Impact on procedure: procedural, substantive, informational")
+    activity_impact: Optional[str] = Field(
+        None, description="Impact on procedure: procedural, substantive, informational"
+    )
 
 
 # ===================================================================
@@ -488,7 +656,6 @@ ENTITY_TYPE_REGISTRY_V4: dict[str, type[BaseModel]] = {
     # Tier 7: Technical/Legal
     "LegalFramework": LegalFramework,
     "TechnicalStandard": TechnicalStandard,
-
     # ===== V4 GERMAN BUNDESTAG ENTITIES (8) =====
     "Drucksache": Drucksache,
     "Plenarprotokoll": Plenarprotokoll,
@@ -548,7 +715,6 @@ EDGE_TYPE_REGISTRY_V4: dict[str, type[BaseModel]] = {
     # Stakeholder
     "ADVISES": Advises,
     "MONITORS": Monitors,
-
     # ===== V4 GERMAN BUNDESTAG EDGES (15) =====
     "PART_OF_VORGANG": PartOfVorgang,
     "INITIATES_VORGANG": InitiatesVorgang,
@@ -578,16 +744,12 @@ from src.graphrag.political_schema_v3 import EDGE_TYPE_MAP as EDGE_TYPE_MAP_V3
 # Create v4 edge type map by extending v3
 EDGE_TYPE_MAP_V4: dict[tuple[str, str], list[str]] = {
     **EDGE_TYPE_MAP_V3,  # Include all v3 mappings
-
     # ===== GERMAN BUNDESTAG EDGE MAPPINGS =====
-
     # Vorgangsposition relationships
     ("Vorgangsposition", "Vorgang"): ["PART_OF_VORGANG"],
-
     # Aktivität relationships
     ("Aktivitaet", "Vorgang"): ["PART_OF_VORGANG", "ACTIVITY_IN_VORGANG"],
     ("Aktivitaet", "Drucksache"): ["REFERENCES"],
-
     # BundestagPerson relationships
     ("BundestagPerson", "Vorgang"): ["INITIATES_VORGANG"],
     ("BundestagPerson", "Drucksache"): ["AUTHORS_DRUCKSACHE"],
@@ -595,11 +757,9 @@ EDGE_TYPE_MAP_V4: dict[tuple[str, str], list[str]] = {
     ("BundestagPerson", "BundestagFraktion"): ["MEMBER_OF_FRAKTION", "LEADS_FRAKTION"],
     ("BundestagPerson", "Wahlperiode"): ["IN_WAHLPERIODE"],
     ("BundestagPerson", "Jurisdiction"): ["REPRESENTS_WAHLKREIS"],
-
     # BundestagFraktion relationships
     ("BundestagFraktion", "Vorgang"): ["INITIATES_VORGANG"],
     ("BundestagFraktion", "Wahlperiode"): ["IN_WAHLPERIODE"],
-
     # Vorgang relationships
     ("Vorgang", "Drucksache"): ["RELATES_TO_DRUCKSACHE"],
     ("Vorgang", "Plenarprotokoll"): ["DEBATED_IN_PLENUM"],
@@ -607,16 +767,13 @@ EDGE_TYPE_MAP_V4: dict[tuple[str, str], list[str]] = {
     ("Vorgang", "LegislativeBody"): ["BUNDESRAT_INVOLVEMENT"],  # Link to Bundesrat
     ("Vorgang", "Policy"): ["BECOMES_BUNDESGESETZ", "BECOMES"],
     ("Vorgang", "LegislativeProposal"): ["BECOMES"],  # Can also become a proposal entity
-
     # Drucksache relationships
     ("Drucksache", "Drucksache"): ["AMENDS_DRUCKSACHE", "REFERENCES"],
     ("Drucksache", "Vorgang"): ["REFERENCES_VORGANG"],
     ("Drucksache", "Wahlperiode"): ["IN_WAHLPERIODE"],
-
     # Plenarprotokoll relationships
     ("Plenarprotokoll", "Vorgang"): ["REFERENCES_VORGANG"],
     ("Plenarprotokoll", "Wahlperiode"): ["IN_WAHLPERIODE"],
-
     # Cross-references with v3 entities
     ("BundestagPerson", "Committee"): ["AFFILIATED_WITH"],  # Committee membership
     ("BundestagPerson", "Policy"): ["HAS_POSITION", "LOBBIES_FOR", "LOBBIES_AGAINST"],
@@ -639,20 +796,28 @@ SCHEMA_INFO_V4 = {
     "edge_count": len(EDGE_TYPE_REGISTRY_V4),  # 52 total (37 v3 + 15 v4)
     "pattern_count": len(EDGE_TYPE_MAP_V4),
     "description": "Extended schema with German Bundestag parliamentary entities while maintaining full EU and multi-jurisdiction support",
-    "jurisdictions_supported": ["EU", "Germany", "France", "Bundesländer", "Bundestag", "Bundesrat"],
+    "jurisdictions_supported": [
+        "EU",
+        "Germany",
+        "France",
+        "Bundesländer",
+        "Bundestag",
+        "Bundesrat",
+    ],
     "data_sources": [
         "EU Official Journal",
         "EU Commission DGs",
         "German Bundestag DIP API",
         "German Bundesrat",
-        "National legislative bodies"
-    ]
+        "National legislative bodies",
+    ],
 }
 
 
 # ===================================================================
 # SECTION 6: HELPER FUNCTIONS (v4.0)
 # ===================================================================
+
 
 def get_entity_types_v4() -> list[str]:
     """Get list of all entity type names in v4 schema."""
@@ -685,50 +850,64 @@ def get_entities_by_tier_v4() -> dict[str, list[str]]:
     return {
         # V3 Tiers
         "Legislative Process": [
-            "LegislativeProposal", "LegislativeBody", "Committee", "Document", "Vote"
+            "LegislativeProposal",
+            "LegislativeBody",
+            "Committee",
+            "Document",
+            "Vote",
         ],
-        "Final Outcomes": [
-            "Policy", "Regulation"
-        ],
-        "Actors": [
-            "Politician", "Person", "PoliticalParty", "GovernmentAgency", "LobbyGroup"
-        ],
-        "Business": [
-            "Company", "Industry", "ComplianceObligation"
-        ],
-        "Process Tracking": [
-            "ConsultationProcess", "EnforcementAction"
-        ],
-        "Geographic": [
-            "Jurisdiction"
-        ],
-        "Technical/Legal": [
-            "LegalFramework", "TechnicalStandard"
-        ],
+        "Final Outcomes": ["Policy", "Regulation"],
+        "Actors": ["Politician", "Person", "PoliticalParty", "GovernmentAgency", "LobbyGroup"],
+        "Business": ["Company", "Industry", "ComplianceObligation"],
+        "Process Tracking": ["ConsultationProcess", "EnforcementAction"],
+        "Geographic": ["Jurisdiction"],
+        "Technical/Legal": ["LegalFramework", "TechnicalStandard"],
         # V4 German Bundestag Tier
         "German Bundestag": [
-            "Vorgang", "Drucksache", "Plenarprotokoll", "Vorgangsposition",
-            "Aktivitaet", "Wahlperiode", "BundestagPerson", "BundestagFraktion"
-        ]
+            "Vorgang",
+            "Drucksache",
+            "Plenarprotokoll",
+            "Vorgangsposition",
+            "Aktivitaet",
+            "Wahlperiode",
+            "BundestagPerson",
+            "BundestagFraktion",
+        ],
     }
 
 
 def get_german_bundestag_entities() -> list[str]:
     """Get list of German Bundestag-specific entity types."""
     return [
-        "Drucksache", "Plenarprotokoll", "Vorgang", "Vorgangsposition",
-        "Aktivitaet", "Wahlperiode", "BundestagPerson", "BundestagFraktion"
+        "Drucksache",
+        "Plenarprotokoll",
+        "Vorgang",
+        "Vorgangsposition",
+        "Aktivitaet",
+        "Wahlperiode",
+        "BundestagPerson",
+        "BundestagFraktion",
     ]
 
 
 def get_german_bundestag_edges() -> list[str]:
     """Get list of German Bundestag-specific edge types."""
     return [
-        "PART_OF_VORGANG", "INITIATES_VORGANG", "RELATES_TO_DRUCKSACHE",
-        "DEBATED_IN_PLENUM", "SPEAKS_IN_PLENUM", "IN_WAHLPERIODE",
-        "MEMBER_OF_FRAKTION", "LEADS_FRAKTION", "REPRESENTS_WAHLKREIS",
-        "BUNDESRAT_INVOLVEMENT", "BECOMES_BUNDESGESETZ", "AUTHORS_DRUCKSACHE",
-        "AMENDS_DRUCKSACHE", "REFERENCES_VORGANG", "ACTIVITY_IN_VORGANG"
+        "PART_OF_VORGANG",
+        "INITIATES_VORGANG",
+        "RELATES_TO_DRUCKSACHE",
+        "DEBATED_IN_PLENUM",
+        "SPEAKS_IN_PLENUM",
+        "IN_WAHLPERIODE",
+        "MEMBER_OF_FRAKTION",
+        "LEADS_FRAKTION",
+        "REPRESENTS_WAHLKREIS",
+        "BUNDESRAT_INVOLVEMENT",
+        "BECOMES_BUNDESGESETZ",
+        "AUTHORS_DRUCKSACHE",
+        "AMENDS_DRUCKSACHE",
+        "REFERENCES_VORGANG",
+        "ACTIVITY_IN_VORGANG",
     ]
 
 

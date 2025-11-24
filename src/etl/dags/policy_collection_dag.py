@@ -11,7 +11,7 @@ Purpose: Flow 1 - Policy Landscape Analysis
 import logging
 import os
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 from airflow import DAG
 from airflow.operators.python import BranchPythonOperator, PythonOperator
@@ -51,7 +51,7 @@ dag = DAG(
 )
 
 
-def load_policy_config() -> Dict[str, Any]:
+def load_policy_config() -> dict[str, Any]:
     """Load and validate policy collection configuration."""
     try:
         # Load base ETL config
@@ -86,7 +86,7 @@ def load_policy_config() -> Dict[str, Any]:
         raise
 
 
-def check_policy_initialization(**context) -> Dict[str, Any]:
+def check_policy_initialization(**context) -> dict[str, Any]:
     """Check if policy collection has been initialized."""
     try:
         config = load_policy_config()
@@ -117,7 +117,7 @@ def check_policy_initialization(**context) -> Dict[str, Any]:
         raise
 
 
-def collect_policy_documents(**context) -> Dict[str, Any]:
+def collect_policy_documents(**context) -> dict[str, Any]:
     """Main policy collection task."""
     try:
         # Get initialization info from upstream task
@@ -181,7 +181,7 @@ def collect_policy_documents(**context) -> Dict[str, Any]:
         raise
 
 
-def mark_policy_initialization_complete(**context) -> Dict[str, Any]:
+def mark_policy_initialization_complete(**context) -> dict[str, Any]:
     """Mark policy collection as initialized if this was the first run."""
     try:
         # Get collection result
@@ -243,7 +243,7 @@ def check_auto_trigger(**context):
         return "generate_policy_collection_summary"
 
 
-def generate_policy_collection_summary(**context) -> Dict[str, Any]:
+def generate_policy_collection_summary(**context) -> dict[str, Any]:
     """Generate summary of policy collection run."""
     try:
         # Get all task results
@@ -317,7 +317,7 @@ def generate_policy_collection_summary(**context) -> Dict[str, Any]:
         raise
 
 
-def _get_recommended_actions(collection_result: Dict[str, Any]) -> List:
+def _get_recommended_actions(collection_result: dict[str, Any]) -> list:
     """Generate recommended actions based on collection results."""
     actions = []
 

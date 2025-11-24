@@ -39,20 +39,20 @@ async def ingest_bundestag_data(request: fastapi.Request, inputs: dict):
         error.add(job_name="Job name must be at least 3 characters long")
 
     # Validate at least one data type is selected
-    data_types_selected = any([
-        inputs.get("collect_vorgang", False),
-        inputs.get("collect_drucksache", False),
-        inputs.get("collect_vorgangsposition", False),
-        inputs.get("collect_aktivitaet", False),
-        inputs.get("collect_plenarprotokoll", False),
-        inputs.get("collect_person", False),
-        inputs.get("collect_reference_data", False),
-    ])
+    data_types_selected = any(
+        [
+            inputs.get("collect_vorgang", False),
+            inputs.get("collect_drucksache", False),
+            inputs.get("collect_vorgangsposition", False),
+            inputs.get("collect_aktivitaet", False),
+            inputs.get("collect_plenarprotokoll", False),
+            inputs.get("collect_person", False),
+            inputs.get("collect_reference_data", False),
+        ]
+    )
 
     if not data_types_selected:
-        error.add(
-            collect_vorgang="Please select at least one data type to collect"
-        )
+        error.add(collect_vorgang="Please select at least one data type to collect")
 
     # Validate max_items_per_type
     try:

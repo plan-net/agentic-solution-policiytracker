@@ -6,20 +6,21 @@ Run with: python src/flows/bundestag_wahlperiode/load_wahlperioden.py
 Or via just: just load-wahlperioden
 """
 
-import sys
 import os
+import sys
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Any, Optional
 
 # Add project root to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 from neo4j import GraphDatabase
-from src.flows.bundestag_wahlperiode.wahlperiode_data import WAHLPERIODE_REFERENCE_DATA
+
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_wahlperiode.wahlperiode_data import WAHLPERIODE_REFERENCE_DATA
 
 
-def map_wahlperiode_to_entity(wp_data: Dict[str, Any]) -> Dict[str, Any]:
+def map_wahlperiode_to_entity(wp_data: dict[str, Any]) -> dict[str, Any]:
     """Map wahlperiode reference data to entity structure."""
     nummer = wp_data["wahlperiode_nummer"]
     election_date = wp_data.get("election_date")
@@ -72,7 +73,7 @@ def compute_status(start_date: Optional[str], end_date: Optional[str]) -> str:
         return "current"
 
 
-def create_served_in_relationships(driver, database: str) -> Dict[str, int]:
+def create_served_in_relationships(driver, database: str) -> dict[str, int]:
     """Create SERVED_IN relationships between BundestagPerson and Wahlperiode nodes."""
     query = """
     MATCH (p:BundestagPerson)
@@ -139,9 +140,7 @@ def main():
         # Upsert to Neo4j
         print("💾 Upserting to Neo4j...")
         results = upsert_manager.upsert_entities_batch(
-            entity_type="Wahlperiode",
-            entities=entities,
-            batch_size=25
+            entity_type="Wahlperiode", entities=entities, batch_size=25
         )
 
         print(f"✅ Upserted {results['successful']} wahlperioden ({results['failed']} failed)\n")
@@ -156,16 +155,17 @@ def main():
         print("=" * 60)
         print("✨ SUCCESS! Wahlperiode data loaded")
         print("=" * 60)
-        print(f"\n📈 Summary:")
+        print("\n📈 Summary:")
         print(f"   - Wahlperiode nodes: {results['successful']}")
         print(f"   - SERVED_IN relationships: {relationship_results['created']}")
-        print(f"   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
-        print(f"\n🔍 View in Neo4j Browser: http://localhost:7474")
-        print(f"   Query: MATCH (w:Wahlperiode) RETURN w ORDER BY w.wahlperiode_nummer\n")
+        print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
+        print("\n🔍 View in Neo4j Browser: http://localhost:7474")
+        print("   Query: MATCH (w:Wahlperiode) RETURN w ORDER BY w.wahlperiode_nummer\n")
 
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

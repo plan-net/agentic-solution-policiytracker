@@ -6,8 +6,7 @@ Implements robust error handling with exponential backoff and rate limiting.
 """
 
 import asyncio
-from typing import Any, Dict, Optional
-from datetime import datetime
+from typing import Any, Optional
 
 import aiohttp
 import structlog
@@ -39,7 +38,7 @@ class BundestagAPIClient:
         base_url: Optional[str] = None,
         max_retries: int = 3,
         retry_delay: float = 1.0,
-        timeout: int = 30
+        timeout: int = 30,
     ):
         """
         Initialize the Bundestag API client.
@@ -59,9 +58,7 @@ class BundestagAPIClient:
         self.session: Optional[aiohttp.ClientSession] = None
 
         logger.info(
-            "Initialized BundestagAPIClient",
-            base_url=self.base_url,
-            max_retries=self.max_retries
+            "Initialized BundestagAPIClient", base_url=self.base_url, max_retries=self.max_retries
         )
 
     async def __aenter__(self):
@@ -79,10 +76,7 @@ class BundestagAPIClient:
             # Create connector with SSL verification disabled for development
             # Note: In production, ensure proper SSL certificates are installed
             connector = aiohttp.TCPConnector(ssl=False)
-            self.session = aiohttp.ClientSession(
-                timeout=self.timeout,
-                connector=connector
-            )
+            self.session = aiohttp.ClientSession(timeout=self.timeout, connector=connector)
             logger.debug("Created new aiohttp session with SSL verification disabled")
 
     async def close(self):
@@ -91,11 +85,7 @@ class BundestagAPIClient:
             await self.session.close()
             logger.debug("Closed aiohttp session")
 
-    async def get(
-        self,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def get(self, endpoint: str, params: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """
         Make a GET request to the API with retry logic.
 
@@ -123,40 +113,36 @@ class BundestagAPIClient:
         for attempt in range(self.max_retries):
             try:
                 logger.debug(
-                    "Making GET request",
-                    url=url,
-                    attempt=attempt + 1,
-                    max_retries=self.max_retries
+                    "Making GET request", url=url, attempt=attempt + 1, max_retries=self.max_retries
                 )
 
                 async with self.session.get(url, params=params) as response:
                     # Handle rate limiting
                     if response.status == 429:
-                        retry_after = int(response.headers.get("Retry-After", self.retry_delay * (2 ** attempt)))
+                        retry_after = int(
+                            response.headers.get("Retry-After", self.retry_delay * (2**attempt))
+                        )
                         logger.warning(
-                            "Rate limited by API",
-                            retry_after=retry_after,
-                            attempt=attempt + 1
+                            "Rate limited by API", retry_after=retry_after, attempt=attempt + 1
                         )
 
                         if attempt < self.max_retries - 1:
                             await asyncio.sleep(retry_after)
                             continue
                         else:
-                            raise aiohttp.ClientError(f"Rate limit exceeded after {self.max_retries} attempts")
+                            raise aiohttp.ClientError(
+                                f"Rate limit exceeded after {self.max_retries} attempts"
+                            )
 
                     # Handle errors
                     if response.status >= 400:
                         error_text = await response.text()
                         logger.error(
-                            "API request failed",
-                            status=response.status,
-                            error=error_text,
-                            url=url
+                            "API request failed", status=response.status, error=error_text, url=url
                         )
 
                         if attempt < self.max_retries - 1:
-                            delay = self.retry_delay * (2 ** attempt)
+                            delay = self.retry_delay * (2**attempt)
                             logger.info(f"Retrying after {delay}s delay", attempt=attempt + 1)
                             await asyncio.sleep(delay)
                             continue
@@ -167,36 +153,24 @@ class BundestagAPIClient:
 
                     # Success - parse and return JSON
                     data = await response.json()
-                    logger.info(
-                        "API request successful",
-                        endpoint=endpoint,
-                        status=response.status
-                    )
+                    logger.info("API request successful", endpoint=endpoint, status=response.status)
                     return data
 
             except asyncio.TimeoutError:
-                logger.warning(
-                    "Request timeout",
-                    url=url,
-                    attempt=attempt + 1
-                )
+                logger.warning("Request timeout", url=url, attempt=attempt + 1)
 
                 if attempt < self.max_retries - 1:
-                    delay = self.retry_delay * (2 ** attempt)
+                    delay = self.retry_delay * (2**attempt)
                     await asyncio.sleep(delay)
                     continue
                 else:
                     raise aiohttp.ClientError(f"Request timeout after {self.max_retries} attempts")
 
             except aiohttp.ClientError as e:
-                logger.error(
-                    "Client error during request",
-                    error=str(e),
-                    attempt=attempt + 1
-                )
+                logger.error("Client error during request", error=str(e), attempt=attempt + 1)
 
                 if attempt < self.max_retries - 1:
-                    delay = self.retry_delay * (2 ** attempt)
+                    delay = self.retry_delay * (2**attempt)
                     await asyncio.sleep(delay)
                     continue
                 else:
@@ -205,11 +179,7 @@ class BundestagAPIClient:
         # Should never reach here due to raises in loop
         raise aiohttp.ClientError("Unexpected error in retry loop")
 
-    async def get_by_id(
-        self,
-        endpoint: str,
-        resource_id: str
-    ) -> Dict[str, Any]:
+    async def get_by_id(self, endpoint: str, resource_id: str) -> dict[str, Any]:
         """
         Get a specific resource by ID.
 
@@ -225,11 +195,7 @@ class BundestagAPIClient:
         """
         full_endpoint = f"{endpoint}/{resource_id}"
 
-        logger.info(
-            "Fetching resource by ID",
-            endpoint=endpoint,
-            resource_id=resource_id
-        )
+        logger.info("Fetching resource by ID", endpoint=endpoint, resource_id=resource_id)
 
         return await self.get(full_endpoint)
 

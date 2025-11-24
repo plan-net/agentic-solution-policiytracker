@@ -10,7 +10,6 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 import structlog
 from kodosumi.core import Tracer
@@ -36,7 +35,7 @@ except ImportError:
     logger.warning("Ray not available - bulk processing will be limited")
 
 
-def distribute_documents_to_actors(documents: List, num_actors: int) -> List[List]:
+def distribute_documents_to_actors(documents: list, num_actors: int) -> list[list]:
     """
     Distribute documents evenly across actors, ensuring all documents are processed.
 
@@ -70,7 +69,7 @@ def distribute_documents_to_actors(documents: List, num_actors: int) -> List[Lis
 
 def get_unprocessed_documents(
     base_path: str = "data/input", tracking_file: str = "data/processed_documents.json"
-) -> List[str]:
+) -> list[str]:
     """
     Get list of documents that haven't been processed.
 
@@ -82,7 +81,7 @@ def get_unprocessed_documents(
     # Load processed documents
     if tracking_path.exists():
         try:
-            with open(tracking_path, "r", encoding="utf-8") as f:
+            with open(tracking_path, encoding="utf-8") as f:
                 processed_docs = json.load(f)
             logger.info(f"Loaded {len(processed_docs)} processed documents from tracker")
         except Exception as e:
@@ -131,6 +130,7 @@ async def execute_bulk_auto_processing(inputs: dict, tracer: Tracer):
     Uses parallel Ray actors for fast processing and the same report format as Flow 1.
     """
     from kodosumi import core
+
     from src.flows.data_ingestion.document_tracker import DocumentTracker
     from src.flows.data_ingestion.report_generator import IngestionReportGenerator
 
@@ -190,7 +190,9 @@ All documents are up to date. The knowledge graph is current.
             )
             unprocessed_docs = unprocessed_docs[:max_documents]
         else:
-            await tracer.markdown(f"✅ Found {total_unprocessed} unprocessed documents to process.\n\n")
+            await tracer.markdown(
+                f"✅ Found {total_unprocessed} unprocessed documents to process.\n\n"
+            )
 
         # Display documents to be processed
         await tracer.markdown(
@@ -208,11 +210,6 @@ Found **{len(unprocessed_docs)}** documents to process:
         await tracer.markdown(f"Processing {len(unprocessed_docs)} documents...\n\n")
 
         # Initialize components (same as Flow 1)
-        from graphiti_core import Graphiti
-        from src.flows.shared.apisix_llm_client import (
-            AgentContext,
-            create_graphiti_apisix_config,
-        )
         from src.flows.data_ingestion.document_processor import DocumentProcessorActor
 
         tracker = DocumentTracker()
@@ -318,7 +315,9 @@ Found **{len(unprocessed_docs)}** documents to process:
             "processed": successful,
             "skipped": 0,
             "failed": failed,
-            "success_rate": (successful / len(processing_results) * 100) if len(processing_results) > 0 else 0,
+            "success_rate": (successful / len(processing_results) * 100)
+            if len(processing_results) > 0
+            else 0,
             "total_entities": total_entities,
             "total_relationships": total_relationships,
             "avg_entities_per_doc": (total_entities / successful) if successful > 0 else 0,

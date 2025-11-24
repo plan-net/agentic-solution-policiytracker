@@ -1,7 +1,8 @@
 """LangWatch observability configuration."""
 
 import logging
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,9 @@ class LangWatchConfig:
 
             # Setup LangWatch with LangChain instrumentation
             langwatch.setup(
-                api_key=self.api_key, endpoint_url=self.endpoint, instrumentors=[LangChainInstrumentor()]
+                api_key=self.api_key,
+                endpoint_url=self.endpoint,
+                instrumentors=[LangChainInstrumentor()],
             )
 
             self._initialized = True

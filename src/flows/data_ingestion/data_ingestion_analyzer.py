@@ -12,6 +12,7 @@ import structlog
 
 # Configure logging for Ray environment
 from src.flows.data_ingestion.logging_config import configure_logging
+
 configure_logging()
 
 from graphiti_core import Graphiti
@@ -103,9 +104,7 @@ Found **{len(available_docs)}** documents to process:
                 llm_client, note = create_graphiti_apisix_config(agent_context)
 
                 # Initialize Graphiti with APISIX routing
-                client = Graphiti(
-                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
-                )
+                client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client)
                 await client.build_indices_and_constraints()
 
                 logger.info("Graphiti client initialized with APISIX routing for clearing")

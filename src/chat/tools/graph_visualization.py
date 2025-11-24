@@ -54,9 +54,7 @@ class GraphVisualizationTool(BaseTool):
     class Config:
         arbitrary_types_allowed = True
 
-    def _build_iframe_url(
-        self, session_id: Optional[str], view_type: str, is_3d: bool
-    ) -> str:
+    def _build_iframe_url(self, session_id: Optional[str], view_type: str, is_3d: bool) -> str:
         """Build the iframe URL with query parameters.
 
         Args:
@@ -88,35 +86,44 @@ class GraphVisualizationTool(BaseTool):
             iframe_url: URL to embed in iframe
 
         Returns:
-            HTML string with iframe and instructions
+            HTML string with link and instructions (iframe stripped by Open WebUI)
         """
         html = f"""
 ## 📊 Interactive Knowledge Graph Visualization
 
-<div style="width: 100%; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden; margin: 16px 0;">
-    <iframe
-        src="{iframe_url}"
-        width="100%"
-        height="600px"
-        style="border: none; display: block;"
-        title="Knowledge Graph Visualization"
-        sandbox="allow-scripts allow-same-origin allow-forms"
-    ></iframe>
-</div>
+**🔗 [Click here to open the interactive 3D knowledge graph →]({iframe_url})**
 
-### 🎮 How to Use:
-- **Click nodes** to view entity details
-- **Click relationships** to see connection types
-- **Drag nodes** to reposition (they stay pinned!)
+The visualization will open in a new tab where you can explore the knowledge graph.
+
+### 🎮 Interactive Features:
+- **Click nodes** to view entity details and properties
+- **Click edges** to see relationship types and metadata
+- **Drag nodes** to reposition them (they stay pinned!)
 - **Mouse wheel** to zoom in/out
-- **Right-click** in 3D mode to rotate view
-- **Search bar** to filter entities
-- **Reset button** to unpin all nodes
+- **Right-click + drag** (3D mode) to rotate the view
+- **Search bar** to filter entities by name or type
+- **Reset button** to unpin all nodes and reset view
+- **2D/3D toggle** to switch viewing modes
 
-### 💡 Tips:
-- Yellow text on edges shows relationship types (e.g., "IMPOSES", "FINES")
-- Colored nodes represent different entity types
-- Use 2D/3D toggle for different perspectives
+### 💡 Visualization Guide:
+- **Yellow text on edges** shows relationship types (e.g., "IMPOSES", "FINES", "REGULATES")
+- **Colored nodes** represent different entity types:
+  - 🔵 Blue: Policies and Regulations
+  - 🟢 Green: Organizations and Companies
+  - 🟠 Orange: Politicians and People
+  - 🔴 Red: Events and Actions
+  - 🟣 Purple: Other entity types
+- **Node size** indicates importance/centrality
+- **Edge thickness** shows relationship strength
+
+### 📊 What You'll See:
+This shows the knowledge graph context for your current conversation, including:
+- All entities mentioned or discovered during our chat
+- Relationships between these entities
+- Temporal connections and hierarchies
+- Cross-references and related concepts
+
+_Note: If you see 0 nodes/edges, we haven't extracted entities yet. Try asking about specific policies, companies, or regulations._
 """
         return html
 

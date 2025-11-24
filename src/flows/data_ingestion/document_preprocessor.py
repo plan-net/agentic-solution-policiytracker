@@ -9,14 +9,13 @@ This module handles:
 """
 
 import re
-from typing import Tuple
 
 import structlog
 
 logger = structlog.get_logger()
 
 
-def extract_frontmatter(content: str) -> Tuple[str, str]:
+def extract_frontmatter(content: str) -> tuple[str, str]:
     """
     Extract YAML frontmatter from document.
 
@@ -29,7 +28,7 @@ def extract_frontmatter(content: str) -> Tuple[str, str]:
         Tuple of (frontmatter, body)
     """
     # Match content between --- markers at start of document
-    frontmatter_pattern = r'^---\n(.*?)\n---\n(.*)$'
+    frontmatter_pattern = r"^---\n(.*?)\n---\n(.*)$"
     match = re.match(frontmatter_pattern, content, re.DOTALL)
 
     if match:
@@ -54,16 +53,16 @@ def remove_links(text: str) -> str:
         Text with all links removed
     """
     # Remove image links: ![alt](url)
-    text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
+    text = re.sub(r"!\[.*?\]\(.*?\)", "", text)
 
     # Remove markdown links entirely (both text and url): [text](url)
-    text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', '', text)
+    text = re.sub(r"\[([^\]]+)\]\([^\)]+\)", "", text)
 
     # Remove standalone URLs (http/https)
-    text = re.sub(r'https?://\S+', '', text)
+    text = re.sub(r"https?://\S+", "", text)
 
     # Remove www. URLs
-    text = re.sub(r'www\.\S+', '', text)
+    text = re.sub(r"www\.\S+", "", text)
 
     return text
 
@@ -80,7 +79,7 @@ def remove_duplicate_lines(text: str) -> str:
     Returns:
         Text with consecutive duplicates removed
     """
-    lines = text.split('\n')
+    lines = text.split("\n")
     deduplicated = []
     prev_line = None
 
@@ -91,7 +90,7 @@ def remove_duplicate_lines(text: str) -> str:
             deduplicated.append(line)
             prev_line = stripped
 
-    return '\n'.join(deduplicated)
+    return "\n".join(deduplicated)
 
 
 def clean_whitespace(text: str) -> str:
@@ -109,12 +108,12 @@ def clean_whitespace(text: str) -> str:
         Text with cleaned whitespace
     """
     # Replace multiple blank lines with double newline
-    text = re.sub(r'\n\s*\n\s*\n+', '\n\n', text)
+    text = re.sub(r"\n\s*\n\s*\n+", "\n\n", text)
 
     # Remove trailing whitespace from each line
-    lines = [line.rstrip() for line in text.split('\n')]
+    lines = [line.rstrip() for line in text.split("\n")]
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def preprocess_document(content: str, enable_link_removal: bool = True) -> str:

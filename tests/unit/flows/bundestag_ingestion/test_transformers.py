@@ -5,18 +5,19 @@ Tests BundestagEntityBuilder and BundestagEdgeBuilder with real transformations.
 """
 
 import pytest
-from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
+
 from src.flows.bundestag_ingestion.transformers.edge_builder import BundestagEdgeBuilder
+from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.graphrag.political_schema_v4 import (
-    Wahlperiode, BundestagFraktion, BundestagPerson,
-    Vorgang, Drucksache, Plenarprotokoll
+    BundestagFraktion,
+    BundestagPerson,
+    Wahlperiode,
 )
 from tests.fixtures.bundestag_sample_data import (
-    SAMPLE_WAHLPERIODE_DATA,
     SAMPLE_FRAKTION_DATA,
     SAMPLE_PERSON_RESPONSE,
     SAMPLE_VORGANG_RESPONSE,
-    SAMPLE_DRUCKSACHE_RESPONSE,
+    SAMPLE_WAHLPERIODE_DATA,
 )
 
 
@@ -54,9 +55,9 @@ class TestBundestagEntityBuilder:
 
         entity = await builder.create_person_entity(
             person_name=f"{person_data['vorname']} {person_data['nachname']}",
-            person_id=person_data['id'],
-            fraktion=person_data.get('fraktion'),
-            partei=person_data.get('partei')
+            person_id=person_data["id"],
+            fraktion=person_data.get("fraktion"),
+            partei=person_data.get("partei"),
         )
 
         assert isinstance(entity, BundestagPerson)
@@ -93,7 +94,7 @@ class TestBundestagEdgeBuilder:
             vorgang_name=vorgang_data["titel"],
             vorgangstyp=vorgang_data["vorgangstyp"],
             wahlperiode=vorgang_data["wahlperiode"],
-            beratungsstand=vorgang_data["beratungsstand"]
+            beratungsstand=vorgang_data["beratungsstand"],
         )
 
         # Test edge building

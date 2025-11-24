@@ -1,6 +1,6 @@
 """SyncPlanner - Convert Plenarprotokoll diffs into CRUD operations and batch them."""
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from .diff_analyzer import PlenarprotokollDiff
 
@@ -12,9 +12,9 @@ class SyncPlan:
 
     def __init__(
         self,
-        operations: List[Dict[str, Any]],
-        batches: List[List[Dict[str, Any]]],
-        summary: Dict[str, Any],
+        operations: list[dict[str, Any]],
+        batches: list[list[dict[str, Any]]],
+        summary: dict[str, Any],
     ):
         self.operations = operations
         self.batches = batches
@@ -40,7 +40,7 @@ class PlenarprotokollSyncPlanner:
             f"PlenarprotokollSyncPlanner initialized (batch_size={batch_size}, max_concurrent={max_concurrent})"
         )
 
-    def create_sync_plan(self, diffs: List[PlenarprotokollDiff]) -> SyncPlan:
+    def create_sync_plan(self, diffs: list[PlenarprotokollDiff]) -> SyncPlan:
         """Create a complete sync plan from differences.
 
         Args:
@@ -68,7 +68,7 @@ class PlenarprotokollSyncPlanner:
 
         return SyncPlan(operations=operations, batches=batches, summary=summary)
 
-    def _diff_to_operations(self, diff: PlenarprotokollDiff) -> List[Dict[str, Any]]:
+    def _diff_to_operations(self, diff: PlenarprotokollDiff) -> list[dict[str, Any]]:
         """Convert a PlenarprotokollDiff into CRUD operations.
 
         Args:
@@ -100,9 +100,7 @@ class PlenarprotokollSyncPlanner:
         elif diff.diff_type == "outdated":
             # Plenarprotokoll exists but has outdated fields - update it
             # Only update changed fields
-            update_properties = {
-                field: diff.dip_data.get(field) for field in diff.changed_fields
-            }
+            update_properties = {field: diff.dip_data.get(field) for field in diff.changed_fields}
             operations.append(
                 {
                     "operation": "update_node",
@@ -117,9 +115,7 @@ class PlenarprotokollSyncPlanner:
 
         return operations
 
-    def _batch_operations(
-        self, operations: List[Dict[str, Any]]
-    ) -> List[List[Dict[str, Any]]]:
+    def _batch_operations(self, operations: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
         """Batch operations for parallel execution.
 
         Args:
@@ -135,9 +131,7 @@ class PlenarprotokollSyncPlanner:
         limited_operations = operations[: self.max_concurrent]
 
         if len(operations) > self.max_concurrent:
-            logger.warning(
-                f"Limiting operations from {len(operations)} to {self.max_concurrent}"
-            )
+            logger.warning(f"Limiting operations from {len(operations)} to {self.max_concurrent}")
 
         # Create batches
         batches = []
@@ -149,10 +143,10 @@ class PlenarprotokollSyncPlanner:
 
     def _create_summary(
         self,
-        diffs: List[PlenarprotokollDiff],
-        operations: List[Dict[str, Any]],
-        batches: List[List[Dict[str, Any]]],
-    ) -> Dict[str, Any]:
+        diffs: list[PlenarprotokollDiff],
+        operations: list[dict[str, Any]],
+        batches: list[list[dict[str, Any]]],
+    ) -> dict[str, Any]:
         """Create summary of the sync plan.
 
         Args:
@@ -179,9 +173,7 @@ class PlenarprotokollSyncPlanner:
             ),
         }
 
-    def _estimate_execution_time(
-        self, num_operations: int, num_batches: int
-    ) -> float:
+    def _estimate_execution_time(self, num_operations: int, num_batches: int) -> float:
         """Estimate execution time based on operation count.
 
         Args:

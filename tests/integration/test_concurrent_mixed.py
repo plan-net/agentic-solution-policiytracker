@@ -5,6 +5,7 @@ This simulates the real scenario where some documents succeed and some fail.
 """
 import concurrent.futures
 from pathlib import Path
+
 from src.flows.data_ingestion.document_tracker import DocumentTracker
 
 
@@ -45,12 +46,14 @@ def test_concurrent_mixed():
     failed_docs = {2, 7}  # Documents 2 and 7 will fail
 
     print(f"🚀 Starting {num_workers} concurrent workers...")
-    print(f"   Expected: 8 success, 2 failures\n")
+    print("   Expected: 8 success, 2 failures\n")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         # Submit all tasks
         futures = [
-            executor.submit(process_document, i, should_fail=(i in failed_docs), tracker_file=str(tracking_file))
+            executor.submit(
+                process_document, i, should_fail=(i in failed_docs), tracker_file=str(tracking_file)
+            )
             for i in range(num_workers)
         ]
 
@@ -67,12 +70,14 @@ def test_concurrent_mixed():
     print(f"Expected: {num_workers}")
 
     stats = tracker.get_stats()
-    print(f"\n📈 Stats:")
+    print("\n📈 Stats:")
     for key, value in stats.items():
         print(f"   {key}: {value}")
 
     # Get successful and failed documents
-    successful_docs = [doc for path, doc in tracker.processed_docs.items() if doc.get('status') == 'completed']
+    successful_docs = [
+        doc for path, doc in tracker.processed_docs.items() if doc.get("status") == "completed"
+    ]
     failed_docs_list = tracker.get_failed_documents()
 
     print(f"\n✅ Successful Documents: {len(successful_docs)}")
@@ -83,7 +88,7 @@ def test_concurrent_mixed():
     for failed in failed_docs_list:
         print(f"   • {Path(failed['path']).name}: {failed['error']}")
 
-    print(f"\n🔍 Data Integrity Check:")
+    print("\n🔍 Data Integrity Check:")
     if len(tracker.processed_docs) == num_workers:
         print("   ✅ All documents tracked!")
     else:
@@ -100,8 +105,8 @@ def test_concurrent_mixed():
         print(f"   ❌ Expected 2 failed, got {len(failed_docs_list)}")
 
     # Verify specific failed documents
-    failed_paths = [Path(f['path']).name for f in failed_docs_list]
-    if 'doc_2.md' in failed_paths and 'doc_7.md' in failed_paths:
+    failed_paths = [Path(f["path"]).name for f in failed_docs_list]
+    if "doc_2.md" in failed_paths and "doc_7.md" in failed_paths:
         print("   ✅ Correct documents marked as failed!")
     else:
         print(f"   ❌ Wrong documents failed: {failed_paths}")
@@ -110,7 +115,7 @@ def test_concurrent_mixed():
     tracking_file.unlink()
 
     print("\n" + "=" * 60)
-    if stats['completed'] == 8 and stats['failed'] == 2:
+    if stats["completed"] == 8 and stats["failed"] == 2:
         print("✅ SUCCESS: Mixed concurrent tracking working correctly!")
     else:
         print("❌ FAILURE: Some documents were lost or incorrectly tracked")

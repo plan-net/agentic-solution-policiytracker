@@ -6,7 +6,7 @@ import logging
 import os
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -303,16 +303,12 @@ class ProductionConfig:
             required_vars = ["OPENAI_API_KEY"]
             for var in required_vars:
                 if not os.getenv(var):
-                    errors.append(
-                        f"Missing required environment variable: {var}"
-                    )
+                    errors.append(f"Missing required environment variable: {var}")
                     validation_results["valid"] = False
 
         # Check resource limits
         if self.resource_limits.max_memory_mb < 512:
-            warnings.append(
-                "Memory limit may be too low for optimal performance"
-            )
+            warnings.append("Memory limit may be too low for optimal performance")
 
         # Check quality thresholds
         if self.quality_thresholds.minimum_response_quality > 0.9:
@@ -320,9 +316,7 @@ class ProductionConfig:
 
         # Check integration settings
         if not self.integration_settings["graphiti"]["enabled"]:
-            warnings.append(
-                "Graphiti integration disabled - tool intelligence limited"
-            )
+            warnings.append("Graphiti integration disabled - tool intelligence limited")
 
         return validation_results
 
@@ -414,12 +408,7 @@ class PerformanceOptimizer:
 
         avg_execution_time = total_execution_time / total_requests
         error_rate = error_count / total_requests
-        avg_quality = (
-            sum(quality_scores)
-            / len(quality_scores)
-            if quality_scores
-            else 0.0
-        )
+        avg_quality = sum(quality_scores) / len(quality_scores) if quality_scores else 0.0
 
         summary: dict[str, Any] = {
             "total_requests": total_requests,

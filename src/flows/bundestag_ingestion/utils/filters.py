@@ -5,7 +5,7 @@ Constructs and validates filter parameters for API requests.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -32,16 +32,16 @@ class FilterBuilder:
 
     # Valid filter parameter names for the API
     VALID_FILTER_PARAMS = {
-        "wahlperiode",       # Legislative period (e.g., "20")
-        "datum",             # Specific date
-        "datum_von",         # Date from (start of range)
-        "datum_bis",         # Date to (end of range)
-        "sachgebiet",        # Subject area
-        "drucksachetyp",     # Document type
-        "dokumentart",       # Document category
-        "aktivitaetsart",    # Activity type
-        "vorgangstyp",       # Process type
-        "institution",       # Institution
+        "wahlperiode",  # Legislative period (e.g., "20")
+        "datum",  # Specific date
+        "datum_von",  # Date from (start of range)
+        "datum_bis",  # Date to (end of range)
+        "sachgebiet",  # Subject area
+        "drucksachetyp",  # Document type
+        "dokumentart",  # Document category
+        "aktivitaetsart",  # Activity type
+        "vorgangstyp",  # Process type
+        "institution",  # Institution
     }
 
     # API-specific parameter names
@@ -70,8 +70,8 @@ class FilterBuilder:
         sachgebiet: Optional[str] = None,
         format: str = "json",
         limit: Optional[int] = None,
-        **kwargs
-    ) -> Dict[str, Any]:
+        **kwargs,
+    ) -> dict[str, Any]:
         """
         Build filter parameters for API requests.
 
@@ -133,16 +133,12 @@ class FilterBuilder:
                 filters[api_param] = value
                 logger.debug("Added custom filter", param=key, value=value)
             else:
-                logger.warning(
-                    "Unknown filter parameter ignored",
-                    param=key,
-                    value=value
-                )
+                logger.warning("Unknown filter parameter ignored", param=key, value=value)
 
         logger.info(
             "Built filter parameters",
             filter_count=len(filters),
-            has_date_range=bool(datum_von and datum_bis)
+            has_date_range=bool(datum_von and datum_bis),
         )
 
         return filters
@@ -190,10 +186,10 @@ class FilterBuilder:
             "Validated date range",
             start_date=start_date,
             end_date=end_date,
-            days=(end - start).days
+            days=(end - start).days,
         )
 
-    def build_wahlperiode_filter(self, period: int) -> Dict[str, Any]:
+    def build_wahlperiode_filter(self, period: int) -> dict[str, Any]:
         """
         Build filter for a specific legislative period.
 
@@ -206,11 +202,8 @@ class FilterBuilder:
         return self.build_filters(wahlperiode=str(period))
 
     def build_date_range_filter(
-        self,
-        start_date: str,
-        end_date: str,
-        format: str = "json"
-    ) -> Dict[str, Any]:
+        self, start_date: str, end_date: str, format: str = "json"
+    ) -> dict[str, Any]:
         """
         Build filter for a date range.
 
@@ -222,17 +215,11 @@ class FilterBuilder:
         Returns:
             Filter dictionary for the date range
         """
-        return self.build_filters(
-            datum_von=start_date,
-            datum_bis=end_date,
-            format=format
-        )
+        return self.build_filters(datum_von=start_date, datum_bis=end_date, format=format)
 
     def build_current_period_filter(
-        self,
-        days_back: int = 30,
-        format: str = "json"
-    ) -> Dict[str, Any]:
+        self, days_back: int = 30, format: str = "json"
+    ) -> dict[str, Any]:
         """
         Build filter for recent documents (last N days).
 
@@ -251,14 +238,12 @@ class FilterBuilder:
         return self.build_filters(
             datum_von=start_date.strftime("%Y-%m-%d"),
             datum_bis=end_date.strftime("%Y-%m-%d"),
-            format=format
+            format=format,
         )
 
     def build_sachgebiet_filter(
-        self,
-        sachgebiet: str,
-        wahlperiode: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, sachgebiet: str, wahlperiode: Optional[str] = None
+    ) -> dict[str, Any]:
         """
         Build filter for a specific subject area.
 
@@ -269,12 +254,9 @@ class FilterBuilder:
         Returns:
             Filter dictionary for the subject area
         """
-        return self.build_filters(
-            sachgebiet=sachgebiet,
-            wahlperiode=wahlperiode
-        )
+        return self.build_filters(sachgebiet=sachgebiet, wahlperiode=wahlperiode)
 
-    def combine_filters(self, *filter_dicts: Dict[str, Any]) -> Dict[str, Any]:
+    def combine_filters(self, *filter_dicts: dict[str, Any]) -> dict[str, Any]:
         """
         Combine multiple filter dictionaries.
 
@@ -292,15 +274,13 @@ class FilterBuilder:
             combined.update(filter_dict)
 
         logger.debug(
-            "Combined filters",
-            input_count=len(filter_dicts),
-            output_param_count=len(combined)
+            "Combined filters", input_count=len(filter_dicts), output_param_count=len(combined)
         )
 
         return combined
 
     @staticmethod
-    def get_available_filters() -> List[str]:
+    def get_available_filters() -> list[str]:
         """
         Get list of available filter parameter names.
 

@@ -43,7 +43,14 @@ async def ingest_bundestag_aktivitaeten(request: fastapi.Request, inputs: dict):
         error.add(wahlperiode="Wahlperiode is required")
 
     # Validate aktivitaetsart
-    valid_arten = ["Alle", "Kleine Anfrage", "Antwort", "Frage", "Rede", "Rede (zu Protokoll gegeben)"]
+    valid_arten = [
+        "Alle",
+        "Kleine Anfrage",
+        "Antwort",
+        "Frage",
+        "Rede",
+        "Rede (zu Protokoll gegeben)",
+    ]
     if inputs.get("aktivitaetsart") not in valid_arten:
         error.add(aktivitaetsart=f"Aktivitaetsart must be one of: {', '.join(valid_arten)}")
 

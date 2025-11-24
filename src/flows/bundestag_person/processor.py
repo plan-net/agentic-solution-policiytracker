@@ -5,11 +5,12 @@ Creates BundestagPersonFlow instance and executes the collection pipeline.
 """
 
 import json
-from typing import Dict, Any
+from typing import Any
+
 from kodosumi import core
 
 
-async def process_bundestag_persons(inputs: Dict[str, Any], tracer) -> core.response.Markdown:
+async def process_bundestag_persons(inputs: dict[str, Any], tracer) -> core.response.Markdown:
     """
     Process Bundestag persons collection.
 
@@ -21,14 +22,12 @@ async def process_bundestag_persons(inputs: Dict[str, Any], tracer) -> core.resp
         Markdown report of execution
     """
     from src.flows.bundestag_common.base_flow import BaseBundestagFlow
-    from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
     from src.flows.bundestag_common.field_extractors import (
         extract_fraktion,
         extract_wahlperioden,
-        safe_str,
-        safe_int,
         safe_date,
         safe_list,
+        safe_str,
     )
 
     # Create flow instance
@@ -41,7 +40,7 @@ async def process_bundestag_persons(inputs: Dict[str, Any], tracer) -> core.resp
         def entity_type(self) -> str:
             return "BundestagPerson"
 
-        def map_api_to_entity(self, api_data: Dict[str, Any]) -> Dict[str, Any]:
+        def map_api_to_entity(self, api_data: dict[str, Any]) -> dict[str, Any]:
             """Map Person API data to BundestagPerson entity."""
             person_id = safe_str(api_data.get("id"))
             if not person_id:
@@ -95,7 +94,9 @@ async def process_bundestag_persons(inputs: Dict[str, Any], tracer) -> core.resp
                 "datum": safe_date(api_data.get("datum")),  # Current snapshot date
                 "basisdatum": safe_date(api_data.get("basisdatum")),  # Base/start date
                 "ressort": safe_list(api_data.get("ressort", [])),  # Ministry assignments
-                "person_roles_history": json.dumps(api_data.get("person_roles", [])),  # Complete role history as JSON string
+                "person_roles_history": json.dumps(
+                    api_data.get("person_roles", [])
+                ),  # Complete role history as JSON string
                 # Metadata
                 "aktualisiert": safe_date(api_data.get("aktualisiert")),
             }

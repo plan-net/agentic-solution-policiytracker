@@ -469,7 +469,11 @@ class ToolIntegrationManager:
 
                         # Try to find actual node names from graph_data.nodes
                         if "graph_data" in result and "nodes" in result["graph_data"]:
-                            nodes_by_uuid = {n.get("uuid"): n for n in result["graph_data"]["nodes"] if isinstance(n, dict)}
+                            nodes_by_uuid = {
+                                n.get("uuid"): n
+                                for n in result["graph_data"]["nodes"]
+                                if isinstance(n, dict)
+                            }
                             source_uuid = edge.get("source_uuid")
                             target_uuid = edge.get("target_uuid")
 
@@ -482,7 +486,9 @@ class ToolIntegrationManager:
                             {
                                 "source": source_name,
                                 "target": target_name,
-                                "relationship": edge.get("relationship_type", edge.get("relationship", "RELATED_TO")),
+                                "relationship": edge.get(
+                                    "relationship_type", edge.get("relationship", "RELATED_TO")
+                                ),
                             }
                         )
             # Fallback: Check for edges at top level (other tools)

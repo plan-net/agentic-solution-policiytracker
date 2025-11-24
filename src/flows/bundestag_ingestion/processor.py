@@ -5,29 +5,28 @@ Main business logic for collecting German parliamentary data from the Bundestag 
 and ingesting it into Neo4j knowledge graph following political schema v4.
 """
 
-import asyncio
 from datetime import datetime
-from typing import Dict, Any, List
 
 import ray
-from kodosumi.core import Tracer
 from kodosumi import core
+from kodosumi.core import Tracer
 from neo4j import GraphDatabase
 
 from src.config import Settings
+
 from .collectors import (
-    VorgangCollector,
-    DrucksacheCollector,
-    VorgangspositionCollector,
     AktivitaetCollector,
-    PlenarprotokollCollector,
-    PersonCollector,
-    WahlperiodeBuilder,
+    DrucksacheCollector,
     FraktionBuilder,
+    PersonCollector,
+    PlenarprotokollCollector,
+    VorgangCollector,
+    VorgangspositionCollector,
+    WahlperiodeBuilder,
 )
-from .transformers import BundestagEntityBuilder, BundestagEdgeBuilder
-from .utils.api_client import BundestagAPIClient
 from .report_generator import generate_execution_report
+from .transformers import BundestagEdgeBuilder, BundestagEntityBuilder
+from .utils.api_client import BundestagAPIClient
 
 
 async def process_bundestag_data(inputs: dict, tracer: Tracer):
@@ -64,12 +63,13 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
 
     try:
         driver = GraphDatabase.driver(
-            settings.NEO4J_URI,
-            auth=(settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD)
+            settings.NEO4J_URI, auth=(settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD)
         )
         # Test connection
         driver.verify_connectivity()
-        await tracer.markdown(f"✅ Neo4j connection established (database: {settings.NEO4J_DATABASE})\n")
+        await tracer.markdown(
+            f"✅ Neo4j connection established (database: {settings.NEO4J_DATABASE})\n"
+        )
     except Exception as e:
         await tracer.markdown(f"Failed to connect to Neo4j: {str(e)}\n")
         return core.response.Markdown(
@@ -83,13 +83,15 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
         try:
             with driver.session(database=settings.NEO4J_DATABASE) as session:
                 # Delete all German parliamentary nodes
-                session.run("""
+                session.run(
+                    """
                     MATCH (n)
                     WHERE n:Vorgang OR n:Drucksache OR n:Vorgangsposition
                        OR n:Aktivitaet OR n:Plenarprotokoll OR n:Person
                        OR n:Wahlperiode OR n:Fraktion
                     DETACH DELETE n
-                """)
+                """
+                )
             await tracer.markdown("Existing data cleared\n")
         except Exception as e:
             await tracer.markdown(f"Warning: Failed to clear data: {str(e)}\n")
@@ -99,8 +101,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
 
     # Create API client
     api_client = BundestagAPIClient(
-        api_key=settings.BUNDESTAG_API_KEY,
-        base_url=settings.BUNDESTAG_API_URL
+        api_key=settings.BUNDESTAG_API_KEY, base_url=settings.BUNDESTAG_API_URL
     )
 
     # Create entity and edge builders
@@ -138,7 +139,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
             wahlperioden_data = await wahlperiode_builder.build_all()
             results["collections"]["wahlperiode"] = {
                 "collected": len(wahlperioden_data),
-                "status": "success"
+                "status": "success",
             }
             await tracer.markdown(f"Collected {len(wahlperioden_data)} Wahlperioden\n")
         except Exception as e:
@@ -152,7 +153,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
             fraktionen_data = await fraktion_builder.build_all()
             results["collections"]["fraktion"] = {
                 "collected": len(fraktionen_data),
-                "status": "success"
+                "status": "success",
             }
             await tracer.markdown(f"Collected {len(fraktionen_data)} Fraktionen\n")
         except Exception as e:
@@ -165,20 +166,29 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
     # Use Ray actors for parallel collection
     @ray.remote
     class CollectorActor:
-        def __init__(self, collector_class, api_client, entity_builder, edge_builder, neo4j_uri, neo4j_username, neo4j_password, neo4j_database, collection_params):
+        def __init__(
+            self,
+            collector_class,
+            api_client,
+            entity_builder,
+            edge_builder,
+            neo4j_uri,
+            neo4j_username,
+            neo4j_password,
+            neo4j_database,
+            collection_params,
+        ):
             # Create Neo4j driver inside the actor (driver can't be serialized)
             from neo4j import GraphDatabase
-            neo4j_driver = GraphDatabase.driver(
-                neo4j_uri,
-                auth=(neo4j_username, neo4j_password)
-            )
+
+            neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
 
             self.collector = collector_class(
                 api_client,
                 entity_builder,
                 edge_builder,
                 neo4j_driver=neo4j_driver,
-                neo4j_database=neo4j_database
+                neo4j_database=neo4j_database,
             )
             self.collection_params = collection_params
             self.neo4j_driver = neo4j_driver
@@ -189,7 +199,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
 
         def __del__(self):
             # Clean up driver when actor is destroyed
-            if hasattr(self, 'neo4j_driver') and self.neo4j_driver:
+            if hasattr(self, "neo4j_driver") and self.neo4j_driver:
                 self.neo4j_driver.close()
 
     collection_tasks = []
@@ -197,41 +207,103 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
     # Vorgänge
     if inputs.get("collect_vorgang", False):
         await tracer.markdown("Starting Vorgang collection...")
-        collector = CollectorActor.remote(VorgangCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            VorgangCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("vorgang", collector.collect.remote()))
 
     # Drucksachen
     if inputs.get("collect_drucksache", False):
         await tracer.markdown("Starting Drucksache collection...")
-        collector = CollectorActor.remote(DrucksacheCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            DrucksacheCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("drucksache", collector.collect.remote()))
 
     # Vorgangspositionen
     if inputs.get("collect_vorgangsposition", False):
         await tracer.markdown("Starting Vorgangsposition collection...")
-        collector = CollectorActor.remote(VorgangspositionCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            VorgangspositionCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("vorgangsposition", collector.collect.remote()))
 
     # Aktivitäten
     if inputs.get("collect_aktivitaet", False):
         await tracer.markdown("Starting Aktivitaet collection...")
-        collector = CollectorActor.remote(AktivitaetCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            AktivitaetCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("aktivitaet", collector.collect.remote()))
 
     # Plenarprotokolle
     if inputs.get("collect_plenarprotokoll", False):
         await tracer.markdown("Starting Plenarprotokoll collection...")
-        collector = CollectorActor.remote(PlenarprotokollCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            PlenarprotokollCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("plenarprotokoll", collector.collect.remote()))
 
     # Personen
     if inputs.get("collect_person", False):
         await tracer.markdown("Starting Person collection...")
-        collector = CollectorActor.remote(PersonCollector, api_client, entity_builder, edge_builder, settings.NEO4J_URI, settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD, settings.NEO4J_DATABASE, collection_params)
+        collector = CollectorActor.remote(
+            PersonCollector,
+            api_client,
+            entity_builder,
+            edge_builder,
+            settings.NEO4J_URI,
+            settings.NEO4J_USERNAME,
+            settings.NEO4J_PASSWORD,
+            settings.NEO4J_DATABASE,
+            collection_params,
+        )
         collection_tasks.append(("person", collector.collect.remote()))
 
     # Wait for collections to complete with progress updates
-    await tracer.markdown(f"\nCollecting data from {len(collection_tasks)} sources in parallel...\n")
+    await tracer.markdown(
+        f"\nCollecting data from {len(collection_tasks)} sources in parallel...\n"
+    )
 
     for data_type, task_ref in collection_tasks:
         try:
@@ -247,7 +319,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
                 "items_collected": items_collected,
                 "entities_created": entities_created,
                 "edges_created": edges_created,
-                "status": "success"
+                "status": "success",
             }
 
             # Update totals
@@ -266,7 +338,7 @@ async def process_bundestag_data(inputs: dict, tracer: Tracer):
                 "entities_created": 0,
                 "edges_created": 0,
                 "status": "failed",
-                "error": str(e)
+                "error": str(e),
             }
 
     # Stage 3: Finalization

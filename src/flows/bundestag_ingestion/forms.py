@@ -25,7 +25,6 @@ bundestag_ingestion_form = F.Model(
     ),
     F.Errors(),
     F.Break(),
-
     # Job Configuration
     F.InputText(
         label="Job Name",
@@ -33,7 +32,6 @@ bundestag_ingestion_form = F.Model(
         placeholder="e.g., Wahlperiode 20 Full Import, Q4 2024 Update",
         value="Bundestag Data Import",
     ),
-
     # Data Type Selection
     F.Markdown("### Data Types to Collect"),
     F.Checkbox(
@@ -78,9 +76,7 @@ bundestag_ingestion_form = F.Model(
         value=True,
         option="Wahlperioden & Fraktionen - Election periods and parliamentary groups",
     ),
-
     F.Break(),
-
     # Collection Parameters
     F.Markdown("### Collection Parameters"),
     F.InputText(
@@ -89,7 +85,6 @@ bundestag_ingestion_form = F.Model(
         value="20",
         placeholder="Enter 19, 20, 21, or 'all'",
     ),
-
     F.InputNumber(
         label="Maximum Items per Type",
         name="max_items_per_type",
@@ -99,16 +94,13 @@ bundestag_ingestion_form = F.Model(
         value=100,
         placeholder="Limit items collected per data type (1-10000)",
     ),
-
     F.Checkbox(
         label="Full Text Content",
         name="include_full_text",
         value=False,
         option="Include full text content for documents (slower, larger dataset)",
     ),
-
     F.Break(),
-
     # Processing Options
     F.Markdown("### Processing Options"),
     F.InputNumber(
@@ -120,14 +112,12 @@ bundestag_ingestion_form = F.Model(
         value=50,
         placeholder="Items to process per batch (affects memory usage)",
     ),
-
     F.Checkbox(
         label="Clear Existing Data",
         name="clear_data",
         value=False,
         option="⚠️ Clear existing Bundestag data before import (irreversible)",
     ),
-
     # Date Range Filters (Optional)
     F.Break(),
     F.Markdown("### Date Filters (Optional)"),
@@ -143,7 +133,6 @@ bundestag_ingestion_form = F.Model(
         placeholder="e.g., 2024-12-31 (leave empty for no filter)",
         value="",
     ),
-
     # Action Buttons
     F.Submit("Start Collection"),
     F.Cancel("Cancel"),

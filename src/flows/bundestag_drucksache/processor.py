@@ -15,14 +15,15 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import aiohttp
 import structlog
 from kodosumi import core
-from neo4j import GraphDatabase, Driver
 from langchain_openai import OpenAIEmbeddings
+from neo4j import Driver, GraphDatabase
 
+from src.config import graphrag_settings
 from src.flows.bundestag_common.api_client import BundestagAPIClient
 from src.flows.bundestag_common.field_extractors import (
     extract_related_vorgang_ids,
@@ -32,7 +33,6 @@ from src.flows.bundestag_common.field_extractors import (
     safe_str,
 )
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
-from src.config import graphrag_settings
 
 logger = structlog.get_logger()
 
@@ -41,7 +41,7 @@ DRUCKSACHE_STORAGE_PATH = Path(os.getenv("DRUCKSACHE_STORAGE_PATH", "./data/druc
 DRUCKSACHE_STORAGE_PATH.mkdir(parents=True, exist_ok=True)
 
 
-def map_drucksache_to_entity(api_data: Dict[str, Any]) -> Dict[str, Any]:
+def map_drucksache_to_entity(api_data: dict[str, Any]) -> dict[str, Any]:
     """
     Map Bundestag API drucksache data to Neo4j entity structure.
 
@@ -140,7 +140,7 @@ async def fetch_drucksachen_from_api(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     cursor: Optional[str] = None,
-) -> Tuple[List[Dict], Optional[str]]:
+) -> tuple[list[dict], Optional[str]]:
     """
     Fetch drucksachen from Bundestag DIP API with pagination.
 
@@ -215,7 +215,9 @@ async def download_pdf(
             print(f"📡 Making HTTP GET request to {url}", flush=True)
 
             # Disable SSL verification for Bundestag server (certificate issues)
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=60), ssl=False) as response:
+            async with session.get(
+                url, timeout=aiohttp.ClientTimeout(total=60), ssl=False
+            ) as response:
                 logger.info(f"✅ Got response with status {response.status}")
                 print(f"✅ Got response with status {response.status}", flush=True)
 
@@ -243,6 +245,7 @@ async def download_pdf(
             logger.error(f"Failed to download PDF: {e}", url=url)
             print(f"❌ Download exception: {e}", flush=True)
             import traceback
+
             traceback.print_exc()
             return False
 
@@ -266,7 +269,7 @@ def check_drucksache_exists(driver: Driver, database: str, drucksache_nummer: st
                 MATCH (d:Drucksache {drucksache_nummer: $drucksache_nummer})
                 RETURN count(d) > 0 as exists
                 """,
-                drucksache_nummer=drucksache_nummer
+                drucksache_nummer=drucksache_nummer,
             )
 
             record = result.single()
@@ -277,7 +280,7 @@ def check_drucksache_exists(driver: Driver, database: str, drucksache_nummer: st
         return False
 
 
-async def extract_pdf_text(pdf_path: Path) -> List[str]:
+async def extract_pdf_text(pdf_path: Path) -> list[str]:
     """
     Extract text from PDF page by page using PyPDF.
 
@@ -312,7 +315,7 @@ async def extract_pdf_text(pdf_path: Path) -> List[str]:
         return []
 
 
-def create_page_embedding(page_text: str) -> List[float]:
+def create_page_embedding(page_text: str) -> list[float]:
     """
     Create embedding for page text using OpenAI.
 
@@ -326,7 +329,7 @@ def create_page_embedding(page_text: str) -> List[float]:
         # Initialize embeddings using config
         embeddings = OpenAIEmbeddings(
             model=graphrag_settings.GRAPHRAG_EMBEDDING_MODEL,
-            dimensions=graphrag_settings.GRAPHRAG_EMBEDDING_DIMS
+            dimensions=graphrag_settings.GRAPHRAG_EMBEDDING_DIMS,
         )
 
         # Create embedding
@@ -344,7 +347,7 @@ async def create_page_nodes(
     driver: Driver,
     database: str,
     drucksache_nummer: str,
-    pages: List[str],
+    pages: list[str],
     wahlperiode: int,
 ) -> int:
     """
@@ -406,7 +409,7 @@ async def create_page_nodes(
                         MERGE (d)-[:HAS_PAGE]->(p)
                         """,
                         drucksache_nummer=drucksache_nummer,
-                        page_id=page_id
+                        page_id=page_id,
                     )
 
                     # Create NEXT_PAGE relationship to previous page
@@ -419,7 +422,7 @@ async def create_page_nodes(
                             MERGE (p1)-[:NEXT_PAGE]->(p2)
                             """,
                             prev_page_id=prev_page_id,
-                            curr_page_id=page_id
+                            curr_page_id=page_id,
                         )
 
                 logger.info(f"Created page node {page_id}")
@@ -429,7 +432,7 @@ async def create_page_nodes(
         logger.info(
             f"Created {pages_created} page nodes for {drucksache_nummer}",
             drucksache_nummer=drucksache_nummer,
-            pages_created=pages_created
+            pages_created=pages_created,
         )
 
         return pages_created
@@ -440,7 +443,7 @@ async def create_page_nodes(
 
 
 async def create_drucksache_relationships(
-    driver, database: str, drucksache_nummern: List[str]
+    driver, database: str, drucksache_nummern: list[str]
 ) -> int:
     """
     Create relationships for drucksachen.
@@ -492,7 +495,7 @@ async def create_drucksache_relationships(
     return rel_count
 
 
-async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
+async def process_drucksache_batch(inputs: dict[str, Any], tracer):
     """
     Process drucksachen in batches for selected wahlperioden.
 
@@ -505,8 +508,9 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
     Returns:
         Markdown report of execution
     """
-    import logging
     import json
+    import logging
+
     logger = logging.getLogger(__name__)
     logger.info("=== PROCESSOR STARTED === process_drucksache_batch called")
     print("=== PROCESSOR STARTED === process_drucksache_batch called", flush=True)
@@ -548,8 +552,13 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
     # Initialize aiohttp session for PDF downloads
     pdf_session = None
     if extract_full_text:
-        logger.info(f"🔍 PDF EXTRACTION ENABLED: Creating aiohttp session with {max_concurrent_downloads} concurrent downloads")
-        print(f"🔍 PDF EXTRACTION ENABLED: Creating aiohttp session with {max_concurrent_downloads} concurrent downloads", flush=True)
+        logger.info(
+            f"🔍 PDF EXTRACTION ENABLED: Creating aiohttp session with {max_concurrent_downloads} concurrent downloads"
+        )
+        print(
+            f"🔍 PDF EXTRACTION ENABLED: Creating aiohttp session with {max_concurrent_downloads} concurrent downloads",
+            flush=True,
+        )
         # Create session with SSL verification disabled for Bundestag server
         connector = aiohttp.TCPConnector(ssl=False)
         pdf_session = aiohttp.ClientSession(connector=connector)
@@ -586,7 +595,9 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
 
             while max_drucksachen is None or wp_count < max_drucksachen:
                 # Fetch batch from API
-                await tracer.markdown(f"Fetching drucksachen (batch {wp_count // batch_size + 1})...\n")
+                await tracer.markdown(
+                    f"Fetching drucksachen (batch {wp_count // batch_size + 1})...\n"
+                )
 
                 documents, next_cursor = await fetch_drucksachen_from_api(
                     client=api_client,
@@ -616,8 +627,13 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                 drucksache_entities = []
                 pdf_download_tasks = []
 
-                logger.info(f"🔍 BEFORE MAPPING LOOP: extract_full_text={extract_full_text}, type={type(extract_full_text)}")
-                print(f"🔍 BEFORE MAPPING LOOP: extract_full_text={extract_full_text}, type={type(extract_full_text)}", flush=True)
+                logger.info(
+                    f"🔍 BEFORE MAPPING LOOP: extract_full_text={extract_full_text}, type={type(extract_full_text)}"
+                )
+                print(
+                    f"🔍 BEFORE MAPPING LOOP: extract_full_text={extract_full_text}, type={type(extract_full_text)}",
+                    flush=True,
+                )
 
                 for doc in documents:
                     try:
@@ -625,8 +641,13 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                         drucksache_entity = map_drucksache_to_entity(doc)
                         drucksache_entities.append(drucksache_entity)
 
-                        has_url = drucksache_entity.get("dokument_url") is not None and drucksache_entity.get("dokument_url") != ""
-                        logger.debug(f"Entity {drucksache_entity.get('drucksache_nummer')}: has_url={has_url}, extract_full_text={extract_full_text}")
+                        has_url = (
+                            drucksache_entity.get("dokument_url") is not None
+                            and drucksache_entity.get("dokument_url") != ""
+                        )
+                        logger.debug(
+                            f"Entity {drucksache_entity.get('drucksache_nummer')}: has_url={has_url}, extract_full_text={extract_full_text}"
+                        )
 
                         # Queue PDF download if enabled AND document doesn't exist
                         if extract_full_text and drucksache_entity.get("dokument_url"):
@@ -634,11 +655,15 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                             drucksache_nummer = drucksache_entity["drucksache_nummer"]
 
                             # CHECK: Only download PDF if this is a NEW document
-                            exists = check_drucksache_exists(driver, neo4j_database, drucksache_nummer)
+                            exists = check_drucksache_exists(
+                                driver, neo4j_database, drucksache_nummer
+                            )
 
                             if not exists:
                                 # Document is NEW - queue for download
-                                safe_filename = drucksache_nummer.replace("/", "-").replace(" ", "_")
+                                safe_filename = drucksache_nummer.replace("/", "-").replace(
+                                    " ", "_"
+                                )
                                 pdf_path = (
                                     DRUCKSACHE_STORAGE_PATH
                                     / f"wp{wp_int}"
@@ -654,11 +679,21 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                                         "wahlperiode": wp_int,
                                     }
                                 )
-                                logger.info(f"📥 Queued NEW document for PDF download: {drucksache_nummer}")
-                                print(f"📥 Queued NEW document for PDF download: {drucksache_nummer}", flush=True)
+                                logger.info(
+                                    f"📥 Queued NEW document for PDF download: {drucksache_nummer}"
+                                )
+                                print(
+                                    f"📥 Queued NEW document for PDF download: {drucksache_nummer}",
+                                    flush=True,
+                                )
                             else:
-                                logger.info(f"⏭️ Skipping PDF download for existing document: {drucksache_nummer}")
-                                print(f"⏭️ Skipping PDF download for existing document: {drucksache_nummer}", flush=True)
+                                logger.info(
+                                    f"⏭️ Skipping PDF download for existing document: {drucksache_nummer}"
+                                )
+                                print(
+                                    f"⏭️ Skipping PDF download for existing document: {drucksache_nummer}",
+                                    flush=True,
+                                )
                                 stats["drucksachen_skipped"] += 1
 
                     except Exception as e:
@@ -666,7 +701,9 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                         stats["errors"].append(str(e))
 
                 # Upsert drucksache entities
-                await tracer.markdown(f"Upserting {len(drucksache_entities)} drucksachen to Neo4j...\n")
+                await tracer.markdown(
+                    f"Upserting {len(drucksache_entities)} drucksachen to Neo4j...\n"
+                )
                 drucksache_results = upsert_manager.upsert_entities_batch(
                     entity_type="Drucksache", entities=drucksache_entities, batch_size=batch_size
                 )
@@ -678,23 +715,40 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
                 )
 
                 # DEBUG: Log PDF download decision
-                logger.info(f"🔍 PDF Download Check: extract_full_text={extract_full_text}, pdf_download_tasks={len(pdf_download_tasks)}")
-                print(f"🔍 PDF Download Check: extract_full_text={extract_full_text}, pdf_download_tasks={len(pdf_download_tasks)}", flush=True)
+                logger.info(
+                    f"🔍 PDF Download Check: extract_full_text={extract_full_text}, pdf_download_tasks={len(pdf_download_tasks)}"
+                )
+                print(
+                    f"🔍 PDF Download Check: extract_full_text={extract_full_text}, pdf_download_tasks={len(pdf_download_tasks)}",
+                    flush=True,
+                )
 
                 # Download PDFs and extract text if enabled
                 if extract_full_text and pdf_download_tasks:
-                    logger.info(f"✅ ENTERING PDF DOWNLOAD SECTION: {len(pdf_download_tasks)} PDFs to download")
-                    print(f"✅ ENTERING PDF DOWNLOAD SECTION: {len(pdf_download_tasks)} PDFs to download", flush=True)
+                    logger.info(
+                        f"✅ ENTERING PDF DOWNLOAD SECTION: {len(pdf_download_tasks)} PDFs to download"
+                    )
+                    print(
+                        f"✅ ENTERING PDF DOWNLOAD SECTION: {len(pdf_download_tasks)} PDFs to download",
+                        flush=True,
+                    )
                     await tracer.markdown(
                         f"\nDownloading {len(pdf_download_tasks)} PDFs with {max_concurrent_downloads} concurrent downloads...\n"
                     )
 
                     logger.info(f"🔄 Starting download loop for {len(pdf_download_tasks)} tasks")
-                    print(f"🔄 Starting download loop for {len(pdf_download_tasks)} tasks", flush=True)
+                    print(
+                        f"🔄 Starting download loop for {len(pdf_download_tasks)} tasks", flush=True
+                    )
 
                     for idx, task in enumerate(pdf_download_tasks, 1):
-                        logger.info(f"📥 Download {idx}/{len(pdf_download_tasks)}: {task['nummer']}")
-                        print(f"📥 Download {idx}/{len(pdf_download_tasks)}: {task['nummer']}", flush=True)
+                        logger.info(
+                            f"📥 Download {idx}/{len(pdf_download_tasks)}: {task['nummer']}"
+                        )
+                        print(
+                            f"📥 Download {idx}/{len(pdf_download_tasks)}: {task['nummer']}",
+                            flush=True,
+                        )
 
                         # Download PDF
                         try:
@@ -737,7 +791,7 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
 
                 # Create relationships
                 if create_relationships:
-                    await tracer.markdown(f"\nCreating relationships...\n")
+                    await tracer.markdown("\nCreating relationships...\n")
                     rel_count = await create_drucksache_relationships(
                         driver,
                         neo4j_database,
@@ -769,6 +823,7 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
         stats["errors"].append(error_msg)
         await tracer.markdown(f"\n\n❌ **Error:** {error_msg}\n\n")
         import traceback
+
         await tracer.markdown(f"```\n{traceback.format_exc()}\n```\n")
 
     finally:
@@ -804,14 +859,14 @@ async def process_drucksache_batch(inputs: Dict[str, Any], tracer):
 """
 
     if start_date or end_date:
-        report += f"\n### Date Filters\n"
+        report += "\n### Date Filters\n"
         if start_date:
             report += f"- **Start Date**: {start_date}\n"
         if end_date:
             report += f"- **End Date**: {end_date}\n"
 
     if extract_full_text:
-        report += f"\n### Storage\n"
+        report += "\n### Storage\n"
         report += f"- **PDF Storage**: {DRUCKSACHE_STORAGE_PATH / 'wp*' / 'pdfs'}\n"
         report += f"- **Markdown Storage**: {DRUCKSACHE_STORAGE_PATH / 'wp*' / '*.md'}\n"
 

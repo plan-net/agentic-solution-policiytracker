@@ -6,10 +6,10 @@ processing metrics, and actionable next steps for plenary protocol data.
 """
 
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 
-def generate_collection_report(results: Dict[str, Any]) -> str:
+def generate_collection_report(results: dict[str, Any]) -> str:
     """
     Generate comprehensive collection report for Plenarprotokoll ingestion.
 
@@ -32,7 +32,9 @@ def generate_collection_report(results: Dict[str, Any]) -> str:
     fetch_full_text = results.get("fetch_full_text", False)
 
     # Calculate success rate
-    success_rate = ((total_protocols - errors) / max(total_protocols, 1)) * 100 if total_protocols > 0 else 100
+    success_rate = (
+        ((total_protocols - errors) / max(total_protocols, 1)) * 100 if total_protocols > 0 else 100
+    )
 
     # Determine status
     if success_rate >= 90:

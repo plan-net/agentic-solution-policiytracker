@@ -2,7 +2,9 @@
 import asyncio
 import json
 import os
+
 from graphiti_core import Graphiti
+
 from src.chat.tools.search import GraphitiSearchTool
 
 
@@ -34,7 +36,7 @@ async def test_all_features():
         query=query,
         limit=5,
         search_type="comprehensive",
-        output_format="text"  # Default format
+        output_format="text",  # Default format
     )
 
     print(text_result)
@@ -52,7 +54,7 @@ async def test_all_features():
         query=query,
         limit=5,
         search_type="comprehensive",
-        output_format="structured"  # JSON format
+        output_format="structured",  # JSON format
     )
 
     print(json.dumps(structured_result, indent=2))
@@ -72,30 +74,32 @@ async def test_all_features():
         nodes = structured_result.get("graph_data", {}).get("nodes", [])
         edges = structured_result.get("graph_data", {}).get("edges", [])
 
-        print(f"\n1. 🎯 Relevance Scores:")
+        print("\n1. 🎯 Relevance Scores:")
         print(f"   - Total results: {total_results}")
         print(f"   - Results with scores: {len([r for r in results if r.get('relevance_score')])}")
         if results:
             scores = [r.get("relevance_score", 0) for r in results if r.get("relevance_score")]
             if scores:
                 print(f"   - Score range: {min(scores):.3f} to {max(scores):.3f}")
-                print(f"   - Example: Result #1 has score {results[0].get('relevance_score', 0):.3f}")
+                print(
+                    f"   - Example: Result #1 has score {results[0].get('relevance_score', 0):.3f}"
+                )
 
-        print(f"\n2. 📰 Source Extraction:")
+        print("\n2. 📰 Source Extraction:")
         print(f"   - Unique sources found: {len(sources)}")
         if sources:
-            print(f"   - Sources:")
+            print("   - Sources:")
             for source in sources[:3]:  # Show first 3
                 print(f"     • {source.get('title', 'N/A')}")
                 print(f"       URL: {source.get('url', 'N/A')}")
 
-        print(f"\n3. 📊 Structured Output (Graph Data):")
+        print("\n3. 📊 Structured Output (Graph Data):")
         print(f"   - Nodes extracted: {len(nodes)}")
         print(f"   - Edges extracted: {len(edges)}")
         if nodes:
             enriched_nodes = [n for n in nodes if n.get("name") != "Unknown"]
             print(f"   - Nodes with enriched names: {len(enriched_nodes)}")
-            print(f"   - Example nodes:")
+            print("   - Example nodes:")
             for node in nodes[:3]:  # Show first 3
                 print(f"     • {node.get('name', 'Unknown')} ({node.get('type', 'N/A')})")
 

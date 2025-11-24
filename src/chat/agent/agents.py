@@ -393,7 +393,9 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
 
         # DEBUG: Log context tracker status
         session_id = state.get("session_id", "NO_SESSION_ID")
-        logger.warning(f"=== TOOL EXECUTION START === Session: {session_id}, Context tracker: {self.context_tracker is not None}")
+        logger.warning(
+            f"=== TOOL EXECUTION START === Session: {session_id}, Context tracker: {self.context_tracker is not None}"
+        )
 
         await self.stream_thinking("Beginning tool execution sequence...")
 
@@ -432,22 +434,37 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
                 # Track tool executions in context tracker
                 if self.context_tracker:
                     session_id = state.get("session_id")
-                    logger.warning(f"=== TRACKING CONTEXT === Session: {session_id}, Tools: {len(enhanced_results)}")
-                    logger.warning(f"Enhanced results type: {type(enhanced_results)}, length: {len(enhanced_results)}")
+                    logger.warning(
+                        f"=== TRACKING CONTEXT === Session: {session_id}, Tools: {len(enhanced_results)}"
+                    )
+                    logger.warning(
+                        f"Enhanced results type: {type(enhanced_results)}, length: {len(enhanced_results)}"
+                    )
                     if session_id:
-                        logger.warning(f"Tracking {len(enhanced_results)} tool executions for session {session_id}")
+                        logger.warning(
+                            f"Tracking {len(enhanced_results)} tool executions for session {session_id}"
+                        )
                         for i, result in enumerate(enhanced_results):
-                            logger.warning(f"Processing result {i+1}/{len(enhanced_results)}: type={type(result)}")
+                            logger.warning(
+                                f"Processing result {i+1}/{len(enhanced_results)}: type={type(result)}"
+                            )
                             try:
-                                logger.warning(f"Calling track_tool_execution for {result['tool_name']}")
+                                logger.warning(
+                                    f"Calling track_tool_execution for {result['tool_name']}"
+                                )
                                 await self.context_tracker.track_tool_execution(
                                     session_id=session_id,
                                     tool_name=result["tool_name"],
                                     tool_result=result,
                                 )
-                                logger.warning(f"✅ Successfully tracked {result['tool_name']} for session {session_id}")
+                                logger.warning(
+                                    f"✅ Successfully tracked {result['tool_name']} for session {session_id}"
+                                )
                             except Exception as e:
-                                logger.error(f"❌ Failed to track tool execution {result['tool_name']}: {e}", exc_info=True)
+                                logger.error(
+                                    f"❌ Failed to track tool execution {result['tool_name']}: {e}",
+                                    exc_info=True,
+                                )
                     else:
                         logger.warning("Session ID not found in state for context tracking")
                 else:
@@ -516,13 +533,22 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
                                     tool_name=tool_name,
                                     tool_result=tool_result.dict(),
                                 )
-                                logger.info(f"Successfully tracked {tool_name} (fallback) for session {session_id}")
+                                logger.info(
+                                    f"Successfully tracked {tool_name} (fallback) for session {session_id}"
+                                )
                             except Exception as e:
-                                logger.error(f"Failed to track tool execution (fallback) {tool_name}: {e}", exc_info=True)
+                                logger.error(
+                                    f"Failed to track tool execution (fallback) {tool_name}: {e}",
+                                    exc_info=True,
+                                )
                         else:
-                            logger.warning("Session ID not found in state for context tracking (fallback)")
+                            logger.warning(
+                                "Session ID not found in state for context tracking (fallback)"
+                            )
                     else:
-                        logger.warning("Context tracker not available on execution agent (fallback)")
+                        logger.warning(
+                            "Context tracker not available on execution agent (fallback)"
+                        )
 
                     await self.stream_custom(
                         {
@@ -688,6 +714,12 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             agent_sequence.append(self.agent_role.value)
             updated_state["agent_sequence"] = agent_sequence
 
+            # Automatically append graph visualization after knowledge graph queries
+            final_response_with_viz = await self._append_graph_visualization(
+                synthesis.response_text, state
+            )
+            updated_state["final_response"] = final_response_with_viz
+
             return AgentResult(
                 success=True,
                 updated_state=updated_state,
@@ -724,12 +756,12 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             context_parts.append(f"Tool Results: {len(tool_results)} tools executed")
             for result in tool_results:
                 if result["success"]:
-                    raw_output = result['raw_output']
+                    raw_output = result["raw_output"]
                     # Handle both dict (structured) and str (text) output
                     if isinstance(raw_output, dict):
                         # For structured output, show summary info
                         summary = f"{raw_output.get('total_results', 0)} results"
-                        if 'query' in raw_output:
+                        if "query" in raw_output:
                             summary = f"Query: {raw_output['query'][:50]}... - {summary}"
                         context_parts.append(f"- {result['tool_name']}: {summary}")
                     elif isinstance(raw_output, str):
@@ -752,3 +784,49 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             "response_patterns": {"preferred_length": "comprehensive"},
             "follow_up_patterns": {"information_seeking": ["implementation", "enforcement"]},
         }
+
+    async def _append_graph_visualization(self, response_text: str, state: MultiAgentState) -> str:
+        """Automatically append graph visualization after EVERY query.
+
+        This method automatically invokes the graph visualization tool to display
+        the knowledge graph for the current session after every response.
+
+        Args:
+            response_text: The synthesized response text
+            state: The current multi-agent state
+
+        Returns:
+            Response text with visualization appended
+        """
+        try:
+            # Get session ID for visualization
+            session_id = state.get("session_id")
+            if not session_id:
+                logger.warning("No session_id found in state, skipping visualization")
+                return response_text
+
+            # Import and invoke the graph visualization tool
+            from ..tools.graph_visualization import GraphVisualizationTool
+
+            viz_tool = GraphVisualizationTool()
+
+            await self.stream_thinking("Adding interactive graph visualization...")
+
+            # Generate visualization HTML
+            viz_html = await viz_tool._arun(
+                session_id=session_id,
+                view_type="chat-context",
+                is_3d=True,
+            )
+
+            # Append visualization to response
+            combined_response = f"{response_text}\n\n{viz_html}"
+
+            logger.info(f"Automatically appended graph visualization for session {session_id}")
+
+            return combined_response
+
+        except Exception as e:
+            logger.error(f"Failed to append graph visualization: {str(e)}", exc_info=True)
+            # Return original response if visualization fails
+            return response_text

@@ -9,29 +9,23 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Optional
 
 import structlog
 
 # Configure logging for Ray environment
 from src.flows.data_ingestion.logging_config import configure_logging
+
 configure_logging()
 
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
-from src.graphrag.schema_converter import (
-    get_entity_types,
-    get_edge_types,
-    get_edge_type_map,
-)
-
 from src.graphrag.political_schema_v3 import (
-    ENTITY_TYPE_REGISTRY,
-    EDGE_TYPE_REGISTRY,
     EDGE_TYPE_MAP,
-    SCHEMA_INFO,
+    EDGE_TYPE_REGISTRY,
+    ENTITY_TYPE_REGISTRY,
 )
 
 logger = structlog.get_logger()
@@ -132,9 +126,10 @@ try:
 
             # Apply preprocessing (link removal, deduplication, whitespace cleaning)
             from src.flows.data_ingestion.document_preprocessor import preprocess_document
+
             return preprocess_document(content, enable_link_removal=True)
 
-        async def _process_chunked_document(self, doc_path: Path, chunks: List[Dict]) -> dict:
+        async def _process_chunked_document(self, doc_path: Path, chunks: list[dict]) -> dict:
             """
             Process a document that has been chunked into multiple parts.
 
@@ -165,7 +160,9 @@ try:
 
                 try:
                     # Generate episode name for this chunk
-                    episode_name = f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                    episode_name = (
+                        f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                    )
                     source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_path.name}"
                     reference_time = extract_document_date(chunk_text) or datetime.now()
 
@@ -197,14 +194,16 @@ try:
                     total_entities += entity_count
                     total_relationships += relationship_count
 
-                    chunk_results.append({
-                        "chunk_index": chunk_index,
-                        "episode_uuid": episode_uuid,
-                        "entities": entity_count,
-                        "relationships": relationship_count,
-                        "tokens": chunk_token_count,
-                        "boundary_type": chunk.get("boundary_type", "unknown"),
-                    })
+                    chunk_results.append(
+                        {
+                            "chunk_index": chunk_index,
+                            "episode_uuid": episode_uuid,
+                            "entities": entity_count,
+                            "relationships": relationship_count,
+                            "tokens": chunk_token_count,
+                            "boundary_type": chunk.get("boundary_type", "unknown"),
+                        }
+                    )
 
                     logger.debug(
                         f"Actor {self.actor_id}: Processed chunk {chunk_index + 1}/{len(chunks)}",
@@ -216,11 +215,13 @@ try:
                 except Exception as e:
                     error_msg = f"Failed to process chunk {chunk_index}: {e}"
                     logger.error(f"Actor {self.actor_id}: {error_msg}")
-                    chunk_results.append({
-                        "chunk_index": chunk_index,
-                        "error": str(e),
-                        "tokens": chunk_token_count,
-                    })
+                    chunk_results.append(
+                        {
+                            "chunk_index": chunk_index,
+                            "error": str(e),
+                            "tokens": chunk_token_count,
+                        }
+                    )
 
             # Calculate success rate
             successful_chunks = len([c for c in chunk_results if "error" not in c])
@@ -272,7 +273,9 @@ try:
             try:
                 # Check if already processed (unless clear mode)
                 if not self.clear_mode and self.tracker.is_processed(str(doc_path)):
-                    logger.info(f"Actor {self.actor_id}: Skipping already processed document: {doc_path}")
+                    logger.info(
+                        f"Actor {self.actor_id}: Skipping already processed document: {doc_path}"
+                    )
                     return {
                         "status": "skipped",
                         "reason": "already_processed",
@@ -287,7 +290,9 @@ try:
                     if not content.strip():
                         raise ValueError("Document is empty")
 
-                    logger.debug(f"Actor {self.actor_id}: Read document: {doc_path} ({len(content)} characters)")
+                    logger.debug(
+                        f"Actor {self.actor_id}: Read document: {doc_path} ({len(content)} characters)"
+                    )
                 except Exception as e:
                     error_msg = f"Failed to read document: {e}"
                     self.tracker.mark_failed(str(doc_path), error_msg)
@@ -408,9 +413,12 @@ class SimpleDocumentProcessor:
 
         # Apply preprocessing (link removal, deduplication, whitespace cleaning)
         from src.flows.data_ingestion.document_preprocessor import preprocess_document
+
         return preprocess_document(content, enable_link_removal=True)
 
-    async def _process_chunked_document(self, doc_path: Path, chunks: List[Dict], graphiti_client: Graphiti) -> dict:
+    async def _process_chunked_document(
+        self, doc_path: Path, chunks: list[dict], graphiti_client: Graphiti
+    ) -> dict:
         """Process a document that has been chunked (same as DocumentProcessorActor version but adapted for SimpleDocumentProcessor)."""
         start_time = datetime.now()
         episode_uuids = []
@@ -428,7 +436,9 @@ class SimpleDocumentProcessor:
 
             try:
                 # Generate episode name for this chunk
-                episode_name = f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                episode_name = (
+                    f"{generate_episode_name(doc_path, datetime.now())}_chunk_{chunk_index}"
+                )
                 doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
                 source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_name}"
 
@@ -437,7 +447,7 @@ class SimpleDocumentProcessor:
                 reference_time = extracted_date or datetime.now()
 
                 # DETAILED LOGGING: Capture what we're about to pass to Graphiti
-                print(f"\n=== CHUNK PROCESSING DEBUG ===", flush=True)
+                print("\n=== CHUNK PROCESSING DEBUG ===", flush=True)
                 print(f"Chunk index: {chunk_index}", flush=True)
                 print(f"Episode name: {episode_name}", flush=True)
                 print(f"Extracted date: {extracted_date}", flush=True)
@@ -445,7 +455,7 @@ class SimpleDocumentProcessor:
                 print(f"Reference time type: {type(reference_time).__name__}", flush=True)
                 print(f"Reference time is None: {reference_time is None}", flush=True)
                 print(f"Chunk text length: {len(chunk_text)}", flush=True)
-                print(f"==========================\n", flush=True)
+                print("==========================\n", flush=True)
 
                 logger.info(
                     "About to call add_episode for chunk",
@@ -493,14 +503,16 @@ class SimpleDocumentProcessor:
                 total_entities += entity_count
                 total_relationships += relationship_count
 
-                chunk_results.append({
-                    "chunk_index": chunk_index,
-                    "episode_uuid": episode_uuid,
-                    "entities": entity_count,
-                    "relationships": relationship_count,
-                    "tokens": chunk_token_count,
-                    "boundary_type": chunk.get("boundary_type", "unknown"),
-                })
+                chunk_results.append(
+                    {
+                        "chunk_index": chunk_index,
+                        "episode_uuid": episode_uuid,
+                        "entities": entity_count,
+                        "relationships": relationship_count,
+                        "tokens": chunk_token_count,
+                        "boundary_type": chunk.get("boundary_type", "unknown"),
+                    }
+                )
 
                 logger.debug(
                     f"Processed chunk {chunk_index + 1}/{len(chunks)}",
@@ -513,16 +525,23 @@ class SimpleDocumentProcessor:
                 error_msg = f"Failed to process chunk {chunk_index}: {e}"
 
                 # DETAILED ERROR LOGGING: Capture full exception details
-                print(f"\n=== CHUNK PROCESSING ERROR ===", flush=True)
+                print("\n=== CHUNK PROCESSING ERROR ===", flush=True)
                 print(f"Chunk index: {chunk_index}", flush=True)
                 print(f"Error type: {type(e).__name__}", flush=True)
                 print(f"Error message: {str(e)}", flush=True)
                 print(f"Error repr: {repr(e)}", flush=True)
-                print(f"Reference time: {reference_time if 'reference_time' in locals() else 'NOT_SET'}", flush=True)
-                print(f"Extracted date: {extracted_date if 'extracted_date' in locals() else 'NOT_SET'}", flush=True)
-                print(f"============================\n", flush=True)
+                print(
+                    f"Reference time: {reference_time if 'reference_time' in locals() else 'NOT_SET'}",
+                    flush=True,
+                )
+                print(
+                    f"Extracted date: {extracted_date if 'extracted_date' in locals() else 'NOT_SET'}",
+                    flush=True,
+                )
+                print("============================\n", flush=True)
 
                 import traceback
+
                 traceback.print_exc()
 
                 logger.error(
@@ -531,17 +550,23 @@ class SimpleDocumentProcessor:
                     error_message=str(e),
                     error_type=type(e).__name__,
                     exception_details=repr(e),
-                    reference_time_value=str(reference_time) if 'reference_time' in locals() else "NOT_SET",
-                    extracted_date_value=str(extracted_date) if 'extracted_date' in locals() else "NOT_SET",
+                    reference_time_value=str(reference_time)
+                    if "reference_time" in locals()
+                    else "NOT_SET",
+                    extracted_date_value=str(extracted_date)
+                    if "extracted_date" in locals()
+                    else "NOT_SET",
                     chunk_text_preview=chunk_text[:200] if chunk_text else None,
                     exc_info=True,  # Include full traceback
                 )
 
-                chunk_results.append({
-                    "chunk_index": chunk_index,
-                    "error": str(e),
-                    "tokens": chunk_token_count,
-                })
+                chunk_results.append(
+                    {
+                        "chunk_index": chunk_index,
+                        "error": str(e),
+                        "tokens": chunk_token_count,
+                    }
+                )
 
         # Calculate success rate
         successful_chunks = len([c for c in chunk_results if "error" not in c])

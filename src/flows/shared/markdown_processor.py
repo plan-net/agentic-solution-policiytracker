@@ -8,7 +8,7 @@ the document tracking file. Shared by both document and URL workflows.
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 import structlog
 from graphiti_core import Graphiti
@@ -36,9 +36,7 @@ class MarkdownProcessor:
         self.tracker = DocumentTracker()
         logger.info("Initialized MarkdownProcessor with Flow 1 pipeline")
 
-    async def process_markdown_files(
-        self, markdown_paths: List[Path]
-    ) -> Dict[str, Any]:
+    async def process_markdown_files(self, markdown_paths: list[Path]) -> dict[str, Any]:
         """
         Process markdown files using Flow 1's SimpleDocumentProcessor.
 
@@ -80,9 +78,7 @@ class MarkdownProcessor:
         llm_client, note = create_graphiti_apisix_config(agent_context)
 
         # Initialize Graphiti with APISIX routing
-        graphiti_client = Graphiti(
-            NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
-        )
+        graphiti_client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client)
         await graphiti_client.build_indices_and_constraints()
 
         logger.info("Graphiti client initialized with APISIX routing")
@@ -99,12 +95,14 @@ class MarkdownProcessor:
                 processing_results.append(result)
             except Exception as e:
                 logger.error(f"Failed to process {md_path.name}: {e}", exc_info=True)
-                processing_results.append({
-                    "file_path": str(md_path),
-                    "success": False,
-                    "error": str(e),
-                    "processed_at": datetime.now().isoformat(),
-                })
+                processing_results.append(
+                    {
+                        "file_path": str(md_path),
+                        "success": False,
+                        "error": str(e),
+                        "processed_at": datetime.now().isoformat(),
+                    }
+                )
 
         # Close graphiti client
         await graphiti_client.close()
@@ -122,9 +120,7 @@ class MarkdownProcessor:
             "successful": len(successful),
             "failed": len(failed),
             "success_rate": (
-                (len(successful) / len(processing_results) * 100)
-                if processing_results
-                else 0
+                (len(successful) / len(processing_results) * 100) if processing_results else 0
             ),
             "processing_time": processing_time,
             "total_entities": stats.get("total_entities", 0),

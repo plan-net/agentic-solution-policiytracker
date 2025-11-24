@@ -1,6 +1,6 @@
 """Bundestag DIP API Client for fetching Vorgang (legislative procedure) data."""
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -23,7 +23,7 @@ class BundestagVorgangDIPClient:
 
         logger.info(f"BundestagVorgangDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all Vorgang IDs from DIP API.
 
         Args:
@@ -55,16 +55,14 @@ class BundestagVorgangDIPClient:
                     logger.info(f"Retrieved {len(vorgang_ids)} Vorgang IDs from DIP API")
                     return vorgang_ids
                 else:
-                    logger.error(
-                        f"DIP API error: {response.status_code} - {response.text}"
-                    )
+                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
                     return []
 
         except Exception as e:
             logger.error(f"Error fetching Vorgang IDs from DIP API: {e}")
             return []
 
-    async def get_vorgang_by_id(self, vorgang_id: str) -> Optional[Dict[str, Any]]:
+    async def get_vorgang_by_id(self, vorgang_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Vorgang data by ID.
 
         Args:
@@ -94,16 +92,14 @@ class BundestagVorgangDIPClient:
                     logger.warning(f"Vorgang {vorgang_id} not found in DIP API")
                     return None
                 else:
-                    logger.error(
-                        f"DIP API error for Vorgang {vorgang_id}: {response.status_code}"
-                    )
+                    logger.error(f"DIP API error for Vorgang {vorgang_id}: {response.status_code}")
                     return None
 
         except Exception as e:
             logger.error(f"Error fetching Vorgang {vorgang_id} from DIP API: {e}")
             return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for API requests.
 
         Returns:
@@ -116,7 +112,7 @@ class BundestagVorgangDIPClient:
 
         return headers
 
-    def _transform_dip_vorgang(self, dip_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dip_vorgang(self, dip_data: dict[str, Any]) -> dict[str, Any]:
         """Transform DIP API Vorgang data to internal format.
 
         This method maps DIP API field names to our internal field names.
@@ -202,7 +198,7 @@ class MockBundestagVorgangDIPClient:
             },
         }
 
-    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all mock Vorgang IDs.
 
         Args:
@@ -219,7 +215,7 @@ class MockBundestagVorgangDIPClient:
         logger.info(f"Returning {len(vorgang_ids)} mock Vorgang IDs")
         return vorgang_ids
 
-    async def get_vorgang_by_id(self, vorgang_id: str) -> Optional[Dict[str, Any]]:
+    async def get_vorgang_by_id(self, vorgang_id: str) -> Optional[dict[str, Any]]:
         """Get mock Vorgang data by ID.
 
         Args:

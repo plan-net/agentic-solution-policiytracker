@@ -1,8 +1,8 @@
 """Chat context tracking for graph visualization."""
 
 import logging
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any, Optional
 
 from neo4j import AsyncDriver
 
@@ -24,11 +24,9 @@ class ChatContextTracker:
         """
         self.driver = driver
         self.ttl = timedelta(minutes=ttl_minutes)
-        self.context_cache: Dict[str, Dict[str, Any]] = {}
+        self.context_cache: dict[str, dict[str, Any]] = {}
 
-    async def track_tool_execution(
-        self, session_id: str, tool_name: str, tool_result: Any
-    ) -> None:
+    async def track_tool_execution(self, session_id: str, tool_name: str, tool_result: Any) -> None:
         """
         Track a tool execution and extract relevant graph entities/relationships.
 
@@ -39,7 +37,7 @@ class ChatContextTracker:
         """
         if session_id not in self.context_cache:
             self.context_cache[session_id] = {
-                "created_at": datetime.now(timezone.utc),
+                "created_at": datetime.now(UTC),
                 "entity_uuids": set(),
                 "relationship_data": [],
                 "tools_used": [],
@@ -130,6 +128,7 @@ class ChatContextTracker:
         """Persist chat context to Neo4j for cross-service access."""
         try:
             import json
+
             async with self.driver.session() as session:
                 # Convert set to list for JSON serialization
                 entity_uuids_list = list(context["entity_uuids"])
@@ -149,9 +148,11 @@ class ChatContextTracker:
                     created_at=context["created_at"].isoformat(),
                     entity_uuids=entity_uuids_list,
                     tools_used_json=tools_used_json,
-                    query_text=context.get("query_text")
+                    query_text=context.get("query_text"),
                 )
-                logger.warning(f"✅ SUCCESS: Persisted context for session {session_id} to Neo4j with {len(entity_uuids_list)} entities")
+                logger.warning(
+                    f"✅ SUCCESS: Persisted context for session {session_id} to Neo4j with {len(entity_uuids_list)} entities"
+                )
         except Exception as e:
             logger.error(f"❌ FAILED to persist context to Neo4j: {e}", exc_info=True)
 
@@ -159,6 +160,7 @@ class ChatContextTracker:
         """Load chat context from Neo4j."""
         try:
             import json
+
             async with self.driver.session() as session:
                 result = await session.run(
                     """
@@ -170,7 +172,7 @@ class ChatContextTracker:
                            s.query_text as query_text
                     """,
                     session_id=session_id,
-                    ttl_minutes=self.ttl.total_seconds() / 60
+                    ttl_minutes=self.ttl.total_seconds() / 60,
                 )
 
                 record = await result.single()
@@ -181,25 +183,29 @@ class ChatContextTracker:
                         try:
                             tools_used = json.loads(record["tools_used_json"])
                         except json.JSONDecodeError:
-                            logger.warning(f"Failed to parse tools_used_json for session {session_id}")
+                            logger.warning(
+                                f"Failed to parse tools_used_json for session {session_id}"
+                            )
 
                     # Convert Neo4j datetime to Python datetime
                     created_at = record["created_at"]
-                    if hasattr(created_at, 'to_native'):
+                    if hasattr(created_at, "to_native"):
                         created_at = created_at.to_native()  # Neo4j datetime object
                     elif isinstance(created_at, str):
                         created_at = datetime.fromisoformat(created_at)
 
                     # Ensure timezone-aware datetime in UTC for Pydantic serialization
                     if created_at.tzinfo is None:
-                        created_at = created_at.replace(tzinfo=timezone.utc)
+                        created_at = created_at.replace(tzinfo=UTC)
 
                     return {
                         "created_at": created_at,
-                        "entity_uuids": set(record["entity_uuids"]) if record["entity_uuids"] else set(),
+                        "entity_uuids": set(record["entity_uuids"])
+                        if record["entity_uuids"]
+                        else set(),
                         "relationship_data": [],  # Not persisted separately
                         "tools_used": tools_used,
-                        "query_text": record["query_text"]
+                        "query_text": record["query_text"],
                     }
                 return None
         except Exception as e:
@@ -208,7 +214,7 @@ class ChatContextTracker:
 
     async def get_context_graph(
         self, session_id: str, query_text: Optional[str] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Get the graph context for a chat session.
 
@@ -224,7 +230,9 @@ class ChatContextTracker:
             # Try loading from Neo4j
             logger.warning(f"Context not in cache for {session_id}, loading from Neo4j")
             context = await self._load_context_from_neo4j(session_id)
-            logger.warning(f"Loaded context from Neo4j: {context is not None}, entities: {len(context.get('entity_uuids', [])) if context else 0}")
+            logger.warning(
+                f"Loaded context from Neo4j: {context is not None}, entities: {len(context.get('entity_uuids', [])) if context else 0}"
+            )
             if context:
                 self.context_cache[session_id] = context
             else:
@@ -240,7 +248,7 @@ class ChatContextTracker:
         context = self.context_cache[session_id]
 
         # Check if context is expired
-        if datetime.now(timezone.utc) - context["created_at"] > self.ttl:
+        if datetime.now(UTC) - context["created_at"] > self.ttl:
             del self.context_cache[session_id]
             return {
                 "nodes": [],
@@ -257,7 +265,9 @@ class ChatContextTracker:
 
         # Build graph from tracked entities
         try:
-            logger.warning(f"🏗️  Building graph for session {session_id} with {len(context.get('entity_uuids', []))} entity UUIDs")
+            logger.warning(
+                f"🏗️  Building graph for session {session_id} with {len(context.get('entity_uuids', []))} entity UUIDs"
+            )
             nodes, links = await self._build_graph_from_context(context)
             logger.warning(f"✅ Graph built: {len(nodes)} nodes, {len(links)} links")
         except Exception as e:
@@ -287,7 +297,7 @@ class ChatContextTracker:
 
     async def _build_graph_from_context(
         self, context: dict
-    ) -> tuple[List[GraphNode], List[GraphEdge]]:
+    ) -> tuple[list[GraphNode], list[GraphEdge]]:
         """Build graph nodes and edges from tracked context."""
         entity_uuids = list(context["entity_uuids"])
 
@@ -313,11 +323,13 @@ class ChatContextTracker:
         neo4j_relationships = await self._fetch_relationships(entity_uuids)
         links.extend(neo4j_relationships)
 
-        logger.warning(f"📊 Built graph: {len(nodes)} nodes, {len(links)} links ({len(neo4j_relationships)} from Neo4j)")
+        logger.warning(
+            f"📊 Built graph: {len(nodes)} nodes, {len(links)} links ({len(neo4j_relationships)} from Neo4j)"
+        )
 
         return nodes, links
 
-    async def _fetch_entities(self, entity_uuids: List[str]) -> List[GraphNode]:
+    async def _fetch_entities(self, entity_uuids: list[str]) -> list[GraphNode]:
         """Fetch entity details from Neo4j by UUIDs."""
         nodes = []
 
@@ -333,30 +345,42 @@ class ChatContextTracker:
                 result = await session.run(query, {"uuids": entity_uuids})
                 records = await result.data()
 
-                logger.warning(f"📊 Query returned {len(records)} records for {len(entity_uuids)} UUIDs")
+                logger.warning(
+                    f"📊 Query returned {len(records)} records for {len(entity_uuids)} UUIDs"
+                )
 
                 if len(records) == 0:
-                    logger.error(f"❌ NO ENTITIES FOUND - UUIDs stored in ChatSession have no matching Entity nodes in Neo4j!")
+                    logger.error(
+                        "❌ NO ENTITIES FOUND - UUIDs stored in ChatSession have no matching Entity nodes in Neo4j!"
+                    )
                     logger.error(f"Sample UUIDs: {entity_uuids[:3]}")
                     # Let's check if ANY nodes with these UUIDs exist
                     check_query = "MATCH (n) WHERE n.uuid IN $uuids RETURN count(n) as count"
                     check_result = await session.run(check_query, {"uuids": entity_uuids[:5]})
                     check_data = await check_result.data()
-                    logger.error(f"Check query found {check_data[0]['count'] if check_data else 0} nodes with ANY label")
+                    logger.error(
+                        f"Check query found {check_data[0]['count'] if check_data else 0} nodes with ANY label"
+                    )
 
                 for record in records:
                     try:
                         # Sanitize properties to convert Neo4j DateTime objects to strings
                         props = record.get("props", {})
-                        logger.warning(f"🔍 Raw props before sanitization: {type(props)} - {list(props.keys()) if isinstance(props, dict) else 'NOT A DICT'}")
+                        logger.warning(
+                            f"🔍 Raw props before sanitization: {type(props)} - {list(props.keys()) if isinstance(props, dict) else 'NOT A DICT'}"
+                        )
 
                         # Log types of property values
                         if isinstance(props, dict):
                             for k, v in props.items():
-                                logger.warning(f"  Property '{k}': type={type(v).__name__}, value={v!r}")
+                                logger.warning(
+                                    f"  Property '{k}': type={type(v).__name__}, value={v!r}"
+                                )
 
                         sanitized_props = self._sanitize_neo4j_properties(props)
-                        logger.warning(f"✅ Sanitized props: {list(sanitized_props.keys()) if isinstance(sanitized_props, dict) else 'NOT A DICT'}")
+                        logger.warning(
+                            f"✅ Sanitized props: {list(sanitized_props.keys()) if isinstance(sanitized_props, dict) else 'NOT A DICT'}"
+                        )
 
                         node = GraphNode(
                             id=record["uuid"],
@@ -367,7 +391,9 @@ class ChatContextTracker:
                         nodes.append(node)
                         logger.warning(f"✅ Found entity: {node.name} ({node.type})")
                     except Exception as node_error:
-                        logger.error(f"❌ Error creating GraphNode from record: {node_error}, record: {record}")
+                        logger.error(
+                            f"❌ Error creating GraphNode from record: {node_error}, record: {record}"
+                        )
 
         except Exception as e:
             logger.error(f"❌ Error fetching entities from Neo4j: {e}", exc_info=True)
@@ -375,7 +401,7 @@ class ChatContextTracker:
         logger.warning(f"📈 Returning {len(nodes)} nodes from _fetch_entities")
         return nodes
 
-    async def _fetch_relationships(self, entity_uuids: List[str]) -> List[GraphEdge]:
+    async def _fetch_relationships(self, entity_uuids: list[str]) -> list[GraphEdge]:
         """Fetch relationships between tracked entities from Neo4j."""
         relationships = []
 
@@ -404,7 +430,11 @@ class ChatContextTracker:
                     try:
                         # Sanitize relationship properties
                         props = record.get("rel_props", {})
-                        sanitized_props = self._sanitize_neo4j_properties(props) if isinstance(props, dict) else {}
+                        sanitized_props = (
+                            self._sanitize_neo4j_properties(props)
+                            if isinstance(props, dict)
+                            else {}
+                        )
 
                         edge = GraphEdge(
                             source=record["source_uuid"],
@@ -433,7 +463,7 @@ class ChatContextTracker:
                 continue
 
             # Handle Neo4j DateTime objects
-            if hasattr(value, 'isoformat'):
+            if hasattr(value, "isoformat"):
                 # Neo4j DateTime or Python datetime - convert to ISO string
                 sanitized[key] = value.isoformat()
 
@@ -444,8 +474,10 @@ class ChatContextTracker:
             # Handle lists
             elif isinstance(value, list):
                 sanitized[key] = [
-                    item.isoformat() if hasattr(item, 'isoformat')
-                    else self._sanitize_neo4j_properties(item) if isinstance(item, dict)
+                    item.isoformat()
+                    if hasattr(item, "isoformat")
+                    else self._sanitize_neo4j_properties(item)
+                    if isinstance(item, dict)
                     else item
                     for item in value
                 ]
@@ -458,7 +490,7 @@ class ChatContextTracker:
 
     def clear_expired_contexts(self) -> int:
         """Clear expired contexts from cache. Returns number of contexts cleared."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         expired_sessions = [
             session_id
             for session_id, context in self.context_cache.items()

@@ -6,21 +6,23 @@ process plenary session protocols.
 """
 
 import time
-from typing import Any, Dict
 from datetime import datetime
+from typing import Any
 
 import structlog
 from kodosumi import core
 from neo4j import GraphDatabase
 
-from src.flows.bundestag_ingestion.collectors.plenarprotokoll_collector import PlenarprotokollCollector
 from src.flows.bundestag_common.api_client import BundestagAPIClient
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_ingestion.collectors.plenarprotokoll_collector import (
+    PlenarprotokollCollector,
+)
 
 logger = structlog.get_logger()
 
 
-async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
+async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
     """
     Process Bundestag Plenarprotokoll collection batch.
 
@@ -54,7 +56,9 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
     await tracer.markdown("## Configuration\n")
     await tracer.markdown(f"- **Wahlperioden**: {', '.join(map(str, wahlperioden))}\n")
-    await tracer.markdown(f"- **Max protocols**: {max_protocols if max_protocols else 'Unlimited'}\n")
+    await tracer.markdown(
+        f"- **Max protocols**: {max_protocols if max_protocols else 'Unlimited'}\n"
+    )
     await tracer.markdown(f"- **Batch size**: {batch_size}\n")
     await tracer.markdown(f"- **Fetch full text**: {'✅ Yes' if fetch_full_text else '❌ No'}\n")
     await tracer.markdown(f"- **Date range**: {start_date or 'Any'} to {end_date or 'Any'}\n\n")
@@ -67,10 +71,7 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
     try:
         # Neo4j connection
-        driver = GraphDatabase.driver(
-            "bolt://localhost:7687",
-            auth=("neo4j", "password123")
-        )
+        driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password123"))
 
         # API client
         api_client = BundestagAPIClient()
@@ -84,6 +85,7 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
         error_msg = f"❌ Initialization failed: {str(e)}"
         await tracer.markdown(f"{error_msg}\n")
         from .report_generator import generate_error_report
+
         return core.response.Markdown(generate_error_report(str(e)))
 
     # Process each Wahlperiode
@@ -99,9 +101,7 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
         # Create collector with neo4j_driver for automatic saving
         collector = PlenarprotokollCollector(
-            api_client=api_client,
-            neo4j_driver=driver,
-            neo4j_database="politicamonitoring.v2"
+            api_client=api_client, neo4j_driver=driver, neo4j_database="politicamonitoring.v2"
         )
 
         # Build filters
@@ -119,7 +119,7 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
         if max_protocols:
             remaining = max_protocols - total_protocols
             if remaining <= 0:
-                await tracer.markdown(f"⏭️  Skipping (max protocols reached)\n")
+                await tracer.markdown("⏭️  Skipping (max protocols reached)\n")
                 continue
             wp_limit = remaining
 
@@ -135,7 +135,9 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
             # Debug: Report raw result
             await tracer.markdown(f"\n**DEBUG: Collector result keys**: {list(result.keys())}\n")
-            await tracer.markdown(f"**DEBUG: entities_created**: {result.get('entities_created')}\n")
+            await tracer.markdown(
+                f"**DEBUG: entities_created**: {result.get('entities_created')}\n"
+            )
             await tracer.markdown(f"**DEBUG: items_collected**: {result.get('items_collected')}\n")
 
             # Report results
@@ -158,18 +160,16 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
             # Upsert to Neo4j if we have entities
             if result.get("entities") and len(result["entities"]) > 0:
-                await tracer.markdown(f"\n### Upserting to Neo4j\n")
+                await tracer.markdown("\n### Upserting to Neo4j\n")
 
                 entities = result["entities"]
 
                 # Upsert in batches
                 successful = 0
                 for i in range(0, len(entities), batch_size):
-                    batch = entities[i:i + batch_size]
+                    batch = entities[i : i + batch_size]
                     upsert_result = upsert_manager.upsert_entities_batch(
-                        entity_type="Plenarprotokoll",
-                        entities=batch,
-                        batch_size=batch_size
+                        entity_type="Plenarprotokoll", entities=batch, batch_size=batch_size
                     )
                     successful += upsert_result.get("successful", 0)
                     await tracer.markdown(f"- Batch {i//batch_size + 1}: {len(batch)} protocols\n")
@@ -206,13 +206,16 @@ async def process_plenarprotokoll_batch(inputs: Dict[str, Any], tracer):
 
     # Generate detailed report
     from .report_generator import generate_collection_report
-    report = generate_collection_report({
-        "total_protocols": total_protocols,
-        "wahlperioden_processed": wahlperioden,
-        "errors": total_errors,
-        "duration": duration,
-        "fetch_full_text": fetch_full_text,
-    })
+
+    report = generate_collection_report(
+        {
+            "total_protocols": total_protocols,
+            "wahlperioden_processed": wahlperioden,
+            "errors": total_errors,
+            "duration": duration,
+            "fetch_full_text": fetch_full_text,
+        }
+    )
 
     return core.response.Markdown(report)
 

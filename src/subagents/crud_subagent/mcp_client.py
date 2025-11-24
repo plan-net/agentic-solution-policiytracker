@@ -1,7 +1,7 @@
 """HTTP client for Neo4j CRUD MCP Server."""
 import asyncio
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -25,8 +25,8 @@ class MCPClient:
         self.timeout = httpx.Timeout(config.timeout_seconds)
 
     async def _make_request(
-        self, endpoint: str, payload: Dict[str, Any], attempt: int = 1
-    ) -> Dict[str, Any]:
+        self, endpoint: str, payload: dict[str, Any], attempt: int = 1
+    ) -> dict[str, Any]:
         """Make HTTP request to MCP server with retry logic.
 
         Args:
@@ -53,16 +53,9 @@ class MCPClient:
                     logger.error(f"MCP request failed: {error_msg}")
 
                     # Retry on server errors
-                    if (
-                        response.status_code >= 500
-                        and attempt < self.config.max_retries
-                    ):
-                        await asyncio.sleep(
-                            self.config.retry_delay_seconds * attempt
-                        )
-                        return await self._make_request(
-                            endpoint, payload, attempt + 1
-                        )
+                    if response.status_code >= 500 and attempt < self.config.max_retries:
+                        await asyncio.sleep(self.config.retry_delay_seconds * attempt)
+                        return await self._make_request(endpoint, payload, attempt + 1)
 
                     raise Exception(error_msg)
 
@@ -80,9 +73,7 @@ class MCPClient:
                 return await self._make_request(endpoint, payload, attempt + 1)
             raise
 
-    async def create_node(
-        self, entity_type: str, properties: Dict[str, Any]
-    ) -> OperationResult:
+    async def create_node(self, entity_type: str, properties: dict[str, Any]) -> OperationResult:
         """Create a new node.
 
         Args:
@@ -127,7 +118,7 @@ class MCPClient:
             )
 
     async def update_node(
-        self, entity_type: str, node_id: str, properties: Dict[str, Any]
+        self, entity_type: str, node_id: str, properties: dict[str, Any]
     ) -> OperationResult:
         """Update an existing node.
 
@@ -237,7 +228,7 @@ class MCPClient:
         to_entity_type: str,
         to_node_id: str,
         relationship_type: str,
-        properties: Optional[Dict[str, Any]] = None,
+        properties: Optional[dict[str, Any]] = None,
     ) -> OperationResult:
         """Create a relationship between two nodes.
 
@@ -299,7 +290,7 @@ class MCPClient:
         to_entity_type: str,
         to_node_id: str,
         relationship_type: str,
-        properties: Dict[str, Any],
+        properties: dict[str, Any],
     ) -> OperationResult:
         """Update a relationship.
 
@@ -357,7 +348,7 @@ class MCPClient:
     async def query_nodes(
         self,
         entity_type: str,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
         limit: int = 100,
         skip: int = 0,
     ) -> OperationResult:

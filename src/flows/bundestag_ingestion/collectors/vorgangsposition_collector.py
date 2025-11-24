@@ -6,7 +6,7 @@ Bundestag DIP API. Handles large dataset (604k+ records) with batch processing.
 """
 
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -46,7 +46,7 @@ class VorgangspositionCollector(BaseCollector):
         api_client,
         entity_builder: Optional[Any] = None,
         edge_builder: Optional[Any] = None,
-        batch_size: int = 100
+        batch_size: int = 100,
     ):
         """
         Initialize the Vorgangsposition collector.
@@ -60,12 +60,9 @@ class VorgangspositionCollector(BaseCollector):
         super().__init__(api_client, entity_builder, edge_builder)
         self.batch_size = batch_size
 
-        logger.info(
-            "Initialized VorgangspositionCollector",
-            batch_size=self.batch_size
-        )
+        logger.info("Initialized VorgangspositionCollector", batch_size=self.batch_size)
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect Vorgangsposition data and transform into entities and edges.
 
@@ -105,16 +102,13 @@ class VorgangspositionCollector(BaseCollector):
             # Add vorgang_id filter if provided
             if vorgang_id:
                 filters["f.vorgang_id"] = vorgang_id
-                logger.info(
-                    "Filtering by vorgang_id",
-                    vorgang_id=vorgang_id
-                )
+                logger.info("Filtering by vorgang_id", vorgang_id=vorgang_id)
 
             logger.info(
                 "Starting Vorgangsposition collection",
                 filters=filters,
                 limit=limit,
-                batch_size=self.batch_size
+                batch_size=self.batch_size,
             )
 
             # Fetch data with pagination
@@ -123,7 +117,7 @@ class VorgangspositionCollector(BaseCollector):
             logger.info(
                 "Completed data collection",
                 items_collected=len(items),
-                fetch_duration=fetch_duration
+                fetch_duration=fetch_duration,
             )
 
             # Process in batches for large datasets
@@ -138,7 +132,7 @@ class VorgangspositionCollector(BaseCollector):
                     batch_number=batches_processed,
                     batch_start=batch_start,
                     batch_end=batch_end,
-                    total_items=total_items
+                    total_items=total_items,
                 )
 
                 try:
@@ -154,7 +148,7 @@ class VorgangspositionCollector(BaseCollector):
                         "Batch processed successfully",
                         batch_number=batches_processed,
                         entities_in_batch=len(batch_entities),
-                        edges_in_batch=len(batch_edges)
+                        edges_in_batch=len(batch_edges),
                     )
 
                 except Exception as e:
@@ -170,16 +164,13 @@ class VorgangspositionCollector(BaseCollector):
                 edges_created=edges_created,
                 duration=duration,
                 items_collected=len(items),
-                errors=errors
+                errors=errors,
             )
 
             # Add batch processing info
             stats["batches_processed"] = batches_processed
 
-            logger.info(
-                "Vorgangsposition collection complete",
-                **stats
-            )
+            logger.info("Vorgangsposition collection complete", **stats)
 
             return stats
 
@@ -194,14 +185,12 @@ class VorgangspositionCollector(BaseCollector):
                 edges_created=edges_created,
                 duration=duration,
                 items_collected=0,
-                errors=errors
+                errors=errors,
             )
 
     async def collect_by_vorgang(
-        self,
-        vorgang_id: str,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, vorgang_id: str, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect all Vorgangspositionen for a specific Vorgang.
 
@@ -214,24 +203,15 @@ class VorgangspositionCollector(BaseCollector):
         Returns:
             Collection statistics dictionary
         """
-        logger.info(
-            "Collecting Vorgangspositionen by Vorgang",
-            vorgang_id=vorgang_id,
-            limit=limit
-        )
+        logger.info("Collecting Vorgangspositionen by Vorgang", vorgang_id=vorgang_id, limit=limit)
 
-        inputs = {
-            "vorgang_id": vorgang_id,
-            "limit": limit
-        }
+        inputs = {"vorgang_id": vorgang_id, "limit": limit}
 
         return await self.collect_and_transform(inputs)
 
     async def collect_by_wahlperiode(
-        self,
-        wahlperiode: str,
-        limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+        self, wahlperiode: str, limit: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Collect all Vorgangspositionen for a legislative period.
 
@@ -243,19 +223,16 @@ class VorgangspositionCollector(BaseCollector):
             Collection statistics dictionary
         """
         logger.info(
-            "Collecting Vorgangspositionen by Wahlperiode",
-            wahlperiode=wahlperiode,
-            limit=limit
+            "Collecting Vorgangspositionen by Wahlperiode", wahlperiode=wahlperiode, limit=limit
         )
 
-        inputs = {
-            "filters": {"f.wahlperiode": wahlperiode},
-            "limit": limit
-        }
+        inputs = {"filters": {"f.wahlperiode": wahlperiode}, "limit": limit}
 
         return await self.collect_and_transform(inputs)
 
-    async def get_collection_statistics(self, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def get_collection_statistics(
+        self, filters: Optional[dict[str, Any]] = None
+    ) -> dict[str, Any]:
         """
         Get statistics about available Vorgangspositionen without collecting them.
 
@@ -276,17 +253,11 @@ class VorgangspositionCollector(BaseCollector):
 
         filters = filters or {}
 
-        logger.info(
-            "Getting Vorgangsposition statistics",
-            filters=filters
-        )
+        logger.info("Getting Vorgangsposition statistics", filters=filters)
 
         try:
             # Create pagination helper
-            pagination_helper = PaginationHelper(
-                api_client=self.api_client,
-                max_items=None
-            )
+            pagination_helper = PaginationHelper(api_client=self.api_client, max_items=None)
 
             # Get count without retrieving items
             total_count = await pagination_helper.count_items(self.endpoint, filters)
@@ -295,24 +266,18 @@ class VorgangspositionCollector(BaseCollector):
                 "total_count": total_count,
                 "endpoint": self.endpoint,
                 "filters_applied": filters,
-                "estimated_batches": (total_count + self.batch_size - 1) // self.batch_size
+                "estimated_batches": (total_count + self.batch_size - 1) // self.batch_size,
             }
 
-            logger.info(
-                "Retrieved Vorgangsposition statistics",
-                **stats
-            )
+            logger.info("Retrieved Vorgangsposition statistics", **stats)
 
             return stats
 
         except Exception as e:
-            logger.error(
-                "Error getting Vorgangsposition statistics",
-                error=str(e)
-            )
+            logger.error("Error getting Vorgangsposition statistics", error=str(e))
             return {
                 "total_count": 0,
                 "endpoint": self.endpoint,
                 "filters_applied": filters,
-                "error": str(e)
+                "error": str(e),
             }

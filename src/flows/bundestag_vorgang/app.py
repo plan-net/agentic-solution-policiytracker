@@ -43,7 +43,9 @@ async def ingest_bundestag_vorgaenge(request: fastapi.Request, inputs: dict):
         if not wahlperioden:
             error.add(wahlperioden="At least one Wahlperiode must be specified")
     except Exception:
-        error.add(wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)")
+        error.add(
+            wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)"
+        )
 
     # Validate vorgangstyp
     if not inputs.get("vorgangstyp"):

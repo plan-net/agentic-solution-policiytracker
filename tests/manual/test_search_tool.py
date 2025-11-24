@@ -3,11 +3,15 @@
 import asyncio
 import logging
 import os
+
 from graphiti_core import Graphiti
+
 from src.chat.tools.search import GraphitiSearchTool
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -33,7 +37,7 @@ async def test_search_tool():
         query = "Google regulatory exposure DMA DSA AI Act"
 
         print("=" * 80)
-        print(f"TESTING SEARCH TOOL")
+        print("TESTING SEARCH TOOL")
         print(f"Query: {query}")
         print("=" * 80)
         print()
@@ -42,10 +46,7 @@ async def test_search_tool():
         print("Test 1: Text output with relevance scores (limit=5)")
         print("-" * 80)
         result = await search_tool._arun(
-            query=query,
-            limit=5,
-            search_type="comprehensive",
-            output_format="text"
+            query=query, limit=5, search_type="comprehensive", output_format="text"
         )
         print(result)
         print()
@@ -54,19 +55,17 @@ async def test_search_tool():
         print("\nTest 2: Structured output with graph data (limit=5)")
         print("-" * 80)
         result = await search_tool._arun(
-            query=query,
-            limit=5,
-            search_type="comprehensive",
-            output_format="structured"
+            query=query, limit=5, search_type="comprehensive", output_format="structured"
         )
 
         import json
+
         print(json.dumps(result, indent=2))
         print()
 
         # Print graph data summary
         if "graph_data" in result:
-            print(f"\nGraph Data Summary:")
+            print("\nGraph Data Summary:")
             print(f"  Nodes: {len(result['graph_data']['nodes'])}")
             print(f"  Edges: {len(result['graph_data']['edges'])}")
             print()
@@ -75,10 +74,7 @@ async def test_search_tool():
         print("\nTest 3: Entity-focused search (structured)")
         print("-" * 80)
         result = await search_tool._arun(
-            query=query,
-            limit=3,
-            search_type="entity_focused",
-            output_format="structured"
+            query=query, limit=3, search_type="entity_focused", output_format="structured"
         )
 
         # Just print summary for entity search
@@ -86,8 +82,8 @@ async def test_search_tool():
         print(f"Total Results: {result['total_results']}")
         print(f"Results Returned: {result['returned_results']}")
         print(f"\nTop {len(result['results'])} Entities:")
-        for r in result['results']:
-            score_text = f" [Score: {r['relevance_score']:.2f}]" if r['relevance_score'] else ""
+        for r in result["results"]:
+            score_text = f" [Score: {r['relevance_score']:.2f}]" if r["relevance_score"] else ""
             print(f"  {r['rank']}.{score_text} {r['name']} ({r['type']})")
         print()
 
@@ -100,7 +96,7 @@ async def test_search_tool():
         raise
     finally:
         # Clean up
-        if 'client' in locals():
+        if "client" in locals():
             logger.info("Closing Graphiti client")
             await client.close()
 

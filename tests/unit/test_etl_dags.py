@@ -13,6 +13,7 @@ class TestPolicyCollectionDag:
         """Test that policy collection DAG can be imported."""
         try:
             from src.etl.dags.policy_collection_dag import dag
+
             assert dag is not None
             assert dag.dag_id == "policy_collection_dag"
         except ImportError as e:
@@ -57,7 +58,7 @@ class TestPolicyCollectionDag:
             from src.etl.dags import policy_collection_dag
 
             # Check for main task functions
-            assert hasattr(policy_collection_dag, 'collect_policy_documents')
+            assert hasattr(policy_collection_dag, "collect_policy_documents")
 
             # Verify function is callable
             assert callable(policy_collection_dag.collect_policy_documents)
@@ -65,7 +66,7 @@ class TestPolicyCollectionDag:
         except ImportError:
             pytest.skip("Airflow not available")
 
-    @patch('src.etl.collectors.policy_landscape.PolicyLandscapeCollector')
+    @patch("src.etl.collectors.policy_landscape.PolicyLandscapeCollector")
     def test_collect_policy_documents_function(self, mock_collector_class):
         """Test the collect_policy_documents function logic."""
         try:
@@ -74,9 +75,9 @@ class TestPolicyCollectionDag:
             # Mock the collector
             mock_collector = MagicMock()
             mock_collector.collect_documents.return_value = {
-                'documents_saved': 5,
-                'duration': 45.2,
-                'errors': []
+                "documents_saved": 5,
+                "duration": 45.2,
+                "errors": [],
             }
             mock_collector_class.return_value = mock_collector
 
@@ -89,8 +90,8 @@ class TestPolicyCollectionDag:
 
             # Verify return value structure
             assert isinstance(result, dict)
-            assert 'documents_saved' in result
-            assert 'status' in result
+            assert "documents_saved" in result
+            assert "status" in result
 
         except ImportError:
             pytest.skip("Airflow not available")
@@ -103,6 +104,7 @@ class TestNewsCollectionDag:
         """Test that news collection DAG can be imported."""
         try:
             from src.etl.dags.news_collection_dag import dag
+
             assert dag is not None
             assert dag.dag_id == "news_collection_dag"
         except ImportError as e:
@@ -145,7 +147,7 @@ class TestNewsCollectionDag:
             from src.etl.dags import news_collection_dag
 
             # Check for main task functions
-            assert hasattr(news_collection_dag, 'collect_news_articles')
+            assert hasattr(news_collection_dag, "collect_news_articles")
 
             # Verify function is callable
             assert callable(news_collection_dag.collect_news_articles)
@@ -153,7 +155,7 @@ class TestNewsCollectionDag:
         except ImportError:
             pytest.skip("Airflow not available")
 
-    @patch('src.etl.collectors.exa_news.ExaNewsCollector')
+    @patch("src.etl.collectors.exa_news.ExaNewsCollector")
     def test_collect_news_articles_function(self, mock_collector_class):
         """Test the collect_news_articles function logic."""
         try:
@@ -162,14 +164,14 @@ class TestNewsCollectionDag:
             # Mock the collector
             mock_collector = MagicMock()
             mock_collector.collect_documents.return_value = {
-                'documents_saved': 12,
-                'duration': 23.1,
-                'errors': []
+                "documents_saved": 12,
+                "duration": 23.1,
+                "errors": [],
             }
             mock_collector_class.return_value = mock_collector
 
             # Test function call with mock context
-            mock_context = {'task_instance': MagicMock()}
+            mock_context = {"task_instance": MagicMock()}
             result = collect_news_articles(**mock_context)
 
             # Verify collector was instantiated and called
@@ -178,7 +180,7 @@ class TestNewsCollectionDag:
 
             # Verify return value structure
             assert isinstance(result, dict)
-            assert 'documents_saved' in result
+            assert "documents_saved" in result
 
         except ImportError:
             pytest.skip("Airflow not available")
@@ -191,6 +193,7 @@ class TestFlowOrchestrationDag:
         """Test that flow orchestration DAG can be imported."""
         try:
             from src.etl.dags.flow_orchestration_dag import dag
+
             assert dag is not None
             assert dag.dag_id == "flow_orchestration_dag"
         except ImportError as e:
@@ -214,7 +217,7 @@ class TestFlowOrchestrationDag:
             from src.etl.dags import flow_orchestration_dag
 
             # Check for orchestration functions
-            assert hasattr(flow_orchestration_dag, 'check_etl_health')
+            assert hasattr(flow_orchestration_dag, "check_etl_health")
             assert callable(flow_orchestration_dag.check_etl_health)
 
         except ImportError:
@@ -227,17 +230,17 @@ class TestDagIntegration:
     def test_all_dags_importable(self):
         """Test that all DAGs can be imported without errors."""
         dag_modules = [
-            'src.etl.dags.policy_collection_dag',
-            'src.etl.dags.news_collection_dag',
-            'src.etl.dags.flow_orchestration_dag'
+            "src.etl.dags.policy_collection_dag",
+            "src.etl.dags.news_collection_dag",
+            "src.etl.dags.flow_orchestration_dag",
         ]
 
         imported_dags = []
 
         for module_name in dag_modules:
             try:
-                module = __import__(module_name, fromlist=['dag'])
-                assert hasattr(module, 'dag')
+                module = __import__(module_name, fromlist=["dag"])
+                assert hasattr(module, "dag")
                 imported_dags.append(module.dag)
             except ImportError:
                 pytest.skip(f"Airflow not available for {module_name}")
