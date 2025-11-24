@@ -2,7 +2,7 @@
 title: Idealo lawsuit: Google ordered to pay 465 million euros in damages
 url: https://www.heise.de/en/news/Idealo-lawsuit-Google-ordered-to-pay-465-million-euros-in-damages-11078695.html
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:51.942641
+collected_date: 2025-11-24T03:54:22.579241
 source: Heise
 source_url: https://www.heise.de
 author: Falk Steiner

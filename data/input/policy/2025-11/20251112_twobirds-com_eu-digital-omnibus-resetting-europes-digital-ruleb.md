@@ -2,7 +2,7 @@
 title: EU Digital Omnibus Resetting Europes digital rulebook
 url: https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook
 published_date: 2025-11-12T00:00:00
-collected_date: 2025-11-16T02:36:45.630876
+collected_date: 2025-11-24T03:54:14.684180
 source: Twobirds
 source_url: https://www.twobirds.com
 description: "- [People](https://www.twobirds.com/en/people)
@@ -131,16 +131,16 @@ Rather than introducing new obligations, the package focuses on making current r
 
 [More Insights](https://www.twobirds.com/en/insights)
 
-## Connected - November 2025
+## Singapore's Strategic Play: The SGX-Nasdaq Dual Listing Bridge
 
-[Read More](https://www.twobirds.com/en/insights/2025/global/connected-november-2025)
+[Read More](https://www.twobirds.com/en/insights/2025/singapore/singapore's-strategic-play-the-sgx-nasdaq-dual-listing-bridge)
 
-## Cyber Security and Resilience Bill: Strengthening the UK’s Digital Defences
+## New Czech Cybersecurity Act is effective
 
-[Read More](https://www.twobirds.com/en/insights/2025/uk/cyber-security-and-resilience-bill-strengthening-the-uks-digital-defences)
+[Read More](https://www.twobirds.com/en/insights/2025/czech-republic/new-czech-cybersecurity-act-is-effective)
 
-## NIS2 Directive transposition in Portugal: Status and brief overview
+## EU Digital Omnibus package: Major Changes to the Data Act Proposed
 
-[Read More](https://www.twobirds.com/en/insights/2025/nis2-directive-transposition-in-portugal-status-and-brief-overview)
+[Read More](https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-package-major-changes-to-the-data-act-proposed)
 
 [More Insights](https://www.twobirds.com/en/insights)

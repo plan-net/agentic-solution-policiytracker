@@ -2,7 +2,7 @@
 title: EU receives Google's proposal for fixing adtech antitrust abuses | Euractiv
 url: https://www.euractiv.com/news/eu-receives-googles-proposal-for-fixing-adtech-antitrust-abuses/
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-16T02:36:46.801542
+collected_date: 2025-11-24T03:54:15.516543
 source: Euractiv
 source_url: https://www.euractiv.com
 author: Euractiv

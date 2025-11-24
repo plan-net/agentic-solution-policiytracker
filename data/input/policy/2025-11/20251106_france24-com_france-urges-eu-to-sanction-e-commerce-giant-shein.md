@@ -2,7 +2,7 @@
 title: France urges EU to sanction e-commerce giant Shein after ...
 url: https://www.france24.com/en/live-news/20251106-france-urges-eu-to-sanction-shein-platform
 published_date: 2025-11-06T00:00:00
-collected_date: 2025-11-16T02:36:31.875953
+collected_date: 2025-11-24T03:53:59.402519
 source: France24
 source_url: https://www.france24.com
 author: By:
@@ -65,7 +65,7 @@ Officials had already found illegal and non-compliant products, including "unaut
 
 The EU added Shein in April 2024 to its list of Very Large Online Platforms subject to tougher obligations under the DSA, a powerful law that forces tech giants to do more to protect European consumers online.
 
-The scandal did not deter hundreds of shoppers from flocking to the first Shein store's opening in Paris.© Dimitar Dilkoff, AFP
+The row over sex dolls did not deter hundreds of shoppers from flocking to the first Shein store's opening in Paris this week.© Dimitar Dilkoff, AFP
 
 It has been looking since February this year into risks linked to illegal products on the site, a possible first step towards a formal investigation under the DSA.
 

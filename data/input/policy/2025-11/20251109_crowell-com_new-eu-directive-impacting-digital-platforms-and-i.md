@@ -2,7 +2,7 @@
 title: New EU Directive Impacting Digital Platforms and Individuals Working for Them
 url: https://crowell.com/en/insights/client-alerts/new-eu-directive-impacting-digital-platforms-and-individuals-working-for-them
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:13.985482
+collected_date: 2025-11-24T03:53:55.195868
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -23,10 +23,10 @@ collection_type: policy_landscape
 3. \|New EU Directive Impacting Digital Platforms and Individuals Working for Them
 
 - Print
-- [PDF Link](https://crowell.com/print/v2/content/102225/new-eu-directive-impacting-digital-platforms-and-individuals-working-for-them.pdf)
+- [PDF Link](https://www.crowell.com/print/v2/content/102225/new-eu-directive-impacting-digital-platforms-and-individuals-working-for-them.pdf)
 - Share
 
-- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-directive-impacting-digital-platforms-and-individuals-working-for-them?subject=New%20EU%20Directive%20Impacting%20Digital%20Platforms%20and%20Individuals%20Working%20for%20Them&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-directive-impacting-digital-platforms-and-individuals-working-for-them)
+- [Email](mailto://www.crowell.com?subject=New%20EU%20Directive%20Impacting%20Digital%20Platforms%20and%20Individuals%20Working%20for%20Them&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-directive-impacting-digital-platforms-and-individuals-working-for-them)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-directive-impacting-digital-platforms-and-individuals-working-for-them)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-directive-impacting-digital-platforms-and-individuals-working-for-them)
 
@@ -126,15 +126,11 @@ For further assistance or to discuss the implications of this Directive on your 
 
 - [Emmanuel Plasschaert](https://www.crowell.com/en/professionals/emmanuel-plasschaert)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.282.4084](tel:%2B32.2.282.4084)
 
 [ZXBsYXNzY2hhZXJ0QGNyb3dlbGwuY29t](mailto:ZXBsYXNzY2hhZXJ0QGNyb3dlbGwuY29t)
 
 - [Evelien Jamaels](https://www.crowell.com/en/professionals/evelien-jamaels)
-
-- [Brussels](https://www.crowell.com/en/locations/brussels)
 
 - D \| [+32.2.214.2814](tel:%2B32.2.214.2814)
 
@@ -142,32 +138,30 @@ For further assistance or to discuss the implications of this Directive on your 
 
 - [Sofiane Fergali](https://www.crowell.com/en/professionals/sofiane-fergali)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.214.2850](tel:%2B32.2.214.2850)
 
 [c2ZlcmdhbGlAY3Jvd2VsbC5jb20=](mailto:c2ZlcmdhbGlAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 9 min read \| 09.11.25
+Client Alert \| 3 min read \| 11.20.25
 
-[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
+[Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
 
-About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
+Design patents offer protection for the ornamental appearance of a product, focusing on aspects like its shape and surface decoration, as opposed to the functional aspects protected by utility patents. The scope of a design patent is defined by the drawings and any descriptive language within the patent itself. Recent decisions by the Federal Circuit emphasize the need for clarity in the prosecution history of a design patent in order to preserve desired scope to preserve intentional narrowing (and to avoid unintentional sacrifice of desired claim scope)....
 
-- Client Alert \| 1 min read \| 09.10.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[FAR from Alone: GSA Releases New FAR Companion Guide](https://www.crowell.com/en/insights/client-alerts/far-from-alone-gsa-releases-new-far-companion-guide)
+[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
 
-- Client Alert \| 7 min read \| 09.10.25
+- Client Alert \| 6 min read \| 11.19.25
 
-[Finally, the CMMC Final Rule: DoD Completes CMMC Rulemaking, Ushering in New Era in DoD Cybersecurity](https://www.crowell.com/en/insights/client-alerts/finally-the-cmmc-final-rule-dod-completes-cmmc-rulemaking-ushering-in-new-era-in-dod-cybersecurity)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
-- Client Alert \| 8 min read \| 09.09.25
+- Client Alert \| 4 min read \| 11.18.25
 
-[FTC Stops Defending Rule Banning Noncompete Agreements, Opting Instead for “Aggressive” Case-by-Case Enforcement](https://www.crowell.com/en/insights/client-alerts/ftc-stops-defending-rule-banning-noncompete-agreements-opting-instead-for-aggressive-case-by-case-enforcement)
+[DOJ Announces Major Enforcement Actions Targeting North Korean Remote IT Worker Schemes](https://www.crowell.com/en/insights/client-alerts/doj-announces-major-enforcement-actions-targeting-north-korean-remote-it-worker-schemes)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 
 to the latest insights from our team
 
-[Subscribe Now](https://crowell.com/en/subscribe)
+[Subscribe Now](https://www.crowell.com/en/subscribe)

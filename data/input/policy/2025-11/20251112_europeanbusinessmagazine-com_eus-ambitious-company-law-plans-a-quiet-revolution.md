@@ -1,8 +1,8 @@
 ---
 title: EU's Ambitious Company-Law Plans: A Quiet Revolution
 url: https://europeanbusinessmagazine.com/business/eus-company-law-plans-highly-ambitious/
-published_date: 2025-11-12T02:36:39.960000
-collected_date: 2025-11-16T02:36:40.661169
+published_date: 2025-11-12T00:00:00
+collected_date: 2025-11-24T03:54:09.457447
 source: Europeanbusinessmagazine
 source_url: https://europeanbusinessmagazine.com
 author: EBM ADMIN Team

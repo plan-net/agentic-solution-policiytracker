@@ -2,7 +2,7 @@
 title: "Digital data, GDPR \"simplification\" serves corporate interests—and limits user privacy"
 url: https://www.eunews.it/en/2025/11/10/digital-data-gdpr-simplification-serves-corporate-interests-and-limits-user-privacy/
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-16T02:36:21.334702
+collected_date: 2025-11-24T03:54:14.684472
 source: Eunews
 source_url: https://www.eunews.it
 author: "Francesco Bortoletto</a> <a class=\"social twitter\" href=\"https://twitter.com/bortoletto_f\" target=\"_blank\">bortoletto_f</a>"
@@ -133,43 +133,43 @@ Tags: [artificial intelligence](https://www.eunews.it/en/tag/artificial-intellig
 
 [30 June 2025](https://www.eunews.it/en/2025/06/30/artificial-intelligence-european-gigafactories-attract-industrys-interest/)
 
-### [Centre or right, the EPP calls the shots in the European Parliament. Yes to 2040 climate target, no to due diligence](https://www.eunews.it/en/2025/11/13/centre-or-right-the-epp-calls-the-shots-in-the-european-parliament-yes-to-2040-climate-target-no-to-due-diligence/)
+### [EU opens new probe into Google for allegedly demoting media outlets in search results](https://www.eunews.it/en/2025/11/13/eu-opens-new-probe-into-google-for-allegedly-demoting-media-outlets-in-search-results/)
 
 by [Simone De La Feld](https://www.eunews.it/en/author/simonedelafeld21gmail-com/) [@SimoneDeLaFeld1](https://twitter.com/@SimoneDeLaFeld1)
 
-[13 November 2025](https://www.eunews.it/en/2025/11/13/centre-or-right-the-epp-calls-the-shots-in-the-european-parliament-yes-to-2040-climate-target-no-to-due-diligence/)
+[13 November 2025](https://www.eunews.it/en/2025/11/13/eu-opens-new-probe-into-google-for-allegedly-demoting-media-outlets-in-search-results/)
 
-The People's Party reveals its hand. There are two alternative majorities: first, it approves the 90 per cent cut in...
+The European Commission has highlighted criticism of the 'site reputation abuse policy' through which Google demotes websites that include content...
 
-### [E-commerce, EU breakthrough: parcels under €150 will also be taxed](https://www.eunews.it/en/2025/11/13/e-commerce-eu-breakthrough-parcels-under-e150-will-also-be-taxed/)
-
-by [Emanuele Bonini](https://www.eunews.it/en/author/emanuele-bonini/) [emanuelebonini](https://twitter.com/emanuelebonini)
-
-[13 November 2025](https://www.eunews.it/en/2025/11/13/e-commerce-eu-breakthrough-parcels-under-e150-will-also-be-taxed/)
-
-The Ecofin Council reaches a political agreement. The measure primarily affects "made in China" products purchased online. Giorgetti exults: "Positive...
-
-### [Either it is Gin—with its minimum 37.5 per cent alcohol—or it is not, and you cannot call it that](https://www.eunews.it/en/2025/11/13/either-it-is-gin-with-its-minimum-37-5-per-cent-alcohol-or-it-is-not-and-you-cannot-call-it-that/)
-
-by [Ezio Baldari](https://www.eunews.it/en/author/ezio-baldari/) [@eziobaldari](https://twitter.com/@eziobaldari)
-
-[13 November 2025](https://www.eunews.it/en/2025/11/13/either-it-is-gin-with-its-minimum-37-5-per-cent-alcohol-or-it-is-not-and-you-cannot-call-it-that/)
-
-European Court of Justice rules that the name "Gin" is reserved for a specific alcoholic beverage
-
-### [European Parliament approves proxy vote for pregnant MEPs. Council approval now awaited](https://www.eunews.it/en/2025/11/13/european-parliament-approves-proxy-vote-for-pregnant-meps-council-approval-now-awaited/)
+### [Frozen Russian assets remain the preferred EU tool to support Kyiv amid corruption concerns](https://www.eunews.it/en/2025/11/13/frozen-russian-assets-remain-the-preferred-eu-tool-to-support-kyiv-amid-corruption-concerns/)
 
 by [Emanuele Bonini](https://www.eunews.it/en/author/emanuele-bonini/) [emanuelebonini](https://twitter.com/emanuelebonini)
 
-[13 November 2025](https://www.eunews.it/en/2025/11/13/european-parliament-approves-proxy-vote-for-pregnant-meps-council-approval-now-awaited/)
+[13 November 2025](https://www.eunews.it/en/2025/11/13/frozen-russian-assets-remain-the-preferred-eu-tool-to-support-kyiv-amid-corruption-concerns/)
 
-The proposal passed by a show of hands. Whoever wants to can nominate a substitute from three months before and...
+In Ukraine, an embezzlement scandal cost two ministers their jobs. Ecofin: 'We have no options, get on with work on...
+
+### [Cohesion and agriculture ‘remain at the heart’. Von der Leyen forges ahead on budget despite Socialist unease](https://www.eunews.it/en/2025/11/12/cohesion-and-agriculture-remain-at-the-heart-von-der-leyen-forges-ahead-on-budget-despite-socialist-unease/)
+
+by [Simone De La Feld](https://www.eunews.it/en/author/simonedelafeld21gmail-com/) [@SimoneDeLaFeld1](https://twitter.com/@SimoneDeLaFeld1)
+
+[12 November 2025](https://www.eunews.it/en/2025/11/12/cohesion-and-agriculture-remain-at-the-heart-von-der-leyen-forges-ahead-on-budget-despite-socialist-unease/)
+
+In her debate with the Brussels hemicycle, the president of the European Commission assures: 'The structure of the budget changes,...
+
+### [Digital, public administration too vulnerable to cyber attacks](https://www.eunews.it/en/2025/11/12/digital-public-administration-too-vulnerable-to-cyber-attacks/)
+
+by [Francesco Bortoletto](https://www.eunews.it/en/author/francesco-bortoletto/) [bortoletto\_f](https://twitter.com/bortoletto_f)
+
+[12 November 2025](https://www.eunews.it/en/2025/11/12/digital-public-administration-too-vulnerable-to-cyber-attacks/)
+
+The latest report by the EU Information Security Agency (ENISA) indicates that the digital infrastructures of public authorities are excessively...
 
 - [ITA](https://www.eunews.it/2025/11/10/digitale-la-semplificazione-del-gdpr-fa-gli-interessi-delle-aziende-e-limita-la-privacy-degli-utenti/)
 - [ENG](https://www.eunews.it/en/2025/11/10/digital-data-gdpr-simplification-serves-corporate-interests-and-limits-user-privacy/)
 
-- [Newsletter](https://www.eunews.it/en/eunews-newsletter/)
 - [Politics](https://www.eunews.it/en/politics/)
+- [Newsletter](https://www.eunews.it/en/eunews-newsletter/)
 - [World politics](https://www.eunews.it/en/world-politics/)
 - [Business](https://www.eunews.it/en/business/)
 - [General News](https://www.eunews.it/en/general-news/)
@@ -200,8 +200,8 @@ The proposal passed by a show of hands. Whoever wants to can nominate a substitu
 - [ITA](https://www.eunews.it/2025/11/10/digitale-la-semplificazione-del-gdpr-fa-gli-interessi-delle-aziende-e-limita-la-privacy-degli-utenti/)
 - [ENG](https://www.eunews.it/en/2025/11/10/digital-data-gdpr-simplification-serves-corporate-interests-and-limits-user-privacy/)
 
-- [Newsletter](https://www.eunews.it/en/eunews-newsletter/)
 - [Politics](https://www.eunews.it/en/politics/)
+- [Newsletter](https://www.eunews.it/en/eunews-newsletter/)
 - [World politics](https://www.eunews.it/en/world-politics/)
 - [Business](https://www.eunews.it/en/business/)
 - [General News](https://www.eunews.it/en/general-news/)

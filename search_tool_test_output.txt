@@ -1,0 +1,158 @@
+# Search Tool Test Output
+Query: "Google regulatory exposure DMA DSA AI Act"
+
+## Test 1: Comprehensive Search (limit=5)
+Found 18 total results, showing top 5:
+
+1. Meta's AI training practices likely breach GDPR... (Relationship: VIOLATES)
+2. X joins Meta, TikTok, Temu, AliExpress... (Relationship: SUBJECT_TO)
+3. Meta joins X, TikTok, Temu, AliExpress... (Relationship: SUBJECT_TO)
+4. Meta claims its AI data practices... (Relationship: SUPPORTS)
+5. The EDPB adopted draft guidelines... (Relationship: ADVISES)
+
+**Observations**:
+- ✅ Returns relevant results about DMA/DSA/AI Act
+- ✅ Shows relationship types
+- ❌ **NO SOURCE INFORMATION** - "0 sources" logged, no [Source: ...] annotations
+- ❌ **NO RELEVANCE SCORES** - Results numbered but no confidence/similarity scores
+- ❌ Results are text-only, not structured
+
+## Test 2: Higher Limit (limit=10)
+Found 18 total results, showing top 10:
+- Same top 5 as Test 1
+- Additional results include more DSA/DMA relationships
+- Result #9 and #10 seem less relevant (Zscaler, Cava Group)
+
+**Observations**:
+- ✅ Higher limit works (returns 10 instead of 5)
+- ❌ **RESULT QUALITY DEGRADES** - Later results (9-10) are off-topic
+- ❌ Still no sources or relevance scores
+- ⚠️ Result #10 (Cava Group restaurant chain) is completely irrelevant
+
+## Test 3: Relationship-Focused Search
+**FAILED**: "Search error: No center node provided for Node Distance reranker"
+
+**Observations**:
+- ❌ **CRITICAL BUG**: relationship_focused search type doesn't work
+- Issue: EDGE_HYBRID_SEARCH_NODE_DISTANCE requires a center_node_uuid parameter
+- Current code doesn't provide it
+
+## Test 4: Entity-Focused Search (limit=5)
+Found 10 total results, showing top 5 entities:
+
+1. AI Act - Full description of the regulation
+2. Digital Markets Act - Policy description
+3. Zscaler, Inc. - **OFF-TOPIC** entity summary
+4. Digital Personal Data Protection Act - Related policy
+5. proactive investigations - Regulatory entity
+
+**Observations**:
+- ✅ Returns entity nodes (not relationships)
+- ✅ Entities have comprehensive summaries
+- ❌ Result #3 (Zscaler) is off-topic
+- ❌ Still no sources or relevance scores
+- ❌ No structured output
+
+## Key Findings
+
+### Critical Issues
+1. **No Source Attribution** - All searches returned "0 sources"
+   - Source extraction logic is running but not finding any sources
+   - No [Source: ...] annotations in results
+   - This is a major UX problem - users don't know where info comes from
+
+2. **No Relevance Scores** - Results have sequential numbering but no confidence scores
+   - Can't distinguish high-confidence from low-confidence results
+   - Can't filter by quality threshold
+
+3. **Relationship-Focused Search Broken** - Requires center_node_uuid parameter
+   - Error: "No center node provided for Node Distance reranker"
+   - This search type is non-functional
+
+4. **Result Quality Issues** - Later results become increasingly off-topic
+   - Example: Cava Group restaurant chain in results for Google regulatory query
+   - Example: Zscaler mentioned without relevance to query
+
+### Source Extraction Problems
+Looking at the code (lines 135-343 in search.py), the source extraction has 5 fallback methods but ALL are failing:
+- Method 1: `_extract_source_info()` → gets episode, tries to parse YAML frontmatter
+- Method 2-5: Various parsing fallbacks for filename, episode name, URLs
+
+**Why it's failing**:
+- Episodes may not have YAML frontmatter
+- Episode bodies may not be accessible via `get_nodes_and_edges_by_episode()`
+- Filenames don't match expected patterns
+- Result is: complex extraction logic that doesn't work in practice
+
+### Output Format
+Current format is markdown text only:
+```
+Found 18 facts for 'query' (showing top 5):
+
+1. Fact text here (Relationship: TYPE)
+2. Fact text here (Entity: NAME)
+
+... and 13 more results available.
+```
+
+**Missing**:
+- Relevance scores
+- Source URLs
+- Structured data (JSON)
+- Entity extraction from facts
+- Metadata (timestamps, creation dates)
+
+## Recommendations for Improvements
+
+### Improvement 1: Make limit parameter configurable ✅
+**Status**: Already working! The `limit` parameter successfully changed results from 5 to 10.
+
+### Improvement 2: Add relevance scores ❌ URGENT
+**Current**: No scores at all
+**Needed**: Add score field to each result showing semantic similarity
+**Implementation**:
+- Graphiti search results likely have scores/distances
+- Extract and display: `1. [Score: 0.94] Fact text here...`
+
+### Improvement 3: Simplify source extraction ❌ CRITICAL
+**Current**: 5 fallback methods, all failing
+**Needed**: Fix or simplify source extraction
+**Options**:
+- A) Debug why YAML frontmatter parsing fails
+- B) Simplify to 2 methods: episode metadata → episode name parsing
+- C) Remove source extraction entirely if data doesn't support it
+
+### Improvement 4: Add structured output ❌ HIGH PRIORITY
+**Current**: Text-only markdown
+**Needed**: Optional JSON output with metadata
+**Format**:
+```json
+{
+  "query": "Google regulatory exposure...",
+  "total_results": 18,
+  "returned": 5,
+  "results": [
+    {
+      "rank": 1,
+      "content": "Meta's AI training...",
+      "type": "relationship",
+      "name": "VIOLATES",
+      "relevance_score": 0.94,
+      "source": null,
+      "entities": ["Meta", "GDPR", "AI training"]
+    }
+  ]
+}
+```
+
+### Improvement 5: Fix relationship-focused search ❌ CRITICAL BUG
+**Current**: Crashes with "No center node" error
+**Fix**: Either provide center_node_uuid or switch to different config
+
+## Test Statistics
+- Query: "Google regulatory exposure DMA DSA AI Act"
+- Total execution time: ~10 seconds (including embeddings)
+- OpenAI API calls: ~60 calls (embeddings + reranking)
+- Neo4j database: politicamonitoring.v2
+- Results found: 18 total facts
+- Source extraction attempts: All failed (0 sources found)

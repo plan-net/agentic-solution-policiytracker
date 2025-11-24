@@ -2,7 +2,7 @@
 title: Brussels wants to end tax exemption on cheap parcels from early 2026
 url: https://www.politico.eu/article/brussels-sides-with-france-urge-eu-handling-fee-for-cheap-parcels/
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-16T02:36:24.699942
+collected_date: 2025-11-24T03:53:53.624922
 source: Politico
 source_url: https://www.politico.eu
 author: Koen Verhelst

@@ -1,8 +1,8 @@
 ---
-title: New measures unlock access to data from largest online ...
+title: New measures unlock access to data from largest online platforms to support research
 url: https://digital-strategy.ec.europa.eu/en/news/new-measures-unlock-access-data-largest-online-platforms-support-research
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-16T02:36:35.108518
+collected_date: 2025-11-24T03:53:59.402856
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)
@@ -10,7 +10,7 @@ language: en
 collection_type: policy_landscape
 ---
 
-# New measures unlock access to data from largest online ...
+# New measures unlock access to data from largest online platforms to support research
 
 [Skip to main content](https://digital-strategy.ec.europa.eu/digital-strategy.ec.europa.eu#main-content)
 

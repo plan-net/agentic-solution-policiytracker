@@ -2,7 +2,7 @@
 title: Digital Markets Act: The European Commission Unveils Plans to Regulate Digital 'Gatekeepers'
 url: https://crowell.com/en/insights/client-alerts/digital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:40.434153
+collected_date: 2025-11-24T03:54:11.960459
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -26,7 +26,7 @@ collection_type: policy_landscape
 - [PDF Link](https://crowell.com/print/v2/content/45249/digital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers.pdf)
 - Share
 
-- [Email](mailto://crowell.com?subject=Digital%20Markets%20Act%3A%20The%20European%20Commission%20Unveils%20Plans%20to%20Regulate%20Digital%20'Gatekeepers'&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fdigital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers)
+- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Fdigital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers?subject=Digital%20Markets%20Act%3A%20The%20European%20Commission%20Unveils%20Plans%20to%20Regulate%20Digital%20'Gatekeepers'&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fdigital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fdigital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fdigital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers)
 
@@ -107,11 +107,15 @@ The DMA proposal and the parallel proposal for a Digital Services Act are subjec
 
 - [Jeane A. Thomas](https://www.crowell.com/en/professionals/jeane-a-thomas-cipp-e)
 
+- [Washington, D.C.](https://www.crowell.com/en/locations/washington-d-c)
+
 - D \| [+1.202.624.2877](tel:%2B1.202.624.2877)
 
 [anRob21hc0Bjcm93ZWxsLmNvbQ==](mailto:anRob21hc0Bjcm93ZWxsLmNvbQ==)
 
 - [Thomas De Meese](https://www.crowell.com/en/professionals/thomas-de-meese)
+
+- [Brussels](https://www.crowell.com/en/locations/brussels)
 
 - D \| [+32.2.282.1842](tel:%2B32.2.282.1842)
 
@@ -119,27 +123,29 @@ The DMA proposal and the parallel proposal for a Digital Services Act are subjec
 
 - [Karl Stas](https://www.crowell.com/en/professionals/karl-stas)
 
+- [Brussels](https://www.crowell.com/en/locations/brussels)
+
 - D \| [+32.2.214.2888](tel:%2B32.2.214.2888)
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 6 min read \| 11.13.25
+Client Alert \| 9 min read \| 09.11.25
 
-[FTC and NAD Enforcement Priorities & ANA 2025](https://www.crowell.com/en/insights/client-alerts/ftc-and-nad-enforcement-priorities-and-ana-2025)
+[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
 
-The Federal Trade Commission (FTC) and National Advertising Division (NAD) of BBB National Programs laid out their enforcement priorities during the 2025 ANA Masters of Advertising Law Conference, at which Crowell & Moring attorneys spoke on and attended various panels....
+About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
 
-- Client Alert \| 12 min read \| 11.13.25
+- Client Alert \| 1 min read \| 09.10.25
 
-[Highlighting Key Takeaways from the Pentagon Acquisition Transformation Strategy](https://www.crowell.com/en/insights/client-alerts/highlighting-key-takeaways-from-the-pentagon-acquisition-transformation-strategy)
+[FAR from Alone: GSA Releases New FAR Companion Guide](https://www.crowell.com/en/insights/client-alerts/far-from-alone-gsa-releases-new-far-companion-guide)
 
-- Client Alert \| 4 min read \| 11.13.25
+- Client Alert \| 7 min read \| 09.10.25
 
-[The Password is “Louvre” – Lessons for Everyone from the Louvre’s Jewel Heist](https://www.crowell.com/en/insights/client-alerts/the-password-is-louvre-lessons-for-everyone-from-the-louvres-jewel-heist)
+[Finally, the CMMC Final Rule: DoD Completes CMMC Rulemaking, Ushering in New Era in DoD Cybersecurity](https://www.crowell.com/en/insights/client-alerts/finally-the-cmmc-final-rule-dod-completes-cmmc-rulemaking-ushering-in-new-era-in-dod-cybersecurity)
 
-- Client Alert \| 3 min read \| 11.12.25
+- Client Alert \| 3 min read \| 09.10.25
 
-[EPA Proposes Important Revisions to its PFAS Reporting Regulations](https://www.crowell.com/en/insights/client-alerts/epa-proposes-important-revisions-to-its-pfas-reporting-regulations)
+[No Opt-Out for State Data Privacy Compliance: California, Colorado and Connecticut Keep Data Privacy Enforcement Pressure on with Joint Enforcement Sweep](https://www.crowell.com/en/insights/client-alerts/no-opt-out-for-state-data-privacy-compliance-california-colorado-and-connecticut-keep-data-privacy-enforcement-pressure-on-with-joint-enforcement-sweep)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

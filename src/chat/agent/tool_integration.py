@@ -15,6 +15,7 @@ from ..tools.entity import (
     EntityTimelineTool,
     SimilarEntitesTool,
 )
+from ..tools.graph_visualization import GraphVisualizationTool
 from ..tools.search import GraphitiSearchTool
 from ..tools.temporal import ConcurrentEventsTool, DateRangeSearchTool, PolicyEvolutionTool
 from ..tools.traverse import (
@@ -64,6 +65,9 @@ class ToolIntegrationManager:
             self.tools["get_communities"] = GetCommunitiesTool(self.client)
             self.tools["get_community_members"] = CommunityMembersTool(self.client)
             self.tools["get_policy_clusters"] = PolicyClustersTool(self.client)
+
+            # Visualization tools
+            self.tools["show_graph_visualization"] = GraphVisualizationTool()
 
             logger.info(f"Initialized {len(self.tools)} knowledge graph tools")
 
@@ -424,16 +428,29 @@ class ToolIntegrationManager:
         """Extract entities from tool result."""
         entities = []
 
-        if isinstance(result, dict) and "nodes" in result:
-            for node in result["nodes"][:10]:  # Limit to 10 entities
-                if isinstance(node, dict):
-                    entities.append(
-                        {
-                            "name": node.get("name", "Unknown"),
-                            "type": node.get("type", "Entity"),
-                            "relevance": "high",
-                        }
-                    )
+        if isinstance(result, dict):
+            # Check for nodes in graph_data (structured search output)
+            if "graph_data" in result and "nodes" in result["graph_data"]:
+                for node in result["graph_data"]["nodes"][:10]:  # Limit to 10 entities
+                    if isinstance(node, dict):
+                        entities.append(
+                            {
+                                "name": node.get("name", "Unknown"),
+                                "type": node.get("type", "Entity"),
+                                "relevance": "high",
+                            }
+                        )
+            # Fallback: Check for nodes at top level (other tools)
+            elif "nodes" in result:
+                for node in result["nodes"][:10]:  # Limit to 10 entities
+                    if isinstance(node, dict):
+                        entities.append(
+                            {
+                                "name": node.get("name", "Unknown"),
+                                "type": node.get("type", "Entity"),
+                                "relevance": "high",
+                            }
+                        )
 
         return entities
 
@@ -441,16 +458,44 @@ class ToolIntegrationManager:
         """Extract relationships from tool result."""
         relationships = []
 
-        if isinstance(result, dict) and "edges" in result:
-            for edge in result["edges"][:10]:  # Limit to 10 relationships
-                if isinstance(edge, dict):
-                    relationships.append(
-                        {
-                            "source": edge.get("source", "Unknown"),
-                            "target": edge.get("target", "Unknown"),
-                            "relationship": edge.get("relationship", "RELATED_TO"),
-                        }
-                    )
+        if isinstance(result, dict):
+            # Check for edges in graph_data (structured search output)
+            if "graph_data" in result and "edges" in result["graph_data"]:
+                for edge in result["graph_data"]["edges"][:10]:  # Limit to 10 relationships
+                    if isinstance(edge, dict):
+                        # Get source/target names from nodes if available
+                        source_name = edge.get("source", "Unknown")
+                        target_name = edge.get("target", "Unknown")
+
+                        # Try to find actual node names from graph_data.nodes
+                        if "graph_data" in result and "nodes" in result["graph_data"]:
+                            nodes_by_uuid = {n.get("uuid"): n for n in result["graph_data"]["nodes"] if isinstance(n, dict)}
+                            source_uuid = edge.get("source_uuid")
+                            target_uuid = edge.get("target_uuid")
+
+                            if source_uuid and source_uuid in nodes_by_uuid:
+                                source_name = nodes_by_uuid[source_uuid].get("name", source_name)
+                            if target_uuid and target_uuid in nodes_by_uuid:
+                                target_name = nodes_by_uuid[target_uuid].get("name", target_name)
+
+                        relationships.append(
+                            {
+                                "source": source_name,
+                                "target": target_name,
+                                "relationship": edge.get("relationship_type", edge.get("relationship", "RELATED_TO")),
+                            }
+                        )
+            # Fallback: Check for edges at top level (other tools)
+            elif "edges" in result:
+                for edge in result["edges"][:10]:  # Limit to 10 relationships
+                    if isinstance(edge, dict):
+                        relationships.append(
+                            {
+                                "source": edge.get("source", "Unknown"),
+                                "target": edge.get("target", "Unknown"),
+                                "relationship": edge.get("relationship", "RELATED_TO"),
+                            }
+                        )
 
         return relationships
 
@@ -459,8 +504,17 @@ class ToolIntegrationManager:
         sources = []
 
         if isinstance(result, dict):
+            # Check for sources in structured search output
             if "sources" in result:
-                sources.extend(result["sources"])
+                for source in result["sources"]:
+                    if isinstance(source, dict):
+                        # Format: "title: url"
+                        title = source.get("title", "Unknown")
+                        url = source.get("url", "")
+                        sources.append(f"{title}: {url}" if url else title)
+                    else:
+                        # Simple string source
+                        sources.append(str(source))
             elif "episodes" in result:
                 # Extract episode sources
                 for episode in result["episodes"][:5]:

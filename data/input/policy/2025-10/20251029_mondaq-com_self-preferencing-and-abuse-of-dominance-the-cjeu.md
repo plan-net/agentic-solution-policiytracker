@@ -2,7 +2,7 @@
 title: Self-Preferencing And Abuse Of Dominance: The CJEU Judgment In Google Shopping And Beyond
 url: https://www.mondaq.com/antitrust-eu-competition/1697700/self-preferencing-and-abuse-of-dominance-the-cjeu-judgment-in-google-shopping-and-beyond
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-16T02:36:40.434233
+collected_date: 2025-11-24T03:54:08.952028
 source: Mondaq
 source_url: https://www.mondaq.com
 author: Katrien  Veranneman
@@ -43,11 +43,13 @@ Katrien Veranneman’s articles from ELVINGER HOSS PRUSSEN, société anonyme ar
 - in European Union
 - in European Union
 - in European Union
-- with readers working within the Law Firm industries
+- in European Union
+- in European Union
+- with readers working within the Media & Information and Law Firm industries
 
 ELVINGER HOSS PRUSSEN, société anonyme are most popular:
 
-- within Antitrust/Competition Law, Law Practice Management and Technology topic(s)
+- within Antitrust/Competition Law and Technology topic(s)
 
 _On 10 September 2024, the Court of Justice of the European_
 _Union upheld the €2.4 billion fine imposed on Google by the_

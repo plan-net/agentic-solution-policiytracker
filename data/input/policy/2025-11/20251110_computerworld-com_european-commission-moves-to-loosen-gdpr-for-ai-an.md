@@ -2,7 +2,7 @@
 title: European Commission moves to loosen GDPR for AI and cookie tracking
 url: https://www.computerworld.com/article/4087347/european-commission-moves-to-loosen-gdpr-for-ai-and-cookie-tracking.html
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-16T02:36:23.625634
+collected_date: 2025-11-24T03:53:46.558667
 source: Computerworld
 source_url: https://www.computerworld.com
 author: by Gyana Swain
@@ -21,11 +21,13 @@ by [Gyana Swain](https://www.computerworld.com/profile/gyana-swain-2/)
 
 # European Commission moves to loosen GDPR for AI and cookie tracking
 
-GovernmentLaws and RegulationsMarkets
-
 ## Privacy groups warn the changes could erode core protections, while the Commission argues they simplify compliance and support innovation.
 
 Credit: [symbiot / Shutterstock](https://enterprise.shutterstock.com/image-photo/eu-flags-waving-front-european-parliament-318496325)
+
+- _The European Commission is expected to propose relaxing some of the European Union’s key digital privacy rules at a meeting next week._
+- _The changes could enable websites to track visitors with cookies by default, forcing consumers to opt out rather than opt in as they do today._
+- _Enterprises could also be allowed to train AI models on customer data based on their “legitimate interest,” rather than requiring user consent._
 
 The European Commission is preparing sweeping revisions to the General Data Protection Regulation (GDPR) that could redefine how enterprises handle personal data — from cookie tracking to AI model training — in what privacy advocates warn could weaken the EU’s privacy framework.
 
@@ -83,6 +85,8 @@ The European Digital Rights network criticized the consultation as “exclusion 
 
 The Commission did not immediately respond to a request for comment.
 
+[Artificial Intelligence](https://www.computerworld.com/artificial-intelligence/)[Government](https://www.computerworld.com/government/)[Industry](https://www.computerworld.com/industry/)[Laws and Regulations](https://www.computerworld.com/regulation/)[Markets](https://www.computerworld.com/markets/)
+
 SUBSCRIBE TO OUR NEWSLETTER
 
 ### From our editors straight to your inbox
@@ -97,6 +101,9 @@ Gyana Swain is a seasoned technology journalist with over 20 years' experience c
 
 ## More from this author
 
+- [news\
+**Synopsys to eliminate 10% of staff following Ansys integration** \
+Nov 13, 2025 5 mins](https://www.computerworld.com/article/4089177/synopsys-to-eliminate-10-of-staff-following-ansys-integration.html)
 - [news\
 **IBM to cut thousands of jobs as Red Hat growth slows** \
 Nov 5, 2025 5 mins](https://www.computerworld.com/article/4084865/ibm-to-cut-thousands-of-jobs-as-red-hat-growth-slows-2.html)
@@ -118,86 +125,87 @@ Oct 10, 2025 6 mins](https://www.computerworld.com/article/4070872/intel-bets-on
 - [news\
 **Deloitte’s AI governance failure exposes critical gap in enterprise quality controls** \
 Oct 8, 2025 6 mins](https://www.computerworld.com/article/4069521/deloittes-ai-governance-failure-exposes-critical-gap-in-enterprise-quality-controls.html)
-- [news\
-**Google launches Gemini in Chrome weeks after antitrust win, escalating AI browser wars** \
-Sep 19, 2025 5 mins](https://www.computerworld.com/article/4060120/google-launches-gemini-in-chrome-weeks-after-antitrust-win-escalating-ai-browser-wars.html)
 
 PopularArticlesPodcastsVideos
 
-[news\
+[opinion\
 \
-**European Commission moves to loosen GDPR for AI and cookie tracking** \
+**Will Apple block Google’s AirDrop Integration?** \
 \
-By Gyana Swain\
+By Jonny Evans\
 \
-Nov 10, 20255 mins\
+Nov 21, 20254 mins\
 \
-GovernmentLaws and RegulationsMarkets](https://www.computerworld.com/article/4087347/european-commission-moves-to-loosen-gdpr-for-ai-and-cookie-tracking.html)
-
-[brandpostSponsored by T-Systems\
-\
-**When threats escalate, CISOs need to call in the cavalry** \
-\
-By T-Systems\
-\
-Nov 10, 20254 mins\
-\
-Security](https://www.computerworld.com/article/4085942/when-threats-escalate-cisos-need-to-call-in-the-cavalry.html)
+AndroidSmartphonesiPhone](https://www.computerworld.com/article/4094541/will-apple-block-googles-airdrop-integration.html)
 
 [opinion\
 \
-**AI companies keep forgetting to put the ‘smart’ into smart apps** \
+**Singin' the Agentic Windows blues** \
 \
-By Evan Schuman\
+By Steven Vaughan-Nichols\
 \
-Nov 10, 20255 mins\
+Nov 21, 20256 mins\
 \
-Artificial IntelligenceGenerative AIMobile Apps](https://www.computerworld.com/article/4086700/ai-companies-keep-forgetting-to-put-the-smart-into-smart-apps.html)
+Artificial IntelligenceGenerative AIMicrosoft](https://www.computerworld.com/article/4094314/singin-the-agentic-windows-blues.html)
+
+[opinion\
+\
+**Do higher RAM prices make Apple a better option?** \
+\
+By Jonny Evans\
+\
+Nov 20, 20255 mins\
+\
+AppleComputer ComponentsSystem Memory (RAM)](https://www.computerworld.com/article/4093857/do-higher-ram-prices-make-apple-a-better-option.html)
 
 [podcast\
 \
-**Big Tech lobbies EU, Oracle shifts, OpenAI evolves \| Ep. 13** \
+**European Cloud Shift, AI Bubble Fears, Major AI Flaws \| Ep. 19** \
 \
-Nov 6, 20252 mins\
+Nov 20, 20252 mins\
 \
-Artificial IntelligenceOracleTechnology Industry](https://www.computerworld.com/podcast/4086075/big-tech-lobbies-eu-oracle-shifts-openai-evolves-ep-13.html)
+Artificial IntelligenceCloud ComputingCloud Management](https://www.computerworld.com/podcast/4093832/european-cloud-shift-ai-bubble-fears-major-ai-flaws-ep-19.html)
 
 [podcast\
 \
-**Nvidia soars, Europol crackdown, Signal defends cloud \| Ep. 12** \
+**AI Risks, Agentic Users, GDPR Shake-Up Ahead \| Ep. 18** \
 \
-Nov 5, 20252 mins\
+Nov 19, 20252 mins\
 \
-Amazon Web ServicesCybercrimeNvidia](https://www.computerworld.com/podcast/4085181/nvidia-soars-europol-crackdown-signal-defends-cloud-ep-12.html)
+Artificial IntelligenceGDPRMicrosoft 365](https://www.computerworld.com/podcast/4093062/ai-risks-agentic-users-gdpr-shake-up-ahead-ep-18.html)
 
 [podcast\
 \
-**AI scams rise, Google revives nuclear power, OpenAI's new agent \| Ep. 11** \
+**Salesforce eVerse, GPT-5.1, Cyber Laws Return \| Ep. 17** \
 \
-Nov 4, 20252 mins\
+Nov 18, 20252 mins\
 \
-Artificial IntelligenceGenerative AIGoogle](https://www.computerworld.com/podcast/4084227/ai-scams-rise-google-revives-nuclear-power-openais-new-agent-ep-11.html)
+CybercrimeGovernmentSalesforce](https://www.computerworld.com/podcast/4092278/salesforce-everse-gpt-5-1-cyber-laws-return-ep-17.html)
 
 [video\
 \
-**Big Tech lobbies EU, Oracle shifts, OpenAI evolves \| Ep. 13** \
+**European Cloud Shift, AI Bubble Fears, Major AI Flaws \| Ep. 19** \
 \
-Nov 6, 20252 mins\
+By Arnold Davick\
 \
-Artificial IntelligenceOracleTechnology Industry](https://www.computerworld.com/video/4086064/big-tech-lobbies-eu-oracle-shifts-openai-evolves-ep-13.html)
+Nov 20, 20252 mins\
+\
+Artificial IntelligenceCloud ManagementCloud Security](https://www.computerworld.com/video/4093827/european-cloud-shift-ai-bubble-fears-major-ai-flaws-ep-19.html)
 
 [video\
 \
-**Nvidia soars, Europol crackdown, Signal defends cloud \| Ep. 12** \
+**AI Risks, Agentic Users, GDPR Shake-Up Ahead \| Ep. 18** \
 \
-Nov 5, 20252 mins\
+By Arnold Davick\
 \
-Amazon Web ServicesCybercrimeNvidia](https://www.computerworld.com/video/4085178/nvidia-soars-europol-crackdown-signal-defends-cloud-ep-12.html)
+Nov 19, 20252 mins\
+\
+Artificial IntelligenceGDPRMicrosoft 365](https://www.computerworld.com/video/4093057/ai-risks-agentic-users-gdpr-shake-up-ahead-ep-18.html)
 
 [video\
 \
-**AI scams rise, Google revives nuclear power, OpenAI's new agent \| Ep. 11** \
+**Why AI upskilling is failing, and how you can fix it** \
 \
-Nov 4, 20252 mins\
+Nov 18, 202546 mins\
 \
-Artificial IntelligenceGenerative AIGoogle](https://www.computerworld.com/video/4084231/ai-scams-rise-google-revives-nuclear-power-openais-new-agent-ep-11.html)
+Generative AIIT Skills and TrainingIT Training](https://www.computerworld.com/video/4092378/why-ai-upskilling-is-failing-and-how-you-can-fix-it.html)

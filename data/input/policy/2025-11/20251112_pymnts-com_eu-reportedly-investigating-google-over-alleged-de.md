@@ -2,7 +2,7 @@
 title: EU Reportedly Investigating Google Over Alleged Demotion of News Publishers
 url: https://www.pymnts.com/google/2025/eu-reportedly-investigating-google-over-alleged-demotion-of-news-publishers
 published_date: 2025-11-12T00:00:00
-collected_date: 2025-11-16T02:36:46.801876
+collected_date: 2025-11-24T03:54:17.665029
 source: Pymnts
 source_url: https://www.pymnts.com
 author: PYMNTS
@@ -59,27 +59,27 @@ Both the European Commission and Google declined to comment. However, the Financ
 
 See More In: [Antitrust](https://www.pymnts.com/tag/antitrust/), [Digital Markets Act](https://www.pymnts.com/tag/digital-markets-act/), [EU](https://www.pymnts.com/tag/eu/), [Google](https://www.pymnts.com/tag/google/), [investigation](https://www.pymnts.com/tag/investigation/), [News](https://www.pymnts.com/tag/news/), [news publishers](https://www.pymnts.com/tag/news-publishers/), [PYMNTS News](https://www.pymnts.com/tag/pymnts-news/), [What's Hot](https://www.pymnts.com/tag/whats-hot/)
 
-[Pix Turns 5 as Brazil’s Real-Time Payments Shift Accelerates](https://www.pymnts.com/real-time-payments/2025/pix-turns-5-brazil-real-time-payments-shift-accelerates/)
+[How CVS Is Turning First-Party Data Into Its Retail Media Power Play](https://www.pymnts.com/news/retail/2025/how-cvs-is-turning-first-party-data-into-its-retail-media-power-play/)
 
-[Ahold Delhaize Completes Rollout of eCommerce Platform by Adding Hannaford Brand](https://www.pymnts.com/commerce/2025/ahold-delhaize-completes-rollout-of-ecommerce-platform-by-adding-hannaford-brand/)
+[FedNow Exec Busts Instant Pay Fraud Myths and Pressures Banks to Keep Up](https://www.pymnts.com/real-time-payments/2025/fednow-exec-busts-instant-pay-fraud-myths-and-pressures-banks-to-keep-up/)
 
-[Google Upgrades Shopping AI to Call Stores and Place Orders Automatically](https://www.pymnts.com/google/2025/google-upgrades-shopping-ai-to-call-stores-and-place-orders-automatically/)
+[Mastercard Pushes CFOs to Seize Control of Working Capital](https://www.pymnts.com/mastercard/2025/mastercard-pushes-cfos-to-seize-control-of-working-capital/)
 
-[Cash App’s Next Act: From P2P App to Everyday Bank](https://www.pymnts.com/news/digital-banking/2025/cash-apps-next-act-from-p2p-app-to-everyday-bank/)
+[Hourly Wage Drop Foreshadows a $14B Hit to Consumer Spending](https://www.pymnts.com/consumer-finance/2025/hourly-wage-drop-foreshadows-a-14b-hit-to-consumer-spending/)
 
-[Global SMBs Push Back as Compliance Slows Payments](https://www.pymnts.com/smbs/2025/global-smbs-push-back-as-compliance-slows-payments/)
+[How CVS Is Turning First-Party Data Into Its Retail Media Power Play](https://www.pymnts.com/news/retail/2025/how-cvs-is-turning-first-party-data-into-its-retail-media-power-play/)
 
-[Tariffs Expose Growing Resiliency Divide Across Mid-Market Supply Chains](https://www.pymnts.com/supply-chain/2025/tariffs-expose-growing-resiliency-divide-across-mid-market-supply-chains/)
+[FedNow Exec Busts Instant Pay Fraud Myths and Pressures Banks to Keep Up](https://www.pymnts.com/real-time-payments/2025/fednow-exec-busts-instant-pay-fraud-myths-and-pressures-banks-to-keep-up/)
 
-[Only 2% of Firms Report Fraud on Real-Time Rails](https://www.pymnts.com/real-time-payments/2025/only-2-of-firms-report-fraud-on-real-time-rails/)
+[Mastercard Pushes CFOs to Seize Control of Working Capital](https://www.pymnts.com/mastercard/2025/mastercard-pushes-cfos-to-seize-control-of-working-capital/)
 
-[FinTech IPO Index Dips 0.9% as Platform Earnings Ding Stocks](https://www.pymnts.com/news/fintech-investments/2025/fintech-ipo-index-dips-platform-earnings-ding-stocks/)
+[Small Business Credit Race Shifts From Approvals to Value-Added Services](https://www.pymnts.com/working-capital/2025/small-business-credit-race-shifts-from-approvals-to-value-added-services/)
 
-[Amazon and Walmart Race to Win Over a Cautious Consumer](https://www.pymnts.com/retail-2/2025/amazon-and-walmart-race-to-win-over-a-cautious-consumer/)
+[FinTech IPO Index Loses 6.6% as Klarna Sinks After Earnings](https://www.pymnts.com/earnings/2025/fintech-ipo-index-loses-6-6-as-klarna-sinks-after-earnings/)
 
-[Citi Wants the World’s Payment Systems to Finally Learn to Talk to Each Other](https://www.pymnts.com/news/cross-border-commerce/cross-border-payments/2025/citi-wants-world-payment-systems-finally-learn-talk-each-other/)
+[57% of US Adults Use Gen AI as Millennials Pull Ahead on Productivity](https://www.pymnts.com/news/artificial-intelligence/2025/57percent-united-states-adults-use-gen-ai-millennials-pull-ahead-productivity/)
 
-[Amex Sees Healthcare’s Payment Pain as Its Next Frontier](https://www.pymnts.com/healthcare/2025/amex-sees-healthcares-payment-pain-as-its-next-frontier/)
+[The 75-Year-Old Brand Winning Over Today’s Luxury-Minded Men](https://www.pymnts.com/news/retail/2025/the-75-year-old-brand-winning-over-todays-luxury-minded-men/)
 
 **Artificial Intelligence**
 

@@ -374,10 +374,15 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
         super().__init__(AgentRole.TOOL_EXECUTION, name)
         self.tools = tools
         self.tool_integration_manager = None
+        self.context_tracker = None
 
     def set_tool_integration_manager(self, manager):
         """Set the tool integration manager for enhanced tool execution."""
         self.tool_integration_manager = manager
+
+    def set_context_tracker(self, tracker):
+        """Set the chat context tracker for tracking tool executions."""
+        self.context_tracker = tracker
 
     def get_prompt_template(self) -> str:
         """Get the prompt template for tool execution."""
@@ -385,6 +390,10 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
 
     async def process(self, state: MultiAgentState) -> AgentResult:
         """Execute planned tools and collect structured results."""
+
+        # DEBUG: Log context tracker status
+        session_id = state.get("session_id", "NO_SESSION_ID")
+        logger.warning(f"=== TOOL EXECUTION START === Session: {session_id}, Context tracker: {self.context_tracker is not None}")
 
         await self.stream_thinking("Beginning tool execution sequence...")
 
@@ -419,6 +428,30 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
                 tool_results = enhanced_results
                 executed_tools = [result["tool_name"] for result in enhanced_results]
                 total_execution_time = sum(result["execution_time"] for result in enhanced_results)
+
+                # Track tool executions in context tracker
+                if self.context_tracker:
+                    session_id = state.get("session_id")
+                    logger.warning(f"=== TRACKING CONTEXT === Session: {session_id}, Tools: {len(enhanced_results)}")
+                    logger.warning(f"Enhanced results type: {type(enhanced_results)}, length: {len(enhanced_results)}")
+                    if session_id:
+                        logger.warning(f"Tracking {len(enhanced_results)} tool executions for session {session_id}")
+                        for i, result in enumerate(enhanced_results):
+                            logger.warning(f"Processing result {i+1}/{len(enhanced_results)}: type={type(result)}")
+                            try:
+                                logger.warning(f"Calling track_tool_execution for {result['tool_name']}")
+                                await self.context_tracker.track_tool_execution(
+                                    session_id=session_id,
+                                    tool_name=result["tool_name"],
+                                    tool_result=result,
+                                )
+                                logger.warning(f"✅ Successfully tracked {result['tool_name']} for session {session_id}")
+                            except Exception as e:
+                                logger.error(f"❌ Failed to track tool execution {result['tool_name']}: {e}", exc_info=True)
+                    else:
+                        logger.warning("Session ID not found in state for context tracking")
+                else:
+                    logger.warning("Context tracker not available on execution agent")
 
             else:
                 # Fallback to basic tool execution
@@ -472,6 +505,24 @@ class ToolExecutionAgent(BaseAgent, StreamingMixin, MemoryMixin):
 
                     tool_results.append(tool_result.dict())
                     executed_tools.append(tool_name)
+
+                    # Track tool execution in context tracker
+                    if self.context_tracker:
+                        session_id = state.get("session_id")
+                        if session_id:
+                            try:
+                                await self.context_tracker.track_tool_execution(
+                                    session_id=session_id,
+                                    tool_name=tool_name,
+                                    tool_result=tool_result.dict(),
+                                )
+                                logger.info(f"Successfully tracked {tool_name} (fallback) for session {session_id}")
+                            except Exception as e:
+                                logger.error(f"Failed to track tool execution (fallback) {tool_name}: {e}", exc_info=True)
+                        else:
+                            logger.warning("Session ID not found in state for context tracking (fallback)")
+                    else:
+                        logger.warning("Context tracker not available on execution agent (fallback)")
 
                     await self.stream_custom(
                         {
@@ -673,7 +724,19 @@ class ResponseSynthesisAgent(BaseAgent, StreamingMixin, MemoryMixin):
             context_parts.append(f"Tool Results: {len(tool_results)} tools executed")
             for result in tool_results:
                 if result["success"]:
-                    context_parts.append(f"- {result['tool_name']}: {result['raw_output'][:200]}")
+                    raw_output = result['raw_output']
+                    # Handle both dict (structured) and str (text) output
+                    if isinstance(raw_output, dict):
+                        # For structured output, show summary info
+                        summary = f"{raw_output.get('total_results', 0)} results"
+                        if 'query' in raw_output:
+                            summary = f"Query: {raw_output['query'][:50]}... - {summary}"
+                        context_parts.append(f"- {result['tool_name']}: {summary}")
+                    elif isinstance(raw_output, str):
+                        # For text output, show first 200 chars
+                        context_parts.append(f"- {result['tool_name']}: {raw_output[:200]}")
+                    else:
+                        context_parts.append(f"- {result['tool_name']}: {str(raw_output)[:200]}")
 
         # Add execution metadata
         execution_metadata = state.get("execution_metadata")

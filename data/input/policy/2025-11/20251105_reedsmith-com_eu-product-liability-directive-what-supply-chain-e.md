@@ -2,7 +2,7 @@
 title: EU Product Liability Directive: What supply chain economic operators need to know now | Perspectives | Reed Smith LLP
 url: https://www.reedsmith.com/en/perspectives/2025/11/eu-product-liability-directive
 published_date: 2025-11-05T00:00:00
-collected_date: 2025-11-11T12:26:13.985417
+collected_date: 2025-11-24T03:53:55.195782
 source: Reedsmith
 source_url: https://www.reedsmith.com
 author: Jamie L. Lanphear
@@ -92,3 +92,5 @@ _Client Alert 2025-258_
 [Virtual Life Sciences CLE Week: AI and Ethics\
 \
 6 November 2025](https://www.reedsmith.com/en/events/2025/11/virtual-life-sciences-a-without-ai-ethics-improper-legal-proceedings)
+
+Reed Smith uses cookies and other third party tracking technologies (“Cookies”) to improve functionality of our websites, and our related services, and to display user related information. Details of each of the Cookies used are available by clicking [Cookie settings](javascript:usercentrics.updateCornerModalIsVisible(true)) where you can opt in or out of all or specific Cookies using the selection boxes. If you click Accept, you are accepting all Cookies we use. If you de-select Functional cookies, your use of our website may be impacted. You can change your Cookie preferences or withdraw consent at any time by accessing the [Cookie settings](javascript:usercentrics.updateCornerModalIsVisible(true)).

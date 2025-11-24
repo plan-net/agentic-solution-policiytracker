@@ -2,7 +2,7 @@
 title: Significant Changes Are in the Works for EU Environmental, Social, and Governance (ESG) Laws
 url: https://crowell.com/en/insights/client-alerts/a-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:37.929473
+collected_date: 2025-11-24T03:54:05.785479
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -23,10 +23,10 @@ collection_type: policy_landscape
 3. \|Significant Changes Are in the Works for EU Environmental, Social, and Governance (ESG) Laws
 
 - Print
-- [PDF Link](https://crowell.com/print/v2/content/116603/a-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws.pdf)
+- [PDF Link](https://www.crowell.com/print/v2/content/116603/a-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws.pdf)
 - Share
 
-- [Email](mailto://crowell.com?subject=Significant%20Changes%20Are%20in%20the%20Works%20for%20EU%20Environmental%2C%20Social%2C%20and%20Governance%20(ESG)%20Laws&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
+- [Email](mailto://www.crowell.com?subject=Significant%20Changes%20Are%20in%20the%20Works%20for%20EU%20Environmental%2C%20Social%2C%20and%20Governance%20(ESG)%20Laws&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fa-host-of-significant-changes-are-in-the-works-for-eu-environmental-social-and-governance-esg-laws)
 
@@ -164,26 +164,26 @@ Senior Regulatory and Scientific Consultant
 
 [ZXdlcmttYW5uQGNyb3dlbGwuY29t](mailto:ZXdlcmttYW5uQGNyb3dlbGwuY29t)
 
-Client Alert \| 3 min read \| 11.06.25
+Client Alert \| 3 min read \| 11.20.25
 
-[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
+[Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
 
-In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
+Design patents offer protection for the ornamental appearance of a product, focusing on aspects like its shape and surface decoration, as opposed to the functional aspects protected by utility patents. The scope of a design patent is defined by the drawings and any descriptive language within the patent itself. Recent decisions by the Federal Circuit emphasize the need for clarity in the prosecution history of a design patent in order to preserve desired scope to preserve intentional narrowing (and to avoid unintentional sacrifice of desired claim scope)....
 
-- Client Alert \| 2 min read \| 11.06.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
+[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
 
-- Client Alert \| 3 min read \| 11.06.25
+- Client Alert \| 6 min read \| 11.19.25
 
-[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
-- Client Alert \| 13 min read \| 11.06.25
+- Client Alert \| 4 min read \| 11.18.25
 
-[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
+[DOJ Announces Major Enforcement Actions Targeting North Korean Remote IT Worker Schemes](https://www.crowell.com/en/insights/client-alerts/doj-announces-major-enforcement-actions-targeting-north-korean-remote-it-worker-schemes)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 
 to the latest insights from our team
 
-[Subscribe Now](https://crowell.com/en/subscribe)
+[Subscribe Now](https://www.crowell.com/en/subscribe)

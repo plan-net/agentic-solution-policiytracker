@@ -2,7 +2,7 @@
 title: The EU Digital Markets Act Two Years on - a Ship in a Storm With Chances to Ride the Waves?
 url: https://www.lexology.com/library/detail.aspx?g=9fc2889d-a0f3-4207-a14a-24769969cc77
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-16T02:36:27.038014
+collected_date: 2025-11-24T03:53:46.382228
 source: Lexology
 source_url: https://www.lexology.com
 author: Aymeric de Moncuit, Matthias Jannausch, Sarah Wilks
@@ -132,18 +132,6 @@ Folders shared with you
 
 - [European Commission](https://www.lexology.com/research/hubs/european-commission)
 
-### Popular articles from this firm
-
-1. ##### [Legal Grounds for Challenging the Overreach of European Regulations on US-Based Companies\ \*](https://www.lexology.com/library/detail.aspx?g=2ffc89da-1f50-4340-af68-4e63efd4ffc6)
-
-2. ##### [The European Commission Proposes Targeted EUDR Simplification Measures\ \*](https://www.lexology.com/library/detail.aspx?g=cd399bcc-3204-4e0f-a0a5-9f62c9dd2925)
-
-3. ##### [Russia/Ukraine Sanctions Update - Month of October 2025\ \*](https://www.lexology.com/library/detail.aspx?g=23e2028c-1ccf-44a9-83a4-c1d70cc822be)
-
-4. ##### [Insurance M&A - A quick Guide to acquiring a German Insurance Company\ \*](https://www.lexology.com/library/detail.aspx?g=a58913ed-c6ce-42b8-b64a-e276e5791a3e)
-
-5. ##### [The EU Data Act Has Taken Effect: Focus on Automotive and Cloud Providers\ \*](https://www.lexology.com/library/detail.aspx?g=c103965c-7e06-42ad-a3f2-e68bed247289)
-
 Interested in contributing?
 
 Get closer to winning business faster with Lexology's complete suite of dynamic products designed to help you unlock new opportunities with our highly engaged audience of legal professionals looking for answers.
@@ -174,20 +162,20 @@ Online
 
 ### Related practical resources PRO
 
-- Checklist [Checklist: Practical considerations prior to using AI in commercial contracts (USA)](https://www.lexology.com/pro/content/checklist-practical-considerations-prior-using-ai-in-commercial-contracts-usa)
-- How-to guide [How-to guide: How to use AI to develop ESG disclosures (USA)](https://www.lexology.com/pro/content/how-guide-how-use-ai-develop-esg-disclosures-usa)
-- Checklist [Checklist: Developing a policy for the ethical use of AI (USA)](https://www.lexology.com/pro/content/checklist-developing-policy-the-ethical-use-of-ai-usa)
+- How-to guide [How-to guide: How to use AI to enhance Diversity, Equity and Inclusion (DEI) (USA)](https://www.lexology.com/pro/content/how-guide-how-use-ai-enhance-diversity-equity-and-inclusion-dei-usa)
+- How-to guide [How-to guide: How to use AI to improve workplace safety (USA)](https://www.lexology.com/pro/content/how-guide-how-use-ai-improve-workplace-safety-usa)
+- How-to guide [How-to guide: Corporate governance and the use of AI (USA)](https://www.lexology.com/pro/content/how-guide-corporate-governance-and-the-use-of-ai-usa)
 
 [View all](https://www.lexology.com/content/practical-resources?utm_content=widget)
 
 ### Related research hubs
 
-#### [Artificial intelligence](https://www.lexology.com/hub/artificial-intelligence)
-
 #### [European Commission](https://www.lexology.com/hub/european-commission)
+
+#### [Artificial intelligence](https://www.lexology.com/hub/artificial-intelligence)
 
 #### [European Union](https://www.lexology.com/hub/european-union)
 
-#### [IT & Data Protection](https://www.lexology.com/hub/it-and-data-protection)
-
 #### [Competition & Antitrust](https://www.lexology.com/hub/competition-and-antitrust)
+
+#### [IT & Data Protection](https://www.lexology.com/hub/it-and-data-protection)

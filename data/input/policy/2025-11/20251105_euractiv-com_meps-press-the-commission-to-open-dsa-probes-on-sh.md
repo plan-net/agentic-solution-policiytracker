@@ -2,7 +2,7 @@
 title: MEPs press the Commission to open DSA probes on Shein, Temu, and AliExpress | Euractiv
 url: https://www.euractiv.com/news/meps-press-the-commission-to-open-dsa-probes-on-shein-temu-and-aliexpress/
 published_date: 2025-11-05T00:00:00
-collected_date: 2025-11-16T02:36:29.879366
+collected_date: 2025-11-24T03:53:53.363107
 source: Euractiv
 source_url: https://www.euractiv.com
 author: Euractiv

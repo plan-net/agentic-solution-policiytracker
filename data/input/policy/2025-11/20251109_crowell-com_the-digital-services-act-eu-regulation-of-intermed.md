@@ -1,10 +1,10 @@
 ---
 title: The Digital Services Act: EU Regulation of Intermediary Service Providers Imminent
-url: https://crowell.com/en/insights/client-alerts/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent
+url: https://www.crowell.com/en/insights/client-alerts/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:31.876344
+collected_date: 2025-11-24T03:54:02.070996
 source: Crowell
-source_url: https://crowell.com
+source_url: https://www.crowell.com
 description: "1. [Home](https://www.crowell.com/en)
 2. \| [Insights](https://www.crowell.com/en/insights)
 3. \|The Digital Services Act: EU Regulation of Intermediary Service Providers Imminent"
@@ -23,10 +23,10 @@ collection_type: policy_landscape
 3. \|The Digital Services Act: EU Regulation of Intermediary Service Providers Imminent
 
 - Print
-- [PDF Link](https://crowell.com/print/v2/content/61482/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent.pdf)
+- [PDF Link](https://www.crowell.com/print/v2/content/61482/the-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent.pdf)
 - Share
 
-- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent?subject=The%20Digital%20Services%20Act%3A%20EU%20Regulation%20of%20Intermediary%20Service%20Providers%20Imminent&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
+- [Email](mailto://www.crowell.com?subject=The%20Digital%20Services%20Act%3A%20EU%20Regulation%20of%20Intermediary%20Service%20Providers%20Imminent&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fthe-digital-services-act-eu-regulation-of-intermediary-service-providers-imminent)
 
@@ -120,40 +120,36 @@ _The authors thank Ms Florence Nieuwbourg for her assistance in preparing this a
 
 - [Sari Depreeuw](https://www.crowell.com/en/professionals/sari-depreeuw)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.282.18.49](tel:%2B32.2.282.18.49)
 
 [c2RlcHJlZXV3QGNyb3dlbGwuY29t](mailto:c2RlcHJlZXV3QGNyb3dlbGwuY29t)
 
 - [Karl Stas](https://www.crowell.com/en/professionals/karl-stas)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.214.2888](tel:%2B32.2.214.2888)
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 9 min read \| 09.11.25
+Client Alert \| 3 min read \| 11.21.25
 
-[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
+[A Sign of What’s to Come? Court Dismisses FCA Retaliation Complaint Based on Alleged Discriminatory Use of Federal Funding](https://www.crowell.com/en/insights/client-alerts/sign-of-whats-to-come-court-dismisses-fca-retaliation-complaint-based-on-alleged-discriminatory-use-of-federal-funding)
 
-About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
+On November 7, 2025, in Thornton v. National Academy of Sciences, No. 25-cv-2155, 2025 WL 3123732 (D.D.C. Nov. 7, 2025), the District Court for the District of Columbia dismissed a False Claims Act (FCA) retaliation complaint on the basis that the plaintiff’s allegations that he was fired after blowing the whistle on purported illegally discriminatory use of federal funding was not sufficient to support his FCA claim. This case appears to be one of the first filed, and subsequently dismissed, following Deputy Attorney General Todd Blanche’s announcement of the creation of the Civil Rights Fraud Initiative on May 19, 2025, which “strongly encourages” private individuals to file lawsuits under the FCA relating to purportedly discriminatory and illegal use of federal funding for diversity, equity, and inclusion (DEI) initiatives in violation of Executive Order 14173, Ending Illegal Discrimination and Restoring Merit-Based Opportunity (Jan. 21, 2025). In this case, the court dismissed the FCA retaliation claim and rejected the argument that an organization could violate the FCA merely by “engaging in discriminatory conduct while conducting a federally funded study.” The analysis in Thornton could be a sign of how forthcoming arguments of retaliation based on reporting allegedly fraudulent DEI activity will be analyzed in the future....
 
-- Client Alert \| 1 min read \| 09.10.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[FAR from Alone: GSA Releases New FAR Companion Guide](https://www.crowell.com/en/insights/client-alerts/far-from-alone-gsa-releases-new-far-companion-guide)
+[Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
 
-- Client Alert \| 7 min read \| 09.10.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[Finally, the CMMC Final Rule: DoD Completes CMMC Rulemaking, Ushering in New Era in DoD Cybersecurity](https://www.crowell.com/en/insights/client-alerts/finally-the-cmmc-final-rule-dod-completes-cmmc-rulemaking-ushering-in-new-era-in-dod-cybersecurity)
+[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
 
-- Client Alert \| 3 min read \| 09.10.25
+- Client Alert \| 6 min read \| 11.19.25
 
-[No Opt-Out for State Data Privacy Compliance: California, Colorado and Connecticut Keep Data Privacy Enforcement Pressure on with Joint Enforcement Sweep](https://www.crowell.com/en/insights/client-alerts/no-opt-out-for-state-data-privacy-compliance-california-colorado-and-connecticut-keep-data-privacy-enforcement-pressure-on-with-joint-enforcement-sweep)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 
 to the latest insights from our team
 
-[Subscribe Now](https://crowell.com/en/subscribe)
+[Subscribe Now](https://www.crowell.com/en/subscribe)

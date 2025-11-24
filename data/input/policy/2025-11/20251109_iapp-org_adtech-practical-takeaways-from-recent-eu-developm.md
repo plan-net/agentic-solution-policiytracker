@@ -2,7 +2,7 @@
 title: Adtech: Practical takeaways from recent EU developments
 url: https://iapp.org/resources/article/adtech-practical-takeaways-from-recent-eu-developments
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:07.606256
+collected_date: 2025-11-24T03:53:48.058592
 source: Iapp
 source_url: https://iapp.org
 description: [Overview](https://iapp.org/news) [Podcasts](https://iapp.org/news/privacy-advisor-podcast/) [Videos](https://iapp.org/news/videos/) [Write for us](https://iapp.org/news/write-for-us)
@@ -23,8 +23,7 @@ Breaking news, essential resources and more, sent right to your inbox.](https://
 [Overview](https://iapp.org/connect) [KnowledgeNet Chapters](https://iapp.org/connect/communities/chapters) [Sections](https://iapp.org/connect/communities/sections) [Affinity Groups](https://iapp.org/connect/communities/affinity-groups) [Volunteer](https://iapp.org/connect/volunteer) [Annual Awards](https://iapp.org/connect/annual-awards) [Career Central](https://iapp.org/connect/career-central)
 
 [Find a KnowledgeNet Chapter Near You\
-Talk privacy and network with local members at IAPP KnowledgeNet Chapter meetings, taking place worldwide.](https://iapp.org/connect/communities/chapters/) [Call for volunteers — now open\
-We are looking for IAPP members to lead the way in 2026. Apply for advisory board, KnowledgeNet chapter chair or Young Privacy Professional position by 22 Sept.](https://iapp.org/connect/call-for-volunteers/) [IAPP Job Board\
+Talk privacy and network with local members at IAPP KnowledgeNet Chapter meetings, taking place worldwide.](https://iapp.org/connect/communities/chapters/) [IAPP Job Board\
 Looking for a new challenge, or need to hire your next privacy pro? The IAPP Job Board is the answer.](https://iapp.org/connect/career-central/#career) [IAPP Calendar\
 Review a filterable list of conferences, KnowledgeNets, LinkedIn Live broadcasts, networking events, web conferences and more.](https://iapp.org/iapp-calendar/)
 
@@ -63,15 +62,15 @@ The IAPP's video library provides insights, reactions and opinions on a range of
 On this topic page, you can find the IAPP’s collection of coverage, analysis and resources covering AI connections to the privacy space.](https://iapp.org/resources/topics/artificial-intelligence-1/) [Cybersecurity Law\
 On this topic page, you can find the IAPP’s collection of coverage, analysis and resources related to cybersecurity law.](https://iapp.org/resources/topics/cybersecurity-law/)
 
-[Global Privacy Summit\
-The world's largest forum for connecting with other privacy, AI governance and digital responsibility professionals.](https://iapp.org/conference/global-privacy-summit/) [Navigate: Digital Policy Leadership Retreat\
+[Global Summit: Privacy \| AI governance \| Cybersecurity law\
+The world's largest forum for connecting with other privacy, AI governance and digital responsibility professionals.](https://iapp.org/conference/global-privacy-summit/) [Navigate: Digital Policy Leadership Summit\
 Moderated discussion on digital regulation, risk and responsibility. Co-hosted by the Berkman Klein Center for Internet & Society at Harvard University and the IAPP.](https://iapp.org/conference/navigate-leadership-retreat/) [AI Governance Global Europe\
-The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [AI Governance Global North America\
-Join us in Boston as we focus on the unique and broad array of challenges AI governance professionals face in North America.](https://iapp.org/conference/iapp-ai-governance-global-north-america/) [Privacy. Security. Risk. 2025\
+The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [Privacy. Security. Risk.\
 P.S.R. focuses on the intersection of privacy, AI governance, digital responsibility and technology. Register today for the San Diego event.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
-Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Canada Privacy Symposium\
-The call for speaking proposals is open. Submit your idea by 19 Oct. 2025 for a chance to speak at Symposium.](https://iapp.org/conference/iapp-canada-privacy-symposium/) [Europe Data Protection Congress\
-Meet us in Brussels to learn about the latest in privacy, AI governance and cybersecurity law.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [Speak at an IAPP event\
+Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Asia Forum: Privacy \| AI governance \| Cybersecurity law\
+The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Data Protection Congress\
+Meet us in Brussels to learn about the latest in privacy, AI governance and cybersecurity law.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
+Get a U.K. perspective on global developments and learn how the U.K. plays a key role in integration and implementation.](https://iapp.org/conference/iapp-data-protection-intensive-uk/) [Speak at an IAPP event\
 View our open calls and submission instructions.](https://iapp.org/conference/speak-at-an-iapp-conference/) [Sponsor an event\
 Increase visibility for your organization — check out sponsorship opportunities today.](https://iapp.org/conference/sponsoring)
 
@@ -80,7 +79,7 @@ Increase visibility for your organization — check out sponsorship opportunitie
 [Become a Member\
 Start taking advantage of the many IAPP member benefits today](https://iapp.org/join) [Corporate Members\
 See our list of high-profile corporate members—and find out why you should become one, too](https://iapp.org/join/corporate) [Renew Your Membership\
-Don’t miss out for a minute—continue accessing your benefits](https://iapp.org/profile/membership)
+Don’t miss out for a minute—continue accessing your benefits](https://myiapp.org/membership)
 
 clear
 mode\_editEdit
@@ -125,7 +124,7 @@ This web conference provides practical takeaways from EU developments on adverti
 
 > **Accessing the on-demand recording of this web conference**
 >
-> On-demand recordings of IAPP web conferences are available shortly after the live broadcast concludes. You will still need to register for the web conference through the link above, after which the on-demand recording will then become accessible within your [MyIAPP](https://iapp.org/profile/) profile. Once in your profile, go to the [My Purchases](https://iapp.org/profile/purchases/) section, where the on-demand recording will be listed within the [My Recordings](https://iapp.org/profile/purchases/#recordings) subsection.
+> On-demand recordings of IAPP web conferences are available shortly after the live broadcast concludes. You will still need to register for the web conference through the link above, after which the on-demand recording will then become accessible within your [MyIAPP](https://myiapp.org/) profile. Once in your profile, go to the [Educational Materials](https://myiapp.org/education) section, where the on-demand recording will be available to view.
 >
 > All IAPP web conferences can be [accessed here](https://iapp.org/resources/topics/web-conferences/).
 

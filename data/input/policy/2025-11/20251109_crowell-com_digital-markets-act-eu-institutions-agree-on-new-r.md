@@ -2,7 +2,7 @@
 title: Digital Markets Act: EU Institutions Agree on New Rules to Curb the Power Of “Big Tech” Platforms
 url: https://crowell.com/en/insights/client-alerts/digital-markets-act-eu-institutions-agree-on-new-rules-to-curb-the-power-of-big-tech-platforms
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:27.037959
+collected_date: 2025-11-24T03:53:55.195891
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -144,23 +144,23 @@ The DMA will **likely enter into force in October 2022**, after a vote in the Eu
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 6 min read \| 11.13.25
+Client Alert \| 3 min read \| 11.21.25
 
-[FTC and NAD Enforcement Priorities & ANA 2025](https://www.crowell.com/en/insights/client-alerts/ftc-and-nad-enforcement-priorities-and-ana-2025)
+[A Sign of What’s to Come? Court Dismisses FCA Retaliation Complaint Based on Alleged Discriminatory Use of Federal Funding](https://www.crowell.com/en/insights/client-alerts/sign-of-whats-to-come-court-dismisses-fca-retaliation-complaint-based-on-alleged-discriminatory-use-of-federal-funding)
 
-The Federal Trade Commission (FTC) and National Advertising Division (NAD) of BBB National Programs laid out their enforcement priorities during the 2025 ANA Masters of Advertising Law Conference, at which Crowell & Moring attorneys spoke on and attended various panels....
+On November 7, 2025, in Thornton v. National Academy of Sciences, No. 25-cv-2155, 2025 WL 3123732 (D.D.C. Nov. 7, 2025), the District Court for the District of Columbia dismissed a False Claims Act (FCA) retaliation complaint on the basis that the plaintiff’s allegations that he was fired after blowing the whistle on purported illegally discriminatory use of federal funding was not sufficient to support his FCA claim. This case appears to be one of the first filed, and subsequently dismissed, following Deputy Attorney General Todd Blanche’s announcement of the creation of the Civil Rights Fraud Initiative on May 19, 2025, which “strongly encourages” private individuals to file lawsuits under the FCA relating to purportedly discriminatory and illegal use of federal funding for diversity, equity, and inclusion (DEI) initiatives in violation of Executive Order 14173, Ending Illegal Discrimination and Restoring Merit-Based Opportunity (Jan. 21, 2025). In this case, the court dismissed the FCA retaliation claim and rejected the argument that an organization could violate the FCA merely by “engaging in discriminatory conduct while conducting a federally funded study.” The analysis in Thornton could be a sign of how forthcoming arguments of retaliation based on reporting allegedly fraudulent DEI activity will be analyzed in the future....
 
-- Client Alert \| 12 min read \| 11.13.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[Highlighting Key Takeaways from the Pentagon Acquisition Transformation Strategy](https://www.crowell.com/en/insights/client-alerts/highlighting-key-takeaways-from-the-pentagon-acquisition-transformation-strategy)
+[Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
 
-- Client Alert \| 4 min read \| 11.13.25
+- Client Alert \| 3 min read \| 11.20.25
 
-[The Password is “Louvre” – Lessons for Everyone from the Louvre’s Jewel Heist](https://www.crowell.com/en/insights/client-alerts/the-password-is-louvre-lessons-for-everyone-from-the-louvres-jewel-heist)
+[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
 
-- Client Alert \| 3 min read \| 11.12.25
+- Client Alert \| 6 min read \| 11.19.25
 
-[EPA Proposes Important Revisions to its PFAS Reporting Regulations](https://www.crowell.com/en/insights/client-alerts/epa-proposes-important-revisions-to-its-pfas-reporting-regulations)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

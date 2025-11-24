@@ -2,7 +2,7 @@
 title: EU's Data Act should govern data usage while GDPR protects privacy, Germany says | MLex | Specialist news and analysis on legal risk and regulation
 url: https://www.mlex.com/mlex/articles/2405130/eu-s-data-act-should-govern-data-usage-while-gdpr-protects-privacy-germany-says
 published_date: 2025-11-01T00:00:00
-collected_date: 2025-11-16T02:36:21.334550
+collected_date: 2025-11-24T03:53:46.382195
 source: Mlex
 source_url: https://www.mlex.com
 author: Related Sections Data Privacy and Security

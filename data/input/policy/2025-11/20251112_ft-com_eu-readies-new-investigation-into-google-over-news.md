@@ -2,7 +2,7 @@
 title: EU readies new investigation into Google over news publisher rankings
 url: https://www.ft.com/content/644edfe6-ccba-466a-bc93-e82f59e124df
 published_date: 2025-11-12T00:00:00
-collected_date: 2025-11-16T02:36:43.241117
+collected_date: 2025-11-24T03:54:11.960687
 source: Ft
 source_url: https://www.ft.com
 author: Barbara Moens

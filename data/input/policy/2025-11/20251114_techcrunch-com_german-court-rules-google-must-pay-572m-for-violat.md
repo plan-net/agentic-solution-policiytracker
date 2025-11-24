@@ -2,7 +2,7 @@
 title: German court rules Google must pay €572M for violating antitrust rules in price comparison sector
 url: https://techcrunch.com/2025/11/14/german-court-rules-google-must-pay-e572m-for-violating-antitrust-rules-in-price-comparison-sector/
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:46.801619
+collected_date: 2025-11-24T03:54:08.951646
 source: Techcrunch
 source_url: https://techcrunch.com
 author: Ram Iyer
@@ -35,7 +35,7 @@ Idealo had claimed damages of €3.3 billion from Google, arguing that its lawsu
 
 Idealo [said](https://www.idealo.de/unternehmen/pressemitteilungen/gericht-bestaetigt-google-hat-idealo-massiv-benachteiligt) on Friday that it intends to continue its case against Google and seek the full damages it had sued for.
 
-“We welcome the court holding Google accountable. But the consequences of self-favoring go far beyond the amount awarded. We will continue to fight – because market abuse must have consequences and must not become a lucrative business model that is worthwhile despite fines and compensation payments,” Idealo’s co-founder and CEO Albrecht von Sonntag said in a statement.
+“We welcome the court holding Google accountable. But the consequences of self-favoring go far beyond the amount awarded. We will continue to fight – because market abuse must have consequences and must not become a lucrative business model that is worthwhile despite fines and compensation payments,” Idealo’s co-founder Albrecht von Sonntag said in a statement.
 
 Google said it intends to appeal both rulings. “The changes we made in 2017 are working well, with no intervention from the European Commission. The number of price comparison sites in Europe using the remedy Shopping Unit has multiplied from seven then to 1,550 today,” a Google spokesperson said in an emailed statement.
 
@@ -53,37 +53,37 @@ You can contact or verify outreach from Ram by emailing [ram.iyer@techcrunch.com
 
 [View Bio](https://techcrunch.com/author/ram-iyer/)
 
-StrictlyVC concludes its 2025 series with an exclusive event featuring insights from leading VCs and builders such as Pat Gelsinger, Mina Fahmi, and more. Plus, opportunities to forge meaningful connections.Early Bird rate ends November 17.
+StrictlyVC concludes its 2025 series with an exclusive event featuring insights from leading VCs and builders such as Pat Gelsinger, Mina Fahmi, and more. Plus, opportunities to forge meaningful connections.
 
 [Register Now](https://techcrunch.com/events/strictlyvc-palo-alto/?utm_medium=ad&utm_campaign=svcpaloalto&utm_content=ticketsales&utm_source=tc&promo=tcrighttrail&display=)
 
-- ### [Spotify introduces a Premium Platinum plan with lossless access in five markets](https://techcrunch.com/2025/11/13/spotify-introduces-a-premium-platinum-plan-with-lossless-access-in-five-markets/)
-
-- [Ivan Mehta](https://techcrunch.com/author/ivan-mehta/)
-
-- ### [Jack Dorsey funds diVine, a Vine reboot that includes Vine’s video archive](https://techcrunch.com/2025/11/12/jack-dorsey-funds-divine-a-vine-reboot-that-includes-vines-video-archive/)
+- ### [Hugging Face CEO says we’re in an ‘LLM bubble,’ not an AI bubble](https://techcrunch.com/2025/11/18/hugging-face-ceo-says-were-in-an-llm-bubble-not-an-ai-bubble/)
 
 - [Sarah Perez](https://techcrunch.com/author/sarah-perez/)
 
-- ### [‘Chad: The Brainrot IDE’ is a new Y Combinator-backed product so wild, people thought it was fake](https://techcrunch.com/2025/11/12/chad-the-brainrot-ide-is-a-new-y-combinator-backed-product-so-wild-people-thought-it-was-fake/)
+- ### [Ramp hits $32B valuation, just 3 months after hitting $22.5B](https://techcrunch.com/2025/11/17/ramp-hits-32b-valuation-just-three-months-after-hitting-22-5b/)
 
 - [Julie Bort](https://techcrunch.com/author/julie-bort/)
 
-- ### [Apple launches Digital ID, a way to carry your passport on your phone for use at TSA checkpoints](https://techcrunch.com/2025/11/12/apple-launches-digital-id-a-way-to-carry-your-passport-on-your-phone-for-use-at-tsa-checkpoints/)
+- ### [DoorDash confirms data breach affecting users’ phone numbers and physical addresses](https://techcrunch.com/2025/11/17/doordash-confirms-data-breach-impacting-users-phone-numbers-and-physical-addresses/)
 
-- [Sarah Perez](https://techcrunch.com/author/sarah-perez/)
+- [Lorenzo Franceschi-Bicchierai](https://techcrunch.com/author/lorenzo-franceschi-bicchierai/)
 
-- ### [Meta’s chief AI scientist Yann LeCun reportedly plans to leave to build his own startup](https://techcrunch.com/2025/11/11/metas-chief-ai-scientist-yann-lecun-reportedly-plans-to-leave-to-build-his-own-startup/)
+- ### [Jeff Bezos reportedly returns to the trenches as co-CEO of new AI startup, Project Prometheus](https://techcrunch.com/2025/11/17/jeff-bezos-reportedly-returns-to-the-trenches-as-co-ceo-of-new-ai-startup-project-prometheus/)
 
 - [Ram Iyer](https://techcrunch.com/author/ram-iyer/)
 
-- ### [A better way of thinking about the AI bubble](https://techcrunch.com/2025/11/10/a-better-way-of-thinking-about-the-ai-bubble/)
+- ### [‘Buy now, pay later’ is expanding fast, and that should worry everyone](https://techcrunch.com/2025/11/16/bnpl-is-expanding-fast-and-that-should-worry-everyone/)
 
-- [Russell Brandom](https://techcrunch.com/author/russell-brandom/)
+- [Connie Loizos](https://techcrunch.com/author/connie-loizos/)
 
-- ### [Scribe hits $1.3B valuation as it moves to show where AI will actually pay off](https://techcrunch.com/2025/11/10/scribe-hits-1-3b-valuation-as-it-moves-to-show-where-ai-will-actually-pay-off/)
+- ### [Jury says Apple owes Masimo $634M for patent infringement](https://techcrunch.com/2025/11/15/jury-says-apple-owes-masimo-634m-for-patent-infringement/)
 
-- [Jagmeet Singh](https://techcrunch.com/author/jagmeet-singh/)
+- [Anthony Ha](https://techcrunch.com/author/anthony-ha/)
+
+- ### [Leaked documents shed light into how much OpenAI pays Microsoft](https://techcrunch.com/2025/11/14/leaked-documents-shed-light-into-how-much-openai-pays-microsoft/)
+
+- [Rebecca Bellan](https://techcrunch.com/author/rebecca-bellan/)
 
 Loading the next article
 

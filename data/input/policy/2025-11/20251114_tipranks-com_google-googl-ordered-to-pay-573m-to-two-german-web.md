@@ -2,7 +2,7 @@
 title: Google (GOOGL) Ordered to Pay €573M to Two German Websites
 url: https://www.tipranks.com/news/google-googl-ordered-to-pay-e573m-to-two-german-websites
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:51.942773
+collected_date: 2025-11-24T03:54:22.579373
 source: Tipranks
 source_url: https://www.tipranks.com
 author: Vince Condarcuri
