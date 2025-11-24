@@ -1,11 +1,12 @@
 """Test LangWatch integration to verify traces are being sent."""
 
-import os
 import asyncio
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 async def test_langwatch_basic():
     """Test basic LangWatch setup."""
@@ -53,7 +54,9 @@ async def test_langwatch_basic():
     except Exception as e:
         print(f"\n❌ Error during LLM call: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 async def test_langwatch_trace_decorator():
     """Test the trace decorator directly."""
@@ -75,6 +78,7 @@ async def test_langwatch_trace_decorator():
 
     await asyncio.sleep(2)
     print("✅ Decorator test complete. Check LangWatch for 'test_function' trace.")
+
 
 if __name__ == "__main__":
     print("LangWatch Integration Test")

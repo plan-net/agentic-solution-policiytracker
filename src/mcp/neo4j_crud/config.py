@@ -20,7 +20,7 @@ class Neo4jConfig:
             uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
             user=os.getenv("NEO4J_USER", "neo4j"),
             password=os.getenv("NEO4J_PASSWORD", "password123"),
-            database=os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+            database=os.getenv("NEO4J_DATABASE", "politicamonitoring.v2"),
         )
 
 
@@ -38,5 +38,5 @@ class ServerConfig:
         return cls(
             host=os.getenv("MCP_HOST", "0.0.0.0"),
             port=int(os.getenv("MCP_PORT", "8002")),
-            log_level=os.getenv("LOG_LEVEL", "INFO")
+            log_level=os.getenv("LOG_LEVEL", "INFO"),
         )

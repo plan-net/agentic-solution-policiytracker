@@ -105,20 +105,16 @@ class Settings(BaseSettings):
 
     # Bundestag DIP API Configuration (Flow 5)
     BUNDESTAG_API_URL: str = Field(
-        default="https://search.dip.bundestag.de/api/v1/",
-        description="Bundestag DIP API base URL"
+        default="https://search.dip.bundestag.de/api/v1/", description="Bundestag DIP API base URL"
     )
     BUNDESTAG_API_KEY: str = Field(
-        default="OSOegLs.PR2lwJ1dwCeje9vTj7FPOt3hvpYKtwKkhw",
-        description="Bundestag DIP API key"
+        default="OSOegLs.PR2lwJ1dwCeje9vTj7FPOt3hvpYKtwKkhw", description="Bundestag DIP API key"
     )
     BUNDESTAG_DEFAULT_WAHLPERIODE: str = Field(
-        default="20",
-        description="Default election period for Bundestag data"
+        default="20", description="Default election period for Bundestag data"
     )
     BUNDESTAG_BATCH_SIZE: int = Field(
-        default=100,
-        description="Batch size for Bundestag API requests"
+        default=100, description="Batch size for Bundestag API requests"
     )
 
     @property
@@ -184,12 +180,10 @@ class GraphRAGSettings(BaseSettings):
 
     # Flow Orchestration Settings
     ENABLE_AUTO_TRIGGER_FLOW1: bool = Field(
-        default=False,
-        description="Auto-trigger Flow 1 orchestration after collection DAGs"
+        default=False, description="Auto-trigger Flow 1 orchestration after collection DAGs"
     )
     FLOW1_ORCHESTRATION_DAG_ID: str = Field(
-        default="flow_orchestration",
-        description="DAG ID for Flow 1 orchestration"
+        default="flow_orchestration", description="DAG ID for Flow 1 orchestration"
     )
 
     # Hybrid Chunking Configuration (v0.2.0)
@@ -202,12 +196,10 @@ class GraphRAGSettings(BaseSettings):
     CHUNK_OVERLAP_PERCENTAGE: int = Field(
         default=10, description="Overlap between chunks as percentage (10 = 10%)"
     )
-    MIN_CHUNK_TOKENS: int = Field(
-        default=50, description="Minimum viable chunk size in tokens"
-    )
+    MIN_CHUNK_TOKENS: int = Field(default=50, description="Minimum viable chunk size in tokens")
     CHUNKING_STRATEGY: str = Field(
         default="hybrid",
-        description="Chunking strategy: 'hybrid' (semantic+paragraph+fixed) or 'fixed' (legacy)"
+        description="Chunking strategy: 'hybrid' (semantic+paragraph+fixed) or 'fixed' (legacy)",
     )
     ENABLE_LINK_REMOVAL: bool = Field(
         default=True, description="Remove links from scraped documents before processing"

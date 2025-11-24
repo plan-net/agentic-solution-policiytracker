@@ -6,19 +6,20 @@ Run with: python src/flows/bundestag_fraktion/load_fraktionen.py
 Or via just: just load-fraktionen
 """
 
-import sys
 import os
-from typing import Dict, Any, List
+import sys
+from typing import Any
 
 # Add project root to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 from neo4j import GraphDatabase
-from src.flows.bundestag_fraktion.fraktion_data import FRAKTION_REFERENCE_DATA
+
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_fraktion.fraktion_data import FRAKTION_REFERENCE_DATA
 
 
-def map_fraktion_to_entity(frak_data: Dict[str, Any]) -> Dict[str, Any]:
+def map_fraktion_to_entity(frak_data: dict[str, Any]) -> dict[str, Any]:
     """Map fraktion reference data to entity structure."""
 
     entity = {
@@ -38,7 +39,7 @@ def map_fraktion_to_entity(frak_data: Dict[str, Any]) -> Dict[str, Any]:
     return entity
 
 
-def create_active_in_relationships(driver, database: str) -> Dict[str, int]:
+def create_active_in_relationships(driver, database: str) -> dict[str, int]:
     """Create ACTIVE_IN relationships between Fraktion and Wahlperiode nodes."""
     query = """
     MATCH (f:Fraktion)
@@ -60,7 +61,7 @@ def create_active_in_relationships(driver, database: str) -> Dict[str, int]:
         return {"created": 0, "error": str(e)}
 
 
-def create_member_of_relationships(driver, database: str) -> Dict[str, int]:
+def create_member_of_relationships(driver, database: str) -> dict[str, int]:
     """Create MEMBER_OF relationships between BundestagPerson and Fraktion nodes."""
     query = """
     MATCH (p:BundestagPerson)
@@ -85,7 +86,7 @@ def create_member_of_relationships(driver, database: str) -> Dict[str, int]:
         return {"created": 0, "error": str(e)}
 
 
-def create_successor_relationships(driver, database: str) -> Dict[str, int]:
+def create_successor_relationships(driver, database: str) -> dict[str, int]:
     """Create SUCCESSOR_OF relationships between historical fraktionen."""
     # Define successor relationships
     successors = [
@@ -104,7 +105,9 @@ def create_successor_relationships(driver, database: str) -> Dict[str, int]:
                 MERGE (successor)-[:SUCCESSOR_OF]->(predecessor)
                 RETURN count(*) as created
                 """
-                result = session.run(query, successor_id=successor_id, predecessor_id=predecessor_id)
+                result = session.run(
+                    query, successor_id=successor_id, predecessor_id=predecessor_id
+                )
                 record = result.single()
                 if record:
                     created_count += record["created"]
@@ -162,9 +165,7 @@ def main():
         # Upsert to Neo4j
         print("💾 Upserting to Neo4j...")
         results = upsert_manager.upsert_entities_batch(
-            entity_type="Fraktion",
-            entities=entities,
-            batch_size=25
+            entity_type="Fraktion", entities=entities, batch_size=25
         )
 
         print(f"✅ Upserted {results['successful']} fraktionen ({results['failed']} failed)\n")
@@ -188,19 +189,22 @@ def main():
         print("=" * 60)
         print("✨ SUCCESS! Fraktion data loaded")
         print("=" * 60)
-        print(f"\n📈 Summary:")
+        print("\n📈 Summary:")
         print(f"   - Fraktion nodes: {results['successful']}")
         print(f"   - ACTIVE_IN relationships: {active_in_results['created']}")
         print(f"   - MEMBER_OF relationships: {member_of_results['created']}")
         print(f"   - SUCCESSOR_OF relationships: {successor_results['created']}")
-        print(f"   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
-        print(f"\n🔍 View in Neo4j Browser: http://localhost:7474")
-        print(f"   Query: MATCH (f:Fraktion) RETURN f ORDER BY f.founding_date")
-        print(f"   Query: MATCH (p:BundestagPerson)-[r:MEMBER_OF]->(f:Fraktion) RETURN p, r, f LIMIT 100\n")
+        print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
+        print("\n🔍 View in Neo4j Browser: http://localhost:7474")
+        print("   Query: MATCH (f:Fraktion) RETURN f ORDER BY f.founding_date")
+        print(
+            "   Query: MATCH (p:BundestagPerson)-[r:MEMBER_OF]->(f:Fraktion) RETURN p, r, f LIMIT 100\n"
+        )
 
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

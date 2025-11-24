@@ -11,10 +11,9 @@ Data sourced from:
 - Historical parliamentary records
 """
 
-from typing import List, Dict, Any
+from typing import Any
 
-
-FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
+FRAKTION_REFERENCE_DATA: list[dict[str, Any]] = [
     # Major continuous parties (1949-present)
     {
         "fraktion_id": "cdu_csu",
@@ -55,7 +54,6 @@ FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
         "active_wahlperioden": list(range(1, 22)),  # WP 1-21 (with gaps in 14, 19, 20)
         "description": "Liberal parliamentary group",
     },
-
     # Green Party (1983-present)
     {
         "fraktion_id": "gruene",
@@ -70,7 +68,6 @@ FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
         "active_wahlperioden": list(range(10, 22)),  # WP 10-21 (with gap in 11)
         "description": "Green and ecological parliamentary group",
     },
-
     # Left Party Evolution
     {
         "fraktion_id": "pds",
@@ -137,7 +134,6 @@ FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
         "active_wahlperioden": [20, 21],  # WP 20-21 (fell below threshold)
         "description": "The Left parliamentary group (below fraktion threshold)",
     },
-
     # Alternative for Germany (2017-present)
     {
         "fraktion_id": "afd",
@@ -152,7 +148,6 @@ FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
         "active_wahlperioden": [19, 20, 21],  # WP 19-21
         "description": "Alternative for Germany, right-populist parliamentary group",
     },
-
     # Historical parties (early Wahlperioden 1-5)
     {
         "fraktion_id": "kpd",
@@ -219,7 +214,6 @@ FRAKTION_REFERENCE_DATA: List[Dict[str, Any]] = [
         "active_wahlperioden": [1, 2, 3],  # WP 1-3
         "description": "German Centre Party",
     },
-
     # Special status
     {
         "fraktion_id": "fraktionslos",

@@ -3,7 +3,7 @@ Factory for creating news collectors.
 """
 
 import os
-from typing import List, Union
+from typing import Union
 
 import structlog
 
@@ -70,7 +70,7 @@ def create_news_collector(
         )
 
 
-def get_available_collectors() -> List[str]:
+def get_available_collectors() -> list[str]:
     """
     Get list of available collectors based on configured API keys.
 

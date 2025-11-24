@@ -6,7 +6,7 @@ Abstract base class for all Bundestag data collectors with common functionality.
 
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -34,7 +34,7 @@ class BaseCollector(ABC):
         entity_builder: Optional[Any] = None,
         edge_builder: Optional[Any] = None,
         neo4j_driver: Optional[Any] = None,
-        neo4j_database: str = "neo4j"
+        neo4j_database: str = "neo4j",
     ):
         """
         Initialize the base collector.
@@ -57,7 +57,7 @@ class BaseCollector(ABC):
             collector_type=self.__class__.__name__,
             endpoint=self.endpoint,
             entity_type=self.entity_type,
-            has_neo4j=neo4j_driver is not None
+            has_neo4j=neo4j_driver is not None,
         )
 
     @property
@@ -83,7 +83,7 @@ class BaseCollector(ABC):
         pass
 
     @abstractmethod
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect data from API and transform into entities and edges.
 
@@ -108,11 +108,7 @@ class BaseCollector(ABC):
         """
         pass
 
-    async def save_to_neo4j(
-        self,
-        entities: List[Any],
-        edges: List[Any]
-    ) -> Dict[str, int]:
+    async def save_to_neo4j(self, entities: list[Any], edges: list[Any]) -> dict[str, int]:
         """
         Save entities and edges to Neo4j database.
 
@@ -124,7 +120,7 @@ class BaseCollector(ABC):
             Dictionary with counts: {"entities_saved": int, "edges_saved": int}
         """
         # Debug logging to file (since stdout isn't captured)
-        import os
+
         debug_file = "/tmp/plenarprotokoll_save_debug.log"
         with open(debug_file, "a") as f:
             f.write(f"\n=== save_to_neo4j CALLED at {time.time()} ===\n")
@@ -132,14 +128,14 @@ class BaseCollector(ABC):
             f.write(f"Has driver: {self.neo4j_driver is not None}\n")
             if entities:
                 f.write(f"First entity type: {type(entities[0]).__name__}\n")
-                if hasattr(entities[0], 'model_dump'):
+                if hasattr(entities[0], "model_dump"):
                     f.write(f"First entity: {entities[0].model_dump()}\n")
 
         logger.info(
             "save_to_neo4j called",
             entities_count=len(entities),
             edges_count=len(edges),
-            has_driver=self.neo4j_driver is not None
+            has_driver=self.neo4j_driver is not None,
         )
 
         if not self.neo4j_driver:
@@ -156,9 +152,9 @@ class BaseCollector(ABC):
                 for entity in entities:
                     try:
                         # Convert Pydantic model to dict (Pydantic v2 uses model_dump)
-                        if hasattr(entity, 'model_dump'):
+                        if hasattr(entity, "model_dump"):
                             entity_dict = entity.model_dump()
-                        elif hasattr(entity, 'dict'):
+                        elif hasattr(entity, "dict"):
                             entity_dict = entity.dict()
                         else:
                             entity_dict = entity
@@ -168,32 +164,36 @@ class BaseCollector(ABC):
 
                         # Find unique identifier field (try common patterns)
                         # Special handling for Plenarprotokoll (uses composite key)
-                        if entity_type == 'Plenarprotokoll':
-                            sitzungsnummer = entity_dict.get('sitzungsnummer')
-                            wahlperiode = entity_dict.get('wahlperiode')
+                        if entity_type == "Plenarprotokoll":
+                            sitzungsnummer = entity_dict.get("sitzungsnummer")
+                            wahlperiode = entity_dict.get("wahlperiode")
 
                             # Debug to file
                             with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                                f.write(f"Processing Plenarprotokoll: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={entity_dict.get('herausgeber')}\n")
+                                f.write(
+                                    f"Processing Plenarprotokoll: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={entity_dict.get('herausgeber')}\n"
+                                )
 
                             logger.info(
                                 "Processing Plenarprotokoll entity",
                                 sitzungsnummer=sitzungsnummer,
                                 wahlperiode=wahlperiode,
-                                entity_dict_keys=list(entity_dict.keys())
+                                entity_dict_keys=list(entity_dict.keys()),
                             )
 
                             # Skip if sitzungsnummer is empty (can't create node without key)
                             if not sitzungsnummer or wahlperiode is None:
-                                herausgeber = entity_dict.get('herausgeber', 'unknown')
+                                herausgeber = entity_dict.get("herausgeber", "unknown")
                                 with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                                    f.write(f"⚠️  SKIPPED: Empty sitzungsnummer, herausgeber={herausgeber}, name={entity_dict.get('plenarprotokoll_name', 'unknown')}\n")
+                                    f.write(
+                                        f"⚠️  SKIPPED: Empty sitzungsnummer, herausgeber={herausgeber}, name={entity_dict.get('plenarprotokoll_name', 'unknown')}\n"
+                                    )
                                 logger.warning(
                                     "Plenarprotokoll missing sitzungsnummer, skipping",
                                     sitzungsnummer=sitzungsnummer,
                                     wahlperiode=wahlperiode,
                                     herausgeber=herausgeber,
-                                    name=entity_dict.get('plenarprotokoll_name')
+                                    name=entity_dict.get("plenarprotokoll_name"),
                                 )
                                 continue
 
@@ -201,28 +201,32 @@ class BaseCollector(ABC):
                             # (schema says str, but existing nodes use int)
                             # Handle format "20/214" by extracting the session number after the slash
                             try:
-                                if '/' in str(sitzungsnummer):
+                                if "/" in str(sitzungsnummer):
                                     # Extract session number from "20/214" format
-                                    sitzungsnummer_int = int(sitzungsnummer.split('/')[-1])
+                                    sitzungsnummer_int = int(sitzungsnummer.split("/")[-1])
                                 else:
                                     sitzungsnummer_int = int(sitzungsnummer)
 
                                 with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                                    f.write(f"Converted sitzungsnummer '{sitzungsnummer}' to int {sitzungsnummer_int}\n")
+                                    f.write(
+                                        f"Converted sitzungsnummer '{sitzungsnummer}' to int {sitzungsnummer_int}\n"
+                                    )
 
                             except (ValueError, TypeError) as e:
                                 with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                                    f.write(f"❌ Cannot convert sitzungsnummer '{sitzungsnummer}' to int: {e}\n")
+                                    f.write(
+                                        f"❌ Cannot convert sitzungsnummer '{sitzungsnummer}' to int: {e}\n"
+                                    )
                                 logger.warning(
                                     "Cannot convert sitzungsnummer to int, skipping",
                                     sitzungsnummer=sitzungsnummer,
-                                    error=str(e)
+                                    error=str(e),
                                 )
                                 continue
 
                             # CRITICAL: Also convert sitzungsnummer in properties to int
                             # Otherwise SET n += $properties will overwrite it back to string!
-                            entity_dict['sitzungsnummer'] = sitzungsnummer_int
+                            entity_dict["sitzungsnummer"] = sitzungsnummer_int
 
                             # Use composite key for Plenarprotokoll
                             query = f"""
@@ -234,57 +238,69 @@ class BaseCollector(ABC):
                             logger.info(
                                 "Executing Plenarprotokoll MERGE query",
                                 sitzungsnummer=sitzungsnummer_int,
-                                wahlperiode=wahlperiode
+                                wahlperiode=wahlperiode,
                             )
 
-                            result = session.run(query, sitzungsnummer=sitzungsnummer_int, wahlperiode=wahlperiode, properties=entity_dict)
+                            result = session.run(
+                                query,
+                                sitzungsnummer=sitzungsnummer_int,
+                                wahlperiode=wahlperiode,
+                                properties=entity_dict,
+                            )
                             result_record = result.single()
 
                             with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
                                 if result_record:
                                     entities_saved += 1
-                                    f.write(f"✅ SAVED Plenarprotokoll sitzung={sitzungsnummer_int}, wp={wahlperiode}\n")
+                                    f.write(
+                                        f"✅ SAVED Plenarprotokoll sitzung={sitzungsnummer_int}, wp={wahlperiode}\n"
+                                    )
                                     logger.info(
                                         "Successfully saved Plenarprotokoll",
                                         sitzungsnummer=sitzungsnummer_int,
-                                        wahlperiode=wahlperiode
+                                        wahlperiode=wahlperiode,
                                     )
                                 else:
-                                    f.write(f"❌ MERGE RETURNED NOTHING for sitzung={sitzungsnummer_int}, wp={wahlperiode}\n")
+                                    f.write(
+                                        f"❌ MERGE RETURNED NOTHING for sitzung={sitzungsnummer_int}, wp={wahlperiode}\n"
+                                    )
                                     logger.warning(
                                         "Plenarprotokoll MERGE returned no result",
                                         sitzungsnummer=sitzungsnummer_int,
-                                        wahlperiode=wahlperiode
+                                        wahlperiode=wahlperiode,
                                     )
                             continue
 
                         # Standard handling for other entity types
                         unique_id = (
-                            entity_dict.get('person_id') or
-                            entity_dict.get('vorgang_id') or
-                            entity_dict.get('drucksache_id') or
-                            entity_dict.get('aktivitaet_id') or
-                            entity_dict.get('id') or
-                            entity_dict.get('name')
+                            entity_dict.get("person_id")
+                            or entity_dict.get("vorgang_id")
+                            or entity_dict.get("drucksache_id")
+                            or entity_dict.get("aktivitaet_id")
+                            or entity_dict.get("id")
+                            or entity_dict.get("name")
                         )
 
                         if not unique_id:
-                            logger.warning(f"No unique identifier found for {entity_type}, skipping", entity_dict=entity_dict)
+                            logger.warning(
+                                f"No unique identifier found for {entity_type}, skipping",
+                                entity_dict=entity_dict,
+                            )
                             continue
 
                         # Determine the ID field name for this entity type
-                        if 'person_id' in entity_dict:
-                            id_field = 'person_id'
-                        elif 'vorgang_id' in entity_dict:
-                            id_field = 'vorgang_id'
-                        elif 'drucksache_id' in entity_dict:
-                            id_field = 'drucksache_id'
-                        elif 'aktivitaet_id' in entity_dict:
-                            id_field = 'aktivitaet_id'
-                        elif 'id' in entity_dict:
-                            id_field = 'id'
+                        if "person_id" in entity_dict:
+                            id_field = "person_id"
+                        elif "vorgang_id" in entity_dict:
+                            id_field = "vorgang_id"
+                        elif "drucksache_id" in entity_dict:
+                            id_field = "drucksache_id"
+                        elif "aktivitaet_id" in entity_dict:
+                            id_field = "aktivitaet_id"
+                        elif "id" in entity_dict:
+                            id_field = "id"
                         else:
-                            id_field = 'name'
+                            id_field = "name"
 
                         # Create MERGE query to avoid duplicates
                         query = f"""
@@ -298,39 +314,50 @@ class BaseCollector(ABC):
                             entities_saved += 1
 
                     except Exception as e:
-                        logger.error(f"Failed to save entity: {e}", entity_type=entity_type, entity_dict=entity_dict)
+                        logger.error(
+                            f"Failed to save entity: {e}",
+                            entity_type=entity_type,
+                            entity_dict=entity_dict,
+                        )
 
                 # Save edges
                 for edge in edges:
                     try:
                         # Extract edge information
-                        if hasattr(edge, 'model_dump'):
+                        if hasattr(edge, "model_dump"):
                             edge_dict = edge.model_dump()
-                        elif hasattr(edge, 'dict'):
+                        elif hasattr(edge, "dict"):
                             edge_dict = edge.dict()
                         else:
                             edge_dict = edge
 
-                        rel_type = edge_dict.get('type', 'RELATED_TO')
-                        from_id = edge_dict.get('from_id')
-                        to_id = edge_dict.get('to_id')
-                        properties = {k: v for k, v in edge_dict.items() if k not in ['type', 'from_id', 'to_id'] and v is not None}
+                        rel_type = edge_dict.get("type", "RELATED_TO")
+                        from_id = edge_dict.get("from_id")
+                        to_id = edge_dict.get("to_id")
+                        properties = {
+                            k: v
+                            for k, v in edge_dict.items()
+                            if k not in ["type", "from_id", "to_id"] and v is not None
+                        }
 
                         if not from_id or not to_id:
                             logger.warning(f"Edge missing from_id or to_id, skipping: {edge_dict}")
                             continue
 
                         # Special handling for Plenarprotokoll edges (composite key: sitzungsnummer_wahlperiode)
-                        if '_' in str(from_id) and from_id.replace('_', '').replace('/', '').isdigit():
+                        if (
+                            "_" in str(from_id)
+                            and from_id.replace("_", "").replace("/", "").isdigit()
+                        ):
                             # Plenarprotokoll composite key format: "214_20" or "20/214_20"
-                            parts = str(from_id).rsplit('_', 1)
+                            parts = str(from_id).rsplit("_", 1)
                             if len(parts) == 2:
                                 sitzung_raw = parts[0]
                                 wahlperiode = parts[1]
 
                                 # Extract session number from "20/214" format if needed
-                                if '/' in sitzung_raw:
-                                    sitzungsnummer = int(sitzung_raw.split('/')[-1])
+                                if "/" in sitzung_raw:
+                                    sitzungsnummer = int(sitzung_raw.split("/")[-1])
                                 else:
                                     sitzungsnummer = int(sitzung_raw)
 
@@ -343,7 +370,13 @@ class BaseCollector(ABC):
                                 RETURN r
                                 """
 
-                                result = session.run(query, sitzungsnummer=sitzungsnummer, wahlperiode=int(wahlperiode), to_id=to_id, properties=properties)
+                                result = session.run(
+                                    query,
+                                    sitzungsnummer=sitzungsnummer,
+                                    wahlperiode=int(wahlperiode),
+                                    to_id=to_id,
+                                    properties=properties,
+                                )
                                 if result.single():
                                     edges_saved += 1
                                 continue
@@ -358,18 +391,18 @@ class BaseCollector(ABC):
                         RETURN r
                         """
 
-                        result = session.run(query, from_id=from_id, to_id=to_id, properties=properties)
+                        result = session.run(
+                            query, from_id=from_id, to_id=to_id, properties=properties
+                        )
                         if result.single():
                             edges_saved += 1
 
                     except Exception as e:
-                        logger.error(f"Failed to save edge: {e}", edge_type=rel_type, edge_dict=edge_dict)
+                        logger.error(
+                            f"Failed to save edge: {e}", edge_type=rel_type, edge_dict=edge_dict
+                        )
 
-            logger.info(
-                "Saved to Neo4j",
-                entities_saved=entities_saved,
-                edges_saved=edges_saved
-            )
+            logger.info("Saved to Neo4j", entities_saved=entities_saved, edges_saved=edges_saved)
 
             return {"entities_saved": entities_saved, "edges_saved": edges_saved}
 
@@ -378,10 +411,8 @@ class BaseCollector(ABC):
             return {"entities_saved": entities_saved, "edges_saved": edges_saved}
 
     async def fetch_with_pagination(
-        self,
-        filters: Dict[str, Any],
-        limit: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
+        self, filters: dict[str, Any], limit: Optional[int] = None
+    ) -> list[dict[str, Any]]:
         """
         Fetch data with pagination support.
 
@@ -398,16 +429,10 @@ class BaseCollector(ABC):
         from src.flows.bundestag_ingestion.utils.pagination import PaginationHelper
 
         # Create pagination helper
-        pagination_helper = PaginationHelper(
-            api_client=self.api_client,
-            max_items=limit
-        )
+        pagination_helper = PaginationHelper(api_client=self.api_client, max_items=limit)
 
         logger.info(
-            "Starting paginated fetch",
-            endpoint=self.endpoint,
-            filters=filters,
-            limit=limit
+            "Starting paginated fetch", endpoint=self.endpoint, filters=filters, limit=limit
         )
 
         # Collect all items
@@ -415,11 +440,7 @@ class BaseCollector(ABC):
         async for item in pagination_helper.paginate(self.endpoint, filters):
             items.append(item)
 
-        logger.info(
-            "Completed paginated fetch",
-            endpoint=self.endpoint,
-            items_collected=len(items)
-        )
+        logger.info("Completed paginated fetch", endpoint=self.endpoint, items_collected=len(items))
 
         return items
 
@@ -429,8 +450,8 @@ class BaseCollector(ABC):
         edges_created: int,
         duration: float,
         items_collected: int = 0,
-        errors: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        errors: Optional[list[str]] = None,
+    ) -> dict[str, Any]:
         """
         Create standardized statistics dictionary.
 
@@ -452,20 +473,14 @@ class BaseCollector(ABC):
             "collector_type": self.__class__.__name__,
             "endpoint": self.endpoint,
             "entity_type": self.entity_type,
-            "errors": errors or []
+            "errors": errors or [],
         }
 
-        logger.info(
-            "Collection statistics",
-            **stats
-        )
+        logger.info("Collection statistics", **stats)
 
         return stats
 
-    async def _transform_to_entities(
-        self,
-        items: List[Dict[str, Any]]
-    ) -> List[Any]:
+    async def _transform_to_entities(self, items: list[dict[str, Any]]) -> list[Any]:
         """
         Transform API items into entity objects.
 
@@ -487,25 +502,19 @@ class BaseCollector(ABC):
                 entities.append(entity)
             except Exception as e:
                 logger.error(
-                    "Failed to transform item to entity",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to transform item to entity", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
         logger.info(
-            "Transformed items to entities",
-            input_count=len(items),
-            output_count=len(entities)
+            "Transformed items to entities", input_count=len(items), output_count=len(entities)
         )
 
         return entities
 
     async def _transform_to_edges(
-        self,
-        items: List[Dict[str, Any]],
-        entities: List[Any]
-    ) -> List[Any]:
+        self, items: list[dict[str, Any]], entities: list[Any]
+    ) -> list[Any]:
         """
         Transform API items into edge objects.
 
@@ -528,17 +537,11 @@ class BaseCollector(ABC):
                 edges.extend(item_edges)
             except Exception as e:
                 logger.error(
-                    "Failed to transform item to edges",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to transform item to edges", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
-        logger.info(
-            "Transformed items to edges",
-            input_count=len(items),
-            output_count=len(edges)
-        )
+        logger.info("Transformed items to edges", input_count=len(items), output_count=len(edges))
 
         return edges
 
@@ -548,8 +551,8 @@ class BaseCollector(ABC):
         datum_von: Optional[str] = None,
         datum_bis: Optional[str] = None,
         limit: Optional[int] = None,
-        **kwargs
-    ) -> Dict[str, Any]:
+        **kwargs,
+    ) -> dict[str, Any]:
         """
         Collect data with common filter parameters.
 
@@ -570,18 +573,11 @@ class BaseCollector(ABC):
         # Build filters
         filter_builder = FilterBuilder()
         filters = filter_builder.build_filters(
-            wahlperiode=wahlperiode,
-            datum_von=datum_von,
-            datum_bis=datum_bis,
-            limit=limit,
-            **kwargs
+            wahlperiode=wahlperiode, datum_von=datum_von, datum_bis=datum_bis, limit=limit, **kwargs
         )
 
         # Prepare inputs
-        inputs = {
-            "filters": filters,
-            "limit": limit
-        }
+        inputs = {"filters": filters, "limit": limit}
 
         # Execute collection
         return await self.collect_and_transform(inputs)
@@ -602,17 +598,14 @@ class BaseCollector(ABC):
 
             items = await self.fetch_with_pagination(filters, limit=1)
 
-            logger.info(
-                "Collector health check passed",
-                collector_type=self.__class__.__name__
-            )
+            logger.info("Collector health check passed", collector_type=self.__class__.__name__)
             return True
 
         except Exception as e:
             logger.error(
                 "Collector health check failed",
                 collector_type=self.__class__.__name__,
-                error=str(e)
+                error=str(e),
             )
             return False
 
@@ -630,10 +623,8 @@ class BaseCollector(ABC):
         return round(duration, 2)
 
     async def _collect_with_timing(
-        self,
-        filters: Dict[str, Any],
-        limit: Optional[int] = None
-    ) -> tuple[List[Dict[str, Any]], float]:
+        self, filters: dict[str, Any], limit: Optional[int] = None
+    ) -> tuple[list[dict[str, Any]], float]:
         """
         Collect data with timing measurement.
 

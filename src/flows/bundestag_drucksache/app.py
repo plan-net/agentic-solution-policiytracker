@@ -50,7 +50,9 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
         if not wahlperioden:
             error.add(wahlperioden="At least one Wahlperiode must be specified")
     except Exception:
-        error.add(wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)")
+        error.add(
+            wahlperioden="Invalid Wahlperioden format. Use comma-separated values (e.g., 19,20,21)"
+        )
 
     # Validate dokumentart
     if not inputs.get("dokumentart"):
@@ -109,7 +111,9 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
         else:
             max_concurrent = int(max_concurrent_val)
             if max_concurrent < 1 or max_concurrent > 10:
-                error.add(max_concurrent_downloads="Max concurrent downloads must be between 1 and 10")
+                error.add(
+                    max_concurrent_downloads="Max concurrent downloads must be between 1 and 10"
+                )
     except (ValueError, TypeError):
         error.add(max_concurrent_downloads="Max concurrent downloads must be a valid number")
 
@@ -124,8 +128,9 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
         raise error
 
     # DEBUG: Log before Launch
-    import logging
     import json
+    import logging
+
     logger = logging.getLogger(__name__)
 
     # Prepare inputs for Launch
@@ -145,7 +150,7 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
     logger.info("🚀 FLOW 5C: About to call Launch()")
     logger.info(f"Job name: {inputs.get('job_name')}")
     logger.info(f"Launch inputs: {json.dumps(launch_inputs, indent=2)}")
-    logger.info(f"Entrypoint: src.flows.bundestag_drucksache.processor:process_drucksache_batch")
+    logger.info("Entrypoint: src.flows.bundestag_drucksache.processor:process_drucksache_batch")
     logger.info("=" * 80)
     print("=" * 80, flush=True)
     print("🚀 FLOW 5C: About to call Launch()", flush=True)
@@ -154,7 +159,9 @@ async def ingest_bundestag_drucksachen(request: fastapi.Request, inputs: dict):
     print(f"Launch inputs type: {type(launch_inputs)}", flush=True)
     print(f"Wahlperioden type: {type(wahlperioden)}", flush=True)
     print(f"Wahlperioden value: {wahlperioden}", flush=True)
-    print(f"Entrypoint: src.flows.bundestag_drucksache.processor:process_drucksache_batch", flush=True)
+    print(
+        "Entrypoint: src.flows.bundestag_drucksache.processor:process_drucksache_batch", flush=True
+    )
     print("=" * 80, flush=True)
 
     # Launch the drucksache collection workflow

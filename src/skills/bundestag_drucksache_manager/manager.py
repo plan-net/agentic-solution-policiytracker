@@ -1,8 +1,7 @@
 """BundestagDrucksache Manager - Main orchestration for intelligent Neo4j sync."""
-import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import ray
 from neo4j import GraphDatabase
@@ -12,7 +11,7 @@ from src.subagents.crud_subagent import CRUDSubagent
 from .config import ManagerConfig
 from .diff_analyzer import DrucksacheDiffAnalyzer
 from .dip_client import BundestagDrucksacheDIPClient, MockBundestagDrucksacheDIPClient
-from .sync_planner import SyncPlan, DrucksacheSyncPlanner
+from .sync_planner import DrucksacheSyncPlanner, SyncPlan
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +26,8 @@ class SyncResult:
         operations_succeeded: int,
         operations_failed: int,
         execution_time_seconds: float,
-        diff_summary: Dict[str, Any],
-        errors: List[str] = None,
+        diff_summary: dict[str, Any],
+        errors: list[str] = None,
     ):
         self.success = success
         self.operations_attempted = operations_attempted
@@ -46,7 +45,7 @@ class SyncResult:
             f"failed={self.operations_failed})"
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "success": self.success,
@@ -73,9 +72,7 @@ class BundestagDrucksacheManager:
     3. Executing operations in parallel via CRUD Subagent
     """
 
-    def __init__(
-        self, config: ManagerConfig = None, use_mock_dip: bool = False
-    ):
+    def __init__(self, config: ManagerConfig = None, use_mock_dip: bool = False):
         """Initialize BundestagDrucksache Manager.
 
         Args:
@@ -134,9 +131,7 @@ class BundestagDrucksacheManager:
         Returns:
             SyncResult with execution details
         """
-        logger.info(
-            f"Starting full Drucksache sync (limit={limit}, dry_run={dry_run})"
-        )
+        logger.info(f"Starting full Drucksache sync (limit={limit}, dry_run={dry_run})")
         start_time = datetime.now()
 
         try:
@@ -145,15 +140,9 @@ class BundestagDrucksacheManager:
             diffs = await self.diff_analyzer.analyze_all_drucksachen(limit=limit)
             diff_summary = self.diff_analyzer.generate_summary(diffs)
 
-            logger.info(
-                f"Analysis complete: {diff_summary['total_diffs']} differences found"
-            )
-            logger.info(
-                f"  - Missing: {diff_summary['missing_count']}"
-            )
-            logger.info(
-                f"  - Outdated: {diff_summary['outdated_count']}"
-            )
+            logger.info(f"Analysis complete: {diff_summary['total_diffs']} differences found")
+            logger.info(f"  - Missing: {diff_summary['missing_count']}")
+            logger.info(f"  - Outdated: {diff_summary['outdated_count']}")
 
             if not diffs:
                 logger.info("No differences found - database is up to date")
@@ -162,9 +151,7 @@ class BundestagDrucksacheManager:
                     operations_attempted=0,
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -186,9 +173,7 @@ class BundestagDrucksacheManager:
                     operations_attempted=len(sync_plan.operations),
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -229,7 +214,7 @@ class BundestagDrucksacheManager:
             )
 
     async def sync_specific_drucksachen(
-        self, drucksache_ids: List[str], dry_run: bool = False
+        self, drucksache_ids: list[str], dry_run: bool = False
     ) -> SyncResult:
         """Synchronize specific Drucksachen.
 
@@ -257,9 +242,7 @@ class BundestagDrucksacheManager:
                     operations_attempted=0,
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -273,9 +256,7 @@ class BundestagDrucksacheManager:
                     operations_attempted=len(sync_plan.operations),
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -307,7 +288,7 @@ class BundestagDrucksacheManager:
                 errors=[str(e)],
             )
 
-    async def _execute_sync_plan(self, sync_plan: SyncPlan) -> Dict[str, Any]:
+    async def _execute_sync_plan(self, sync_plan: SyncPlan) -> dict[str, Any]:
         """Execute a sync plan using CRUD subagent.
 
         Args:
@@ -342,7 +323,7 @@ class BundestagDrucksacheManager:
             # Don't stop it here to allow reuse
             pass
 
-    async def check_sync_status(self) -> Dict[str, Any]:
+    async def check_sync_status(self) -> dict[str, Any]:
         """Check current sync status without making changes.
 
         Returns:

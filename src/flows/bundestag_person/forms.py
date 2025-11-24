@@ -4,7 +4,6 @@ Form definitions for Bundestag Person ingestion flow.
 
 from kodosumi.core import forms as F
 
-
 bundestag_person_form = F.Model(
     F.Markdown(
         """

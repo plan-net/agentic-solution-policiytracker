@@ -10,12 +10,13 @@ Last Updated: 2025-01-09
 """
 
 from typing import Any
+
 from pydantic import BaseModel
 
 from src.graphrag.political_schema_v3 import (
-    ENTITY_TYPE_REGISTRY,
-    EDGE_TYPE_REGISTRY,
     EDGE_TYPE_MAP,
+    EDGE_TYPE_REGISTRY,
+    ENTITY_TYPE_REGISTRY,
     SCHEMA_INFO,
 )
 
@@ -309,7 +310,7 @@ def print_schema_summary():
     ent_name_list = []
     for entity_name in sorted(get_all_entity_names()):
         ent_name_list.append(entity_name)
-    print(', '.join(ent_name_list))
+    print(", ".join(ent_name_list))
     print()
 
     print("ENTITY TYPES:")
@@ -319,12 +320,11 @@ def print_schema_summary():
             print(f"  - {entity_name}: {model.__doc__}")
     print()
 
-
     print("EDGE List:")
     edge_name_list = []
     for edge_name in sorted(get_all_edge_names()):
         edge_name_list.append(edge_name)
-    print(', '.join(edge_name_list))
+    print(", ".join(edge_name_list))
     print()
 
     print("EDGE TYPES:")
@@ -354,5 +354,4 @@ if __name__ == "__main__":
     print()
     print(EDGE_TYPE_REGISTRY)
     print()
-    print(EDGE_TYPE_MAP)    
-
+    print(EDGE_TYPE_MAP)

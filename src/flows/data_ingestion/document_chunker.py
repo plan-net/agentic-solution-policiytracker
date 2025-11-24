@@ -10,7 +10,6 @@ Ensures all chunks fit within token limits while preserving context.
 """
 
 import re
-from typing import List, Dict, Tuple
 
 import structlog
 import tiktoken
@@ -44,7 +43,7 @@ def count_tokens(text: str, model: str = "gpt-4") -> int:
         return len(text) // 4
 
 
-def extract_frontmatter(content: str) -> Tuple[str, str]:
+def extract_frontmatter(content: str) -> tuple[str, str]:
     """
     Separate YAML frontmatter from body.
 
@@ -54,7 +53,7 @@ def extract_frontmatter(content: str) -> Tuple[str, str]:
     Returns:
         Tuple of (frontmatter, body)
     """
-    pattern = r'^---\n(.*?)\n---\n(.*)$'
+    pattern = r"^---\n(.*?)\n---\n(.*)$"
     match = re.match(pattern, content, re.DOTALL)
     if match:
         return match.group(1), match.group(2)
@@ -76,7 +75,9 @@ class HybridDocumentChunker:
     - Context is maintained across chunk boundaries
     """
 
-    def __init__(self, max_tokens: int = DEFAULT_MAX_TOKENS, overlap_ratio: float = DEFAULT_OVERLAP_RATIO):
+    def __init__(
+        self, max_tokens: int = DEFAULT_MAX_TOKENS, overlap_ratio: float = DEFAULT_OVERLAP_RATIO
+    ):
         """
         Initialize chunker with configuration.
 
@@ -91,7 +92,7 @@ class HybridDocumentChunker:
             "Initialized hybrid chunker",
             max_tokens=max_tokens,
             overlap_tokens=self.overlap_tokens,
-            overlap_percentage=int(overlap_ratio * 100)
+            overlap_percentage=int(overlap_ratio * 100),
         )
 
         # LangChain splitters for semantic chunking
@@ -101,7 +102,7 @@ class HybridDocumentChunker:
                 ("##", "Header 2"),
                 ("###", "Header 3"),
             ],
-            strip_headers=False  # Keep headers in content for context
+            strip_headers=False,  # Keep headers in content for context
         )
 
         # Character-based estimate for RecursiveCharacterTextSplitter
@@ -116,7 +117,7 @@ class HybridDocumentChunker:
             length_function=count_tokens,  # Use actual token counting
         )
 
-    def create_chunks(self, content: str) -> List[Dict[str, any]]:
+    def create_chunks(self, content: str) -> list[dict[str, any]]:
         """
         Main chunking pipeline: semantic → paragraph → fixed-size.
 
@@ -133,7 +134,7 @@ class HybridDocumentChunker:
             "Starting hybrid chunking",
             has_frontmatter=bool(frontmatter),
             body_length=len(body),
-            estimated_tokens=count_tokens(body)
+            estimated_tokens=count_tokens(body),
         )
 
         # Step 2: Initial semantic split by headers
@@ -148,17 +149,19 @@ class HybridDocumentChunker:
 
         logger.info(
             f"Hybrid chunking complete: {len(final_chunks)} final chunk(s)",
-            boundary_types=[c["boundary_type"] for c in final_chunks]
+            boundary_types=[c["boundary_type"] for c in final_chunks],
         )
 
         # Step 4: Add metadata
         for i, chunk in enumerate(final_chunks):
-            chunk.update({
-                "chunk_index": i,
-                "total_chunks": len(final_chunks),
-                "has_frontmatter": bool(frontmatter),
-                "token_count": count_tokens(chunk["text"]),
-            })
+            chunk.update(
+                {
+                    "chunk_index": i,
+                    "total_chunks": len(final_chunks),
+                    "has_frontmatter": bool(frontmatter),
+                    "token_count": count_tokens(chunk["text"]),
+                }
+            )
 
         # Step 5: Prepend frontmatter to first chunk only
         if frontmatter and final_chunks:
@@ -168,7 +171,7 @@ class HybridDocumentChunker:
 
         return final_chunks
 
-    def _split_by_headers(self, body: str) -> List[Dict[str, any]]:
+    def _split_by_headers(self, body: str) -> list[dict[str, any]]:
         """
         Split document by markdown headers (semantic boundaries).
 
@@ -187,11 +190,9 @@ class HybridDocumentChunker:
 
             chunks = []
             for doc in docs:
-                chunks.append({
-                    "text": doc.page_content,
-                    "metadata": doc.metadata,
-                    "boundary_type": "header"
-                })
+                chunks.append(
+                    {"text": doc.page_content, "metadata": doc.metadata, "boundary_type": "header"}
+                )
 
             return chunks
 
@@ -200,7 +201,9 @@ class HybridDocumentChunker:
             # Fallback: treat entire body as single chunk
             return [{"text": body, "metadata": {}, "boundary_type": "full_document"}]
 
-    def _process_semantic_chunk(self, chunk: Dict[str, any], chunk_num: int) -> List[Dict[str, any]]:
+    def _process_semantic_chunk(
+        self, chunk: dict[str, any], chunk_num: int
+    ) -> list[dict[str, any]]:
         """
         Process a semantic chunk with size validation and further splitting if needed.
 
@@ -218,7 +221,7 @@ class HybridDocumentChunker:
             f"Processing semantic chunk {chunk_num}",
             token_count=token_count,
             max_tokens=self.max_tokens,
-            boundary_type=chunk["boundary_type"]
+            boundary_type=chunk["boundary_type"],
         )
 
         # Case 1: Chunk is within limits - keep as-is
@@ -227,7 +230,9 @@ class HybridDocumentChunker:
             return [chunk]
 
         # Case 2: Too large - try paragraph splitting
-        logger.debug(f"Chunk {chunk_num} exceeds limit ({token_count} tokens), trying paragraph split")
+        logger.debug(
+            f"Chunk {chunk_num} exceeds limit ({token_count} tokens), trying paragraph split"
+        )
         paragraph_chunks = self._split_by_paragraphs(text, chunk["metadata"])
 
         # Case 3: If any paragraph chunk still too large - fixed-size split
@@ -247,7 +252,7 @@ class HybridDocumentChunker:
         logger.debug(f"Chunk {chunk_num} split into {len(final_chunks)} sub-chunks")
         return final_chunks
 
-    def _split_by_paragraphs(self, text: str, metadata: dict) -> List[Dict[str, any]]:
+    def _split_by_paragraphs(self, text: str, metadata: dict) -> list[dict[str, any]]:
         """
         Split text by paragraph boundaries using RecursiveCharacterTextSplitter.
 
@@ -263,11 +268,9 @@ class HybridDocumentChunker:
 
             chunks = []
             for doc in docs:
-                chunks.append({
-                    "text": doc.page_content,
-                    "metadata": metadata,
-                    "boundary_type": "paragraph"
-                })
+                chunks.append(
+                    {"text": doc.page_content, "metadata": metadata, "boundary_type": "paragraph"}
+                )
 
             return chunks
 
@@ -276,7 +279,7 @@ class HybridDocumentChunker:
             # Fallback: return as single chunk
             return [{"text": text, "metadata": metadata, "boundary_type": "paragraph_fallback"}]
 
-    def _fixed_size_split(self, text: str, metadata: dict) -> List[Dict[str, any]]:
+    def _fixed_size_split(self, text: str, metadata: dict) -> list[dict[str, any]]:
         """
         Last resort: fixed-size splitting with overlap.
 
@@ -298,7 +301,7 @@ class HybridDocumentChunker:
             "Fixed-size splitting",
             total_tokens=total_tokens,
             max_tokens=self.max_tokens,
-            overlap_tokens=self.overlap_tokens
+            overlap_tokens=self.overlap_tokens,
         )
 
         chunks = []
@@ -309,12 +312,14 @@ class HybridDocumentChunker:
             chunk_tokens = tokens[start:end]
             chunk_text = encoding.decode(chunk_tokens)
 
-            chunks.append({
-                "text": chunk_text,
-                "metadata": metadata,
-                "boundary_type": "fixed_size",
-                "token_range": (start, end)
-            })
+            chunks.append(
+                {
+                    "text": chunk_text,
+                    "metadata": metadata,
+                    "boundary_type": "fixed_size",
+                    "token_range": (start, end),
+                }
+            )
 
             start = end - self.overlap_tokens  # Move forward with overlap
 

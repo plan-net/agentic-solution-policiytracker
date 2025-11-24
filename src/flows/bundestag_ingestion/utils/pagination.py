@@ -4,7 +4,8 @@ Pagination utilities for Bundestag DIP API.
 Handles cursor-based pagination for API responses, yielding results as they arrive.
 """
 
-from typing import Any, AsyncGenerator, Dict, Optional
+from collections.abc import AsyncGenerator
+from typing import Any, Optional
 
 import structlog
 
@@ -35,16 +36,11 @@ class PaginationHelper:
         self.api_client = api_client
         self.max_items = max_items
 
-        logger.debug(
-            "Initialized PaginationHelper",
-            max_items=max_items
-        )
+        logger.debug("Initialized PaginationHelper", max_items=max_items)
 
     async def paginate(
-        self,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None
-    ) -> AsyncGenerator[Dict[str, Any], None]:
+        self, endpoint: str, params: Optional[dict[str, Any]] = None
+    ) -> AsyncGenerator[dict[str, Any], None]:
         """
         Paginate through API results yielding items as they arrive.
 
@@ -69,7 +65,7 @@ class PaginationHelper:
             "Starting pagination",
             endpoint=endpoint,
             max_items=self.max_items,
-            initial_params=params
+            initial_params=params,
         )
 
         while True:
@@ -85,7 +81,7 @@ class PaginationHelper:
                     "Fetching page",
                     page=page_number,
                     cursor=cursor,
-                    items_retrieved=items_retrieved
+                    items_retrieved=items_retrieved,
                 )
 
                 response = await self.api_client.get(endpoint, params=params)
@@ -101,15 +97,12 @@ class PaginationHelper:
                     page=page_number,
                     items_in_page=len(documents),
                     total_retrieved=items_retrieved + len(documents),
-                    has_next=bool(next_cursor)
+                    has_next=bool(next_cursor),
                 )
 
                 # Stop if no documents in this page (prevents infinite loop)
                 if not documents:
-                    logger.info(
-                        "No more documents to retrieve",
-                        total_retrieved=items_retrieved
-                    )
+                    logger.info("No more documents to retrieve", total_retrieved=items_retrieved)
                     return
 
                 # Yield results
@@ -119,7 +112,7 @@ class PaginationHelper:
                         logger.info(
                             "Reached max_items limit",
                             max_items=self.max_items,
-                            total_retrieved=items_retrieved
+                            total_retrieved=items_retrieved,
                         )
                         return
 
@@ -129,9 +122,7 @@ class PaginationHelper:
                 # Check if there are more pages
                 if not next_cursor:
                     logger.info(
-                        "Pagination complete",
-                        total_pages=page_number,
-                        total_items=items_retrieved
+                        "Pagination complete", total_pages=page_number, total_items=items_retrieved
                     )
                     break
 
@@ -143,15 +134,13 @@ class PaginationHelper:
                     "Error during pagination",
                     page=page_number,
                     error=str(e),
-                    items_retrieved=items_retrieved
+                    items_retrieved=items_retrieved,
                 )
                 raise
 
     async def paginate_all(
-        self,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None
-    ) -> list[Dict[str, Any]]:
+        self, endpoint: str, params: Optional[dict[str, Any]] = None
+    ) -> list[dict[str, Any]]:
         """
         Paginate through all results and return as a list.
 
@@ -170,19 +159,11 @@ class PaginationHelper:
         async for item in self.paginate(endpoint, params):
             results.append(item)
 
-        logger.info(
-            "Collected all paginated results",
-            endpoint=endpoint,
-            total_items=len(results)
-        )
+        logger.info("Collected all paginated results", endpoint=endpoint, total_items=len(results))
 
         return results
 
-    async def count_items(
-        self,
-        endpoint: str,
-        params: Optional[Dict[str, Any]] = None
-    ) -> int:
+    async def count_items(self, endpoint: str, params: Optional[dict[str, Any]] = None) -> int:
         """
         Count the total number of items without retrieving them.
 
@@ -207,28 +188,20 @@ class PaginationHelper:
             # The 'numFound' field contains the total count
             total_count = cursor_metadata.get("numFound", 0)
 
-            logger.info(
-                "Retrieved item count",
-                endpoint=endpoint,
-                total_count=total_count
-            )
+            logger.info("Retrieved item count", endpoint=endpoint, total_count=total_count)
 
             return total_count
 
         except Exception as e:
-            logger.error(
-                "Error counting items",
-                endpoint=endpoint,
-                error=str(e)
-            )
+            logger.error("Error counting items", endpoint=endpoint, error=str(e))
             raise
 
     async def paginate_with_progress(
         self,
         endpoint: str,
-        params: Optional[Dict[str, Any]] = None,
-        progress_callback: Optional[callable] = None
-    ) -> AsyncGenerator[Dict[str, Any], None]:
+        params: Optional[dict[str, Any]] = None,
+        progress_callback: Optional[callable] = None,
+    ) -> AsyncGenerator[dict[str, Any], None]:
         """
         Paginate with progress updates via callback.
 
@@ -246,10 +219,7 @@ class PaginationHelper:
             try:
                 total_items = await self.count_items(endpoint, params)
             except Exception as e:
-                logger.warning(
-                    "Could not retrieve item count for progress",
-                    error=str(e)
-                )
+                logger.warning("Could not retrieve item count for progress", error=str(e))
 
         items_retrieved = 0
 
@@ -261,9 +231,6 @@ class PaginationHelper:
                 try:
                     await progress_callback(items_retrieved, total_items)
                 except Exception as e:
-                    logger.warning(
-                        "Progress callback failed",
-                        error=str(e)
-                    )
+                    logger.warning("Progress callback failed", error=str(e))
 
             yield item

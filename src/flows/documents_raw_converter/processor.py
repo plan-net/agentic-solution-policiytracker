@@ -10,16 +10,14 @@ import asyncio
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 import structlog
 from kodosumi.core import Tracer
 
-from src.flows.documents_raw_converter.raw_tracker import RawDocumentTracker
-from src.flows.shared.document_converter import DocumentConverter
-
 # Configure logging
 from src.flows.data_ingestion.logging_config import configure_logging
+from src.flows.documents_raw_converter.raw_tracker import RawDocumentTracker
+from src.flows.shared.document_converter import DocumentConverter
 
 configure_logging()
 
@@ -39,7 +37,7 @@ except ImportError:
     logger.warning("Ray not available - parallel Graphiti processing will be limited")
 
 
-def distribute_documents_to_actors(documents: List, num_actors: int) -> List[List]:
+def distribute_documents_to_actors(documents: list, num_actors: int) -> list[list]:
     """
     Distribute documents evenly across actors, ensuring all documents are processed.
 
@@ -72,9 +70,8 @@ def distribute_documents_to_actors(documents: List, num_actors: int) -> List[Lis
 
 
 def get_unprocessed_markdown_files(
-    md_dir: str = "data/input/documents_md",
-    tracking_file: str = "data/processed_documents.json"
-) -> List[str]:
+    md_dir: str = "data/input/documents_md", tracking_file: str = "data/processed_documents.json"
+) -> list[str]:
     """
     Get list of markdown files that haven't been processed by Graphiti yet.
 
@@ -97,7 +94,7 @@ def get_unprocessed_markdown_files(
     processed_docs = {}
     if tracking_path.exists():
         try:
-            with open(tracking_path, "r", encoding="utf-8") as f:
+            with open(tracking_path, encoding="utf-8") as f:
                 processed_docs = json.load(f)
             logger.info(f"Loaded {len(processed_docs)} processed documents from tracker")
         except Exception as e:
@@ -191,7 +188,9 @@ async def execute_raw_document_conversion(inputs: dict, tracer: Tracer):
         conversion_failed = 0
 
         if not unprocessed_docs:
-            await tracer.markdown("✅ No unprocessed raw documents found in `{}`.\n\n".format(raw_docs_dir))
+            await tracer.markdown(
+                f"✅ No unprocessed raw documents found in `{raw_docs_dir}`.\n\n"
+            )
             await tracer.markdown("---\n\n")
             # Don't return early - continue to Phase 2 to check for unprocessed markdown files
         else:
@@ -234,7 +233,7 @@ Found **{len(unprocessed_docs)}** documents to process:
                 except Exception as e:
                     error_msg = str(e)
                     logger.error(
-                        f"Failed to convert document",
+                        "Failed to convert document",
                         filename=doc_path.name,
                         error=error_msg,
                     )
@@ -265,7 +264,12 @@ Found **{len(unprocessed_docs)}** documents to process:
         # Step 2: Process through Graphiti (independent of conversion results)
         # This allows processing of any unprocessed markdown files, not just newly converted ones
         processing_results = conversion_results  # Default to conversion results
-        graphiti_stats = {"total_entities": 0, "total_relationships": 0, "processed": 0, "failed": 0}
+        graphiti_stats = {
+            "total_entities": 0,
+            "total_relationships": 0,
+            "processed": 0,
+            "failed": 0,
+        }
 
         if enable_graphiti and RAY_AVAILABLE:
             await tracer.markdown("## 🧠 Processing with Graphiti Knowledge Graph\n\n")
@@ -274,12 +278,13 @@ Found **{len(unprocessed_docs)}** documents to process:
             # Get ALL unprocessed markdown files from documents_md directory
             # (not just the ones converted in this run)
             unprocessed_md_files = get_unprocessed_markdown_files(
-                md_dir=output_dir,
-                tracking_file="data/processed_documents.json"
+                md_dir=output_dir, tracking_file="data/processed_documents.json"
             )
 
             if not unprocessed_md_files:
-                await tracer.markdown("✅ No unprocessed markdown files found. All documents are up to date.\n\n")
+                await tracer.markdown(
+                    "✅ No unprocessed markdown files found. All documents are up to date.\n\n"
+                )
                 # Continue to final reporting
             else:
                 await tracer.markdown(
@@ -305,13 +310,22 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
 
                     # Create Ray actors for parallel processing
                     num_actors = min(FLOW1D_NUM_ACTORS, len(unprocessed_md_files))
-                    actors = [DocumentProcessorActor.remote(i, clear_mode=False) for i in range(num_actors)]
+                    actors = [
+                        DocumentProcessorActor.remote(i, clear_mode=False)
+                        for i in range(num_actors)
+                    ]
 
                     # Initialize actors
-                    init_results = await asyncio.gather(*[actor.initialize.remote() for actor in actors])
-                    successful_actors = [actor for actor, success in zip(actors, init_results) if success]
+                    init_results = await asyncio.gather(
+                        *[actor.initialize.remote() for actor in actors]
+                    )
+                    successful_actors = [
+                        actor for actor, success in zip(actors, init_results) if success
+                    ]
 
-                    logger.info(f"Actor initialization: {len(successful_actors)}/{num_actors} successful")
+                    logger.info(
+                        f"Actor initialization: {len(successful_actors)}/{num_actors} successful"
+                    )
 
                     if not successful_actors:
                         raise RuntimeError("No actors could be initialized for parallel processing")
@@ -321,7 +335,9 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                     )
 
                     # Create balanced batches using proper distribution algorithm
-                    batches = distribute_documents_to_actors(unprocessed_md_files, len(successful_actors))
+                    batches = distribute_documents_to_actors(
+                        unprocessed_md_files, len(successful_actors)
+                    )
 
                     # Verify all documents are assigned
                     total_assigned = sum(len(batch) for batch in batches)
@@ -338,7 +354,9 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                         doc_list = ", ".join(doc_names)
                         if remaining > 0:
                             doc_list += f" ... and {remaining} more"
-                        await tracer.markdown(f"- **Actor {i}**: {len(batch)} documents ({doc_list})\n")
+                        await tracer.markdown(
+                            f"- **Actor {i}**: {len(batch)} documents ({doc_list})\n"
+                        )
                     await tracer.markdown("\n")
 
                     # Process batches in parallel
@@ -348,9 +366,13 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                         if batch:
                             ref = actor.process_batch.remote(batch)
                             batch_refs.append(ref)
-                            actor_info.append({"actor_id": i, "batch_size": len(batch), "batch": batch})
+                            actor_info.append(
+                                {"actor_id": i, "batch_size": len(batch), "batch": batch}
+                            )
 
-                    await tracer.markdown("⏳ **Processing documents through Graphiti in parallel...**\n\n")
+                    await tracer.markdown(
+                        "⏳ **Processing documents through Graphiti in parallel...**\n\n"
+                    )
 
                     # Wait for results with progress tracking using Ray's wait
                     completed = 0
@@ -387,9 +409,15 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                             )
 
                     # Calculate Graphiti processing stats
-                    graphiti_stats["total_entities"] = sum(r.get("entities_extracted", 0) for r in graphiti_results)
-                    graphiti_stats["total_relationships"] = sum(r.get("relationships_extracted", 0) for r in graphiti_results)
-                    graphiti_stats["processed"] = sum(1 for r in graphiti_results if r.get("status") == "completed")
+                    graphiti_stats["total_entities"] = sum(
+                        r.get("entities_extracted", 0) for r in graphiti_results
+                    )
+                    graphiti_stats["total_relationships"] = sum(
+                        r.get("relationships_extracted", 0) for r in graphiti_results
+                    )
+                    graphiti_stats["processed"] = sum(
+                        1 for r in graphiti_results if r.get("status") == "completed"
+                    )
                     graphiti_stats["failed"] = len(graphiti_results) - graphiti_stats["processed"]
 
                     # Merge conversion and Graphiti results for display
@@ -398,11 +426,17 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                         output_path = conv_result.get("output_path")
                         if output_path and output_path in graphiti_results_map:
                             graphiti_result = graphiti_results_map[output_path]
-                            conv_result.update({
-                                "entities_extracted": graphiti_result.get("entities_extracted", 0),
-                                "relationships_extracted": graphiti_result.get("relationships_extracted", 0),
-                                "graphiti_status": graphiti_result.get("status", "unknown"),
-                            })
+                            conv_result.update(
+                                {
+                                    "entities_extracted": graphiti_result.get(
+                                        "entities_extracted", 0
+                                    ),
+                                    "relationships_extracted": graphiti_result.get(
+                                        "relationships_extracted", 0
+                                    ),
+                                    "graphiti_status": graphiti_result.get("status", "unknown"),
+                                }
+                            )
 
                     processing_results = conversion_results
 
@@ -421,7 +455,9 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                 except Exception as e:
                     error_msg = f"Graphiti processing failed: {str(e)}"
                     logger.error(error_msg, exc_info=True)
-                    await tracer.markdown(f"⚠️ **Warning**: {error_msg}\n\nContinuing with conversion results only.\n\n")
+                    await tracer.markdown(
+                        f"⚠️ **Warning**: {error_msg}\n\nContinuing with conversion results only.\n\n"
+                    )
 
         elif enable_graphiti and not RAY_AVAILABLE:
             await tracer.markdown("⚠️ **Skipping Graphiti processing**: Ray not available.\n\n")
@@ -434,7 +470,11 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                 source_path = next((d for d in unprocessed_docs if d.name == source_name), None)
 
                 if source_path:
-                    output_path = Path(result.get("output_path")) if result.get("output_path") else Path(output_dir) / "error.md"
+                    output_path = (
+                        Path(result.get("output_path"))
+                        if result.get("output_path")
+                        else Path(output_dir) / "error.md"
+                    )
                     tracker.mark_processed(
                         file_path=source_path,
                         output_md_path=output_path,
@@ -531,7 +571,7 @@ Please check the logs for more details.
 
 def _generate_conversion_report(
     job_name: str,
-    processing_results: List[dict],
+    processing_results: list[dict],
     tracker_stats: dict,
     graphiti_stats: dict | None,
     total_time: float,
@@ -542,7 +582,9 @@ def _generate_conversion_report(
     """Generate comprehensive conversion report."""
 
     successful_results = [r for r in processing_results if r["status"] == "converted"]
-    failed_results = [r for r in processing_results if r["status"] in ["conversion_failed", "failed"]]
+    failed_results = [
+        r for r in processing_results if r["status"] in ["conversion_failed", "failed"]
+    ]
 
     report = f"""# {job_name} - Complete
 
@@ -604,9 +646,7 @@ Successfully converted **{len(successful_results)}** documents out of **{len(pro
 """
         for result in successful_results[:20]:  # Limit to first 20
             source_ext = Path(result["source_file"]).suffix.upper().replace(".", "")
-            report += (
-                f"| {result['source_file']} | {result['output_file']} | {source_ext} |\n"
-            )
+            report += f"| {result['source_file']} | {result['output_file']} | {source_ext} |\n"
 
         if len(successful_results) > 20:
             report += f"\n*...and {len(successful_results) - 20} more*\n"
@@ -622,9 +662,7 @@ Successfully converted **{len(successful_results)}** documents out of **{len(pro
 """
         for result in failed_results:
             error_short = (
-                result["error"][:50] + "..."
-                if len(result["error"]) > 50
-                else result["error"]
+                result["error"][:50] + "..." if len(result["error"]) > 50 else result["error"]
             )
             report += f"| {result['source_file']} | {error_short} |\n"
 

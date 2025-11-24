@@ -1,9 +1,7 @@
 """DiffAnalyzer - Compare Neo4j data with Bundestag DIP API."""
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
-
-from neo4j import GraphDatabase
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,9 @@ class PersonDiff:
         self,
         person_id: str,
         diff_type: str,  # "missing", "outdated", "relationship_missing"
-        neo4j_data: Optional[Dict] = None,
-        dip_data: Optional[Dict] = None,
-        changed_fields: Optional[Set[str]] = None,
+        neo4j_data: Optional[dict] = None,
+        dip_data: Optional[dict] = None,
+        changed_fields: Optional[set[str]] = None,
     ):
         self.person_id = person_id
         self.diff_type = diff_type
@@ -26,7 +24,9 @@ class PersonDiff:
         self.changed_fields = changed_fields or set()
 
     def __repr__(self):
-        return f"PersonDiff(id={self.person_id}, type={self.diff_type}, fields={self.changed_fields})"
+        return (
+            f"PersonDiff(id={self.person_id}, type={self.diff_type}, fields={self.changed_fields})"
+        )
 
 
 class DiffAnalyzer:
@@ -60,9 +60,7 @@ class DiffAnalyzer:
 
         logger.info("DiffAnalyzer initialized")
 
-    async def analyze_all_persons(
-        self, limit: Optional[int] = None
-    ) -> List[PersonDiff]:
+    async def analyze_all_persons(self, limit: Optional[int] = None) -> list[PersonDiff]:
         """Analyze all persons and find differences.
 
         Args:
@@ -87,9 +85,7 @@ class DiffAnalyzer:
 
         # 4. Find potentially outdated persons (in both)
         existing_ids = set(dip_person_ids) & set(neo4j_person_ids)
-        logger.info(
-            f"Found {len(existing_ids)} existing persons to check for updates"
-        )
+        logger.info(f"Found {len(existing_ids)} existing persons to check for updates")
 
         # 5. Analyze differences
         all_diffs = []
@@ -114,9 +110,7 @@ class DiffAnalyzer:
         logger.info(f"Analysis complete: {len(all_diffs)} differences found")
         return all_diffs
 
-    async def analyze_specific_persons(
-        self, person_ids: List[str]
-    ) -> List[PersonDiff]:
+    async def analyze_specific_persons(self, person_ids: list[str]) -> list[PersonDiff]:
         """Analyze specific persons.
 
         Args:
@@ -150,9 +144,7 @@ class DiffAnalyzer:
 
         if not neo4j_data and dip_data:
             # Person missing in Neo4j
-            return PersonDiff(
-                person_id=person_id, diff_type="missing", dip_data=dip_data
-            )
+            return PersonDiff(person_id=person_id, diff_type="missing", dip_data=dip_data)
 
         if not dip_data:
             # Person not in DIP API (shouldn't happen, but handle it)
@@ -183,7 +175,7 @@ class DiffAnalyzer:
 
         return None
 
-    async def _get_neo4j_person_ids(self) -> List[str]:
+    async def _get_neo4j_person_ids(self) -> list[str]:
         """Get all person IDs from Neo4j.
 
         Returns:
@@ -200,7 +192,7 @@ class DiffAnalyzer:
             result = session.run(query)
             return [record["person_id"] for record in result]
 
-    async def _get_neo4j_person(self, person_id: str) -> Optional[Dict[str, Any]]:
+    async def _get_neo4j_person(self, person_id: str) -> Optional[dict[str, Any]]:
         """Get person data from Neo4j.
 
         Args:
@@ -222,7 +214,7 @@ class DiffAnalyzer:
                 return dict(record["p"])
             return None
 
-    def generate_summary(self, diffs: List[PersonDiff]) -> Dict[str, Any]:
+    def generate_summary(self, diffs: list[PersonDiff]) -> dict[str, Any]:
         """Generate a summary of differences.
 
         Args:
@@ -241,7 +233,7 @@ class DiffAnalyzer:
 
         return summary
 
-    def _count_changed_fields(self, diffs: List[PersonDiff]) -> Dict[str, int]:
+    def _count_changed_fields(self, diffs: list[PersonDiff]) -> dict[str, int]:
         """Count which fields changed most frequently.
 
         Args:

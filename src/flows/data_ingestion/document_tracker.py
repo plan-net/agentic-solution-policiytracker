@@ -5,18 +5,18 @@ Tracks which documents have been processed to avoid duplicates
 unless clear_data option is used.
 """
 
-import json
 import fcntl
+import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set
 
 import structlog
 
 # Configure logging for Ray environment (but not in Airflow)
 try:
     from src.flows.data_ingestion.logging_config import configure_logging
+
     configure_logging()
 except Exception:
     # Skip if logging config fails (e.g., in Airflow environment)
@@ -30,11 +30,11 @@ class DocumentTracker:
 
     def __init__(self, tracking_file: str = "data/processed_documents.json"):
         self.tracking_file = Path(tracking_file)
-        self.processed_docs: Dict[str, Dict] = self._load_tracking()
+        self.processed_docs: dict[str, dict] = self._load_tracking()
         # Track which documents this instance has modified
-        self._modified_docs: Set[str] = set()
+        self._modified_docs: set[str] = set()
 
-    def _load_tracking(self) -> Dict[str, Dict]:
+    def _load_tracking(self) -> dict[str, dict]:
         """Load tracking data from JSON file with file locking."""
         if not self.tracking_file.exists():
             logger.debug("No tracking file found, starting fresh", file=str(self.tracking_file))
@@ -43,23 +43,28 @@ class DocumentTracker:
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                with open(self.tracking_file, "r", encoding="utf-8") as f:
+                with open(self.tracking_file, encoding="utf-8") as f:
                     # Acquire shared lock for reading
                     fcntl.flock(f.fileno(), fcntl.LOCK_SH)
                     try:
                         data = json.load(f)
                         logger.debug(
-                            f"Loaded tracking for {len(data)} documents", file=str(self.tracking_file)
+                            f"Loaded tracking for {len(data)} documents",
+                            file=str(self.tracking_file),
                         )
                         return data
                     finally:
                         fcntl.flock(f.fileno(), fcntl.LOCK_UN)
             except (OSError, json.JSONDecodeError) as e:
                 if attempt < max_retries - 1:
-                    logger.warning(f"Failed to load tracking file (attempt {attempt + 1}/{max_retries}): {e}")
+                    logger.warning(
+                        f"Failed to load tracking file (attempt {attempt + 1}/{max_retries}): {e}"
+                    )
                     time.sleep(0.1 * (attempt + 1))  # Exponential backoff
                 else:
-                    logger.warning(f"Failed to load tracking file after {max_retries} attempts: {e}, starting fresh")
+                    logger.warning(
+                        f"Failed to load tracking file after {max_retries} attempts: {e}, starting fresh"
+                    )
                     return {}
         return {}
 
@@ -73,8 +78,8 @@ class DocumentTracker:
                 self.tracking_file.parent.mkdir(parents=True, exist_ok=True)
 
                 # Use a lock file instead of locking the data file
-                lock_file_path = self.tracking_file.with_suffix('.lock')
-                lock_file = open(lock_file_path, 'w')
+                lock_file_path = self.tracking_file.with_suffix(".lock")
+                lock_file = open(lock_file_path, "w")
 
                 # Acquire exclusive lock on lock file
                 fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
@@ -84,7 +89,7 @@ class DocumentTracker:
                     existing_data = {}
                     if self.tracking_file.exists():
                         try:
-                            with open(self.tracking_file, "r", encoding="utf-8") as f:
+                            with open(self.tracking_file, encoding="utf-8") as f:
                                 existing_data = json.load(f)
                         except json.JSONDecodeError:
                             logger.warning("Corrupted tracking file, will overwrite")
@@ -98,7 +103,8 @@ class DocumentTracker:
 
                     # Use unique temp file with PID to avoid collisions
                     import os
-                    temp_file = self.tracking_file.with_suffix(f'.tmp.{os.getpid()}')
+
+                    temp_file = self.tracking_file.with_suffix(f".tmp.{os.getpid()}")
 
                     # Write to temp file
                     with open(temp_file, "w", encoding="utf-8") as f:
@@ -131,7 +137,9 @@ class DocumentTracker:
                         pass
 
                 if attempt < max_retries - 1:
-                    logger.warning(f"Failed to save tracking file (attempt {attempt + 1}/{max_retries}): {e}")
+                    logger.warning(
+                        f"Failed to save tracking file (attempt {attempt + 1}/{max_retries}): {e}"
+                    )
                     time.sleep(0.1 * (attempt + 1))  # Exponential backoff
                 else:
                     logger.error(f"Failed to save tracking file after {max_retries} attempts: {e}")
@@ -159,17 +167,19 @@ class DocumentTracker:
     def mark_processed_chunked(
         self,
         doc_path: str,
-        episode_uuids: List[str],
+        episode_uuids: list[str],
         total_chunks: int,
         entity_count: int = 0,
         relationship_count: int = 0,
-        chunk_results: List[Dict] = None,
+        chunk_results: list[dict] = None,
     ) -> None:
         """Mark chunked document as processed with detailed chunk metadata."""
         doc_path_str = str(doc_path)
         self.processed_docs[doc_path_str] = {
             "episode_uuids": episode_uuids,  # List of all chunk episode IDs
-            "primary_episode_id": episode_uuids[0] if episode_uuids else None,  # First chunk for backward compatibility
+            "primary_episode_id": episode_uuids[0]
+            if episode_uuids
+            else None,  # First chunk for backward compatibility
             "processed_at": datetime.now().isoformat(),
             "status": "completed",
             "entity_count": entity_count,
@@ -188,7 +198,9 @@ class DocumentTracker:
                 }
                 for c in (chunk_results or [])
                 if "error" not in c
-            ] if chunk_results else [],
+            ]
+            if chunk_results
+            else [],
         }
         self._modified_docs.add(doc_path_str)
         self._save_tracking()
@@ -214,7 +226,7 @@ class DocumentTracker:
         logger.info(f"Cleared tracking for {count} documents")
         return count
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get processing statistics."""
         completed = sum(
             1 for doc in self.processed_docs.values() if doc.get("status") == "completed"

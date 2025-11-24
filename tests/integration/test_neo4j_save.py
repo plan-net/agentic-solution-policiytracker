@@ -2,13 +2,11 @@
 """Quick test to verify Neo4j save works"""
 
 from neo4j import GraphDatabase
+
 from src.graphrag.political_schema_v4 import Plenarprotokoll
 
 # Connect to Neo4j
-driver = GraphDatabase.driver(
-    "bolt://localhost:7687",
-    auth=("neo4j", "password123")
-)
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password123"))
 
 # Create test entity (use different number)
 test_entity = Plenarprotokoll(
@@ -25,24 +23,28 @@ test_entity = Plenarprotokoll(
     aktualisiert=None,
     vorgangsbezug_anzahl=None,
     related_vorgang_ids=None,
-    url=None
+    url=None,
 )
 
-print(f"Created test entity: sitzungsnummer={test_entity.sitzungsnummer}, wp={test_entity.wahlperiode}")
+print(
+    f"Created test entity: sitzungsnummer={test_entity.sitzungsnummer}, wp={test_entity.wahlperiode}"
+)
 print(f"Entity dict: {test_entity.model_dump()}")
 
 # Try to save it
 entity_dict = test_entity.model_dump()
-sitzungsnummer_str = entity_dict.get('sitzungsnummer')
-wahlperiode = entity_dict.get('wahlperiode')
+sitzungsnummer_str = entity_dict.get("sitzungsnummer")
+wahlperiode = entity_dict.get("wahlperiode")
 
 # Convert to int
 sitzungsnummer_int = int(sitzungsnummer_str)
 
 # CRITICAL: Also fix in entity_dict so SET doesn't overwrite it
-entity_dict['sitzungsnummer'] = sitzungsnummer_int
+entity_dict["sitzungsnummer"] = sitzungsnummer_int
 
-print(f"\nAttempting MERGE with sitzungsnummer={sitzungsnummer_int} (int), wahlperiode={wahlperiode}")
+print(
+    f"\nAttempting MERGE with sitzungsnummer={sitzungsnummer_int} (int), wahlperiode={wahlperiode}"
+)
 print(f"Properties sitzungsnummer type: {type(entity_dict['sitzungsnummer'])}")
 
 with driver.session(database="politicamonitoring.v2") as session:
@@ -52,7 +54,9 @@ with driver.session(database="politicamonitoring.v2") as session:
     RETURN n
     """
 
-    result = session.run(query, sitzungsnummer=sitzungsnummer_int, wahlperiode=wahlperiode, properties=entity_dict)
+    result = session.run(
+        query, sitzungsnummer=sitzungsnummer_int, wahlperiode=wahlperiode, properties=entity_dict
+    )
     record = result.single()
 
     if record:
@@ -65,7 +69,7 @@ with driver.session(database="politicamonitoring.v2") as session:
     result = session.run(
         "MATCH (p:Plenarprotokoll {sitzungsnummer: $sitzung, wahlperiode: $wp}) RETURN p",
         sitzung=sitzungsnummer_int,
-        wp=wahlperiode
+        wp=wahlperiode,
     )
     record = result.single()
     if record:

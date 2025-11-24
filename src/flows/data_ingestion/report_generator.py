@@ -12,6 +12,7 @@ import structlog
 
 # Configure logging for Ray environment
 from src.flows.data_ingestion.logging_config import configure_logging
+
 configure_logging()
 from jinja2 import Environment, FileSystemLoader
 

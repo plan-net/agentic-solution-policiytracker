@@ -5,11 +5,10 @@ Test script to verify Graphiti is routing LLM calls through APISIX.
 import asyncio
 import os
 from datetime import datetime
-from pathlib import Path
 
 from graphiti_core import Graphiti
-from graphiti_core.llm_client.openai_client import OpenAIClient
 from graphiti_core.llm_client.config import LLMConfig
+from graphiti_core.llm_client.openai_client import OpenAIClient
 from graphiti_core.nodes import EpisodeType
 
 
@@ -39,7 +38,7 @@ async def test_graphiti_apisix_routing():
         api_key=api_key,
         model="gpt-4o-mini",
         base_url=apisix_url,  # Route through APISIX
-        temperature=0.1
+        temperature=0.1,
     )
     llm_client = OpenAIClient(config=config, cache=False)
 
@@ -67,10 +66,10 @@ async def test_graphiti_apisix_routing():
             episode_body=test_content,
             source_description="APISIX routing test",
             reference_time=datetime.now(),
-            source=EpisodeType.text
+            source=EpisodeType.text,
         )
 
-        print(f"✅ Episode added successfully!")
+        print("✅ Episode added successfully!")
         print(f"   Episode ID: {result.episode.uuid if hasattr(result, 'episode') else 'N/A'}")
         print(f"   Entities extracted: {len(result.nodes) if hasattr(result, 'nodes') else 0}")
         print(f"   Relationships: {len(result.edges) if hasattr(result, 'edges') else 0}\n")

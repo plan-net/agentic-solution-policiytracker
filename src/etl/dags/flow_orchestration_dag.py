@@ -52,7 +52,7 @@ def get_unprocessed_documents():
 
     if tracking_file.exists():
         try:
-            with open(tracking_file, "r", encoding="utf-8") as f:
+            with open(tracking_file, encoding="utf-8") as f:
                 processed_docs = json.load(f)
             print(f"Loaded {len(processed_docs)} processed documents from tracker")
         except Exception as e:
@@ -99,12 +99,13 @@ def check_for_new_documents(**context):
 
         print(f"Found {len(unprocessed_docs)} unprocessed documents")
         if len(unprocessed_docs) > 500:
-            print(f"⚠️  Exceeds 500 limit - Flow 1B will process first 500")
+            print("⚠️  Exceeds 500 limit - Flow 1B will process first 500")
 
         return len(unprocessed_docs)
     except Exception as e:
         print(f"Error in check_for_new_documents: {e}")
         import traceback
+
         traceback.print_exc()
         # Return 0 on error
         context["task_instance"].xcom_push(key="unprocessed_count", value=0)
@@ -163,10 +164,12 @@ def trigger_flow1_kodosumi(**context):
     }
 
     if unprocessed_count > FLOW1B_MAX_DOCUMENTS:
-        print(f"⚠️  Found {unprocessed_count} unprocessed documents, will process first {FLOW1B_MAX_DOCUMENTS}")
+        print(
+            f"⚠️  Found {unprocessed_count} unprocessed documents, will process first {FLOW1B_MAX_DOCUMENTS}"
+        )
 
     try:
-        print(f"Triggering Flow 1B with auto-delta detection")
+        print("Triggering Flow 1B with auto-delta detection")
         print(f"URL: {flow1b_url}")
         print(f"Payload: {json.dumps(payload, indent=2)}")
 
@@ -196,6 +199,7 @@ def trigger_flow1_kodosumi(**context):
     except Exception as e:
         print(f"Failed to trigger Flow 1B: {e}")
         import traceback
+
         traceback.print_exc()
         # Don't raise - Flow 1B might not be running
         return False
@@ -212,7 +216,7 @@ def update_processing_status(**context):
 
     if tracking_file.exists():
         try:
-            with open(tracking_file, "r", encoding="utf-8") as f:
+            with open(tracking_file, encoding="utf-8") as f:
                 processed_docs = json.load(f)
         except Exception as e:
             print(f"Warning: Could not load tracking file: {e}")

@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import os
 import time
 import uuid
 from collections.abc import AsyncGenerator
@@ -12,7 +11,6 @@ import ray
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from graphiti_core import Graphiti
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from ray import serve
 
@@ -160,17 +158,17 @@ class ChatServer:
         """Lazy initialization of chat context tracker."""
         if self.context_tracker is None:
             from neo4j import AsyncGraphDatabase
+
             from src.graph_viz.context_tracker import ChatContextTracker
 
             # Create Neo4j async driver
             driver = AsyncGraphDatabase.driver(
-                settings.NEO4J_URI,
-                auth=(settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD)
+                settings.NEO4J_URI, auth=(settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD)
             )
 
             self.context_tracker = ChatContextTracker(
                 driver=driver,
-                ttl_minutes=5  # 5 minute TTL for context cache
+                ttl_minutes=5,  # 5 minute TTL for context cache
             )
             logger.info("Chat context tracker initialized with Neo4j driver")
         return self.context_tracker
@@ -195,7 +193,9 @@ class ChatServer:
             self.orchestrator.execution_agent.set_tool_integration_manager(tool_manager)
             self.orchestrator.execution_agent.set_context_tracker(context_tracker)
 
-            logger.info("Multi-agent orchestrator initialized with knowledge graph tools and context tracking")
+            logger.info(
+                "Multi-agent orchestrator initialized with knowledge graph tools and context tracking"
+            )
         return self.orchestrator
 
     async def _get_streaming_orchestrator(self):
@@ -399,7 +399,10 @@ class ChatServer:
 
             # Start single thinking block with session ID
             yield self._create_chunk(
-                chat_id, created, model, f"<think>\n📋 Session ID: {session_id}\n\nAnalyzing query: '{user_message}'\n\n"
+                chat_id,
+                created,
+                model,
+                f"<think>\n📋 Session ID: {session_id}\n\nAnalyzing query: '{user_message}'\n\n",
             )
 
             # Stream using LangGraph's native streaming

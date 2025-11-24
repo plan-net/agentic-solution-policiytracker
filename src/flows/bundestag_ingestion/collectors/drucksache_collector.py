@@ -7,7 +7,7 @@ fetches full text content, and transforms into knowledge graph entities.
 
 import asyncio
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -44,7 +44,7 @@ class DrucksacheCollector(BaseCollector):
         """Entity type produced by this collector."""
         return "Drucksache"
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect Drucksache data from API and transform into entities and edges.
 
@@ -78,7 +78,7 @@ class DrucksacheCollector(BaseCollector):
             }
         """
         start_time = time.time()
-        errors: List[str] = []
+        errors: list[str] = []
 
         logger.info("Starting Drucksache collection", inputs=inputs)
 
@@ -162,7 +162,7 @@ class DrucksacheCollector(BaseCollector):
                 errors=errors,
             )
 
-    def _extract_filters(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def _extract_filters(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Extract and build filter parameters from inputs.
 
@@ -176,7 +176,7 @@ class DrucksacheCollector(BaseCollector):
 
         # Check if filters are pre-built
         if "filters" in inputs:
-            filters: Dict[str, Any] = inputs["filters"]
+            filters: dict[str, Any] = inputs["filters"]
             return filters
 
         # Build filters from individual parameters
@@ -195,7 +195,7 @@ class DrucksacheCollector(BaseCollector):
         return filters
 
     async def _fetch_full_text_for_all(
-        self, drucksachen: List[Dict[str, Any]], errors: List[str]
+        self, drucksachen: list[dict[str, Any]], errors: list[str]
     ) -> int:
         """
         Fetch full text content for all Drucksachen.
@@ -233,7 +233,7 @@ class DrucksacheCollector(BaseCollector):
 
         return success_count
 
-    async def _fetch_single_full_text(self, drucksache: Dict[str, Any], errors: List[str]) -> bool:
+    async def _fetch_single_full_text(self, drucksache: dict[str, Any], errors: list[str]) -> bool:
         """
         Fetch full text for a single Drucksache.
 
@@ -277,7 +277,7 @@ class DrucksacheCollector(BaseCollector):
 
     async def collect_by_wahlperiode(
         self, wahlperiode: str, limit: Optional[int] = None, fetch_full_text: bool = True
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect Drucksachen for a specific legislative period.
 
@@ -306,7 +306,7 @@ class DrucksacheCollector(BaseCollector):
         wahlperiode: Optional[str] = None,
         limit: Optional[int] = None,
         fetch_full_text: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect Drucksachen of a specific document type.
 
@@ -340,7 +340,7 @@ class DrucksacheCollector(BaseCollector):
         wahlperiode: Optional[str] = None,
         limit: Optional[int] = None,
         fetch_full_text: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect recent Drucksachen.
 
@@ -377,7 +377,7 @@ class DrucksacheCollector(BaseCollector):
 
     async def collect_for_vorgang(
         self, vorgang_id: str, fetch_full_text: bool = True
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect all Drucksachen related to a specific Vorgang.
 

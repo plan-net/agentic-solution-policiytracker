@@ -3,11 +3,9 @@
 import logging
 import os
 import time
-from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from neo4j import AsyncGraphDatabase
 from ray import serve
 
@@ -17,7 +15,6 @@ from .context_tracker import ChatContextTracker
 from .models import (
     ChatContextRequest,
     ChatContextResponse,
-    GraphData,
     GraphEdge,
     GraphNode,
     HealthResponse,
@@ -127,7 +124,7 @@ class GraphVizServer:
         )
 
     @app.get("/api/graph/schema-queries")
-    async def get_schema_queries(self) -> List[SchemaQuery]:
+    async def get_schema_queries(self) -> list[SchemaQuery]:
         """Get list of all available schema queries."""
         return list_schema_queries()
 
@@ -190,7 +187,9 @@ class GraphVizServer:
                 session_id=request.session_id, query_text=request.query
             )
 
-            logger.warning(f"📤 Returning context: {len(context_data['nodes'])} nodes, {len(context_data['links'])} links")
+            logger.warning(
+                f"📤 Returning context: {len(context_data['nodes'])} nodes, {len(context_data['links'])} links"
+            )
 
             # Check if there's an error in metadata
             if "error" in context_data.get("metadata", {}):
@@ -206,7 +205,10 @@ class GraphVizServer:
             )
 
         except Exception as e:
-            logger.error(f"❌ Error getting chat context for session {request.session_id}: {e}", exc_info=True)
+            logger.error(
+                f"❌ Error getting chat context for session {request.session_id}: {e}",
+                exc_info=True,
+            )
             # Return an error response instead of raising HTTPException
             return ChatContextResponse(
                 nodes=[],
@@ -214,13 +216,13 @@ class GraphVizServer:
                 metadata={
                     "session_id": request.session_id,
                     "error": f"Server error: {str(e)}",
-                    "error_type": type(e).__name__
+                    "error_type": type(e).__name__,
                 },
             )
 
     def _deep_sanitize(self, obj):
         """Recursively sanitize any object to remove Neo4j types."""
-        if hasattr(obj, 'isoformat'):
+        if hasattr(obj, "isoformat"):
             # Neo4j DateTime or Python datetime
             return obj.isoformat()
         elif isinstance(obj, dict):
@@ -253,7 +255,7 @@ class GraphVizServer:
                                 for k, v in value.items():
                                     if k not in ["labels", "uuid", "name_embedding"]:
                                         # Convert Neo4j DateTime to ISO string
-                                        if hasattr(v, 'isoformat'):
+                                        if hasattr(v, "isoformat"):
                                             node_props[k] = v.isoformat()
                                         else:
                                             node_props[k] = v
@@ -261,7 +263,13 @@ class GraphVizServer:
                                 labels = value.get("labels", [])
                                 nodes_dict[node_id] = GraphNode(
                                     id=node_id,
-                                    name=node_props.get("name", node_props.get("politician_name", node_props.get("company_name", f"Node-{node_id[:8]}"))),
+                                    name=node_props.get(
+                                        "name",
+                                        node_props.get(
+                                            "politician_name",
+                                            node_props.get("company_name", f"Node-{node_id[:8]}"),
+                                        ),
+                                    ),
                                     type=labels[0] if labels else "Entity",
                                     properties=node_props,
                                 )
@@ -280,13 +288,21 @@ class GraphVizServer:
                                     for k, v in start_node.items():
                                         if k not in ["labels", "uuid", "name_embedding"]:
                                             # Convert Neo4j DateTime to ISO string
-                                            if hasattr(v, 'isoformat'):
+                                            if hasattr(v, "isoformat"):
                                                 node_props[k] = v.isoformat()
                                             else:
                                                 node_props[k] = v
                                     nodes_dict[source_id] = GraphNode(
                                         id=source_id,
-                                        name=node_props.get("name", node_props.get("politician_name", node_props.get("company_name", f"Node-{source_id[:8]}"))),
+                                        name=node_props.get(
+                                            "name",
+                                            node_props.get(
+                                                "politician_name",
+                                                node_props.get(
+                                                    "company_name", f"Node-{source_id[:8]}"
+                                                ),
+                                            ),
+                                        ),
                                         type=labels[0] if labels else "Entity",
                                         properties=node_props,
                                     )
@@ -300,13 +316,21 @@ class GraphVizServer:
                                     for k, v in end_node.items():
                                         if k not in ["labels", "uuid", "name_embedding"]:
                                             # Convert Neo4j DateTime to ISO string
-                                            if hasattr(v, 'isoformat'):
+                                            if hasattr(v, "isoformat"):
                                                 node_props[k] = v.isoformat()
                                             else:
                                                 node_props[k] = v
                                     nodes_dict[target_id] = GraphNode(
                                         id=target_id,
-                                        name=node_props.get("name", node_props.get("politician_name", node_props.get("company_name", f"Node-{target_id[:8]}"))),
+                                        name=node_props.get(
+                                            "name",
+                                            node_props.get(
+                                                "politician_name",
+                                                node_props.get(
+                                                    "company_name", f"Node-{target_id[:8]}"
+                                                ),
+                                            ),
+                                        ),
                                         type=labels[0] if labels else "Entity",
                                         properties=node_props,
                                     )

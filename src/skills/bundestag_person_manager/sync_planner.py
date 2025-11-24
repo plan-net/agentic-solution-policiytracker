@@ -1,6 +1,6 @@
 """SyncPlanner - Convert diffs into CRUD operations and batch them."""
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from .diff_analyzer import PersonDiff
 
@@ -12,9 +12,9 @@ class SyncPlan:
 
     def __init__(
         self,
-        operations: List[Dict[str, Any]],
-        batches: List[List[Dict[str, Any]]],
-        summary: Dict[str, Any],
+        operations: list[dict[str, Any]],
+        batches: list[list[dict[str, Any]]],
+        summary: dict[str, Any],
     ):
         self.operations = operations
         self.batches = batches
@@ -40,7 +40,7 @@ class SyncPlanner:
             f"SyncPlanner initialized (batch_size={batch_size}, max_concurrent={max_concurrent})"
         )
 
-    def create_sync_plan(self, diffs: List[PersonDiff]) -> SyncPlan:
+    def create_sync_plan(self, diffs: list[PersonDiff]) -> SyncPlan:
         """Create a complete sync plan from differences.
 
         Args:
@@ -68,7 +68,7 @@ class SyncPlanner:
 
         return SyncPlan(operations=operations, batches=batches, summary=summary)
 
-    def _diff_to_operations(self, diff: PersonDiff) -> List[Dict[str, Any]]:
+    def _diff_to_operations(self, diff: PersonDiff) -> list[dict[str, Any]]:
         """Convert a PersonDiff into CRUD operations.
 
         Args:
@@ -99,9 +99,7 @@ class SyncPlanner:
         elif diff.diff_type == "outdated":
             # Person exists but has outdated fields - update it
             # Only update changed fields
-            update_properties = {
-                field: diff.dip_data.get(field) for field in diff.changed_fields
-            }
+            update_properties = {field: diff.dip_data.get(field) for field in diff.changed_fields}
             operations.append(
                 {
                     "operation": "update_node",
@@ -116,9 +114,7 @@ class SyncPlanner:
 
         return operations
 
-    def _batch_operations(
-        self, operations: List[Dict[str, Any]]
-    ) -> List[List[Dict[str, Any]]]:
+    def _batch_operations(self, operations: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
         """Batch operations for parallel execution.
 
         Args:
@@ -134,9 +130,7 @@ class SyncPlanner:
         limited_operations = operations[: self.max_concurrent]
 
         if len(operations) > self.max_concurrent:
-            logger.warning(
-                f"Limiting operations from {len(operations)} to {self.max_concurrent}"
-            )
+            logger.warning(f"Limiting operations from {len(operations)} to {self.max_concurrent}")
 
         # Create batches
         batches = []
@@ -148,10 +142,10 @@ class SyncPlanner:
 
     def _create_summary(
         self,
-        diffs: List[PersonDiff],
-        operations: List[Dict[str, Any]],
-        batches: List[List[Dict[str, Any]]],
-    ) -> Dict[str, Any]:
+        diffs: list[PersonDiff],
+        operations: list[dict[str, Any]],
+        batches: list[list[dict[str, Any]]],
+    ) -> dict[str, Any]:
         """Create summary of the sync plan.
 
         Args:
@@ -178,9 +172,7 @@ class SyncPlanner:
             ),
         }
 
-    def _estimate_execution_time(
-        self, num_operations: int, num_batches: int
-    ) -> float:
+    def _estimate_execution_time(self, num_operations: int, num_batches: int) -> float:
         """Estimate execution time based on operation count.
 
         Args:

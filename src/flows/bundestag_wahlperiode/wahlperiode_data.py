@@ -10,10 +10,9 @@ Data sourced from:
 - Official Bundestag historical records
 """
 
-from typing import List, Dict, Any
+from typing import Any
 
-
-WAHLPERIODE_REFERENCE_DATA: List[Dict[str, Any]] = [
+WAHLPERIODE_REFERENCE_DATA: list[dict[str, Any]] = [
     # First 10 Wahlperioden (1949-1987)
     {
         "wahlperiode_nummer": 1,

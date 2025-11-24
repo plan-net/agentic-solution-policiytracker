@@ -1,6 +1,6 @@
 """Bundestag DIP API Client for fetching person data."""
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -23,7 +23,7 @@ class BundestagDIPClient:
 
         logger.info(f"BundestagDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_person_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_person_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all person IDs from DIP API.
 
         Args:
@@ -59,16 +59,14 @@ class BundestagDIPClient:
                     logger.info(f"Retrieved {len(person_ids)} person IDs from DIP API")
                     return person_ids
                 else:
-                    logger.error(
-                        f"DIP API error: {response.status_code} - {response.text}"
-                    )
+                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
                     return []
 
         except Exception as e:
             logger.error(f"Error fetching person IDs from DIP API: {e}")
             return []
 
-    async def get_person_by_id(self, person_id: str) -> Optional[Dict[str, Any]]:
+    async def get_person_by_id(self, person_id: str) -> Optional[dict[str, Any]]:
         """Get detailed person data by ID.
 
         Args:
@@ -99,16 +97,14 @@ class BundestagDIPClient:
                     logger.warning(f"Person {person_id} not found in DIP API")
                     return None
                 else:
-                    logger.error(
-                        f"DIP API error for person {person_id}: {response.status_code}"
-                    )
+                    logger.error(f"DIP API error for person {person_id}: {response.status_code}")
                     return None
 
         except Exception as e:
             logger.error(f"Error fetching person {person_id} from DIP API: {e}")
             return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for API requests.
 
         Returns:
@@ -121,7 +117,7 @@ class BundestagDIPClient:
 
         return headers
 
-    def _transform_dip_person(self, dip_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dip_person(self, dip_data: dict[str, Any]) -> dict[str, Any]:
         """Transform DIP API person data to internal format.
 
         This method maps DIP API field names to our internal field names.
@@ -192,7 +188,7 @@ class MockBundestagDIPClient:
             },
         }
 
-    async def get_all_person_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_person_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all mock person IDs.
 
         Args:
@@ -209,7 +205,7 @@ class MockBundestagDIPClient:
         logger.info(f"Returning {len(person_ids)} mock person IDs")
         return person_ids
 
-    async def get_person_by_id(self, person_id: str) -> Optional[Dict[str, Any]]:
+    async def get_person_by_id(self, person_id: str) -> Optional[dict[str, Any]]:
         """Get mock person data by ID.
 
         Args:

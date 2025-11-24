@@ -43,9 +43,7 @@ class EntityResolutionTester:
         print(f"{status}: {test_name}")
         if details:
             print(f"   {details}")
-        self.test_results.append(
-            {"test": test_name, "passed": passed, "details": details}
-        )
+        self.test_results.append({"test": test_name, "passed": passed, "details": details})
 
     async def test_ambiguous_entity(self, entity_name: str, expected_type: str):
         """Test ambiguous entity resolution."""
@@ -56,7 +54,9 @@ class EntityResolutionTester:
             # Check if entity was found
             if "error" in result or not result.get("entity"):
                 self.log_test(
-                    test_name, False, f"Entity not found or error: {result.get('error', 'No entity')}"
+                    test_name,
+                    False,
+                    f"Entity not found or error: {result.get('error', 'No entity')}",
                 )
                 return
 
@@ -81,9 +81,7 @@ class EntityResolutionTester:
             required_keys = ["entity", "relationships", "facts", "sources"]
             missing_keys = [k for k in required_keys if k not in result]
             if missing_keys:
-                self.log_test(
-                    f"{test_name} - Structure", False, f"Missing keys: {missing_keys}"
-                )
+                self.log_test(f"{test_name} - Structure", False, f"Missing keys: {missing_keys}")
             else:
                 self.log_test(
                     f"{test_name} - Structure",
@@ -130,9 +128,7 @@ class EntityResolutionTester:
             # Try to serialize to JSON
             try:
                 json_str = json.dumps(result)
-                self.log_test(
-                    test_name, True, f"Successfully serialized ({len(json_str)} bytes)"
-                )
+                self.log_test(test_name, True, f"Successfully serialized ({len(json_str)} bytes)")
             except TypeError as te:
                 self.log_test(test_name, False, f"Serialization failed: {str(te)}")
 

@@ -6,7 +6,6 @@ with a structured directory layout by Wahlperiode (electoral period).
 """
 
 from pathlib import Path
-from typing import Optional
 
 import structlog
 
@@ -157,9 +156,7 @@ class DrucksacheStorageManager:
             )
             raise
 
-    def save_markdown(
-        self, drucksache_nummer: str, wahlperiode: int, markdown_content: str
-    ) -> str:
+    def save_markdown(self, drucksache_nummer: str, wahlperiode: int, markdown_content: str) -> str:
         """
         Save markdown content to file system.
 

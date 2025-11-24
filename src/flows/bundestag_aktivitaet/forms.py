@@ -4,7 +4,6 @@ Form definitions for Bundestag Aktivitaet ingestion flow.
 
 from kodosumi.core import forms as F
 
-
 bundestag_aktivitaet_form = F.Model(
     F.Markdown(
         """

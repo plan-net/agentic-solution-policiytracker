@@ -6,7 +6,7 @@ transforms it into knowledge graph entities, and creates relationships.
 """
 
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -42,7 +42,7 @@ class VorgangCollector(BaseCollector):
         """Entity type produced by this collector."""
         return "Vorgang"
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect Vorgang data from API and transform into entities and edges.
 
@@ -73,7 +73,7 @@ class VorgangCollector(BaseCollector):
             }
         """
         start_time = time.time()
-        errors: List[str] = []
+        errors: list[str] = []
 
         logger.info("Starting Vorgang collection", inputs=inputs)
 
@@ -141,7 +141,7 @@ class VorgangCollector(BaseCollector):
                 errors=errors,
             )
 
-    def _extract_filters(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    def _extract_filters(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Extract and build filter parameters from inputs.
 
@@ -155,7 +155,7 @@ class VorgangCollector(BaseCollector):
 
         # Check if filters are pre-built
         if "filters" in inputs:
-            filters: Dict[str, Any] = inputs["filters"]
+            filters: dict[str, Any] = inputs["filters"]
             return filters
 
         # Build filters from individual parameters
@@ -174,8 +174,8 @@ class VorgangCollector(BaseCollector):
         return filters
 
     async def _create_wahlperiode_edges(
-        self, vorgang: Dict[str, Any], vorgang_entity: Any
-    ) -> List[Any]:
+        self, vorgang: dict[str, Any], vorgang_entity: Any
+    ) -> list[Any]:
         """
         Create edges linking Vorgang to its Wahlperiode.
 
@@ -186,7 +186,7 @@ class VorgangCollector(BaseCollector):
         Returns:
             List of edge objects
         """
-        edges: List[Any] = []
+        edges: list[Any] = []
 
         if not self.edge_builder:
             return edges
@@ -221,7 +221,7 @@ class VorgangCollector(BaseCollector):
 
     async def collect_by_wahlperiode(
         self, wahlperiode: str, limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect Vorgänge for a specific legislative period.
 
@@ -238,7 +238,7 @@ class VorgangCollector(BaseCollector):
 
     async def collect_by_sachgebiet(
         self, sachgebiet: str, wahlperiode: Optional[str] = None, limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect Vorgänge for a specific subject area.
 
@@ -263,7 +263,7 @@ class VorgangCollector(BaseCollector):
 
     async def collect_recent(
         self, days_back: int = 30, wahlperiode: Optional[str] = None, limit: Optional[int] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Convenience method to collect recent Vorgänge.
 

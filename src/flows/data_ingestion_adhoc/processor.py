@@ -9,7 +9,6 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 import structlog
 from kodosumi.core import Tracer
@@ -29,10 +28,11 @@ async def execute_adhoc_processing(inputs: dict, tracer: Tracer):
     Uses the same processing pipeline and report format as Flow 1.
     """
     from kodosumi import core
+
     from src.flows.data_ingestion.report_generator import IngestionReportGenerator
     from src.flows.shared.document_converter import DocumentConverter
-    from src.flows.shared.url_to_markdown import URLToMarkdownConverter
     from src.flows.shared.markdown_processor import MarkdownProcessor
+    from src.flows.shared.url_to_markdown import URLToMarkdownConverter
 
     job_name = inputs.get("job_name", "Ad-hoc Processing")
     input_type = inputs.get("input_type", "urls")
@@ -85,7 +85,7 @@ async def execute_adhoc_processing(inputs: dict, tracer: Tracer):
                         markdown_paths.append(md_path)
                         await tracer.markdown(f"✅ Converted: {md_path.name}\\n\\n")
                     else:
-                        await tracer.markdown(f"❌ Failed to fetch URL\\n\\n")
+                        await tracer.markdown("❌ Failed to fetch URL\\n\\n")
                 except Exception as e:
                     logger.error(f"URL conversion failed for {url}: {e}")
                     await tracer.markdown(f"❌ Error: {str(e)}\\n\\n")
@@ -107,7 +107,9 @@ async def execute_adhoc_processing(inputs: dict, tracer: Tracer):
                     filename = doc.get("filename", f"document_{i}")
                     content = doc.get("content", b"")
 
-                    await tracer.markdown(f"📄 {i}/{len(documents)}: Converting {filename}...\\n\\n")
+                    await tracer.markdown(
+                        f"📄 {i}/{len(documents)}: Converting {filename}...\\n\\n"
+                    )
 
                     try:
                         # Save uploaded file to temp location

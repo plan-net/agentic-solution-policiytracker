@@ -4,17 +4,18 @@ Unit tests for Bundestag ingestion utilities.
 Tests BundestagAPIClient, PaginationHelper, and FilterBuilder.
 """
 
-import pytest
 from unittest.mock import AsyncMock, patch
+
+import pytest
+
 from src.flows.bundestag_ingestion.utils.api_client import BundestagAPIClient
-from src.flows.bundestag_ingestion.utils.pagination import PaginationHelper
 from src.flows.bundestag_ingestion.utils.filters import FilterBuilder
+from src.flows.bundestag_ingestion.utils.pagination import PaginationHelper
 from tests.fixtures.bundestag_sample_data import (
-    SAMPLE_VORGANG_RESPONSE,
     SAMPLE_PAGINATED_RESPONSE_PAGE_1,
     SAMPLE_PAGINATED_RESPONSE_PAGE_2,
     SAMPLE_PAGINATED_RESPONSE_PAGE_3,
-    SAMPLE_ERROR_RATE_LIMIT,
+    SAMPLE_VORGANG_RESPONSE,
 )
 
 
@@ -28,7 +29,7 @@ class TestBundestagAPIClient:
     @pytest.mark.asyncio
     async def test_successful_get_request(self, client):
         """Test successful API GET request."""
-        with patch('aiohttp.ClientSession.get') as mock_get:
+        with patch("aiohttp.ClientSession.get") as mock_get:
             mock_response = AsyncMock()
             mock_response.status = 200
             mock_response.json = AsyncMock(return_value=SAMPLE_VORGANG_RESPONSE)
@@ -42,7 +43,7 @@ class TestBundestagAPIClient:
     @pytest.mark.asyncio
     async def test_rate_limit_retry(self, client):
         """Test API client handles rate limiting with retry."""
-        with patch('aiohttp.ClientSession.get') as mock_get:
+        with patch("aiohttp.ClientSession.get") as mock_get:
             # First call: rate limited, second call: success
             mock_response_429 = AsyncMock()
             mock_response_429.status = 429
@@ -62,7 +63,7 @@ class TestBundestagAPIClient:
     @pytest.mark.asyncio
     async def test_health_check(self, client):
         """Test API health check."""
-        with patch('aiohttp.ClientSession.get') as mock_get:
+        with patch("aiohttp.ClientSession.get") as mock_get:
             mock_response = AsyncMock()
             mock_response.status = 200
             mock_response.json = AsyncMock(return_value={"documents": [], "numFound": 0})
@@ -75,7 +76,7 @@ class TestBundestagAPIClient:
     @pytest.mark.asyncio
     async def test_get_by_id(self, client):
         """Test fetching resource by ID."""
-        with patch('aiohttp.ClientSession.get') as mock_get:
+        with patch("aiohttp.ClientSession.get") as mock_get:
             mock_response = AsyncMock()
             mock_response.status = 200
             mock_response.json = AsyncMock(return_value=SAMPLE_VORGANG_RESPONSE)
@@ -97,11 +98,13 @@ class TestPaginationHelper:
     @pytest.mark.asyncio
     async def test_pagination_multiple_pages(self, api_client):
         """Test pagination across multiple pages."""
-        api_client.get = AsyncMock(side_effect=[
-            SAMPLE_PAGINATED_RESPONSE_PAGE_1,
-            SAMPLE_PAGINATED_RESPONSE_PAGE_2,
-            SAMPLE_PAGINATED_RESPONSE_PAGE_3,
-        ])
+        api_client.get = AsyncMock(
+            side_effect=[
+                SAMPLE_PAGINATED_RESPONSE_PAGE_1,
+                SAMPLE_PAGINATED_RESPONSE_PAGE_2,
+                SAMPLE_PAGINATED_RESPONSE_PAGE_3,
+            ]
+        )
 
         helper = PaginationHelper(api_client, max_items=250)
 
@@ -142,20 +145,13 @@ class TestFilterBuilder:
 
     def test_build_date_range_filter(self, builder):
         """Test building date range filters."""
-        filters = builder.build_filters(
-            datum_von="2024-01-01",
-            datum_bis="2024-12-31"
-        )
+        filters = builder.build_filters(datum_von="2024-01-01", datum_bis="2024-12-31")
 
         assert "f.datum" in filters or "f.von" in filters
 
     def test_build_complex_filters(self, builder):
         """Test building multiple filters together."""
-        filters = builder.build_filters(
-            wahlperiode="20",
-            datum_von="2024-01-01",
-            limit=100
-        )
+        filters = builder.build_filters(wahlperiode="20", datum_von="2024-01-01", limit=100)
 
         assert len(filters) >= 2
 

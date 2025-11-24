@@ -5,21 +5,20 @@ This module provides the BundestagEdgeBuilder class for creating edge/relationsh
 objects between Bundestag entities according to the political_schema_v4 definitions.
 """
 
+from typing import Any, Optional
+
 import structlog
-from typing import Any, Dict, List, Optional
 
 from src.graphrag.political_schema_v4 import (
-    MemberOfFraktion,
+    AuthorsDrucksache,
+    DebatedInPlenum,
+    InitiatesVorgang,
     InWahlperiode,
     LeadsFraktion,
-    RepresentsWahlkreis,
-    InitiatesVorgang,
-    PartOfVorgang,
+    MemberOfFraktion,
     RelatesToDrucksache,
-    DebatedInPlenum,
+    RepresentsWahlkreis,
     SpeaksInPlenum,
-    AuthorsDrucksache,
-    ReferencesVorgang,
 )
 
 logger = structlog.get_logger()
@@ -462,7 +461,7 @@ class BundestagEdgeBuilder:
             )
             raise
 
-    async def build(self, raw_data: Dict[str, Any], entity: Any) -> List[Any]:
+    async def build(self, raw_data: dict[str, Any], entity: Any) -> list[Any]:
         """
         Generic build method for creating edges from raw data.
 

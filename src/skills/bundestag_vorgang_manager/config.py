@@ -51,8 +51,6 @@ class ManagerConfig:
             crud_num_replicas=int(os.getenv("CRUD_SUBAGENT_REPLICAS", "10")),
             crud_timeout=float(os.getenv("CRUD_SUBAGENT_TIMEOUT", "30.0")),
             # Manager
-            max_concurrent_operations=int(
-                os.getenv("MANAGER_MAX_CONCURRENT_OPS", "100")
-            ),
+            max_concurrent_operations=int(os.getenv("MANAGER_MAX_CONCURRENT_OPS", "100")),
             batch_size=int(os.getenv("MANAGER_BATCH_SIZE", "50")),
         )

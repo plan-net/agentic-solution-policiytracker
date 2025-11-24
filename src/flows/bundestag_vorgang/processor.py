@@ -8,8 +8,8 @@ import asyncio
 import json
 import os
 import ssl
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
+
 import aiohttp
 import structlog
 from kodosumi import core
@@ -33,7 +33,7 @@ def safe_str(value: Any) -> str:
     return str(value)
 
 
-def safe_list(value: Any) -> List[str]:
+def safe_list(value: Any) -> list[str]:
     """Safely convert value to list of strings."""
     if value is None:
         return []
@@ -52,7 +52,7 @@ def safe_date(value: Any) -> Optional[str]:
     return str(value)
 
 
-def map_vorgang_to_entity(api_data: Dict[str, Any]) -> Dict[str, Any]:
+def map_vorgang_to_entity(api_data: dict[str, Any]) -> dict[str, Any]:
     """
     Map Bundestag API vorgang data to Neo4j entity structure.
 
@@ -105,32 +105,36 @@ def map_vorgang_to_entity(api_data: Dict[str, Any]) -> Dict[str, Any]:
     return entity
 
 
-def extract_deskriptoren(api_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+def extract_deskriptoren(api_data: dict[str, Any]) -> list[dict[str, Any]]:
     """Extract deskriptor entities from vorgang data."""
     deskriptoren = []
 
     for desk in api_data.get("deskriptor", []):
         deskriptor_id = f"{desk.get('name', '')}_{desk.get('typ', 'Sachbegriffe')}"
-        deskriptoren.append({
-            "deskriptor_id": deskriptor_id,
-            "name": safe_str(desk.get("name", "")),
-            "typ": safe_str(desk.get("typ", "Sachbegriffe")),
-            "fundstelle": desk.get("fundstelle", False),
-        })
+        deskriptoren.append(
+            {
+                "deskriptor_id": deskriptor_id,
+                "name": safe_str(desk.get("name", "")),
+                "typ": safe_str(desk.get("typ", "Sachbegriffe")),
+                "fundstelle": desk.get("fundstelle", False),
+            }
+        )
 
     return deskriptoren
 
 
-def extract_sachgebiete(api_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+def extract_sachgebiete(api_data: dict[str, Any]) -> list[dict[str, Any]]:
     """Extract sachgebiet entities from vorgang data."""
     sachgebiete = []
 
     for sg in api_data.get("sachgebiet", []):
         if sg:
-            sachgebiete.append({
-                "sachgebiet_name": safe_str(sg),
-                "name": safe_str(sg),
-            })
+            sachgebiete.append(
+                {
+                    "sachgebiet_name": safe_str(sg),
+                    "name": safe_str(sg),
+                }
+            )
 
     return sachgebiete
 
@@ -139,8 +143,8 @@ async def fetch_vorgaenge_from_api(
     wahlperiode: int,
     vorgangstyp: Optional[str] = None,
     cursor: Optional[str] = None,
-    batch_size: int = 100
-) -> Tuple[List[Dict], Optional[str]]:
+    batch_size: int = 100,
+) -> tuple[list[dict], Optional[str]]:
     """
     Fetch vorgänge from Bundestag DIP API.
 
@@ -167,9 +171,7 @@ async def fetch_vorgaenge_from_api(
     if cursor:
         params["cursor"] = cursor
 
-    headers = {
-        "Authorization": f"ApiKey {BUNDESTAG_API_KEY}"
-    } if BUNDESTAG_API_KEY else {}
+    headers = {"Authorization": f"ApiKey {BUNDESTAG_API_KEY}"} if BUNDESTAG_API_KEY else {}
 
     # Create SSL context that doesn't verify certificates
     ssl_context = ssl.create_default_context()
@@ -191,7 +193,7 @@ async def fetch_vorgaenge_from_api(
             return documents, next_cursor
 
 
-async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
+async def process_vorgang_batch(inputs: dict[str, Any], tracer):
     """
     Process vorgänge in batches for selected wahlperioden.
 
@@ -242,7 +244,7 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
                     wahlperiode=wp_int,
                     vorgangstyp=vorgangstyp,
                     cursor=cursor,
-                    batch_size=batch_size
+                    batch_size=batch_size,
                 )
 
                 if not documents:
@@ -280,9 +282,7 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
                 # Upsert vorgang entities
                 await tracer.markdown(f"💾 Upserting {len(vorgang_entities)} vorgänge...\n")
                 vorgang_results = upsert_manager.upsert_entities_batch(
-                    entity_type="Vorgang",
-                    entities=vorgang_entities,
-                    batch_size=batch_size
+                    entity_type="Vorgang", entities=vorgang_entities, batch_size=batch_size
                 )
                 stats["vorgaenge_created"] += vorgang_results["successful"]
                 stats["total_processed"] += len(vorgang_entities)
@@ -292,27 +292,31 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
                     # Upsert deskriptoren
                     if all_deskriptoren:
                         # Deduplicate
-                        unique_deskriptoren = {d["deskriptor_id"]: d for d in all_deskriptoren}.values()
+                        unique_deskriptoren = {
+                            d["deskriptor_id"]: d for d in all_deskriptoren
+                        }.values()
                         desk_results = upsert_manager.upsert_entities_batch(
                             entity_type="Deskriptor",
                             entities=list(unique_deskriptoren),
-                            batch_size=batch_size
+                            batch_size=batch_size,
                         )
                         stats["deskriptoren_created"] += desk_results["successful"]
 
                     # Upsert sachgebiete
                     if all_sachgebiete:
                         # Deduplicate
-                        unique_sachgebiete = {s["sachgebiet_name"]: s for s in all_sachgebiete}.values()
+                        unique_sachgebiete = {
+                            s["sachgebiet_name"]: s for s in all_sachgebiete
+                        }.values()
                         sg_results = upsert_manager.upsert_entities_batch(
                             entity_type="Sachgebiet",
                             entities=list(unique_sachgebiete),
-                            batch_size=batch_size
+                            batch_size=batch_size,
                         )
                         stats["sachgebiete_created"] += sg_results["successful"]
 
                     # Create relationships (in next iteration after testing nodes)
-                    await tracer.markdown(f"🔗 Creating relationships...\n")
+                    await tracer.markdown("🔗 Creating relationships...\n")
                     rel_count = await create_vorgang_relationships(
                         driver, neo4j_database, [v["vorgang_id"] for v in vorgang_entities]
                     )
@@ -362,17 +366,15 @@ async def process_vorgang_batch(inputs: Dict[str, Any], tracer):
 {len(stats['errors'])} errors occurred during processing.
 """
 
-    if stats['errors']:
+    if stats["errors"]:
         report += "\n### Error Details\n"
-        for error in stats['errors'][:10]:  # Show first 10 errors
+        for error in stats["errors"][:10]:  # Show first 10 errors
             report += f"- {error}\n"
 
     return core.response.Markdown(report)
 
 
-async def create_vorgang_relationships(
-    driver, database: str, vorgang_ids: List[str]
-) -> int:
+async def create_vorgang_relationships(driver, database: str, vorgang_ids: list[str]) -> int:
     """Create relationships for vorgänge."""
     rel_count = 0
 

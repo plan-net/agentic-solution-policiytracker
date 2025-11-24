@@ -2,8 +2,9 @@
 """Quick test script to verify document preprocessing and chunking."""
 
 from pathlib import Path
-from src.flows.data_ingestion.document_preprocessor import preprocess_document
+
 from src.flows.data_ingestion.document_chunker import HybridDocumentChunker, count_tokens
+from src.flows.data_ingestion.document_preprocessor import preprocess_document
 
 
 def test_preprocessing():
@@ -19,7 +20,7 @@ def test_preprocessing():
         print(f"❌ Document not found: {doc_path}")
         return False
 
-    with open(doc_path, "r", encoding="utf-8") as f:
+    with open(doc_path, encoding="utf-8") as f:
         original_content = f.read()
 
     print(f"\n📄 Original document: {doc_path.name}")
@@ -30,14 +31,14 @@ def test_preprocessing():
     # Apply preprocessing
     preprocessed = preprocess_document(original_content, enable_link_removal=True)
 
-    print(f"\n✨ After preprocessing:")
+    print("\n✨ After preprocessing:")
     print(f"   Length: {len(preprocessed)} characters")
     print(f"   Removed: {len(original_content) - len(preprocessed)} characters")
     print(f"   Links remaining: {preprocessed.count('](')}")
     print(f"   Images remaining: {preprocessed.count('![')}")
 
     # Show sample of cleaned content
-    print(f"\n📝 Sample of cleaned content (first 300 chars):")
+    print("\n📝 Sample of cleaned content (first 300 chars):")
     print("-" * 80)
     print(preprocessed[:300])
     print("-" * 80)
@@ -60,26 +61,26 @@ def test_chunking():
     # Read and preprocess the document
     doc_path = Path("data/input/news/2025-10/20251027_nettilahja_zalando-lahjakortti.md")
 
-    with open(doc_path, "r", encoding="utf-8") as f:
+    with open(doc_path, encoding="utf-8") as f:
         original_content = f.read()
 
     preprocessed = preprocess_document(original_content, enable_link_removal=True)
 
     # Count tokens
     token_count = count_tokens(preprocessed)
-    print(f"\n📊 Document stats:")
+    print("\n📊 Document stats:")
     print(f"   Total tokens: {token_count:,}")
     print(f"   Characters: {len(preprocessed):,}")
 
     # Initialize chunker
-    print(f"\n🔧 Initializing hybrid chunker...")
-    print(f"   Max tokens per chunk: 120,000")
-    print(f"   Overlap: 10%")
+    print("\n🔧 Initializing hybrid chunker...")
+    print("   Max tokens per chunk: 120,000")
+    print("   Overlap: 10%")
 
     chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
     chunks = chunker.create_chunks(preprocessed)
 
-    print(f"\n✂️  Chunking results:")
+    print("\n✂️  Chunking results:")
     print(f"   Total chunks: {len(chunks)}")
 
     for i, chunk in enumerate(chunks):
@@ -90,7 +91,7 @@ def test_chunking():
         print(f"      Preview: {chunk['text'][:100]}...")
 
     # Verify all chunks are within limits
-    max_chunk_tokens = max(c['token_count'] for c in chunks)
+    max_chunk_tokens = max(c["token_count"] for c in chunks)
     if max_chunk_tokens <= 120000:
         print(f"\n✅ All chunks within token limit (max: {max_chunk_tokens:,})")
     else:
@@ -121,6 +122,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Test failed with error: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

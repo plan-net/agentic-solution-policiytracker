@@ -5,9 +5,10 @@ Provides deterministic entity creation/update using Neo4j MERGE operations
 with automatic deduplication via constraints.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 import structlog
-from neo4j import GraphDatabase, Driver
+from neo4j import Driver
 
 logger = structlog.get_logger()
 
@@ -46,16 +47,9 @@ class Neo4jUpsertManager:
         self.driver = driver
         self.database = database
 
-        logger.info(
-            "Initialized Neo4jUpsertManager",
-            database=database
-        )
+        logger.info("Initialized Neo4jUpsertManager", database=database)
 
-    def upsert_entity(
-        self,
-        entity_type: str,
-        entity_data: Dict[str, Any]
-    ) -> bool:
+    def upsert_entity(self, entity_type: str, entity_data: dict[str, Any]) -> bool:
         """
         Upsert a single entity using MERGE operation.
 
@@ -93,13 +87,9 @@ class Neo4jUpsertManager:
             RETURN n
             """
 
-            print(f"[NEO4J_UPSERT] Executing MERGE query...")
+            print("[NEO4J_UPSERT] Executing MERGE query...")
             with self.driver.session(database=self.database) as session:
-                result = session.run(
-                    query,
-                    unique_id=unique_id,
-                    properties=entity_data
-                )
+                result = session.run(query, unique_id=unique_id, properties=entity_data)
 
                 if result.single():
                     print(f"[NEO4J_UPSERT] SUCCESS: Upserted {entity_type} {unique_id}")
@@ -107,7 +97,7 @@ class Neo4jUpsertManager:
                         "Upserted entity",
                         entity_type=entity_type,
                         id_field=id_field,
-                        unique_id=unique_id
+                        unique_id=unique_id,
                     )
                     return True
                 else:
@@ -120,20 +110,14 @@ class Neo4jUpsertManager:
             error_msg = f"Failed to upsert entity {entity_type}: {str(e)}"
             print(f"[NEO4J_UPSERT] EXCEPTION: {error_msg}")
             import traceback
+
             print(f"[NEO4J_UPSERT] Traceback: {traceback.format_exc()}")
-            logger.error(
-                f"Failed to upsert entity",
-                entity_type=entity_type,
-                error=str(e)
-            )
+            logger.error("Failed to upsert entity", entity_type=entity_type, error=str(e))
             return False
 
     def upsert_entities_batch(
-        self,
-        entity_type: str,
-        entities: List[Dict[str, Any]],
-        batch_size: int = 100
-    ) -> Dict[str, int]:
+        self, entity_type: str, entities: list[dict[str, Any]], batch_size: int = 100
+    ) -> dict[str, int]:
         """
         Upsert multiple entities in batches.
 
@@ -146,7 +130,7 @@ class Neo4jUpsertManager:
             Dict with counts: {"total": int, "successful": int, "failed": int}
         """
         # Write debug to file since stdout isn't captured
-        import os
+
         debug_file = "/tmp/neo4j_upsert_debug.log"
         with open(debug_file, "a") as f:
             f.write(f"\n[NEO4J_BATCH] METHOD CALLED: entity_type={entity_type}\n")
@@ -166,38 +150,45 @@ class Neo4jUpsertManager:
             f.write(f"[NEO4J_BATCH] total={total}, batch_size={batch_size}\n")
             f.flush()
 
-        print(f"[NEO4J_BATCH] Starting batch upsert: entity_type={entity_type}, total={total}, batch_size={batch_size}")
+        print(
+            f"[NEO4J_BATCH] Starting batch upsert: entity_type={entity_type}, total={total}, batch_size={batch_size}"
+        )
         logger.info(
-            "Starting batch upsert",
-            entity_type=entity_type,
-            total=total,
-            batch_size=batch_size
+            "Starting batch upsert", entity_type=entity_type, total=total, batch_size=batch_size
         )
 
         # Debug: About to start for loop
         with open(debug_file, "a") as f:
-            f.write(f"[NEO4J_BATCH] About to start for loop, total={total}, batch_size={batch_size}\n")
-            f.write(f"[NEO4J_BATCH] range(0, {total}, {batch_size}) will produce: {list(range(0, total, batch_size))}\n")
+            f.write(
+                f"[NEO4J_BATCH] About to start for loop, total={total}, batch_size={batch_size}\n"
+            )
+            f.write(
+                f"[NEO4J_BATCH] range(0, {total}, {batch_size}) will produce: {list(range(0, total, batch_size))}\n"
+            )
             f.flush()
 
         # Process in batches
         for i in range(0, total, batch_size):
             with open(debug_file, "a") as f:
                 f.write(f"[NEO4J_BATCH] ENTERED for loop iteration, i={i}\n")
-                f.write(f"[NEO4J_BATCH] entities type: {type(entities)}, len: {len(entities) if hasattr(entities, '__len__') else 'N/A'}\n")
+                f.write(
+                    f"[NEO4J_BATCH] entities type: {type(entities)}, len: {len(entities) if hasattr(entities, '__len__') else 'N/A'}\n"
+                )
                 f.flush()
 
-            batch = entities[i:i + batch_size]
+            batch = entities[i : i + batch_size]
 
             with open(debug_file, "a") as f:
-                f.write(f"[NEO4J_BATCH] Created batch slice, batch type: {type(batch)}, len: {len(batch) if hasattr(batch, '__len__') else 'N/A'}\n")
-                f.write(f"[NEO4J_BATCH] About to print batch info...\n")
+                f.write(
+                    f"[NEO4J_BATCH] Created batch slice, batch type: {type(batch)}, len: {len(batch) if hasattr(batch, '__len__') else 'N/A'}\n"
+                )
+                f.write("[NEO4J_BATCH] About to print batch info...\n")
                 f.flush()
 
             try:
                 print(f"[NEO4J_BATCH] Processing batch {i // batch_size + 1}, size={len(batch)}")
                 with open(debug_file, "a") as f:
-                    f.write(f"[NEO4J_BATCH] Print succeeded\n")
+                    f.write("[NEO4J_BATCH] Print succeeded\n")
                     f.flush()
             except Exception as e:
                 with open(debug_file, "a") as f:
@@ -210,7 +201,7 @@ class Neo4jUpsertManager:
                 print(f"[NEO4J_BATCH] Opening Neo4j session to database={self.database}")
                 with self.driver.session(database=self.database) as session:
                     # Use transaction for batch
-                    print(f"[NEO4J_BATCH] Starting transaction")
+                    print("[NEO4J_BATCH] Starting transaction")
                     with session.begin_transaction() as tx:
                         for j, entity_data in enumerate(batch):
                             try:
@@ -222,7 +213,9 @@ class Neo4jUpsertManager:
                                     failed += 1
                                     continue
 
-                                print(f"[NEO4J_BATCH] Upserting entity {j+1}/{len(batch)}: {id_field}={unique_id}")
+                                print(
+                                    f"[NEO4J_BATCH] Upserting entity {j+1}/{len(batch)}: {id_field}={unique_id}"
+                                )
 
                                 query = f"""
                                 MERGE (n:{entity_type} {{{id_field}: $unique_id}})
@@ -230,11 +223,7 @@ class Neo4jUpsertManager:
                                 RETURN n
                                 """
 
-                                result = tx.run(
-                                    query,
-                                    unique_id=unique_id,
-                                    properties=entity_data
-                                )
+                                result = tx.run(query, unique_id=unique_id, properties=entity_data)
 
                                 if result.single():
                                     successful += 1
@@ -247,26 +236,30 @@ class Neo4jUpsertManager:
                                 error_msg = f"Failed to upsert entity in batch: {e}"
                                 print(f"[NEO4J_BATCH] EXCEPTION in entity: {error_msg}")
                                 import traceback
+
                                 print(f"[NEO4J_BATCH] Traceback: {traceback.format_exc()}")
                                 logger.error(error_msg)
                                 failed += 1
 
-                        print(f"[NEO4J_BATCH] Committing transaction")
+                        print("[NEO4J_BATCH] Committing transaction")
                         tx.commit()
-                        print(f"[NEO4J_BATCH] Transaction committed successfully")
+                        print("[NEO4J_BATCH] Transaction committed successfully")
 
-                print(f"[NEO4J_BATCH] Completed batch {i // batch_size + 1}: successful={successful}, failed={failed}")
+                print(
+                    f"[NEO4J_BATCH] Completed batch {i // batch_size + 1}: successful={successful}, failed={failed}"
+                )
                 logger.info(
                     f"Completed batch {i // batch_size + 1}",
                     batch_entities=len(batch),
                     successful=successful,
-                    failed=failed
+                    failed=failed,
                 )
 
             except Exception as e:
                 error_msg = f"Batch transaction failed: {e}"
                 print(f"[NEO4J_BATCH] EXCEPTION in batch: {error_msg}")
                 import traceback
+
                 print(f"[NEO4J_BATCH] Traceback: {traceback.format_exc()}")
 
                 with open(debug_file, "a") as f:
@@ -278,22 +271,20 @@ class Neo4jUpsertManager:
                 logger.error(error_msg)
                 failed += len(batch)
 
-        print(f"[NEO4J_BATCH] Batch upsert complete: total={total}, successful={successful}, failed={failed}")
+        print(
+            f"[NEO4J_BATCH] Batch upsert complete: total={total}, successful={successful}, failed={failed}"
+        )
         logger.info(
             "Batch upsert complete",
             entity_type=entity_type,
             total=total,
             successful=successful,
-            failed=failed
+            failed=failed,
         )
 
-        return {
-            "total": total,
-            "successful": successful,
-            "failed": failed
-        }
+        return {"total": total, "successful": successful, "failed": failed}
 
-    def create_constraints(self) -> Dict[str, bool]:
+    def create_constraints(self) -> dict[str, bool]:
         """
         Create unique constraints for all Bundestag entity types.
 
@@ -321,18 +312,16 @@ class Neo4jUpsertManager:
                     logger.info(
                         "Created constraint",
                         entity_type=entity_type,
-                        constraint_name=constraint_name
+                        constraint_name=constraint_name,
                     )
 
                 except Exception as e:
-                    logger.error(
-                        f"Failed to create constraint for {entity_type}: {e}"
-                    )
+                    logger.error(f"Failed to create constraint for {entity_type}: {e}")
                     results[entity_type] = False
 
         return results
 
-    def create_indexes(self) -> Dict[str, bool]:
+    def create_indexes(self) -> dict[str, bool]:
         """
         Create indexes for commonly queried fields.
 
@@ -394,7 +383,7 @@ class Neo4jUpsertManager:
                         "Created index",
                         entity_type=entity_type,
                         field_name=field_name,
-                        index_name=index_name
+                        index_name=index_name,
                     )
 
                 except Exception as e:

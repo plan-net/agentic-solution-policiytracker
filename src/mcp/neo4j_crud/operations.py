@@ -1,9 +1,9 @@
 """Neo4j CRUD operations using Neo4jUpsertManager."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
-from neo4j import Driver, GraphDatabase
+from neo4j import Driver
 
 # Import the existing upsert manager
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
@@ -27,7 +27,7 @@ class Neo4jCRUDOperations:
         self.upsert_manager = Neo4jUpsertManager(driver, database)
         logger.info(f"Initialized Neo4jCRUDOperations for database: {database}")
 
-    def create_node(self, entity_type: str, properties: Dict[str, Any]) -> Dict[str, Any]:
+    def create_node(self, entity_type: str, properties: dict[str, Any]) -> dict[str, Any]:
         """
         Create a new node.
 
@@ -51,27 +51,23 @@ class Neo4jCRUDOperations:
 
                 return {
                     "success": True,
-                    "message": f"Node created successfully",
-                    "data": {"entity_type": entity_type, "node_id": node_id}
+                    "message": "Node created successfully",
+                    "data": {"entity_type": entity_type, "node_id": node_id},
                 }
             else:
                 return {
                     "success": False,
-                    "message": f"Failed to create node",
-                    "error": "Upsert operation returned False"
+                    "message": "Failed to create node",
+                    "error": "Upsert operation returned False",
                 }
 
         except Exception as e:
             logger.error(f"Error creating node: {e}")
-            return {
-                "success": False,
-                "message": f"Error creating node: {str(e)}",
-                "error": str(e)
-            }
+            return {"success": False, "message": f"Error creating node: {str(e)}", "error": str(e)}
 
     def update_node(
-        self, entity_type: str, node_id: str, properties: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, entity_type: str, node_id: str, properties: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Update an existing node's properties.
 
@@ -92,7 +88,7 @@ class Neo4jCRUDOperations:
                 return {
                     "success": False,
                     "message": f"Unknown entity type: {entity_type}",
-                    "error": f"Entity type {entity_type} not in ENTITY_ID_FIELDS"
+                    "error": f"Entity type {entity_type} not in ENTITY_ID_FIELDS",
                 }
 
             # Add the ID to properties (needed for upsert)
@@ -104,27 +100,23 @@ class Neo4jCRUDOperations:
             if success:
                 return {
                     "success": True,
-                    "message": f"Node updated successfully",
-                    "data": {"entity_type": entity_type, "node_id": node_id}
+                    "message": "Node updated successfully",
+                    "data": {"entity_type": entity_type, "node_id": node_id},
                 }
             else:
                 return {
                     "success": False,
-                    "message": f"Failed to update node",
-                    "error": "Upsert operation returned False"
+                    "message": "Failed to update node",
+                    "error": "Upsert operation returned False",
                 }
 
         except Exception as e:
             logger.error(f"Error updating node: {e}")
-            return {
-                "success": False,
-                "message": f"Error updating node: {str(e)}",
-                "error": str(e)
-            }
+            return {"success": False, "message": f"Error updating node: {str(e)}", "error": str(e)}
 
     def delete_node(
         self, entity_type: str, node_id: str, hard_delete: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Delete a node (soft delete by default).
 
@@ -145,7 +137,7 @@ class Neo4jCRUDOperations:
                 return {
                     "success": False,
                     "message": f"Unknown entity type: {entity_type}",
-                    "error": f"Entity type {entity_type} not in ENTITY_ID_FIELDS"
+                    "error": f"Entity type {entity_type} not in ENTITY_ID_FIELDS",
                 }
 
             with self.driver.session(database=self.database) as session:
@@ -175,28 +167,24 @@ class Neo4jCRUDOperations:
                         return {
                             "success": True,
                             "message": f"Node {'deleted' if hard_delete else 'deactivated'} successfully",
-                            "data": {"entity_type": entity_type, "node_id": node_id}
+                            "data": {"entity_type": entity_type, "node_id": node_id},
                         }
                     else:
                         return {
                             "success": False,
-                            "message": f"Node not found",
-                            "error": f"No node found with {id_field}={node_id}"
+                            "message": "Node not found",
+                            "error": f"No node found with {id_field}={node_id}",
                         }
                 else:
                     return {
                         "success": False,
-                        "message": f"Delete operation failed",
-                        "error": "Query returned no result"
+                        "message": "Delete operation failed",
+                        "error": "Query returned no result",
                     }
 
         except Exception as e:
             logger.error(f"Error deleting node: {e}")
-            return {
-                "success": False,
-                "message": f"Error deleting node: {str(e)}",
-                "error": str(e)
-            }
+            return {"success": False, "message": f"Error deleting node: {str(e)}", "error": str(e)}
 
     def create_relationship(
         self,
@@ -205,8 +193,8 @@ class Neo4jCRUDOperations:
         to_entity_type: str,
         to_node_id: str,
         relationship_type: str,
-        properties: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        properties: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Create a relationship between two nodes.
 
@@ -221,7 +209,9 @@ class Neo4jCRUDOperations:
         Returns:
             Dict with success status
         """
-        logger.info(f"Creating relationship: {from_entity_type}→{relationship_type}→{to_entity_type}")
+        logger.info(
+            f"Creating relationship: {from_entity_type}→{relationship_type}→{to_entity_type}"
+        )
 
         try:
             # Get ID fields
@@ -231,8 +221,8 @@ class Neo4jCRUDOperations:
             if not from_id_field or not to_id_field:
                 return {
                     "success": False,
-                    "message": f"Unknown entity type",
-                    "error": f"Entity types not in ENTITY_ID_FIELDS"
+                    "message": "Unknown entity type",
+                    "error": "Entity types not in ENTITY_ID_FIELDS",
                 }
 
             with self.driver.session(database=self.database) as session:
@@ -248,29 +238,25 @@ class Neo4jCRUDOperations:
                 RETURN r
                 """
 
-                params = {
-                    "from_id": from_node_id,
-                    "to_id": to_node_id,
-                    **(properties or {})
-                }
+                params = {"from_id": from_node_id, "to_id": to_node_id, **(properties or {})}
 
                 result = session.run(query, params)
 
                 if result.single():
                     return {
                         "success": True,
-                        "message": f"Relationship created successfully",
+                        "message": "Relationship created successfully",
                         "data": {
                             "from_entity": from_entity_type,
                             "to_entity": to_entity_type,
-                            "relationship_type": relationship_type
-                        }
+                            "relationship_type": relationship_type,
+                        },
                     }
                 else:
                     return {
                         "success": False,
-                        "message": f"Failed to create relationship",
-                        "error": "One or both nodes not found"
+                        "message": "Failed to create relationship",
+                        "error": "One or both nodes not found",
                     }
 
         except Exception as e:
@@ -278,7 +264,7 @@ class Neo4jCRUDOperations:
             return {
                 "success": False,
                 "message": f"Error creating relationship: {str(e)}",
-                "error": str(e)
+                "error": str(e),
             }
 
     def update_relationship(
@@ -288,8 +274,8 @@ class Neo4jCRUDOperations:
         to_entity_type: str,
         to_node_id: str,
         relationship_type: str,
-        properties: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        properties: dict[str, Any],
+    ) -> dict[str, Any]:
         """
         Update relationship properties.
 
@@ -304,7 +290,9 @@ class Neo4jCRUDOperations:
         Returns:
             Dict with success status
         """
-        logger.info(f"Updating relationship: {from_entity_type}→{relationship_type}→{to_entity_type}")
+        logger.info(
+            f"Updating relationship: {from_entity_type}→{relationship_type}→{to_entity_type}"
+        )
 
         try:
             from_id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(from_entity_type)
@@ -313,8 +301,8 @@ class Neo4jCRUDOperations:
             if not from_id_field or not to_id_field:
                 return {
                     "success": False,
-                    "message": f"Unknown entity type",
-                    "error": f"Entity types not in ENTITY_ID_FIELDS"
+                    "message": "Unknown entity type",
+                    "error": "Entity types not in ENTITY_ID_FIELDS",
                 }
 
             with self.driver.session(database=self.database) as session:
@@ -326,25 +314,21 @@ class Neo4jCRUDOperations:
                 RETURN r
                 """
 
-                params = {
-                    "from_id": from_node_id,
-                    "to_id": to_node_id,
-                    "properties": properties
-                }
+                params = {"from_id": from_node_id, "to_id": to_node_id, "properties": properties}
 
                 result = session.run(query, params)
 
                 if result.single():
                     return {
                         "success": True,
-                        "message": f"Relationship updated successfully",
-                        "data": {"relationship_type": relationship_type}
+                        "message": "Relationship updated successfully",
+                        "data": {"relationship_type": relationship_type},
                     }
                 else:
                     return {
                         "success": False,
-                        "message": f"Relationship not found",
-                        "error": "No matching relationship found"
+                        "message": "Relationship not found",
+                        "error": "No matching relationship found",
                     }
 
         except Exception as e:
@@ -352,16 +336,16 @@ class Neo4jCRUDOperations:
             return {
                 "success": False,
                 "message": f"Error updating relationship: {str(e)}",
-                "error": str(e)
+                "error": str(e),
             }
 
     def query_nodes(
         self,
         entity_type: str,
-        filters: Optional[Dict[str, Any]] = None,
+        filters: Optional[dict[str, Any]] = None,
         limit: int = 100,
-        skip: int = 0
-    ) -> Dict[str, Any]:
+        skip: int = 0,
+    ) -> dict[str, Any]:
         """
         Query nodes with filters.
 
@@ -420,7 +404,7 @@ class Neo4jCRUDOperations:
                     "success": True,
                     "nodes": nodes,
                     "total_count": total_count,
-                    "returned_count": len(nodes)
+                    "returned_count": len(nodes),
                 }
 
         except Exception as e:
@@ -430,10 +414,10 @@ class Neo4jCRUDOperations:
                 "nodes": [],
                 "total_count": 0,
                 "returned_count": 0,
-                "error": str(e)
+                "error": str(e),
             }
 
-    def health_check(self) -> Dict[str, Any]:
+    def health_check(self) -> dict[str, Any]:
         """
         Check Neo4j connection health.
 
@@ -448,12 +432,12 @@ class Neo4jCRUDOperations:
             return {
                 "status": "healthy",
                 "neo4j_connected": True,
-                "message": "Neo4j connection is working"
+                "message": "Neo4j connection is working",
             }
         except Exception as e:
             logger.error(f"Health check failed: {e}")
             return {
                 "status": "unhealthy",
                 "neo4j_connected": False,
-                "message": f"Neo4j connection failed: {str(e)}"
+                "message": f"Neo4j connection failed: {str(e)}",
             }

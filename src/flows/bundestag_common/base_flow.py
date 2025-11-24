@@ -8,15 +8,16 @@ Each specific endpoint flow (person, vorgang, etc.) inherits from this base.
 import time
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
+
 import structlog
-from kodosumi.core import Tracer
 from kodosumi import core
-from neo4j import GraphDatabase, Driver
+from kodosumi.core import Tracer
+from neo4j import GraphDatabase
 
 from src.flows.bundestag_common.api_client import BundestagAPIClient
-from src.flows.bundestag_common.pagination import PaginationHelper
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_common.pagination import PaginationHelper
 
 logger = structlog.get_logger()
 
@@ -43,7 +44,7 @@ class BaseBundestagFlow(ABC):
         neo4j_uri: str,
         neo4j_username: str,
         neo4j_password: str,
-        neo4j_database: str = "neo4j"
+        neo4j_database: str = "neo4j",
     ):
         """
         Initialize base flow.
@@ -57,29 +58,20 @@ class BaseBundestagFlow(ABC):
             neo4j_database: Neo4j database name
         """
         # Initialize API client
-        self.api_client = BundestagAPIClient(
-            api_key=api_key,
-            base_url=api_url
-        )
+        self.api_client = BundestagAPIClient(api_key=api_key, base_url=api_url)
 
         # Initialize Neo4j driver
-        self.neo4j_driver = GraphDatabase.driver(
-            neo4j_uri,
-            auth=(neo4j_username, neo4j_password)
-        )
+        self.neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
         self.neo4j_database = neo4j_database
 
         # Initialize upsert manager
-        self.upsert_manager = Neo4jUpsertManager(
-            driver=self.neo4j_driver,
-            database=neo4j_database
-        )
+        self.upsert_manager = Neo4jUpsertManager(driver=self.neo4j_driver, database=neo4j_database)
 
         logger.info(
             "Initialized BaseBundestagFlow",
             endpoint=self.endpoint,
             entity_type=self.entity_type,
-            database=neo4j_database
+            database=neo4j_database,
         )
 
     @property
@@ -95,7 +87,7 @@ class BaseBundestagFlow(ABC):
         pass
 
     @abstractmethod
-    def map_api_to_entity(self, api_data: Dict[str, Any]) -> Dict[str, Any]:
+    def map_api_to_entity(self, api_data: dict[str, Any]) -> dict[str, Any]:
         """
         Map API response data to entity properties dict.
 
@@ -110,11 +102,7 @@ class BaseBundestagFlow(ABC):
         """
         pass
 
-    async def process(
-        self,
-        inputs: Dict[str, Any],
-        tracer: Tracer
-    ) -> core.response.Markdown:
+    async def process(self, inputs: dict[str, Any], tracer: Tracer) -> core.response.Markdown:
         """
         Main processing method called by Kodosumi.
 
@@ -150,7 +138,9 @@ class BaseBundestagFlow(ABC):
             filters["f.aktivitaetsart"] = aktivitaetsart
 
         await tracer.markdown(f"**Filters:** {filters}\n")
-        await tracer.markdown(f"**Max Items:** {'All (no limit)' if max_items is None else max_items}\n\n")
+        await tracer.markdown(
+            f"**Max Items:** {'All (no limit)' if max_items is None else max_items}\n\n"
+        )
 
         # Stage 1: Fetch data from API
         await tracer.markdown("## Stage 1: Fetching Data from API\n")
@@ -183,17 +173,14 @@ class BaseBundestagFlow(ABC):
             entities_created=len(entities),
             upsert_results=upsert_results,
             duration=duration,
-            inputs=inputs
+            inputs=inputs,
         )
 
         return core.response.Markdown(report)
 
     async def fetch_data(
-        self,
-        filters: Dict[str, Any],
-        max_items: Optional[int],
-        tracer: Tracer
-    ) -> List[Dict[str, Any]]:
+        self, filters: dict[str, Any], max_items: Optional[int], tracer: Tracer
+    ) -> list[dict[str, Any]]:
         """
         Fetch data from API with pagination.
 
@@ -207,10 +194,7 @@ class BaseBundestagFlow(ABC):
         """
         await tracer.markdown(f"Fetching from endpoint: **{self.endpoint}**...\n")
 
-        pagination_helper = PaginationHelper(
-            api_client=self.api_client,
-            max_items=max_items
-        )
+        pagination_helper = PaginationHelper(api_client=self.api_client, max_items=max_items)
 
         items = []
         async for item in pagination_helper.paginate(self.endpoint, filters):
@@ -220,19 +204,13 @@ class BaseBundestagFlow(ABC):
             if len(items) % 100 == 0:
                 await tracer.markdown(f"- Fetched {len(items)} items...\n")
 
-        logger.info(
-            "Completed API fetch",
-            endpoint=self.endpoint,
-            items_count=len(items)
-        )
+        logger.info("Completed API fetch", endpoint=self.endpoint, items_count=len(items))
 
         return items
 
     async def map_to_entities(
-        self,
-        items: List[Dict[str, Any]],
-        tracer: Tracer
-    ) -> List[Dict[str, Any]]:
+        self, items: list[dict[str, Any]], tracer: Tracer
+    ) -> list[dict[str, Any]]:
         """
         Map API items to entity dicts.
 
@@ -260,7 +238,7 @@ class BaseBundestagFlow(ABC):
                     "Failed to map item to entity",
                     endpoint=self.endpoint,
                     item_id=item.get("id"),
-                    error=str(e)
+                    error=str(e),
                 )
                 errors += 1
 
@@ -272,16 +250,14 @@ class BaseBundestagFlow(ABC):
             endpoint=self.endpoint,
             total=len(items),
             successful=len(entities),
-            failed=errors
+            failed=errors,
         )
 
         return entities
 
     async def upsert_entities(
-        self,
-        entities: List[Dict[str, Any]],
-        tracer: Tracer
-    ) -> Dict[str, int]:
+        self, entities: list[dict[str, Any]], tracer: Tracer
+    ) -> dict[str, int]:
         """
         Upsert entities to Neo4j in batches.
 
@@ -295,16 +271,14 @@ class BaseBundestagFlow(ABC):
         await tracer.markdown(f"Upserting **{len(entities)}** entities to Neo4j...\n")
 
         results = self.upsert_manager.upsert_entities_batch(
-            entity_type=self.entity_type,
-            entities=entities,
-            batch_size=100
+            entity_type=self.entity_type, entities=entities, batch_size=100
         )
 
         logger.info(
             "Completed Neo4j upsert",
             endpoint=self.endpoint,
             entity_type=self.entity_type,
-            results=results
+            results=results,
         )
 
         return results
@@ -313,9 +287,9 @@ class BaseBundestagFlow(ABC):
         self,
         items_fetched: int,
         entities_created: int,
-        upsert_results: Dict[str, int],
+        upsert_results: dict[str, int],
         duration: float,
-        inputs: Dict[str, Any]
+        inputs: dict[str, Any],
     ) -> str:
         """
         Generate execution summary report.
@@ -368,7 +342,7 @@ Access your data at: http://localhost:7474
 
     def cleanup(self):
         """Clean up resources."""
-        if hasattr(self, 'neo4j_driver') and self.neo4j_driver:
+        if hasattr(self, "neo4j_driver") and self.neo4j_driver:
             self.neo4j_driver.close()
 
     def __del__(self):

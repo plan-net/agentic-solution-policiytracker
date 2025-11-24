@@ -1,9 +1,7 @@
 """DiffAnalyzer - Compare Neo4j Aktivitaet data with Bundestag DIP API."""
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
-
-from neo4j import GraphDatabase
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,9 @@ class AktivitaetDiff:
         self,
         aktivitaet_id: str,
         diff_type: str,  # "missing", "outdated", "relationship_missing"
-        neo4j_data: Optional[Dict] = None,
-        dip_data: Optional[Dict] = None,
-        changed_fields: Optional[Set[str]] = None,
+        neo4j_data: Optional[dict] = None,
+        dip_data: Optional[dict] = None,
+        changed_fields: Optional[set[str]] = None,
     ):
         self.aktivitaet_id = aktivitaet_id
         self.diff_type = diff_type
@@ -61,9 +59,7 @@ class AktivitaetDiffAnalyzer:
 
         logger.info("AktivitaetDiffAnalyzer initialized")
 
-    async def analyze_all_aktivitaeten(
-        self, limit: Optional[int] = None
-    ) -> List[AktivitaetDiff]:
+    async def analyze_all_aktivitaeten(self, limit: Optional[int] = None) -> list[AktivitaetDiff]:
         """Analyze all Aktivitaetn and find differences.
 
         Args:
@@ -88,9 +84,7 @@ class AktivitaetDiffAnalyzer:
 
         # 4. Find potentially outdated Aktivitaetn (in both)
         existing_ids = set(dip_aktivitaet_ids) & set(neo4j_aktivitaet_ids)
-        logger.info(
-            f"Found {len(existing_ids)} existing Aktivitaetn to check for updates"
-        )
+        logger.info(f"Found {len(existing_ids)} existing Aktivitaetn to check for updates")
 
         # 5. Analyze differences
         all_diffs = []
@@ -116,8 +110,8 @@ class AktivitaetDiffAnalyzer:
         return all_diffs
 
     async def analyze_specific_aktivitaeten(
-        self, aktivitaet_ids: List[str]
-    ) -> List[AktivitaetDiff]:
+        self, aktivitaet_ids: list[str]
+    ) -> list[AktivitaetDiff]:
         """Analyze specific Aktivitaetn.
 
         Args:
@@ -184,7 +178,7 @@ class AktivitaetDiffAnalyzer:
 
         return None
 
-    async def _get_neo4j_aktivitaet_ids(self) -> List[str]:
+    async def _get_neo4j_aktivitaet_ids(self) -> list[str]:
         """Get all Aktivitaet IDs from Neo4j.
 
         Returns:
@@ -201,7 +195,7 @@ class AktivitaetDiffAnalyzer:
             result = session.run(query)
             return [record["aktivitaet_id"] for record in result]
 
-    async def _get_neo4j_aktivitaet(self, aktivitaet_id: str) -> Optional[Dict[str, Any]]:
+    async def _get_neo4j_aktivitaet(self, aktivitaet_id: str) -> Optional[dict[str, Any]]:
         """Get Aktivitaet data from Neo4j.
 
         Args:
@@ -223,7 +217,7 @@ class AktivitaetDiffAnalyzer:
                 return dict(record["d"])
             return None
 
-    def generate_summary(self, diffs: List[AktivitaetDiff]) -> Dict[str, Any]:
+    def generate_summary(self, diffs: list[AktivitaetDiff]) -> dict[str, Any]:
         """Generate a summary of differences.
 
         Args:
@@ -242,7 +236,7 @@ class AktivitaetDiffAnalyzer:
 
         return summary
 
-    def _count_changed_fields(self, diffs: List[AktivitaetDiff]) -> Dict[str, int]:
+    def _count_changed_fields(self, diffs: list[AktivitaetDiff]) -> dict[str, int]:
         """Count which fields changed most frequently.
 
         Args:

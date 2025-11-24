@@ -1,7 +1,6 @@
 """Test data ingestion logging."""
 import asyncio
 import subprocess
-import time
 
 
 async def test_logs():
@@ -25,10 +24,7 @@ async def test_logs():
 
     # Get initial log size
     initial_size = subprocess.run(
-        f"wc -l {log_file}",
-        shell=True,
-        capture_output=True,
-        text=True
+        f"wc -l {log_file}", shell=True, capture_output=True, text=True
     ).stdout.split()[0]
 
     print(f"Initial log lines: {initial_size}")

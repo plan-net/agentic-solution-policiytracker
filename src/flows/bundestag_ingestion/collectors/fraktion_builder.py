@@ -6,9 +6,10 @@ than direct API calls. Fraktionen are derived from the fraktion field in Person
 objects, and seat counts are calculated from member counts.
 """
 
-import structlog
 from collections import Counter
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
+
+import structlog
 
 logger = structlog.get_logger()
 
@@ -54,11 +55,11 @@ class FraktionBuilder:
 
     async def build_from_person_data(
         self,
-        persons: List[Dict[str, Any]],
+        persons: list[dict[str, Any]],
         wahlperiode: int,
         entity_builder: Any,
         edge_builder: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Build BundestagFraktion entities from Person data.
 
@@ -180,8 +181,8 @@ class FraktionBuilder:
         return stats
 
     def _extract_fraktion_data(
-        self, persons: List[Dict[str, Any]], wahlperiode: int
-    ) -> Dict[str, Dict[str, Any]]:
+        self, persons: list[dict[str, Any]], wahlperiode: int
+    ) -> dict[str, dict[str, Any]]:
         """
         Extract fraktion data from Person entities.
 
@@ -300,8 +301,8 @@ class FraktionBuilder:
             return "Opposition"
 
     async def get_fraktion_statistics(
-        self, persons: List[Dict[str, Any]], wahlperiode: int
-    ) -> Dict[str, Any]:
+        self, persons: list[dict[str, Any]], wahlperiode: int
+    ) -> dict[str, Any]:
         """
         Get statistics about fraktionen without creating entities.
 

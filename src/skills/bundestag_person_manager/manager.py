@@ -1,8 +1,7 @@
 """BundestagPerson Manager - Main orchestration for intelligent Neo4j sync."""
-import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import ray
 from neo4j import GraphDatabase
@@ -27,8 +26,8 @@ class SyncResult:
         operations_succeeded: int,
         operations_failed: int,
         execution_time_seconds: float,
-        diff_summary: Dict[str, Any],
-        errors: List[str] = None,
+        diff_summary: dict[str, Any],
+        errors: list[str] = None,
     ):
         self.success = success
         self.operations_attempted = operations_attempted
@@ -46,7 +45,7 @@ class SyncResult:
             f"failed={self.operations_failed})"
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "success": self.success,
@@ -73,9 +72,7 @@ class BundestagPersonManager:
     3. Executing operations in parallel via CRUD Subagent
     """
 
-    def __init__(
-        self, config: ManagerConfig = None, use_mock_dip: bool = False
-    ):
+    def __init__(self, config: ManagerConfig = None, use_mock_dip: bool = False):
         """Initialize BundestagPerson Manager.
 
         Args:
@@ -102,9 +99,7 @@ class BundestagPersonManager:
             logger.info("Using real DIP client")
 
         # Initialize components
-        self.diff_analyzer = DiffAnalyzer(
-            self.neo4j_driver, config.neo4j_database, self.dip_client
-        )
+        self.diff_analyzer = DiffAnalyzer(self.neo4j_driver, config.neo4j_database, self.dip_client)
         self.sync_planner = SyncPlanner(
             batch_size=config.batch_size,
             max_concurrent=config.max_concurrent_operations,
@@ -134,9 +129,7 @@ class BundestagPersonManager:
         Returns:
             SyncResult with execution details
         """
-        logger.info(
-            f"Starting full sync (limit={limit}, dry_run={dry_run})"
-        )
+        logger.info(f"Starting full sync (limit={limit}, dry_run={dry_run})")
         start_time = datetime.now()
 
         try:
@@ -145,15 +138,9 @@ class BundestagPersonManager:
             diffs = await self.diff_analyzer.analyze_all_persons(limit=limit)
             diff_summary = self.diff_analyzer.generate_summary(diffs)
 
-            logger.info(
-                f"Analysis complete: {diff_summary['total_diffs']} differences found"
-            )
-            logger.info(
-                f"  - Missing: {diff_summary['missing_count']}"
-            )
-            logger.info(
-                f"  - Outdated: {diff_summary['outdated_count']}"
-            )
+            logger.info(f"Analysis complete: {diff_summary['total_diffs']} differences found")
+            logger.info(f"  - Missing: {diff_summary['missing_count']}")
+            logger.info(f"  - Outdated: {diff_summary['outdated_count']}")
 
             if not diffs:
                 logger.info("No differences found - database is up to date")
@@ -162,9 +149,7 @@ class BundestagPersonManager:
                     operations_attempted=0,
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -186,9 +171,7 @@ class BundestagPersonManager:
                     operations_attempted=len(sync_plan.operations),
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -229,7 +212,7 @@ class BundestagPersonManager:
             )
 
     async def sync_specific_persons(
-        self, person_ids: List[str], dry_run: bool = False
+        self, person_ids: list[str], dry_run: bool = False
     ) -> SyncResult:
         """Synchronize specific persons.
 
@@ -240,9 +223,7 @@ class BundestagPersonManager:
         Returns:
             SyncResult with execution details
         """
-        logger.info(
-            f"Starting sync for {len(person_ids)} specific persons (dry_run={dry_run})"
-        )
+        logger.info(f"Starting sync for {len(person_ids)} specific persons (dry_run={dry_run})")
         start_time = datetime.now()
 
         try:
@@ -257,9 +238,7 @@ class BundestagPersonManager:
                     operations_attempted=0,
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -273,9 +252,7 @@ class BundestagPersonManager:
                     operations_attempted=len(sync_plan.operations),
                     operations_succeeded=0,
                     operations_failed=0,
-                    execution_time_seconds=(
-                        datetime.now() - start_time
-                    ).total_seconds(),
+                    execution_time_seconds=(datetime.now() - start_time).total_seconds(),
                     diff_summary=diff_summary,
                 )
 
@@ -307,7 +284,7 @@ class BundestagPersonManager:
                 errors=[str(e)],
             )
 
-    async def _execute_sync_plan(self, sync_plan: SyncPlan) -> Dict[str, Any]:
+    async def _execute_sync_plan(self, sync_plan: SyncPlan) -> dict[str, Any]:
         """Execute a sync plan using CRUD subagent.
 
         Args:
@@ -342,7 +319,7 @@ class BundestagPersonManager:
             # Don't stop it here to allow reuse
             pass
 
-    async def check_sync_status(self) -> Dict[str, Any]:
+    async def check_sync_status(self) -> dict[str, Any]:
         """Check current sync status without making changes.
 
         Returns:

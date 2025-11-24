@@ -6,6 +6,7 @@ the political monitoring pipeline with markdown conversion.
 """
 
 import os
+
 import fastapi
 from kodosumi.core import InputsError, Launch, ServeAPI
 from kodosumi.core import forms as F
@@ -112,7 +113,7 @@ async def process_adhoc(request: fastapi.Request, inputs: dict):
             if url.startswith("http://") or url.startswith("https://"):
                 urls.append(url)
             else:
-                error.add(**{url_field: f"URL must start with http:// or https://"})
+                error.add(**{url_field: "URL must start with http:// or https://"})
 
     # Validate that at least one URL is provided
     if not urls:

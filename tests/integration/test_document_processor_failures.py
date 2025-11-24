@@ -4,7 +4,8 @@ Test that document processor properly tracks ALL types of failures.
 """
 import asyncio
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
+
 from src.flows.data_ingestion.document_tracker import DocumentTracker
 
 
@@ -20,7 +21,6 @@ async def test_all_failure_types():
         tracking_file.unlink()
 
     # Import after cleanup so tracker starts fresh
-    from src.flows.data_ingestion.document_processor import SimpleDocumentProcessor
 
     # Create mock actor
     class MockActor:
@@ -49,13 +49,14 @@ async def test_all_failure_types():
             if "empty" in filename:
                 return ""  # Empty document
             elif "unreadable" in filename:
-                raise IOError("Permission denied")
+                raise OSError("Permission denied")
             else:
                 return "Valid document content"
 
         async def process_single_document(self, doc_path, graphiti_client):
             """Copy of the actual process_single_document logic with failures."""
             from datetime import datetime
+
             import structlog
 
             logger = structlog.get_logger()
@@ -126,11 +127,11 @@ async def test_all_failure_types():
     await actor.initialize()
 
     test_documents = [
-        "data/input/test_success.md",          # Should succeed
-        "data/input/test_empty.md",            # Should fail: empty document
-        "data/input/test_unreadable.md",       # Should fail: read error
-        "data/input/test_graphiti_error.md",   # Should fail: Graphiti error
-        "data/input/test_success2.md",         # Should succeed
+        "data/input/test_success.md",  # Should succeed
+        "data/input/test_empty.md",  # Should fail: empty document
+        "data/input/test_unreadable.md",  # Should fail: read error
+        "data/input/test_graphiti_error.md",  # Should fail: Graphiti error
+        "data/input/test_success2.md",  # Should succeed
     ]
 
     print("📄 Processing test documents...\n")
@@ -166,18 +167,18 @@ async def test_all_failure_types():
     expected_failed = 3  # empty, unreadable, graphiti_error
     expected_success = 2
 
-    if stats['failed'] == expected_failed:
+    if stats["failed"] == expected_failed:
         print(f"✅ Correct number of failures tracked ({expected_failed})")
     else:
         print(f"❌ Expected {expected_failed} failures, got {stats['failed']}")
 
-    if stats['completed'] == expected_success:
+    if stats["completed"] == expected_success:
         print(f"✅ Correct number of successes tracked ({expected_success})")
     else:
         print(f"❌ Expected {expected_success} successes, got {stats['completed']}")
 
     # Check specific failure types
-    failure_errors = [f['error'] for f in failed_docs]
+    failure_errors = [f["error"] for f in failed_docs]
     has_read_error = any("Failed to read" in e for e in failure_errors)
     has_graphiti_error = any("Unexpected error" in e or "Graphiti" in e for e in failure_errors)
 
@@ -194,7 +195,7 @@ async def test_all_failure_types():
     # Cleanup
     # tracking_file.unlink()
 
-    if stats['failed'] == expected_failed and stats['completed'] == expected_success:
+    if stats["failed"] == expected_failed and stats["completed"] == expected_success:
         print("\n✅ SUCCESS: All failure types are being tracked correctly!")
     else:
         print("\n❌ FAILURE: Some failures are not being tracked")

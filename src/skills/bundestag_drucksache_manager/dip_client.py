@@ -1,6 +1,6 @@
 """Bundestag DIP API Client for fetching Drucksache (parliamentary document) data."""
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -23,7 +23,7 @@ class BundestagDrucksacheDIPClient:
 
         logger.info(f"BundestagDrucksacheDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_drucksache_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_drucksache_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all Drucksache IDs from DIP API.
 
         Args:
@@ -55,16 +55,14 @@ class BundestagDrucksacheDIPClient:
                     logger.info(f"Retrieved {len(drucksache_ids)} Drucksache IDs from DIP API")
                     return drucksache_ids
                 else:
-                    logger.error(
-                        f"DIP API error: {response.status_code} - {response.text}"
-                    )
+                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
                     return []
 
         except Exception as e:
             logger.error(f"Error fetching Drucksache IDs from DIP API: {e}")
             return []
 
-    async def get_drucksache_by_id(self, drucksache_id: str) -> Optional[Dict[str, Any]]:
+    async def get_drucksache_by_id(self, drucksache_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Drucksache data by ID.
 
         Args:
@@ -103,7 +101,7 @@ class BundestagDrucksacheDIPClient:
             logger.error(f"Error fetching Drucksache {drucksache_id} from DIP API: {e}")
             return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for API requests.
 
         Returns:
@@ -116,7 +114,7 @@ class BundestagDrucksacheDIPClient:
 
         return headers
 
-    def _transform_dip_drucksache(self, dip_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dip_drucksache(self, dip_data: dict[str, Any]) -> dict[str, Any]:
         """Transform DIP API Drucksache data to internal format.
 
         This method maps DIP API field names to our internal field names.
@@ -130,7 +128,9 @@ class BundestagDrucksacheDIPClient:
         # Map DIP API fields to our schema
         drucksache = {
             "id": dip_data.get("id"),
-            "drucksache_nummer": dip_data.get("id"),  # Use drucksache_nummer for Neo4j (matches ENTITY_ID_FIELDS)
+            "drucksache_nummer": dip_data.get(
+                "id"
+            ),  # Use drucksache_nummer for Neo4j (matches ENTITY_ID_FIELDS)
             "dokumentnummer": dip_data.get("dokumentnummer", ""),
             "dokumentart": dip_data.get("dokumentart", ""),
             "titel": dip_data.get("titel", ""),
@@ -206,7 +206,7 @@ class MockBundestagDrucksacheDIPClient:
             },
         }
 
-    async def get_all_drucksache_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_drucksache_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all mock Drucksache IDs.
 
         Args:
@@ -223,7 +223,7 @@ class MockBundestagDrucksacheDIPClient:
         logger.info(f"Returning {len(drucksache_ids)} mock Drucksache IDs")
         return drucksache_ids
 
-    async def get_drucksache_by_id(self, drucksache_id: str) -> Optional[Dict[str, Any]]:
+    async def get_drucksache_by_id(self, drucksache_id: str) -> Optional[dict[str, Any]]:
         """Get mock Drucksache data by ID.
 
         Args:

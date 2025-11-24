@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field, model_serializer
 def _sanitize_value(value: Any) -> Any:
     """Recursively sanitize values to convert Neo4j types to JSON-serializable Python types."""
     # Handle objects with isoformat() (Neo4j DateTime, Python datetime, etc.)
-    if hasattr(value, 'isoformat'):
+    if hasattr(value, "isoformat"):
         return value.isoformat()
 
     # Handle dictionaries
@@ -30,9 +30,7 @@ class GraphNode(BaseModel):
     name: str = Field(..., description="Display name of the node")
     type: str = Field(default="Entity", description="Node type/label")
     properties: dict[str, Any] = Field(default_factory=dict, description="Node properties")
-    group: Optional[int] = Field(
-        default=None, description="Group ID for community detection"
-    )
+    group: Optional[int] = Field(default=None, description="Group ID for community detection")
 
     @model_serializer
     def _serialize_model(self):
@@ -117,10 +115,10 @@ class SchemaQuery(BaseModel):
     name: str = Field(..., description="Query display name")
     description: str = Field(..., description="Query description")
     cypher: str = Field(..., description="Cypher query template")
-    category: str = Field(..., description="Query category (policy, organization, temporal, network)")
-    parameters: dict[str, Any] = Field(
-        default_factory=dict, description="Query parameters"
+    category: str = Field(
+        ..., description="Query category (policy, organization, temporal, network)"
     )
+    parameters: dict[str, Any] = Field(default_factory=dict, description="Query parameters")
 
 
 class SchemaQueryResponse(BaseModel):
@@ -130,9 +128,7 @@ class SchemaQueryResponse(BaseModel):
     nodes: list[GraphNode]
     links: list[GraphEdge]
     execution_time: float = Field(..., description="Query execution time in seconds")
-    stats: dict[str, Any] = Field(
-        default_factory=dict, description="Query statistics"
-    )
+    stats: dict[str, Any] = Field(default_factory=dict, description="Query statistics")
 
 
 class HealthResponse(BaseModel):

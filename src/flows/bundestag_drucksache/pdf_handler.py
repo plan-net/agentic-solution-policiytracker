@@ -5,14 +5,14 @@ This module handles downloading, extracting, and converting PDF documents
 from the Bundestag API into structured markdown format.
 """
 
-import ssl
 import asyncio
-from datetime import datetime
-from typing import List, Dict, Optional
-import structlog
-import aiohttp
-from pypdf import PdfReader
 import io
+import ssl
+from datetime import datetime
+
+import aiohttp
+import structlog
+from pypdf import PdfReader
 
 from .storage_manager import DrucksacheStorageManager
 
@@ -46,10 +46,7 @@ class DrucksachePDFHandler:
         self.ssl_context.verify_mode = ssl.CERT_NONE
 
     async def download_pdf(
-        self,
-        pdf_url: str,
-        max_retries: int = 3,
-        initial_delay: float = 1.0
+        self, pdf_url: str, max_retries: int = 3, initial_delay: float = 1.0
     ) -> bytes:
         """
         Download PDF from URL with retry logic and exponential backoff.
@@ -84,7 +81,7 @@ class DrucksachePDFHandler:
                         "Download attempt",
                         attempt=attempt,
                         max_retries=max_retries,
-                        pdf_url=pdf_url
+                        pdf_url=pdf_url,
                     )
 
                     async with session.get(pdf_url) as response:
@@ -96,7 +93,7 @@ class DrucksachePDFHandler:
                             self.logger.warning(
                                 "Unexpected content type",
                                 content_type=content_type,
-                                pdf_url=pdf_url
+                                pdf_url=pdf_url,
                             )
 
                         pdf_bytes = await response.read()
@@ -113,7 +110,7 @@ class DrucksachePDFHandler:
                             "PDF downloaded successfully",
                             pdf_url=pdf_url,
                             size_bytes=len(pdf_bytes),
-                            attempt=attempt
+                            attempt=attempt,
                         )
 
                         return pdf_bytes
@@ -126,15 +123,13 @@ class DrucksachePDFHandler:
                     max_retries=max_retries,
                     pdf_url=pdf_url,
                     error=str(e),
-                    error_type=type(e).__name__
+                    error_type=type(e).__name__,
                 )
 
                 # Don't sleep after the last attempt
                 if attempt < max_retries:
                     self.logger.debug(
-                        "Retrying after delay",
-                        delay_seconds=delay,
-                        next_attempt=attempt + 1
+                        "Retrying after delay", delay_seconds=delay, next_attempt=attempt + 1
                     )
                     await asyncio.sleep(delay)
                     delay *= 2  # Exponential backoff
@@ -144,11 +139,11 @@ class DrucksachePDFHandler:
             "PDF download failed after all retries",
             pdf_url=pdf_url,
             max_retries=max_retries,
-            last_error=str(last_error)
+            last_error=str(last_error),
         )
         raise last_error
 
-    def extract_pages_from_pdf(self, pdf_bytes: bytes) -> List[Dict]:
+    def extract_pages_from_pdf(self, pdf_bytes: bytes) -> list[dict]:
         """
         Extract text content from PDF page-by-page.
 
@@ -201,7 +196,7 @@ class DrucksachePDFHandler:
                         "page_number": page_num + 1,  # 1-indexed for humans
                         "page_text": page_text,
                         "char_count": char_count,
-                        "has_content": has_content
+                        "has_content": has_content,
                     }
 
                     pages.append(page_info)
@@ -210,7 +205,7 @@ class DrucksachePDFHandler:
                         "Page extracted",
                         page_number=page_num + 1,
                         char_count=char_count,
-                        has_content=has_content
+                        has_content=has_content,
                     )
 
                 except Exception as e:
@@ -218,16 +213,18 @@ class DrucksachePDFHandler:
                         "Error extracting page",
                         page_number=page_num + 1,
                         error=str(e),
-                        error_type=type(e).__name__
+                        error_type=type(e).__name__,
                     )
                     # Add empty page entry to maintain page numbering
-                    pages.append({
-                        "page_number": page_num + 1,
-                        "page_text": "",
-                        "char_count": 0,
-                        "has_content": False,
-                        "error": str(e)
-                    })
+                    pages.append(
+                        {
+                            "page_number": page_num + 1,
+                            "page_text": "",
+                            "char_count": 0,
+                            "has_content": False,
+                            "error": str(e),
+                        }
+                    )
 
             total_chars = sum(p["char_count"] for p in pages)
             pages_with_content = sum(1 for p in pages if p["has_content"])
@@ -236,7 +233,7 @@ class DrucksachePDFHandler:
                 "PDF text extraction complete",
                 page_count=page_count,
                 pages_with_content=pages_with_content,
-                total_characters=total_chars
+                total_characters=total_chars,
             )
 
             return pages
@@ -246,7 +243,7 @@ class DrucksachePDFHandler:
                 "PDF extraction failed",
                 error=str(e),
                 error_type=type(e).__name__,
-                pdf_size_bytes=len(pdf_bytes)
+                pdf_size_bytes=len(pdf_bytes),
             )
 
             if "EOF marker not found" in str(e) or "Invalid PDF" in str(e):
@@ -254,12 +251,7 @@ class DrucksachePDFHandler:
 
             raise
 
-    def generate_markdown(
-        self,
-        drucksache_nummer: str,
-        wahlperiode: int,
-        pages: List[Dict]
-    ) -> str:
+    def generate_markdown(self, drucksache_nummer: str, wahlperiode: int, pages: list[dict]) -> str:
         """
         Generate markdown document with frontmatter and page headers.
 
@@ -275,7 +267,7 @@ class DrucksachePDFHandler:
             "Generating markdown",
             drucksache_nummer=drucksache_nummer,
             wahlperiode=wahlperiode,
-            page_count=len(pages)
+            page_count=len(pages),
         )
 
         # Get current timestamp
@@ -289,23 +281,22 @@ class DrucksachePDFHandler:
         markdown_lines = []
 
         # Add YAML frontmatter
-        markdown_lines.extend([
-            "---",
-            f"drucksache_nummer: {drucksache_nummer}",
-            f"wahlperiode: {wahlperiode}",
-            f"page_count: {len(pages)}",
-            f"pages_with_content: {pages_with_content}",
-            f"total_characters: {total_chars}",
-            f"extraction_date: {extraction_date}",
-            "---",
-            ""
-        ])
+        markdown_lines.extend(
+            [
+                "---",
+                f"drucksache_nummer: {drucksache_nummer}",
+                f"wahlperiode: {wahlperiode}",
+                f"page_count: {len(pages)}",
+                f"pages_with_content: {pages_with_content}",
+                f"total_characters: {total_chars}",
+                f"extraction_date: {extraction_date}",
+                "---",
+                "",
+            ]
+        )
 
         # Add document title
-        markdown_lines.extend([
-            f"# Drucksache {drucksache_nummer}",
-            ""
-        ])
+        markdown_lines.extend([f"# Drucksache {drucksache_nummer}", ""])
 
         # Add each page
         for page_info in pages:
@@ -314,34 +305,19 @@ class DrucksachePDFHandler:
             has_content = page_info.get("has_content", False)
 
             # Page header
-            markdown_lines.extend([
-                f"## Page {page_num}",
-                ""
-            ])
+            markdown_lines.extend([f"## Page {page_num}", ""])
 
             # Page content or note if empty
             if has_content and page_text:
-                markdown_lines.extend([
-                    page_text,
-                    ""
-                ])
+                markdown_lines.extend([page_text, ""])
             elif "error" in page_info:
-                markdown_lines.extend([
-                    f"*[Error extracting page: {page_info['error']}]*",
-                    ""
-                ])
+                markdown_lines.extend([f"*[Error extracting page: {page_info['error']}]*", ""])
             else:
-                markdown_lines.extend([
-                    "*[No text content on this page]*",
-                    ""
-                ])
+                markdown_lines.extend(["*[No text content on this page]*", ""])
 
             # Add separator between pages (except after last page)
             if page_num < len(pages):
-                markdown_lines.extend([
-                    "---",
-                    ""
-                ])
+                markdown_lines.extend(["---", ""])
 
         markdown_content = "\n".join(markdown_lines)
 
@@ -349,17 +325,12 @@ class DrucksachePDFHandler:
             "Markdown generation complete",
             drucksache_nummer=drucksache_nummer,
             page_count=len(pages),
-            markdown_length=len(markdown_content)
+            markdown_length=len(markdown_content),
         )
 
         return markdown_content
 
-    async def process_pdf(
-        self,
-        pdf_url: str,
-        drucksache_nummer: str,
-        wahlperiode: int
-    ) -> Dict:
+    async def process_pdf(self, pdf_url: str, drucksache_nummer: str, wahlperiode: int) -> dict:
         """
         Complete PDF processing pipeline: download, extract, and generate markdown.
 
@@ -388,7 +359,7 @@ class DrucksachePDFHandler:
             "Starting PDF processing pipeline",
             pdf_url=pdf_url,
             drucksache_nummer=drucksache_nummer,
-            wahlperiode=wahlperiode
+            wahlperiode=wahlperiode,
         )
 
         try:
@@ -400,9 +371,7 @@ class DrucksachePDFHandler:
 
             # Step 3: Generate markdown
             markdown_content = self.generate_markdown(
-                drucksache_nummer=drucksache_nummer,
-                wahlperiode=wahlperiode,
-                pages=pages
+                drucksache_nummer=drucksache_nummer, wahlperiode=wahlperiode, pages=pages
             )
 
             # Compile results
@@ -417,14 +386,14 @@ class DrucksachePDFHandler:
                 "pages_with_content": pages_with_content,
                 "total_characters": total_chars,
                 "markdown_content": markdown_content,
-                "extraction_date": datetime.utcnow().isoformat()
+                "extraction_date": datetime.utcnow().isoformat(),
             }
 
             self.logger.info(
                 "PDF processing pipeline complete",
                 drucksache_nummer=drucksache_nummer,
                 page_count=len(pages),
-                pages_with_content=pages_with_content
+                pages_with_content=pages_with_content,
             )
 
             return result
@@ -435,6 +404,6 @@ class DrucksachePDFHandler:
                 pdf_url=pdf_url,
                 drucksache_nummer=drucksache_nummer,
                 error=str(e),
-                error_type=type(e).__name__
+                error_type=type(e).__name__,
             )
             raise

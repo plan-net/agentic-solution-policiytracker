@@ -1,6 +1,6 @@
 """CRUD Subagent - Ray actor for parallel Neo4j CRUD operations."""
 import logging
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 import ray
 
@@ -43,7 +43,7 @@ class CRUDSubagentActor:
         logger.info(f"CRUDSubagentActor initialized with MCP URL: {config.mcp_url}")
 
     async def execute_operation(
-        self, operation: Union[Dict[str, Any], CRUDOperation]
+        self, operation: Union[dict[str, Any], CRUDOperation]
     ) -> OperationResult:
         """Execute a single CRUD operation.
 
@@ -133,7 +133,7 @@ class CRUDSubagentActor:
                 execution_time_ms=0,
             )
 
-    def get_statistics(self) -> Dict[str, int]:
+    def get_statistics(self) -> dict[str, int]:
         """Get execution statistics for this actor.
 
         Returns:
@@ -150,7 +150,7 @@ class CRUDSubagentActor:
             ),
         }
 
-    def _dict_to_operation(self, op_dict: Dict[str, Any]) -> CRUDOperation:
+    def _dict_to_operation(self, op_dict: dict[str, Any]) -> CRUDOperation:
         """Convert dict to operation object.
 
         Args:
@@ -205,11 +205,9 @@ class CRUDSubagent:
             config.num_replicas = num_replicas
 
         self.config = config
-        self.actors: List[ray.ObjectRef] = []
+        self.actors: list[ray.ObjectRef] = []
 
-        logger.info(
-            f"CRUDSubagent initialized with {config.num_replicas} replicas"
-        )
+        logger.info(f"CRUDSubagent initialized with {config.num_replicas} replicas")
 
     def start(self):
         """Start the actor pool."""
@@ -234,7 +232,7 @@ class CRUDSubagent:
         logger.info("All actors stopped")
 
     async def execute_operation(
-        self, operation: Union[Dict[str, Any], CRUDOperation]
+        self, operation: Union[dict[str, Any], CRUDOperation]
     ) -> OperationResult:
         """Execute a single operation using any available actor.
 
@@ -253,8 +251,8 @@ class CRUDSubagent:
         return result
 
     async def execute_parallel(
-        self, operations: List[Union[Dict[str, Any], CRUDOperation]]
-    ) -> List[OperationResult]:
+        self, operations: list[Union[dict[str, Any], CRUDOperation]]
+    ) -> list[OperationResult]:
         """Execute multiple operations in parallel across actor pool.
 
         This is the key method that enables 10-20x speedup through parallelization.
@@ -300,9 +298,9 @@ class CRUDSubagent:
 
     async def execute_batch(
         self,
-        operations: List[Union[Dict[str, Any], CRUDOperation]],
+        operations: list[Union[dict[str, Any], CRUDOperation]],
         batch_size: int = None,
-    ) -> List[OperationResult]:
+    ) -> list[OperationResult]:
         """Execute operations in batches.
 
         Useful for very large operation sets to avoid overwhelming the system.
@@ -331,16 +329,14 @@ class CRUDSubagent:
             batch = operations[batch_idx : batch_idx + batch_size]
             batch_num = (batch_idx // batch_size) + 1
 
-            logger.info(
-                f"Processing batch {batch_num}/{total_batches} ({len(batch)} operations)"
-            )
+            logger.info(f"Processing batch {batch_num}/{total_batches} ({len(batch)} operations)")
 
             batch_results = await self.execute_parallel(batch)
             all_results.extend(batch_results)
 
         return all_results
 
-    async def get_pool_statistics(self) -> Dict[str, Any]:
+    async def get_pool_statistics(self) -> dict[str, Any]:
         """Get statistics from all actors in the pool.
 
         Returns:
@@ -369,12 +365,9 @@ class CRUDSubagent:
             "total_operations": total_ops,
             "total_succeeded": total_succeeded,
             "total_failed": total_failed,
-            "overall_success_rate": (
-                total_succeeded / total_ops * 100 if total_ops > 0 else 0.0
-            ),
+            "overall_success_rate": (total_succeeded / total_ops * 100 if total_ops > 0 else 0.0),
             "per_actor_stats": actor_stats,
         }
 
 
 # Add missing import
-import asyncio

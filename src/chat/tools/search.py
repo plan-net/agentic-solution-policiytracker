@@ -73,7 +73,9 @@ class GraphitiSearchTool(BaseTool):
     ) -> Union[str, dict]:
         """Execute the search asynchronously using advanced Graphiti search configs."""
         try:
-            logger.info(f"Searching knowledge graph for: {query} (type: {search_type}, format: {output_format})")
+            logger.info(
+                f"Searching knowledge graph for: {query} (type: {search_type}, format: {output_format})"
+            )
 
             # Select search configuration based on search type
             search_config = self._get_search_config(search_type)
@@ -158,7 +160,9 @@ class GraphitiSearchTool(BaseTool):
         )
         return response
 
-    async def _format_structured_output(self, results: list, query: str, search_type: str, limit: int) -> dict:
+    async def _format_structured_output(
+        self, results: list, query: str, search_type: str, limit: int
+    ) -> dict:
         """Format search results as structured JSON with graph data."""
         structured_results = []
         all_nodes = {}  # uuid -> node data
@@ -201,7 +205,11 @@ class GraphitiSearchTool(BaseTool):
             structured_results.append(result_entry)
 
             # Extract graph data for visualization
-            if result_type == "relationship" and hasattr(result, "source_node_uuid") and hasattr(result, "target_node_uuid"):
+            if (
+                result_type == "relationship"
+                and hasattr(result, "source_node_uuid")
+                and hasattr(result, "target_node_uuid")
+            ):
                 # This is an edge
                 edge_data = {
                     "uuid": result_uuid,
@@ -310,7 +318,9 @@ class GraphitiSearchTool(BaseTool):
 
                 # Try to retrieve episode content
                 try:
-                    episode_data = await self.client.get_nodes_and_edges_by_episode(episode_uuids[:1])
+                    episode_data = await self.client.get_nodes_and_edges_by_episode(
+                        episode_uuids[:1]
+                    )
 
                     if episode_data and hasattr(episode_data, "nodes"):
                         # Look for episode nodes with YAML frontmatter
@@ -318,7 +328,9 @@ class GraphitiSearchTool(BaseTool):
                             if hasattr(node, "episode_body") and node.episode_body:
                                 source_info = self._parse_yaml_frontmatter(node.episode_body)
                                 if source_info:
-                                    logger.debug(f"Found source in episode metadata: {source_info['title']}")
+                                    logger.debug(
+                                        f"Found source in episode metadata: {source_info['title']}"
+                                    )
                                     return source_info
                 except Exception as e:
                     logger.debug(f"Could not retrieve episode content: {e}")
@@ -343,7 +355,6 @@ class GraphitiSearchTool(BaseTool):
             logger.debug(f"Error extracting source: {e}")
             return None
 
-
     def _parse_episode_name(self, episode_name: str) -> Optional[dict[str, str]]:
         """Parse episode name to extract source information."""
         try:
@@ -365,7 +376,6 @@ class GraphitiSearchTool(BaseTool):
         except Exception as e:
             logger.warning(f"Could not parse episode name: {e}")
             return None
-
 
     def _get_search_config(self, search_type: str):
         """Get appropriate search configuration based on search type."""
@@ -470,18 +480,21 @@ class GraphitiSearchTool(BaseTool):
                     # First priority: Check source property
                     if record.get("source"):
                         source_info = self._parse_source_property(
-                            record["source"],
-                            record.get("source_description")
+                            record["source"], record.get("source_description")
                         )
                         if source_info:
-                            logger.debug(f"Extracted source from Episodic.source: {source_info['title']}")
+                            logger.debug(
+                                f"Extracted source from Episodic.source: {source_info['title']}"
+                            )
                             return source_info
 
                     # Second priority: Parse episode name
                     if record.get("name"):
                         source_info = self._parse_episodic_name(record["name"])
                         if source_info:
-                            logger.debug(f"Extracted source from Episodic.name: {source_info['title']}")
+                            logger.debug(
+                                f"Extracted source from Episodic.name: {source_info['title']}"
+                            )
                             return source_info
 
             return None
@@ -490,7 +503,9 @@ class GraphitiSearchTool(BaseTool):
             logger.debug(f"Error extracting source from episodes: {e}")
             return None
 
-    def _parse_source_property(self, source: str, source_description: str = None) -> Optional[dict[str, str]]:
+    def _parse_source_property(
+        self, source: str, source_description: str = None
+    ) -> Optional[dict[str, str]]:
         """Parse source property from Episodic node."""
         try:
             # Source property is usually "text" - not useful

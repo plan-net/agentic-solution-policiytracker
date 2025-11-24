@@ -39,9 +39,7 @@ class ManagerConfig:
             crud_mcp_url=os.getenv("NEO4J_CRUD_MCP_URL", "http://localhost:8002"),
             crud_num_replicas=int(os.getenv("CRUD_SUBAGENT_REPLICAS", "10")),
             # Sync behavior
-            max_concurrent_operations=int(
-                os.getenv("MANAGER_MAX_CONCURRENT_OPS", "100")
-            ),
+            max_concurrent_operations=int(os.getenv("MANAGER_MAX_CONCURRENT_OPS", "100")),
             batch_size=int(os.getenv("MANAGER_BATCH_SIZE", "50")),
             check_interval_hours=int(os.getenv("MANAGER_CHECK_INTERVAL_HOURS", "6")),
         )

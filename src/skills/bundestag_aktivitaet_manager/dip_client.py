@@ -1,6 +1,6 @@
 """Bundestag DIP API Client for fetching Aktivitaet (parliamentary activity) data."""
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -23,7 +23,7 @@ class BundestagAktivitaetDIPClient:
 
         logger.info(f"BundestagAktivitaetDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_aktivitaet_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_aktivitaet_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all Aktivitaet IDs from DIP API.
 
         Args:
@@ -55,16 +55,14 @@ class BundestagAktivitaetDIPClient:
                     logger.info(f"Retrieved {len(aktivitaet_ids)} Aktivitaet IDs from DIP API")
                     return aktivitaet_ids
                 else:
-                    logger.error(
-                        f"DIP API error: {response.status_code} - {response.text}"
-                    )
+                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
                     return []
 
         except Exception as e:
             logger.error(f"Error fetching Aktivitaet IDs from DIP API: {e}")
             return []
 
-    async def get_aktivitaet_by_id(self, aktivitaet_id: str) -> Optional[Dict[str, Any]]:
+    async def get_aktivitaet_by_id(self, aktivitaet_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Aktivitaet data by ID.
 
         Args:
@@ -103,7 +101,7 @@ class BundestagAktivitaetDIPClient:
             logger.error(f"Error fetching Aktivitaet {aktivitaet_id} from DIP API: {e}")
             return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for API requests.
 
         Returns:
@@ -116,7 +114,7 @@ class BundestagAktivitaetDIPClient:
 
         return headers
 
-    def _transform_dip_aktivitaet(self, dip_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dip_aktivitaet(self, dip_data: dict[str, Any]) -> dict[str, Any]:
         """Transform DIP API Aktivitaet data to internal format.
 
         This method maps DIP API field names to our internal field names.
@@ -130,13 +128,17 @@ class BundestagAktivitaetDIPClient:
         # Map DIP API fields to our schema
         aktivitaet = {
             "id": dip_data.get("id"),
-            "aktivitaet_id": dip_data.get("id"),  # Use aktivitaet_id for Neo4j (matches ENTITY_ID_FIELDS)
+            "aktivitaet_id": dip_data.get(
+                "id"
+            ),  # Use aktivitaet_id for Neo4j (matches ENTITY_ID_FIELDS)
             "aktivitaetsart": dip_data.get("aktivitaetsart", ""),
             "titel": dip_data.get("titel", ""),
             "datum": dip_data.get("datum"),
             "wahlperiode": dip_data.get("wahlperiode"),
             "person_id": dip_data.get("person", {}).get("id", ""),
-            "person_name": dip_data.get("person", {}).get("vorname", "") + " " + dip_data.get("person", {}).get("nachname", ""),
+            "person_name": dip_data.get("person", {}).get("vorname", "")
+            + " "
+            + dip_data.get("person", {}).get("nachname", ""),
             "dokumentart": dip_data.get("dokumentart", ""),
             "drucksache_nummer": dip_data.get("drucksache", {}).get("nummer", ""),
         }
@@ -206,7 +208,7 @@ class MockBundestagAktivitaetDIPClient:
             },
         }
 
-    async def get_all_aktivitaet_ids(self, limit: Optional[int] = None) -> List[str]:
+    async def get_all_aktivitaet_ids(self, limit: Optional[int] = None) -> list[str]:
         """Get all mock Aktivitaet IDs.
 
         Args:
@@ -223,7 +225,7 @@ class MockBundestagAktivitaetDIPClient:
         logger.info(f"Returning {len(aktivitaet_ids)} mock Aktivitaet IDs")
         return aktivitaet_ids
 
-    async def get_aktivitaet_by_id(self, aktivitaet_id: str) -> Optional[Dict[str, Any]]:
+    async def get_aktivitaet_by_id(self, aktivitaet_id: str) -> Optional[dict[str, Any]]:
         """Get mock Aktivitaet data by ID.
 
         Args:

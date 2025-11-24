@@ -6,10 +6,10 @@ data quality metrics, and actionable next steps.
 """
 
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 
-def generate_execution_report(results: Dict[str, Any]) -> str:
+def generate_execution_report(results: dict[str, Any]) -> str:
     """
     Generate comprehensive execution report from ingestion results.
 
@@ -39,16 +39,13 @@ def generate_execution_report(results: Dict[str, Any]) -> str:
 
     # Calculate success rate
     total_collections = len(collections)
-    successful_collections = sum(
-        1 for c in collections.values()
-        if c.get("status") == "success"
+    successful_collections = sum(1 for c in collections.values() if c.get("status") == "success")
+    success_rate = (
+        (successful_collections / total_collections * 100) if total_collections > 0 else 0
     )
-    success_rate = (successful_collections / total_collections * 100) if total_collections > 0 else 0
 
     # Calculate total items collected
-    total_items_collected = sum(
-        c.get("collected", 0) for c in collections.values()
-    )
+    total_items_collected = sum(c.get("collected", 0) for c in collections.values())
 
     # Build report
     report = f"""# {job_name} - Execution Report
@@ -188,7 +185,7 @@ Some data collections failed. Common issues:
     return report
 
 
-def generate_error_report(error: Exception, inputs: Dict[str, Any]) -> str:
+def generate_error_report(error: Exception, inputs: dict[str, Any]) -> str:
     """
     Generate error report when ingestion fails catastrophically.
 

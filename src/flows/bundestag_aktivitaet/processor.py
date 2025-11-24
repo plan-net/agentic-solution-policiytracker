@@ -5,15 +5,16 @@ Creates BundestagAktivitaetFlow instance and executes the collection pipeline.
 """
 
 import json
-from typing import Dict, Any, List
 from datetime import datetime
-from kodosumi import core
+from typing import Any
+
 import structlog
+from kodosumi import core
 
 logger = structlog.get_logger()
 
 
-async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core.response.Markdown:
+async def process_bundestag_aktivitaeten(inputs: dict[str, Any], tracer) -> core.response.Markdown:
     """
     Process Bundestag aktivitaeten collection.
 
@@ -25,12 +26,10 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
         Markdown report of execution
     """
     from src.flows.bundestag_common.base_flow import BaseBundestagFlow
-    from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
     from src.flows.bundestag_common.field_extractors import (
-        safe_str,
-        safe_int,
         safe_date,
-        safe_list,
+        safe_int,
+        safe_str,
     )
 
     # Create flow instance
@@ -43,17 +42,20 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
         def entity_type(self) -> str:
             return "Aktivitaet"
 
-        async def process(self, inputs: Dict[str, Any], tracer) -> core.response.Markdown:
+        async def process(self, inputs: dict[str, Any], tracer) -> core.response.Markdown:
             """
             Override process to add relationship creation after entity upsert.
             """
             import time
+
             start_time = time.time()
 
             await tracer.markdown(f"# {inputs.get('job_name', 'Bundestag Aktivitaet Ingestion')}\n")
             await tracer.markdown(f"**Endpoint:** {self.endpoint}\n")
             await tracer.markdown(f"**Entity Type:** {self.entity_type}\n")
-            await tracer.markdown(f"**Start Time:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            await tracer.markdown(
+                f"**Start Time:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+            )
 
             # Stage 1: Fetch data from API
             await tracer.markdown("## Stage 1: Fetching Data from API\n")
@@ -84,20 +86,22 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
             # Stage 3: Upsert to Neo4j
             await tracer.markdown("## Stage 3: Upserting to Neo4j\n")
             upsert_results = await self.upsert_entities(entities, tracer)
-            await tracer.markdown(f"✅ Upserted **{upsert_results['successful']}** entities ({upsert_results['failed']} failed)\n\n")
+            await tracer.markdown(
+                f"✅ Upserted **{upsert_results['successful']}** entities ({upsert_results['failed']} failed)\n\n"
+            )
 
             # Stage 4: Create Relationships (NEW!)
             await tracer.markdown("## Stage 4: Creating Relationships\n")
             relationship_stats = await self.create_relationships(
-                entities,
-                tracer,
-                create_relationships_flag=inputs.get("create_relationships", True)
+                entities, tracer, create_relationships_flag=inputs.get("create_relationships", True)
             )
 
             # Generate report
             duration = time.time() - start_time
             await tracer.markdown(f"**Duration:** {duration:.1f} seconds\n")
-            await tracer.markdown(f"**End Time:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            await tracer.markdown(
+                f"**End Time:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+            )
 
             report = self.generate_report_with_relationships(
                 items_fetched=len(items),
@@ -105,7 +109,7 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
                 upsert_results=upsert_results,
                 relationship_stats=relationship_stats,
                 duration=duration,
-                inputs=inputs
+                inputs=inputs,
             )
 
             return core.response.Markdown(report)
@@ -114,10 +118,10 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
             self,
             items_fetched: int,
             entities_created: int,
-            upsert_results: Dict[str, int],
-            relationship_stats: Dict[str, int],
+            upsert_results: dict[str, int],
+            relationship_stats: dict[str, int],
             duration: float,
-            inputs: Dict[str, Any]
+            inputs: dict[str, Any],
         ) -> str:
             """Generate execution summary report with relationship stats."""
             return f"""# {inputs.get('job_name', 'Bundestag Aktivitaet Ingestion')} - Report
@@ -166,7 +170,7 @@ async def process_bundestag_aktivitaeten(inputs: Dict[str, Any], tracer) -> core
 Access your data at: http://localhost:7474
 """
 
-        def map_api_to_entity(self, api_data: Dict[str, Any]) -> Dict[str, Any]:
+        def map_api_to_entity(self, api_data: dict[str, Any]) -> dict[str, Any]:
             """Map Aktivitaet API data to Aktivitaet entity."""
             aktivitaet_id = safe_str(api_data.get("id"))
             if not aktivitaet_id:
@@ -174,7 +178,9 @@ Access your data at: http://localhost:7474
 
             # Extract fundstelle (source document reference)
             fundstelle = api_data.get("fundstelle", {})
-            fundstelle_urheber = fundstelle.get("urheber", []) if isinstance(fundstelle, dict) else []
+            fundstelle_urheber = (
+                fundstelle.get("urheber", []) if isinstance(fundstelle, dict) else []
+            )
 
             entity = {
                 "aktivitaet_id": aktivitaet_id,
@@ -189,15 +195,33 @@ Access your data at: http://localhost:7474
                 "vorgangsbezug_anzahl": safe_int(api_data.get("vorgangsbezug_anzahl")),
                 "aktualisiert": safe_date(api_data.get("aktualisiert")),
                 # Fundstelle fields (flattened)
-                "fundstelle_id": safe_str(fundstelle.get("id", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_dokumentnummer": safe_str(fundstelle.get("dokumentnummer", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_datum": safe_date(fundstelle.get("datum")) if isinstance(fundstelle, dict) else None,
-                "fundstelle_verteildatum": safe_date(fundstelle.get("verteildatum")) if isinstance(fundstelle, dict) else None,
-                "fundstelle_pdf_url": safe_str(fundstelle.get("pdf_url", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_dokumentart": safe_str(fundstelle.get("dokumentart", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_drucksachetyp": safe_str(fundstelle.get("drucksachetyp", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_herausgeber": safe_str(fundstelle.get("herausgeber", "")) if isinstance(fundstelle, dict) else "",
-                "fundstelle_urheber": json.dumps(fundstelle_urheber) if fundstelle_urheber else "[]",
+                "fundstelle_id": safe_str(fundstelle.get("id", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_dokumentnummer": safe_str(fundstelle.get("dokumentnummer", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_datum": safe_date(fundstelle.get("datum"))
+                if isinstance(fundstelle, dict)
+                else None,
+                "fundstelle_verteildatum": safe_date(fundstelle.get("verteildatum"))
+                if isinstance(fundstelle, dict)
+                else None,
+                "fundstelle_pdf_url": safe_str(fundstelle.get("pdf_url", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_dokumentart": safe_str(fundstelle.get("dokumentart", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_drucksachetyp": safe_str(fundstelle.get("drucksachetyp", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_herausgeber": safe_str(fundstelle.get("herausgeber", ""))
+                if isinstance(fundstelle, dict)
+                else "",
+                "fundstelle_urheber": json.dumps(fundstelle_urheber)
+                if fundstelle_urheber
+                else "[]",
                 # Store vorgangsbezug as JSON for reference
                 "vorgangsbezug_json": json.dumps(api_data.get("vorgangsbezug", [])),
             }
@@ -205,11 +229,8 @@ Access your data at: http://localhost:7474
             return entity
 
         async def create_relationships(
-            self,
-            entities: List[Dict[str, Any]],
-            tracer,
-            create_relationships_flag: bool = True
-        ) -> Dict[str, int]:
+            self, entities: list[dict[str, Any]], tracer, create_relationships_flag: bool = True
+        ) -> dict[str, int]:
             """
             Create relationships between Aktivitaet and related entities.
 
@@ -223,7 +244,13 @@ Access your data at: http://localhost:7474
             """
             if not create_relationships_flag:
                 logger.info("Skipping relationship creation (disabled)")
-                return {"total": 0, "performed_by": 0, "related_to_vorgang": 0, "references_document": 0, "in_wahlperiode": 0}
+                return {
+                    "total": 0,
+                    "performed_by": 0,
+                    "related_to_vorgang": 0,
+                    "references_document": 0,
+                    "in_wahlperiode": 0,
+                }
 
             await tracer.markdown("\n### Creating Relationships\n")
 
@@ -243,12 +270,16 @@ Access your data at: http://localhost:7474
                         # 1. PERFORMED_BY relationship to BundestagPerson
                         person_id = entity.get("person_id", "")
                         if person_id:
-                            result = session.run("""
+                            result = session.run(
+                                """
                                 MATCH (a:Aktivitaet {aktivitaet_id: $aktivitaet_id})
                                 MATCH (p:BundestagPerson {person_id: $person_id})
                                 MERGE (a)-[:PERFORMED_BY]->(p)
                                 RETURN count(*) as created
-                            """, aktivitaet_id=aktivitaet_id, person_id=person_id)
+                            """,
+                                aktivitaet_id=aktivitaet_id,
+                                person_id=person_id,
+                            )
 
                             record = result.single()
                             if record and record["created"] > 0:
@@ -264,30 +295,41 @@ Access your data at: http://localhost:7474
                                 vorgangsposition = vb.get("vorgangsposition", "")
 
                                 if vorgang_id:
-                                    result = session.run("""
+                                    result = session.run(
+                                        """
                                         MATCH (a:Aktivitaet {aktivitaet_id: $aktivitaet_id})
                                         MATCH (v:Vorgang {vorgang_id: $vorgang_id})
                                         MERGE (a)-[r:RELATED_TO_VORGANG]->(v)
                                         SET r.vorgangsposition = $vorgangsposition
                                         RETURN count(*) as created
-                                    """, aktivitaet_id=aktivitaet_id, vorgang_id=vorgang_id, vorgangsposition=vorgangsposition)
+                                    """,
+                                        aktivitaet_id=aktivitaet_id,
+                                        vorgang_id=vorgang_id,
+                                        vorgangsposition=vorgangsposition,
+                                    )
 
                                     record = result.single()
                                     if record and record["created"] > 0:
                                         stats["related_to_vorgang"] += 1
                                         stats["total"] += 1
                         except json.JSONDecodeError:
-                            logger.warning(f"Failed to parse vorgangsbezug_json for {aktivitaet_id}")
+                            logger.warning(
+                                f"Failed to parse vorgangsbezug_json for {aktivitaet_id}"
+                            )
 
                         # 3. REFERENCES_DOCUMENT relationship to Drucksache
                         dokumentnummer = entity.get("fundstelle_dokumentnummer", "")
                         if dokumentnummer:
-                            result = session.run("""
+                            result = session.run(
+                                """
                                 MATCH (a:Aktivitaet {aktivitaet_id: $aktivitaet_id})
                                 MATCH (d:Drucksache {drucksache_nummer: $dokumentnummer})
                                 MERGE (a)-[:REFERENCES_DOCUMENT]->(d)
                                 RETURN count(*) as created
-                            """, aktivitaet_id=aktivitaet_id, dokumentnummer=dokumentnummer)
+                            """,
+                                aktivitaet_id=aktivitaet_id,
+                                dokumentnummer=dokumentnummer,
+                            )
 
                             record = result.single()
                             if record and record["created"] > 0:
@@ -297,12 +339,16 @@ Access your data at: http://localhost:7474
                         # 4. IN_WAHLPERIODE relationship
                         wahlperiode = entity.get("wahlperiode")
                         if wahlperiode:
-                            result = session.run("""
+                            result = session.run(
+                                """
                                 MATCH (a:Aktivitaet {aktivitaet_id: $aktivitaet_id})
                                 MERGE (w:Wahlperiode {wahlperiode_nummer: $wahlperiode})
                                 MERGE (a)-[:IN_WAHLPERIODE]->(w)
                                 RETURN count(*) as created
-                            """, aktivitaet_id=aktivitaet_id, wahlperiode=wahlperiode)
+                            """,
+                                aktivitaet_id=aktivitaet_id,
+                                wahlperiode=wahlperiode,
+                            )
 
                             record = result.single()
                             if record and record["created"] > 0:
@@ -310,15 +356,19 @@ Access your data at: http://localhost:7474
                                 stats["total"] += 1
 
                     except Exception as e:
-                        logger.error(f"Failed to create relationships for aktivitaet {aktivitaet_id}: {e}")
+                        logger.error(
+                            f"Failed to create relationships for aktivitaet {aktivitaet_id}: {e}"
+                        )
 
-            await tracer.markdown(f"""
+            await tracer.markdown(
+                f"""
 - **PERFORMED_BY** (Person): {stats['performed_by']}
 - **RELATED_TO_VORGANG** (Procedure): {stats['related_to_vorgang']}
 - **REFERENCES_DOCUMENT** (Drucksache): {stats['references_document']}
 - **IN_WAHLPERIODE** (Electoral Period): {stats['in_wahlperiode']}
 - **Total Relationships**: {stats['total']}
-""")
+"""
+            )
 
             return stats
 

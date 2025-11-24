@@ -3,6 +3,7 @@ Test script to verify Flow 5c processor works
 """
 import asyncio
 from unittest.mock import MagicMock
+
 from src.flows.bundestag_drucksache.processor import process_drucksache_batch
 
 

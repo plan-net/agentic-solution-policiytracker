@@ -8,20 +8,18 @@ Tests complete end-to-end flow with:
 - Mock only external API calls
 """
 
+from unittest.mock import AsyncMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
-import tempfile
-from pathlib import Path
 
 from src.flows.bundestag_ingestion.collectors.vorgang_collector import VorgangCollector
-from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.flows.bundestag_ingestion.transformers.edge_builder import BundestagEdgeBuilder
+from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.flows.bundestag_ingestion.utils.api_client import BundestagAPIClient
-
 from tests.fixtures.bundestag_sample_data import (
-    SAMPLE_VORGANG_RESPONSE,
     SAMPLE_DRUCKSACHE_RESPONSE,
     SAMPLE_PERSON_RESPONSE,
+    SAMPLE_VORGANG_RESPONSE,
     get_sample_vorgaenge,
 )
 
@@ -40,12 +38,11 @@ class TestBundestagIngestionFlowIntegration:
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
         # Mock only external API call
-        with patch.object(api_client, 'get', new=AsyncMock(return_value=get_sample_vorgaenge(10))):
+        with patch.object(api_client, "get", new=AsyncMock(return_value=get_sample_vorgaenge(10))):
             # Execute complete collection
-            result = await collector.collect_and_transform({
-                "filters": {"f.wahlperiode": "20"},
-                "limit": 10
-            })
+            result = await collector.collect_and_transform(
+                {"filters": {"f.wahlperiode": "20"}, "limit": 10}
+            )
 
             # Validate end-to-end results
             assert result["items_collected"] == 10
@@ -56,7 +53,9 @@ class TestBundestagIngestionFlowIntegration:
     @pytest.mark.asyncio
     async def test_multiple_collectors_integration(self):
         """Test integration of multiple collectors."""
-        from src.flows.bundestag_ingestion.collectors.drucksache_collector import DrucksacheCollector
+        from src.flows.bundestag_ingestion.collectors.drucksache_collector import (
+            DrucksacheCollector,
+        )
         from src.flows.bundestag_ingestion.collectors.person_collector import PersonCollector
 
         api_client = BundestagAPIClient()
@@ -68,7 +67,7 @@ class TestBundestagIngestionFlowIntegration:
         person_collector = PersonCollector(api_client, entity_builder, edge_builder)
 
         # Mock API calls
-        with patch.object(api_client, 'get') as mock_get:
+        with patch.object(api_client, "get") as mock_get:
             mock_get.side_effect = [
                 SAMPLE_VORGANG_RESPONSE,
                 SAMPLE_DRUCKSACHE_RESPONSE,
@@ -76,9 +75,15 @@ class TestBundestagIngestionFlowIntegration:
             ]
 
             # Collect from all sources
-            vorgang_result = await vorgang_collector.collect_and_transform({"filters": {}, "limit": 1})
-            drucksache_result = await drucksache_collector.collect_and_transform({"filters": {}, "limit": 1})
-            person_result = await person_collector.collect_and_transform({"filters": {}, "limit": 1})
+            vorgang_result = await vorgang_collector.collect_and_transform(
+                {"filters": {}, "limit": 1}
+            )
+            drucksache_result = await drucksache_collector.collect_and_transform(
+                {"filters": {}, "limit": 1}
+            )
+            person_result = await person_collector.collect_and_transform(
+                {"filters": {}, "limit": 1}
+            )
 
             # Validate all collections succeeded
             assert vorgang_result["items_collected"] == 1
@@ -94,11 +99,8 @@ class TestBundestagIngestionFlowIntegration:
 
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
-        with patch.object(api_client, 'get', new=AsyncMock(return_value=SAMPLE_VORGANG_RESPONSE)):
-            result = await collector.collect_and_transform({
-                "filters": {},
-                "limit": 1
-            })
+        with patch.object(api_client, "get", new=AsyncMock(return_value=SAMPLE_VORGANG_RESPONSE)):
+            result = await collector.collect_and_transform({"filters": {}, "limit": 1})
 
             # Should have attempted entity creation
             assert result["items_collected"] == 1
@@ -113,12 +115,9 @@ class TestBundestagIngestionFlowIntegration:
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
         # Mock API to fail
-        with patch.object(api_client, 'get', new=AsyncMock(side_effect=Exception("API Error"))):
+        with patch.object(api_client, "get", new=AsyncMock(side_effect=Exception("API Error"))):
             with pytest.raises(Exception):
-                await collector.collect_and_transform({
-                    "filters": {},
-                    "limit": 10
-                })
+                await collector.collect_and_transform({"filters": {}, "limit": 10})
 
     @pytest.mark.asyncio
     async def test_pagination_integration(self):
@@ -136,17 +135,14 @@ class TestBundestagIngestionFlowIntegration:
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
         # Mock paginated responses
-        with patch.object(api_client, 'get') as mock_get:
+        with patch.object(api_client, "get") as mock_get:
             mock_get.side_effect = [
                 SAMPLE_PAGINATED_RESPONSE_PAGE_1,
                 SAMPLE_PAGINATED_RESPONSE_PAGE_2,
                 SAMPLE_PAGINATED_RESPONSE_PAGE_3,
             ]
 
-            result = await collector.collect_and_transform({
-                "filters": {},
-                "limit": 250
-            })
+            result = await collector.collect_and_transform({"filters": {}, "limit": 250})
 
             # Should collect all pages
             assert result["items_collected"] == 250
@@ -168,11 +164,8 @@ class TestKodosumiInterfaceIntegration:
 
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
-        with patch.object(api_client, 'get', new=AsyncMock(return_value=get_sample_vorgaenge(5))):
-            result = await collector.collect_and_transform({
-                "filters": {},
-                "limit": 5
-            })
+        with patch.object(api_client, "get", new=AsyncMock(return_value=get_sample_vorgaenge(5))):
+            result = await collector.collect_and_transform({"filters": {}, "limit": 5})
 
             # Verify interface: result should have all required fields for Kodosumi
             required_fields = [
@@ -181,7 +174,7 @@ class TestKodosumiInterfaceIntegration:
                 "duration",
                 "items_collected",
                 "collector_type",
-                "errors"
+                "errors",
             ]
 
             for field in required_fields:
@@ -200,11 +193,8 @@ class TestProgressTracking:
 
         collector = VorgangCollector(api_client, entity_builder, edge_builder)
 
-        with patch.object(api_client, 'get', new=AsyncMock(return_value=get_sample_vorgaenge(20))):
-            result = await collector.collect_and_transform({
-                "filters": {},
-                "limit": 20
-            })
+        with patch.object(api_client, "get", new=AsyncMock(return_value=get_sample_vorgaenge(20))):
+            result = await collector.collect_and_transform({"filters": {}, "limit": 20})
 
             # Verify statistics
             assert result["items_collected"] == 20
@@ -232,9 +222,7 @@ class TestRayActorIntegration:
                 self.entity_builder = BundestagEntityBuilder()
                 self.edge_builder = BundestagEdgeBuilder()
                 self.collector = VorgangCollector(
-                    self.api_client,
-                    self.entity_builder,
-                    self.edge_builder
+                    self.api_client, self.entity_builder, self.edge_builder
                 )
 
             async def collect(self, inputs):

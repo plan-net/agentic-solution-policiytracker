@@ -5,11 +5,9 @@ Fetches URL content and converts to markdown format using the same
 transformer used by ETL pipelines.
 """
 
-import os
-import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 import aiohttp
@@ -64,7 +62,7 @@ class URLToMarkdownConverter:
             logger.error(f"URL conversion failed for {url}: {e}", exc_info=True)
             return None
 
-    async def _fetch_url(self, url: str) -> Optional[Dict[str, Any]]:
+    async def _fetch_url(self, url: str) -> Optional[dict[str, Any]]:
         """
         Fetch URL content and extract article data.
 
@@ -76,6 +74,7 @@ class URLToMarkdownConverter:
         """
         try:
             import ssl
+
             import certifi
 
             # Create SSL context with proper certificate verification
@@ -109,7 +108,7 @@ class URLToMarkdownConverter:
             logger.error(f"Unexpected error fetching {url}: {e}")
             return None
 
-    async def _extract_article_data(self, url: str, html_content: str) -> Dict[str, Any]:
+    async def _extract_article_data(self, url: str, html_content: str) -> dict[str, Any]:
         """
         Extract article data from HTML content.
 
@@ -237,7 +236,7 @@ class URLToMarkdownConverter:
 
         return None
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get HTTP headers for requests."""
         return {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",

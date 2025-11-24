@@ -1,5 +1,5 @@
 """Data schemas for CRUD Subagent operations."""
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,7 +23,7 @@ class CreateNodeOperation(CRUDOperation):
 
     operation: Literal["create_node"] = "create_node"
     entity_type: str
-    properties: Dict[str, Any]
+    properties: dict[str, Any]
 
 
 class UpdateNodeOperation(CRUDOperation):
@@ -32,7 +32,7 @@ class UpdateNodeOperation(CRUDOperation):
     operation: Literal["update_node"] = "update_node"
     entity_type: str
     node_id: str
-    properties: Dict[str, Any]
+    properties: dict[str, Any]
 
 
 class DeleteNodeOperation(CRUDOperation):
@@ -53,7 +53,7 @@ class CreateRelationshipOperation(CRUDOperation):
     to_entity_type: str
     to_node_id: str
     relationship_type: str
-    properties: Optional[Dict[str, Any]] = None
+    properties: Optional[dict[str, Any]] = None
 
 
 class UpdateRelationshipOperation(CRUDOperation):
@@ -65,7 +65,7 @@ class UpdateRelationshipOperation(CRUDOperation):
     to_entity_type: str
     to_node_id: str
     relationship_type: str
-    properties: Dict[str, Any]
+    properties: dict[str, Any]
 
 
 class QueryNodesOperation(CRUDOperation):
@@ -73,7 +73,7 @@ class QueryNodesOperation(CRUDOperation):
 
     operation: Literal["query_nodes"] = "query_nodes"
     entity_type: str
-    filters: Optional[Dict[str, Any]] = None
+    filters: Optional[dict[str, Any]] = None
     limit: int = 100
     skip: int = 0
 
@@ -86,6 +86,6 @@ class OperationResult(BaseModel):
     entity_type: Optional[str] = None
     node_id: Optional[str] = None
     message: str
-    data: Optional[Dict[str, Any]] = None
+    data: Optional[dict[str, Any]] = None
     error: Optional[str] = None
     execution_time_ms: float

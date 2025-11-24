@@ -1,9 +1,7 @@
 """DiffAnalyzer - Compare Neo4j Drucksache data with Bundestag DIP API."""
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
-
-from neo4j import GraphDatabase
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +13,9 @@ class DrucksacheDiff:
         self,
         drucksache_id: str,
         diff_type: str,  # "missing", "outdated", "relationship_missing"
-        neo4j_data: Optional[Dict] = None,
-        dip_data: Optional[Dict] = None,
-        changed_fields: Optional[Set[str]] = None,
+        neo4j_data: Optional[dict] = None,
+        dip_data: Optional[dict] = None,
+        changed_fields: Optional[set[str]] = None,
     ):
         self.drucksache_id = drucksache_id
         self.diff_type = diff_type
@@ -61,9 +59,7 @@ class DrucksacheDiffAnalyzer:
 
         logger.info("DrucksacheDiffAnalyzer initialized")
 
-    async def analyze_all_drucksachen(
-        self, limit: Optional[int] = None
-    ) -> List[DrucksacheDiff]:
+    async def analyze_all_drucksachen(self, limit: Optional[int] = None) -> list[DrucksacheDiff]:
         """Analyze all Drucksachen and find differences.
 
         Args:
@@ -88,9 +84,7 @@ class DrucksacheDiffAnalyzer:
 
         # 4. Find potentially outdated Drucksachen (in both)
         existing_ids = set(dip_drucksache_ids) & set(neo4j_drucksache_ids)
-        logger.info(
-            f"Found {len(existing_ids)} existing Drucksachen to check for updates"
-        )
+        logger.info(f"Found {len(existing_ids)} existing Drucksachen to check for updates")
 
         # 5. Analyze differences
         all_diffs = []
@@ -115,9 +109,7 @@ class DrucksacheDiffAnalyzer:
         logger.info(f"Analysis complete: {len(all_diffs)} differences found")
         return all_diffs
 
-    async def analyze_specific_drucksachen(
-        self, drucksache_ids: List[str]
-    ) -> List[DrucksacheDiff]:
+    async def analyze_specific_drucksachen(self, drucksache_ids: list[str]) -> list[DrucksacheDiff]:
         """Analyze specific Drucksachen.
 
         Args:
@@ -184,7 +176,7 @@ class DrucksacheDiffAnalyzer:
 
         return None
 
-    async def _get_neo4j_drucksache_ids(self) -> List[str]:
+    async def _get_neo4j_drucksache_ids(self) -> list[str]:
         """Get all Drucksache IDs from Neo4j.
 
         Returns:
@@ -201,7 +193,7 @@ class DrucksacheDiffAnalyzer:
             result = session.run(query)
             return [record["drucksache_id"] for record in result]
 
-    async def _get_neo4j_drucksache(self, drucksache_id: str) -> Optional[Dict[str, Any]]:
+    async def _get_neo4j_drucksache(self, drucksache_id: str) -> Optional[dict[str, Any]]:
         """Get Drucksache data from Neo4j.
 
         Args:
@@ -223,7 +215,7 @@ class DrucksacheDiffAnalyzer:
                 return dict(record["d"])
             return None
 
-    def generate_summary(self, diffs: List[DrucksacheDiff]) -> Dict[str, Any]:
+    def generate_summary(self, diffs: list[DrucksacheDiff]) -> dict[str, Any]:
         """Generate a summary of differences.
 
         Args:
@@ -242,7 +234,7 @@ class DrucksacheDiffAnalyzer:
 
         return summary
 
-    def _count_changed_fields(self, diffs: List[DrucksacheDiff]) -> Dict[str, int]:
+    def _count_changed_fields(self, diffs: list[DrucksacheDiff]) -> dict[str, int]:
         """Count which fields changed most frequently.
 
         Args:

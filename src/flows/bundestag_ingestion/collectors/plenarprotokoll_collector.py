@@ -8,12 +8,12 @@ parses agenda items (Tagesordnungspunkte).
 
 import json
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import structlog
 
 from src.flows.bundestag_ingestion.collectors.base_collector import BaseCollector
-from src.graphrag.political_schema_v4 import Plenarprotokoll, InWahlperiode, ReferencesVorgang
+from src.graphrag.political_schema_v4 import Plenarprotokoll
 
 logger = structlog.get_logger()
 
@@ -40,7 +40,7 @@ class PlenarprotokollCollector(BaseCollector):
         """Entity type produced by this collector."""
         return "Plenarprotokoll"
 
-    async def collect_and_transform(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    async def collect_and_transform(self, inputs: dict[str, Any]) -> dict[str, Any]:
         """
         Collect plenary protocols and transform into entities and edges.
 
@@ -72,7 +72,7 @@ class PlenarprotokollCollector(BaseCollector):
         try:
             # Debug: Log collection start
             with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                f.write(f"\n\n=== NEW COLLECTION RUN ===\n")
+                f.write("\n\n=== NEW COLLECTION RUN ===\n")
                 f.write(f"Filters: {filters}\n")
                 f.write(f"Limit: {limit}\n")
 
@@ -80,7 +80,7 @@ class PlenarprotokollCollector(BaseCollector):
                 "Starting Plenarprotokoll collection",
                 filters=filters,
                 limit=limit,
-                fetch_full_text=fetch_full_text
+                fetch_full_text=fetch_full_text,
             )
 
             # Collect protocols with pagination
@@ -90,11 +90,7 @@ class PlenarprotokollCollector(BaseCollector):
             with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
                 f.write(f"API returned {len(items)} items in {duration}s\n")
 
-            logger.info(
-                "Collected plenary protocols",
-                items_count=len(items),
-                duration=duration
-            )
+            logger.info("Collected plenary protocols", items_count=len(items), duration=duration)
 
             # Fetch full transcripts if requested
             if fetch_full_text:
@@ -105,14 +101,18 @@ class PlenarprotokollCollector(BaseCollector):
 
             # Transform to entities
             entities = await self._transform_to_entities(items)
-            logger.info(f"DEBUG: Transformed {len(entities)} entities, types: {[type(e).__name__ for e in entities[:3]]}")
+            logger.info(
+                f"DEBUG: Transformed {len(entities)} entities, types: {[type(e).__name__ for e in entities[:3]]}"
+            )
 
             # Transform to edges
             edges = await self._transform_to_edges(items, entities)
             logger.info(f"DEBUG: Transformed {len(edges)} edges")
 
             # Save to Neo4j
-            logger.info(f"DEBUG: About to call save_to_neo4j with {len(entities)} entities and {len(edges)} edges")
+            logger.info(
+                f"DEBUG: About to call save_to_neo4j with {len(entities)} entities and {len(edges)} edges"
+            )
             logger.info(f"DEBUG: neo4j_driver is {'SET' if self.neo4j_driver else 'NOT SET'}")
             save_result = await self.save_to_neo4j(entities, edges)
             logger.info(f"DEBUG: save_to_neo4j returned: {save_result}")
@@ -126,7 +126,7 @@ class PlenarprotokollCollector(BaseCollector):
                 edges_created=save_result.get("edges_saved", len(edges)),
                 duration=total_duration,
                 items_collected=len(items),
-                errors=errors
+                errors=errors,
             )
 
         except Exception as e:
@@ -139,10 +139,10 @@ class PlenarprotokollCollector(BaseCollector):
                 edges_created=0,
                 duration=self._measure_duration(start_time),
                 items_collected=0,
-                errors=errors
+                errors=errors,
             )
 
-    async def _fetch_full_texts(self, protocols: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _fetch_full_texts(self, protocols: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Fetch complete transcript text for each protocol.
 
@@ -154,10 +154,7 @@ class PlenarprotokollCollector(BaseCollector):
         Returns:
             Enhanced protocol items with full_text field
         """
-        logger.info(
-            "Fetching full transcripts for protocols",
-            count=len(protocols)
-        )
+        logger.info("Fetching full transcripts for protocols", count=len(protocols))
 
         enhanced_protocols = []
 
@@ -165,7 +162,9 @@ class PlenarprotokollCollector(BaseCollector):
             try:
                 protocol_id = protocol.get("id")
                 if not protocol_id:
-                    logger.warning("Protocol missing ID, skipping full text fetch", protocol=protocol)
+                    logger.warning(
+                        "Protocol missing ID, skipping full text fetch", protocol=protocol
+                    )
                     enhanced_protocols.append(protocol)
                     continue
 
@@ -182,7 +181,7 @@ class PlenarprotokollCollector(BaseCollector):
                 logger.debug(
                     "Fetched full text for protocol",
                     protocol_id=protocol_id,
-                    text_length=len(full_text)
+                    text_length=len(full_text),
                 )
 
                 enhanced_protocols.append(protocol)
@@ -191,7 +190,7 @@ class PlenarprotokollCollector(BaseCollector):
                 logger.error(
                     "Failed to fetch full text for protocol",
                     protocol_id=protocol.get("id"),
-                    error=str(e)
+                    error=str(e),
                 )
                 # Include protocol without full text
                 enhanced_protocols.append(protocol)
@@ -200,12 +199,12 @@ class PlenarprotokollCollector(BaseCollector):
         logger.info(
             "Completed full text fetching",
             total_protocols=len(protocols),
-            successful=len([p for p in enhanced_protocols if "full_text" in p])
+            successful=len([p for p in enhanced_protocols if "full_text" in p]),
         )
 
         return enhanced_protocols
 
-    async def _parse_agenda_items(self, protocols: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _parse_agenda_items(self, protocols: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Parse Tagesordnungspunkte (agenda items) from protocols.
 
@@ -231,7 +230,7 @@ class PlenarprotokollCollector(BaseCollector):
                         parsed_top = {
                             "top_nummer": top.get("nummer", ""),
                             "titel": top.get("titel", ""),
-                            "vorgaenge": top.get("vorgangsposition", [])
+                            "vorgaenge": top.get("vorgangsposition", []),
                         }
                         parsed_tops.append(parsed_top)
 
@@ -241,23 +240,21 @@ class PlenarprotokollCollector(BaseCollector):
                     logger.debug(
                         "Parsed agenda items",
                         protocol_id=protocol.get("id"),
-                        top_count=len(parsed_tops)
+                        top_count=len(parsed_tops),
                     )
                 else:
                     protocol["tagesordnungspunkte"] = None
 
             except Exception as e:
                 logger.error(
-                    "Failed to parse agenda items",
-                    protocol_id=protocol.get("id"),
-                    error=str(e)
+                    "Failed to parse agenda items", protocol_id=protocol.get("id"), error=str(e)
                 )
                 protocol["tagesordnungspunkte"] = None
                 continue
 
         return protocols
 
-    async def _transform_to_entities(self, items: List[Dict[str, Any]]) -> List[Plenarprotokoll]:
+    async def _transform_to_entities(self, items: list[dict[str, Any]]) -> list[Plenarprotokoll]:
         """
         Transform protocol items into Plenarprotokoll entities.
 
@@ -273,7 +270,7 @@ class PlenarprotokollCollector(BaseCollector):
 
         return await super()._transform_to_entities(items)
 
-    async def _create_entities_directly(self, items: List[Dict[str, Any]]) -> List[Plenarprotokoll]:
+    async def _create_entities_directly(self, items: list[dict[str, Any]]) -> list[Plenarprotokoll]:
         """
         Create Plenarprotokoll entities directly from API items.
 
@@ -304,16 +301,18 @@ class PlenarprotokollCollector(BaseCollector):
                 herausgeber = item.get("herausgeber", "BT")
 
                 with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                    f.write(f"Item: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={herausgeber}, titel={item.get('titel', 'N/A')[:50]}\n")
+                    f.write(
+                        f"Item: sitzung={sitzungsnummer}, wp={wahlperiode}, herausgeber={herausgeber}, titel={item.get('titel', 'N/A')[:50]}\n"
+                    )
 
                 # Filter out protocols without sitzungsnummer
                 if not sitzungsnummer:
                     with open("/tmp/plenarprotokoll_save_debug.log", "a") as f:
-                        f.write(f"  -> SKIPPED: No sitzungsnummer\n")
+                        f.write("  -> SKIPPED: No sitzungsnummer\n")
                     logger.warning(
                         "Skipping protocol without sitzungsnummer",
                         titel=item.get("titel"),
-                        herausgeber=herausgeber
+                        herausgeber=herausgeber,
                     )
                     continue
 
@@ -324,40 +323,44 @@ class PlenarprotokollCollector(BaseCollector):
                     wahlperiode=wahlperiode,
                     datum=datum,
                     herausgeber=item.get("herausgeber", "BT"),
-                    pdf_url=item.get("fundstelle", {}).get("pdf_url") if isinstance(item.get("fundstelle"), dict) else None,
+                    pdf_url=item.get("fundstelle", {}).get("pdf_url")
+                    if isinstance(item.get("fundstelle"), dict)
+                    else None,
                     full_text=item.get("full_text"),
                     tagesordnungspunkte=item.get("tagesordnungspunkte"),
                     reden_anzahl=item.get("reden_anzahl"),
-                    fundstelle=item.get("fundstelle", {}).get("fundstelle") if isinstance(item.get("fundstelle"), dict) else None,
+                    fundstelle=item.get("fundstelle", {}).get("fundstelle")
+                    if isinstance(item.get("fundstelle"), dict)
+                    else None,
                     aktualisiert=item.get("aktualisiert"),
                     vorgangsbezug_anzahl=item.get("vorgangsbezug_anzahl"),
-                    related_vorgang_ids=json.dumps(item.get("vorgangsbezug", []), ensure_ascii=False) if item.get("vorgangsbezug") else None,
-                    url=item.get("fundstelle", {}).get("dokumentnummer") if isinstance(item.get("fundstelle"), dict) else None
+                    related_vorgang_ids=json.dumps(
+                        item.get("vorgangsbezug", []), ensure_ascii=False
+                    )
+                    if item.get("vorgangsbezug")
+                    else None,
+                    url=item.get("fundstelle", {}).get("dokumentnummer")
+                    if isinstance(item.get("fundstelle"), dict)
+                    else None,
                 )
 
                 entities.append(entity)
 
             except Exception as e:
                 logger.error(
-                    "Failed to create Plenarprotokoll entity",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to create Plenarprotokoll entity", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
         logger.info(
-            "Created Plenarprotokoll entities",
-            input_count=len(items),
-            output_count=len(entities)
+            "Created Plenarprotokoll entities", input_count=len(items), output_count=len(entities)
         )
 
         return entities
 
     async def _transform_to_edges(
-        self,
-        items: List[Dict[str, Any]],
-        entities: List[Plenarprotokoll]
-    ) -> List[Any]:
+        self, items: list[dict[str, Any]], entities: list[Plenarprotokoll]
+    ) -> list[Any]:
         """
         Create relationship edges for Plenarprotokoll entities.
 
@@ -391,7 +394,7 @@ class PlenarprotokollCollector(BaseCollector):
                     "to_id": wahlperiode_id,
                     "entity_type": "Plenarprotokoll",
                     "active_from": item.get("datum"),
-                    "active_until": None
+                    "active_until": None,
                 }
                 edges.append(wahlperiode_edge)
 
@@ -405,21 +408,16 @@ class PlenarprotokollCollector(BaseCollector):
                             "from_id": plenarprotokoll_id,
                             "to_id": vorgang_id,
                             "reference_type": "debated_in_plenum",
-                            "context": f"Discussed in plenary session {entity.sitzungsnummer}"
+                            "context": f"Discussed in plenary session {entity.sitzungsnummer}",
                         }
                         edges.append(vorgang_edge)
 
             except Exception as e:
                 logger.error(
-                    "Failed to create edges for protocol",
-                    item_id=item.get("id"),
-                    error=str(e)
+                    "Failed to create edges for protocol", item_id=item.get("id"), error=str(e)
                 )
                 continue
 
-        logger.info(
-            "Created edges for Plenarprotokoll entities",
-            total_edges=len(edges)
-        )
+        logger.info("Created edges for Plenarprotokoll entities", total_edges=len(edges))
 
         return edges

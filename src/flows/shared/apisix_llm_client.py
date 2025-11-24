@@ -13,7 +13,7 @@ Workaround: We're documenting this for Week 2 implementation of custom Graphiti 
 """
 
 import os
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from langchain_openai import ChatOpenAI
 from openai import AsyncOpenAI, OpenAI
@@ -52,7 +52,7 @@ class AgentContext:
         self.trace_id = trace_id
         self.project_id = project_id
 
-    def to_headers(self) -> Dict[str, str]:
+    def to_headers(self) -> dict[str, str]:
         """Convert context to HTTP headers for APISIX."""
         headers = {
             "X-Agent-Type": self.agent_type,
@@ -166,7 +166,9 @@ def create_agent_aware_openai_client(
     default_headers = agent_context.to_headers()
 
     if async_client:
-        return AsyncOpenAI(api_key=api_key, base_url=base_url, default_headers=default_headers, **kwargs)
+        return AsyncOpenAI(
+            api_key=api_key, base_url=base_url, default_headers=default_headers, **kwargs
+        )
     else:
         return OpenAI(api_key=api_key, base_url=base_url, default_headers=default_headers, **kwargs)
 
@@ -204,6 +206,7 @@ def create_graphiti_compatible_client(
 
 
 # Convenience functions for common agent types
+
 
 def create_chat_agent_llm(
     agent_name: str,
@@ -320,8 +323,8 @@ def create_graphiti_apisix_config(
         ...     llm_client=llm_client
         ... )
     """
-    from graphiti_core.llm_client.openai_client import OpenAIClient
     from graphiti_core.llm_client.config import LLMConfig
+    from graphiti_core.llm_client.openai_client import OpenAIClient
 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

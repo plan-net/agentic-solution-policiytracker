@@ -6,13 +6,14 @@ responses, providing predictable, type-safe extraction of complex nested fields.
 """
 
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
+
 import structlog
 
 logger = structlog.get_logger()
 
 
-def extract_fraktion(api_data: Dict[str, Any]) -> Optional[str]:
+def extract_fraktion(api_data: dict[str, Any]) -> Optional[str]:
     """
     Extract current Fraktion (parliamentary group) from API data.
 
@@ -57,7 +58,7 @@ def extract_fraktion(api_data: Dict[str, Any]) -> Optional[str]:
     return None
 
 
-def extract_wahlperioden(api_data: Dict[str, Any]) -> List[int]:
+def extract_wahlperioden(api_data: dict[str, Any]) -> list[int]:
     """
     Extract Wahlperiode numbers from API data.
 
@@ -99,7 +100,7 @@ def extract_wahlperioden(api_data: Dict[str, Any]) -> List[int]:
     return sorted(list(set(numbers)))
 
 
-def extract_committee_memberships(api_data: Dict[str, Any]) -> Optional[str]:
+def extract_committee_memberships(api_data: dict[str, Any]) -> Optional[str]:
     """
     Extract committee (Ausschuss) memberships from API data.
 
@@ -126,7 +127,7 @@ def extract_committee_memberships(api_data: Dict[str, Any]) -> Optional[str]:
             "ausschuss": ausschuss.get("ausschuss_name", ausschuss.get("name", "")),
             "rolle": ausschuss.get("rolle", "Mitglied"),
             "von": ausschuss.get("von"),
-            "bis": ausschuss.get("bis")
+            "bis": ausschuss.get("bis"),
         }
 
         # Only add if we have at least a name
@@ -139,7 +140,7 @@ def extract_committee_memberships(api_data: Dict[str, Any]) -> Optional[str]:
     return json.dumps(parsed_ausschuesse, ensure_ascii=False)
 
 
-def extract_person_roles(api_data: Dict[str, Any]) -> Optional[str]:
+def extract_person_roles(api_data: dict[str, Any]) -> Optional[str]:
     """
     Extract person_roles information from API data.
 
@@ -161,7 +162,7 @@ def extract_person_roles(api_data: Dict[str, Any]) -> Optional[str]:
     return json.dumps(person_roles, ensure_ascii=False)
 
 
-def extract_wahlkreis(api_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def extract_wahlkreis(api_data: dict[str, Any]) -> Optional[dict[str, Any]]:
     """
     Extract Wahlkreis (electoral constituency) information.
 
@@ -181,7 +182,7 @@ def extract_wahlkreis(api_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         return {
             "name": wahlkreis_data.get("name"),
             "nummer": wahlkreis_data.get("nummer"),
-            "wahlperiode": wahlkreis_data.get("wahlperiode")
+            "wahlperiode": wahlkreis_data.get("wahlperiode"),
         }
 
     # String format (just name)
@@ -191,7 +192,7 @@ def extract_wahlkreis(api_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return None
 
 
-def extract_related_vorgang_ids(api_data: Dict[str, Any]) -> Optional[str]:
+def extract_related_vorgang_ids(api_data: dict[str, Any]) -> Optional[str]:
     """
     Extract related Vorgang IDs from various entity types.
 
@@ -210,7 +211,9 @@ def extract_related_vorgang_ids(api_data: Dict[str, Any]) -> Optional[str]:
     if "vorgangsbezug" in api_data:
         vorgangsbezug = api_data["vorgangsbezug"]
         if isinstance(vorgangsbezug, list):
-            vorgang_ids.extend([v.get("id") for v in vorgangsbezug if isinstance(v, dict) and "id" in v])
+            vorgang_ids.extend(
+                [v.get("id") for v in vorgangsbezug if isinstance(v, dict) and "id" in v]
+            )
 
     # Check vorgang field directly
     if "vorgang" in api_data:
@@ -267,7 +270,7 @@ def safe_int(value: Any, default: Optional[int] = None) -> Optional[int]:
         return default
 
 
-def safe_list(value: Any) -> List:
+def safe_list(value: Any) -> list:
     """
     Safely convert value to list.
 
@@ -312,11 +315,11 @@ def safe_date(value: Any, default: Optional[str] = None) -> Optional[str]:
     # Already a string - try to clean it
     if isinstance(value, str):
         # Remove time component if present
-        if 'T' in value:
-            value = value.split('T')[0]
+        if "T" in value:
+            value = value.split("T")[0]
 
         # Basic validation - should be YYYY-MM-DD format
-        if len(value) == 10 and value[4] == '-' and value[7] == '-':
+        if len(value) == 10 and value[4] == "-" and value[7] == "-":
             return value
 
         return default
@@ -324,11 +327,11 @@ def safe_date(value: Any, default: Optional[str] = None) -> Optional[str]:
     # Try to convert other types to string
     try:
         date_str = str(value)
-        if 'T' in date_str:
-            date_str = date_str.split('T')[0]
+        if "T" in date_str:
+            date_str = date_str.split("T")[0]
 
         # Validate format
-        if len(date_str) == 10 and date_str[4] == '-' and date_str[7] == '-':
+        if len(date_str) == 10 and date_str[4] == "-" and date_str[7] == "-":
             return date_str
     except (ValueError, TypeError):
         pass
