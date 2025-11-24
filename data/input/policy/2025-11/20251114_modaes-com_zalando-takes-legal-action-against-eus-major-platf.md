@@ -2,7 +2,7 @@
 title: Zalando Takes Legal Action Against EU’s Major Platform Designation - Modaes Global
 url: https://www.modaes.com/global/back-stage/zalando-appeals-to-the-european-court-of-justice-against-its-designation-as-a-major-digital-platform
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:27.037866
+collected_date: 2025-11-24T03:53:48.058558
 source: Modaes
 source_url: https://www.modaes.com
 author: Modaes

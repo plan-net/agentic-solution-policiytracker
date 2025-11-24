@@ -2,7 +2,7 @@
 title: EU Commission Adopts New Rules for Distribution Agreements: What’s to Come for Distribution Relationships in the Digital Age?
 url: https://crowell.com/en/insights/client-alerts/eu-commission-adopts-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:27.038754
+collected_date: 2025-11-24T03:53:55.195847
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -62,23 +62,23 @@ The new rules will enter into force on **June 1, 2022** and will apply immediate
 
 [bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==](mailto:bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==)
 
-Client Alert \| 3 min read \| 11.06.25
+Client Alert \| 6 min read \| 11.19.25
 
-[Executive Branch Focus on Federally Funded Inventions](https://www.crowell.com/en/insights/client-alerts/executive-branch-focus-on-federally-funded-inventions)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
-In recent months the executive branch has indicated a willingness to assert control over intellectual property funded by federal research dollars in novel ways. This could potentially include leveraging its march-in rights under the Bayh-Dole Act....
+The facts before the Third Circuit in the recently decided case of Patel v. United States illustrate how parties can put themselves in a bind if they make factual admissions when resolving a criminal case involving fraud on the government while not simultaneously resolving the government’s civil claims under the False Claims Act (FCA) for the same underlying conduct....
 
-- Client Alert \| 2 min read \| 11.06.25
+- Client Alert \| 4 min read \| 11.18.25
 
-[Key Takeaways to the State Attorneys General - Election Day 2025](https://www.crowell.com/en/insights/client-alerts/key-takeaways-to-the-state-attorneys-general-election-day-2025)
+[DOJ Announces Major Enforcement Actions Targeting North Korean Remote IT Worker Schemes](https://www.crowell.com/en/insights/client-alerts/doj-announces-major-enforcement-actions-targeting-north-korean-remote-it-worker-schemes)
 
-- Client Alert \| 3 min read \| 11.06.25
+- Client Alert \| 6 min read \| 11.18.25
 
-[Supreme Court Oral Argument on Presidential Tariff Authority](https://www.crowell.com/en/insights/client-alerts/supreme-court-oral-argument-on-presidential-tariff-authority)
+[The UK’s Cyber Security & Resilience Bill at a glance](https://www.crowell.com/en/insights/client-alerts/the-uks-cyber-security-and-resilience-bill-at-a-glance)
 
-- Client Alert \| 13 min read \| 11.06.25
+- Client Alert \| 2 min read \| 11.14.25
 
-[The Month in International Trade – October 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-october-2025)
+[Defining Claim Terms by Implication: Lexicography Lessons from _Aortic Innovations LLC v. Edwards Lifesciences Corporation_](https://www.crowell.com/en/insights/client-alerts/defining-claim-terms-by-implication-lexicography-lessons-from-aortic-innovations-llc-v-edwards-lifesciences-corporation)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

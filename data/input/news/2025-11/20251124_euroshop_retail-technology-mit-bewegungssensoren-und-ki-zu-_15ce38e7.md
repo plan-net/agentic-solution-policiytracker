@@ -1,0 +1,63 @@
+---
+title: Retail Technology: Mit Bewegungssensoren und KI zu mehr Kundenservice
+url: https://euroshop.de/de/Media_News/Presse/Pressematerial/Retail_Technology_Mit_Bewegungssensoren_und_KI_zu_mehr_Kundenservice
+published_date: 2025-11-24T03:53:47.995593
+collected_date: 2025-11-24T03:53:47.995669
+source: Euroshop
+source_url: https://euroshop.de
+description: [Zum Hauptinhalt springen](https://euroshop.de/euroshop.de#main)
+language: en
+---
+
+# Retail Technology: Mit Bewegungssensoren und KI zu mehr Kundenservice
+
+[Zum Hauptinhalt springen](https://euroshop.de/euroshop.de#main)
+
+[Zum Hauptinhalt springen](https://euroshop.de/euroshop.de#main)
+
+# Retail Technology: Mit Bewegungssensoren und KI zu mehr Kundenservice
+
+## EHI verleiht reta awards 2023 für die besten Technologie-Lösungen im Handel
+
+Zum 16. Mal hat das EHI gestern die Gewinner der [reta awards](https://www.reta-europe.com/winners/) gekürt. Die feierliche Verleihung der Auszeichnung fand im Rahmen der EuroShop 2023 in der Dr. Thompson’s Seifenfabrik in Düsseldorf statt. Jeweils drei gleichrangige Preisträger wurden in den folgenden fünf Kategorien geehrt: Best Customer Experience, Best Enterprise Solution, Best Instore Solution, Best Connected Retail Solution und Best AI and Robotics Application.
+
+**Kategorie: Best Customer Experience** Diese Auszeichnung bekommen Händler, die zukunftsorientierte Methoden und Technologien eingeführt haben, um die Kundenloyalität und -zufriedenheit weiter zu erhöhen. Unsere Preisträger sind:
+
+**Coop Genossenschaft** Über die Kundenkarte des Loyalitätsprogrammes "Coop Supercard" nutzt das Unternehmen die relevanten Einkaufs-Informationen für individuelle Produktempfehlungen auf der Webseite. Zudem führte das Handelsunternehmen Mitte 2022 mit "Mein Coop" einen persönlichen Online-Supermarkt ein, bei dem die Kundschaft die von ihnen bevorzugten Produkte durch eine gezielte Konfiguration auf einer Landingpage finden kann. Die Technologie für die personalisierten Bereiche stellt die GK Artificial Intelligence for Retail AG bereit. **Telefónica** Die Kampagne "Visible Net“ bewirbt das 5G-Netz von O2, der Kernmarke von Telefónica Deutschland. In diesem Zuge hat Telefónica die gesamte Schaufensterfront eines O2-Stores in Berlin mit einer halbtransparenten LED-Wand umgebaut. Ein Bewegungssensor und ein extra für diesen Zweck entwickeltes Programm erkennen Passant:innen und lassen sie automatisch mit dem 5G-Netz interagieren, indem die Netzlinien ihren Schritten folgen oder stehenbleiben, wenn sie es tun. Partner des Projektes sind Umdasch, Ledcon Systems und Serviceplan Bubble. **Carrefour** Der französische Lebensmittelhändler Carrefour hat eine Motion-Sensing-Technologie eingeführt, bei der ein Bewegungssensor lose Waren wie Obst erkennt. Wird der gewünschte Artikel aus dem Regal genommen, übermittelt der Bewegungssensor den PLU-Code an die Waage. Die Kundschaft muss den Kauf nur noch auf dem Display der Waage bestätigen und kann dann die gewünschte Menge unverpackt kaufen. Die Lösung ermöglicht es Carrefour, Auswahlfehler und Warenverluste zu verringern und den Wiegeprozess zu vereinfachen. Die Projektpartner sind Digi France, HL Display und Mayam.
+
+**Kategorie: Best Enterprise Solution** In dieser Kategorie werden Handelsunternehmen ausgezeichnet, die ihre Effizienz durch die Entwicklung und Implementierung innovativer Systeme und Technologien gesteigert haben. Unsere Preisträger sind:
+
+**Bizim Toptan** Das türkische Großhandelsgeschäft Bizim Toptan bietet über seine Homepage Lieferungen und Click & Collect an. Das Handelsunternehmen implementierte dafür zusammen mit den Projektpartnern Obase und Microsoft ein datengesteuertes Prognosesystem, das auf maschinellen Algorithmen basiert und über die Lagerbestände entscheidet. Eines der Ziele ist die genaue Vorhersage, welche Produkte besonders nachgefragt werden. Außerdem sollen geplante Aktivitäten zu besonderen Anlässen wie Schulanfang oder Ramadan besser vorhergesagt werden.
+
+**Schwarz IT** Die Schwarz IT hat die KI-basierte Plattform Parsifal der G2K Group installiert, um die IT-Infrastruktur der Unternehmen der Schwarz Gruppe zu vereinfachen. Ziel ist, die zahlreichen, verschiedenen und isolierten Einzellösungen zu bündeln. Die Plattform führt alle unterschiedlichen Technologien und Anwendungsfälle in einer Oberfläche zusammen und ermöglicht so einen standardisierten, internationalen Roll-Out der Projekte. Die Use Cases können für einzelne Branchen je nach lokalen Anforderungen zu- oder abgeschaltet werden. **Esprit** Modehändler Esprit hat eine Online-Softwarelösung für ihre Retail Stores in Europa entwickelt. Das Echtzeit-Filialwarenwirtschaftssystem bildet unter anderem Warenein- und -ausgang, Bestandsführung und Preisänderungen ab. Die relevanten Daten werden dabei an eine Datenbank gesendet, die POS-Transaktionen und Bestandsinformationen in Echtzeit zusammenführt. Die Lösung hat dazu beigetragen, die Prozesse im Store zu optimieren und die Menge an verbrauchtem Papier im Store um rund 50 Prozent zu reduzieren. Projektpartner sind CAS AG und SAP Deutschland.
+
+**Kategorie: Best Instore Solution** Handelsunternehmen, die durch den Einsatz von Technologie am POS einen nachweisbaren operativen Mehrwert erreicht haben, konnten in dieser Kategorie überzeugen. Unsere Preisträger sind:
+
+**Edeka Aschoff** Edeka Aschoff hat gemeinsam mit Technologiepartner KBST und Partner Expresso den digitalen Einkaufswagen „SmartShopper“ eingeführt. Der Wagen ist mit einem Tablet ausgestattet. Mit dem zugehörigen Barcodescanner können Kund:innen Waren zu ihrer Einkaufsliste hinzufügen. Um zu bezahlen, generieren Nutzer:innen am Gerät einen QR-Code und scannen diesen an der Kasse. Eine Waage am Einkaufswagen kontrolliert die Artikel. Ein intelligentes System dahinter erkennt das Gewicht der Produkte über einen Algorithmus mit einer Genauigkeit von 2 Gramm. **Adidas** Sportartikelhersteller Adidas entwickelte gemeinsam mit Projektpartner Sensormatic Solutions und Clickit verschiedene Touchpoints für Stores, die Verbraucherbewegungen von der Straße, am Schaufenster oder in bestimmten Zonen im Geschäft identifizieren. Der Sporthändler möchte die Bewegungen der Kundschaft genau nachvollziehen, um Musik und Bilder an das Kundenverhalten anpassen zu können. Dabei möchte das Unternehmen auch neue Mitglieder für das Vorteilsprogramm „Adi-Club“ gewinnen. **Marks & Spencer** Im Hinblick auf digitale Kundenerlebnisse hat Marks & Spencer die Bestellmöglichkeiten innerhalb seines Gastronomiekonzeptes erneuert. Grundlage für den Bestellprozess ist eine Softwarelösung von Givex mit der die Kundschaft per App bezahlen kann. Für die Zubereitung der Mahlzeiten hat Diebold Nixdorf ein Küchenmanagementsystem eingeführt. Dabei wurde die Küche mit neuer Hardware ausgestattet. Die Kundschaft nimmt nach der Bestellung einen Food Tracker mit an den Tisch, sodass das Personal das Essen direkt zum Gast liefern kann.
+
+**Kategorie: Best Connected Retail Solution** Diese Auszeichnung (ehemals Omnichannel Solution) erhalten Einzelhandelsunternehmen, die ihre IT-Infrastruktur modernisiert und die Online- und Offline-Welt miteinander verbunden haben. Unsere Preisträger sind:
+
+**Edeka Digital** Edeka Digital hat eine cloudbasierte Event-Streaming- und Management-Lösung implementiert, um Stammdaten in ihren Märkten und ihrer Lieferkette zu streamen. Die Plattform „PubSub+“ hilft dem Lebensmittelhändler, Stammdaten in Echtzeit über Märkte, Rechenzentren und Cloud-Dienste hinweg effizienter zu verteilen. So werden Produktdetails aus einem ERP-System mit Bildern aus einem Altsystem zusammengeführt und die Änderungen an verschiedene Zielprojekte weitergegeben. Edeka Digital setzte das Projekt gemeinsam mit den Technologiepartnern Thinkport und Solace um.
+
+**Schuhhaus Meyer** Gemeinsam mit Partner Scalerion hat das Schuhhaus Meyer eine cloudgestützte Marktplatzlösung eingeführt. Mit der Lösung braucht der Schuhhändler nur eine Musterkollektion bei Lieferanten zu bestellen und kann so die Lager- und Handhabungskosten deutlich senken. Die Kundschaft kann den Artikel im Store anprobieren und per QR-Code nach Hause bestellen. **MediaMarktSaturn** MediaMarktSaturn entwickelte gemeinsam mit Partner Coma die interne Gamification-Plattform „LaLiga“, bei der Mitarbeiter:innen aus ganz Deutschland und weiteren Ländern als Marktteam in einem Wettbewerb gegen andere Märkte antreten können. Ziel ist es, durch den Verkauf von Produkten und produktbezogenen Service-Leistungen zu punkten, um gegen andere Stores zu gewinnen. Die teilnehmenden Mitarbeiter:innen sollen so ein besseres Verständnis für die Produkte erlangen und die Beratungsqualität erhöhen.
+
+**Kategorie: Best AI & Robotics Application** Gekürt werden Einzelhandelsunternehmen, die die Prozesse im Handel durch Anwendungen aus den Bereichen Künstliche Intelligenz und Robotik vereinfachen, beschleunigen oder automatisieren konnten. Unsere Preisträger sind:
+
+**Aldi Nord** Der erste kassenlose Store von Aldi Nord in Utrecht setzt Computer-Vision-Technologie ein und kommt ohne klassische Bezahlterminals oder Self-Checkout-Points aus. Möglich macht dies eine KI-Technologie und eine App: Sensoren in den Regalen sowie Kameras an der Decke erfassen alle Bewegungen der Produkte und ordnen sie der Kundschaft zu – unter Einhaltung aller datenschutzrechtlichen Standards. Beim Betreten des Marktes checkt die Kundschaft per QR-Code ein. Technologiepartner ist Trigo. **Compass Group** Die Compass Group entwickelte mit Partner Aifi einen autonomen Checkout für seinen Lebensmittelladen „Market x Flutter“. Das Geschäft bietet frische Mahlzeiten sowie Getränke und Süßwaren. Kund:innen checken per QR-Code am Eingang ein. Die KI-basierte Kameratechnologie verwendet keine Gesichtserkennung und erstellt stattdessen virtuelle Avatare für die Kundschaft. Beim Verlassen des Ladens erhalten sie automatisch eine Quittung auf ihr Handy. **Shufersal** Der israelische Lebensmittelhändler Shufersal hat ein KI-basiertes Clip-On-Device eingeführt, das an jeden Einkaufswagentyp gesteckt werden kann. Das Tool erkennt automatisch hinzugefügte oder entfernte Artikel. Der Bildschirm zeigt eine Zusammenfassung von Produkten, Sonderangeboten und der Preise an. Das Gerät ermöglicht Nutzer:innen zudem den eigenständigen Checkout. Technologiepartner ist Shopic.
+
+**Top-Supplier Retail** Die Technologie-Partner der mit den reta awards ausgezeichneten Handelsunternehmen werden auch in diesem Jahr gemeinsam von EHI und Lebensmittel Zeitung als Top Supplier Retail gekürt. Die Bandbreite der 23 geadelten Dienstleister reicht vom Start-up bis zum Global Player. Allen gemeinsam ist, dass sie sich in den Augen der reta-Jury um die herausragenden Lösungen ihrer Partner im Handel verdient gemacht haben. Die begehrte Auszeichnung wird seit 2015 vergeben und gilt in der Retail-Tech-Branche längst als Qualitäts-Siegel.Weitere Informationen zu den Preisträgern: [www.reta-europe.com](http://www.reta-europe.com/)
+
+**Kontakt:** Imke Hahn, Projektleiterin Forschungsbereich IT, Tel: +49 (0)2 21/5 79 93-991, [hahn@ehi.org](mailto:hahn@ehi.org) Ute Holtmann, Leiterin Public Relations, Tel.: +49 (0)2 21/5 79 93-42, [holtmann@ehi.org](mailto:holtmann@ehi.org)
+
+**Herausgeber:** EHI Retail Institute e. V., Spichernstraße 55, 50672 Köln, www.ehi.org
+
+**Über das EHI:** Das [EHI](https://www.ehi.org/) ist ein Forschungs-, Bildungs- und Beratungsinstitut für den Handel und seine Partner mit rund 80 Mitarbeitenden und einem internationalen Netzwerk von 850 Mitgliedsunternehmen des Handels, der Konsum- und Investitionsgüterindustrie sowie der Dienstleisterbranche. Das EHI ist auch Gesellschafter der [GS1 Germany](https://www.gs1-germany.de/) sowie der [FoodPlus](https://www.globalgap.org/de/) und Partner der Messe Düsseldorf bei bedeutenden Handelsmessen wie der [EuroShop](https://www.euroshop.de/). Präsident des EHI ist Markant-Chef Markus Tkotz und Geschäftsführer ist Michael Gerling.
+
+- [DOCX Docx-Download](https://euroshop.de/cgi-bin/md_euroshop/lib/all/lob/return_download.cgi/28_02_2023_Gewinner_reta_DT_Logo_de.docx?ticket=g_u_e_s_t&bid=7375&no_mime_type=0)
+- [PDF PDF Download](https://euroshop.de/cgi-bin/md_euroshop/lib/all/lob/return_download.cgi/28_02_2023_Gewinner_reta_DT_Logo_de.pdf?ticket=g_u_e_s_t&bid=7377&no_mime_type=0)
+
+_Sofern Sie regelmäßig Presseinformationen zur EuroShop erhalten möchten, können Sie sich in unseren Presseverteiler eintragen. Dieser Verteiler richtet sich explizit an Journalisten und Medienvertreter._
+
+[Anmeldung Presseverteiler](https://www.euroshop.de/de/Presse/Services_f%C3%BCr_Journalisten/Presseverteiler/Presseverteiler)
+
+[Nach oben springen](https://euroshop.de/euroshop.de#site-wrapper)

@@ -1,7 +1,7 @@
 """LangChain tools for Graphiti knowledge graph search."""
 
 import logging
-from typing import Optional
+from typing import Optional, Union
 
 from graphiti_core import Graphiti
 from graphiti_core.search.search_config_recipes import (
@@ -28,6 +28,10 @@ class SearchInput(BaseModel):
     search_type: str = Field(
         default="comprehensive",
         description="Type of search: 'comprehensive', 'relationship_focused', 'entity_focused', or 'episode_focused'",
+    )
+    output_format: str = Field(
+        default="structured",
+        description="Output format: 'structured' (JSON with graph data) or 'text' (markdown)",
     )
 
 
@@ -64,11 +68,12 @@ class GraphitiSearchTool(BaseTool):
         query: str,
         limit: int = 5,
         search_type: str = "comprehensive",
+        output_format: str = "structured",
         run_manager: Optional[CallbackManagerForToolRun] = None,
-    ) -> str:
+    ) -> Union[str, dict]:
         """Execute the search asynchronously using advanced Graphiti search configs."""
         try:
-            logger.info(f"Searching knowledge graph for: {query} (type: {search_type})")
+            logger.info(f"Searching knowledge graph for: {query} (type: {search_type}, format: {output_format})")
 
             # Select search configuration based on search type
             search_config = self._get_search_config(search_type)
@@ -84,117 +89,260 @@ class GraphitiSearchTool(BaseTool):
                 results.extend(search_results.nodes)
 
             if not results:
+                if output_format == "structured":
+                    return {
+                        "query": query,
+                        "total_results": 0,
+                        "returned_results": 0,
+                        "results": [],
+                        "graph_data": {"nodes": [], "edges": []},
+                    }
                 return f"No results found for query: {query}"
 
-            # Format results for LLM consumption with source information
-            formatted_results = []
-            sources = set()  # Track unique sources
-
-            for i, result in enumerate(results[:limit], 1):
-                # Handle both edges (with .fact) and nodes (with .summary)
-                if hasattr(result, "fact") and result.fact:
-                    content = result.fact
-                    content_type = "Relationship"
-                elif hasattr(result, "summary") and result.summary:
-                    content = result.summary
-                    content_type = "Entity"
-                else:
-                    continue  # Skip if no content
-
-                fact_text = f"{i}. {content}"
-                if hasattr(result, "name") and result.name:
-                    fact_text += f" ({content_type}: {result.name})"
-
-                # Extract source information from episodes
-                source_info = await self._extract_source_info(result)
-                if source_info:
-                    fact_text += f" [Source: {source_info['title']}]"
-                    sources.add(f"- {source_info['title']}: {source_info['url']}")
-
-                formatted_results.append(fact_text)
-
-            response = f"Found {len(results)} facts for '{query}' (showing top {min(limit, len(results))}):\n\n"
-            response += "\n".join(formatted_results)
-
-            # Add sources section
-            if sources:
-                response += "\n\n**Sources:**\n" + "\n".join(sorted(sources))
-
-            if len(results) > limit:
-                response += f"\n\n... and {len(results) - limit} more results available."
-
-            logger.info(
-                f"Returning {len(formatted_results)} formatted results with {len(sources)} sources"
-            )
-            return response
+            # Choose output format
+            if output_format == "structured":
+                return await self._format_structured_output(results, query, search_type, limit)
+            else:
+                return await self._format_text_output(results, query, limit)
 
         except Exception as e:
             logger.error(f"Search error: {e}")
+            if output_format == "structured":
+                return {"error": str(e), "query": query}
             return f"Search error: {str(e)}"
 
-    async def _extract_source_info(self, result) -> Optional[dict[str, str]]:
-        """Extract source URL and title from Graphiti result by retrieving episode content."""
+    async def _format_text_output(self, results: list, query: str, limit: int) -> str:
+        """Format search results as markdown text."""
+        formatted_results = []
+        sources = set()  # Track unique sources
+
+        for i, result in enumerate(results[:limit], 1):
+            # Handle both edges (with .fact) and nodes (with .summary)
+            if hasattr(result, "fact") and result.fact:
+                content = result.fact
+                content_type = "Relationship"
+            elif hasattr(result, "summary") and result.summary:
+                content = result.summary
+                content_type = "Entity"
+            else:
+                continue  # Skip if no content
+
+            # Calculate relevance score
+            relevance_score = self._calculate_relevance_score(result, query)
+            score_text = f"[Score: {relevance_score:.3f}] " if relevance_score is not None else ""
+
+            fact_text = f"{i}. {score_text}{content}"
+            if hasattr(result, "name") and result.name:
+                fact_text += f" ({content_type}: {result.name})"
+
+            # Extract source information from episodes
+            source_info = await self._extract_source_from_episodes(result)
+            if source_info:
+                fact_text += f" [Source: {source_info['title']}]"
+                sources.add(f"- {source_info['title']}: {source_info['url']}")
+
+            formatted_results.append(fact_text)
+
+        response = f"Found {len(results)} facts for '{query}' (showing top {min(limit, len(results))}):\n\n"
+        response += "\n".join(formatted_results)
+
+        # Add sources section
+        if sources:
+            response += "\n\n**Sources:**\n" + "\n".join(sorted(sources))
+
+        if len(results) > limit:
+            response += f"\n\n... and {len(results) - limit} more results available."
+
+        logger.info(
+            f"Returning {len(formatted_results)} formatted results with {len(sources)} sources"
+        )
+        return response
+
+    async def _format_structured_output(self, results: list, query: str, search_type: str, limit: int) -> dict:
+        """Format search results as structured JSON with graph data."""
+        structured_results = []
+        all_nodes = {}  # uuid -> node data
+        all_edges = []
+        node_uuids_to_enrich = set()  # Track node UUIDs that need enrichment
+
+        for i, result in enumerate(results[:limit], 1):
+            # Extract content
+            if hasattr(result, "fact") and result.fact:
+                content = result.fact
+                result_type = "relationship"
+            elif hasattr(result, "summary") and result.summary:
+                content = result.summary
+                result_type = "entity"
+            else:
+                continue
+
+            # Extract relevance score (calculate based on query match)
+            relevance_score = self._calculate_relevance_score(result, query)
+
+            # Extract source from episodes
+            source_info = await self._extract_source_from_episodes(result)
+
+            # Get result UUID
+            result_uuid = getattr(result, "uuid", None)
+            if result_uuid:
+                result_uuid = str(result_uuid)
+
+            # Build result entry
+            result_entry = {
+                "rank": i,
+                "content": content,
+                "type": result_type,
+                "name": getattr(result, "name", ""),
+                "relevance_score": relevance_score,
+                "source": source_info,
+                "uuid": result_uuid,
+            }
+
+            structured_results.append(result_entry)
+
+            # Extract graph data for visualization
+            if result_type == "relationship" and hasattr(result, "source_node_uuid") and hasattr(result, "target_node_uuid"):
+                # This is an edge
+                edge_data = {
+                    "uuid": result_uuid,
+                    "source_uuid": str(result.source_node_uuid),
+                    "target_uuid": str(result.target_node_uuid),
+                    "relationship_type": getattr(result, "name", "RELATED_TO"),
+                    "fact": content,
+                    "created_at": str(getattr(result, "created_at", "")),
+                }
+                all_edges.append(edge_data)
+
+                # Add source and target nodes (placeholders for now)
+                for node_uuid in [result.source_node_uuid, result.target_node_uuid]:
+                    if node_uuid and str(node_uuid) not in all_nodes:
+                        all_nodes[str(node_uuid)] = {
+                            "uuid": str(node_uuid),
+                            "name": "Unknown",  # Will be enriched below
+                            "type": "Entity",
+                        }
+                        node_uuids_to_enrich.add(str(node_uuid))
+
+            elif result_type == "entity":
+                # This is a node - we already have its data
+                node_uuid = result_uuid
+                if node_uuid and node_uuid not in all_nodes:
+                    all_nodes[node_uuid] = {
+                        "uuid": node_uuid,
+                        "name": getattr(result, "name", "Unknown"),
+                        "type": ", ".join(getattr(result, "labels", ["Entity"])),
+                        "summary": content,
+                        "created_at": str(getattr(result, "created_at", "")),
+                    }
+
+        # Enrich node names by fetching entity data
+        if node_uuids_to_enrich:
+            await self._enrich_node_names(all_nodes, node_uuids_to_enrich)
+
+        # Aggregate sources
+        sources = []
+        source_counts = {}
+        for result in structured_results:
+            if result["source"]:
+                source_key = result["source"]["title"]
+                if source_key not in source_counts:
+                    source_counts[source_key] = {
+                        "title": result["source"]["title"],
+                        "url": result["source"]["url"],
+                        "count": 0,
+                    }
+                source_counts[source_key]["count"] += 1
+
+        sources = list(source_counts.values())
+
+        return {
+            "query": query,
+            "search_type": search_type,
+            "total_results": len(results),
+            "returned_results": len(structured_results),
+            "results": structured_results,
+            "graph_data": {
+                "nodes": list(all_nodes.values()),
+                "edges": all_edges,
+            },
+            "sources": sources,
+        }
+
+    def _calculate_relevance_score(self, result, query: str) -> Optional[float]:
+        """Calculate relevance score based on query term matching."""
         try:
-            # Get episode UUIDs from the result
-            if not hasattr(result, "episodes") or not result.episodes:
-                logger.debug("No episodes found in result")
+            # Extract content from result
+            if hasattr(result, "fact") and result.fact:
+                content = result.fact.lower()
+            elif hasattr(result, "summary") and result.summary:
+                content = result.summary.lower()
+            else:
                 return None
 
-            # Get the first episode UUID
-            episode_uuids = [str(episode) for episode in result.episodes]
-            logger.debug(f"Found episode UUIDs: {episode_uuids}")
+            # Tokenize query
+            query_terms = set(query.lower().split())
 
-            # Retrieve episode content using Graphiti API
-            episode_data = await self.client.get_nodes_and_edges_by_episode(episode_uuids[:1])
+            # Count matching terms
+            matches = sum(1 for term in query_terms if term in content)
 
-            if not episode_data or not hasattr(episode_data, "nodes"):
-                logger.debug("No episode data returned")
-                return None
+            # Calculate score as percentage of query terms found
+            if query_terms:
+                score = matches / len(query_terms)
+                return round(score, 3)
 
-            # Look for episode nodes that contain the original content
-            for node in episode_data.nodes:
-                if hasattr(node, "episode_body") and node.episode_body:
-                    # Parse the YAML frontmatter from the episode body
-                    source_info = self._parse_yaml_frontmatter(node.episode_body)
+            return None
+        except Exception as e:
+            logger.debug(f"Error calculating relevance score: {e}")
+            return None
+
+    def _extract_relevance_score(self, result) -> Optional[float]:
+        """Legacy method - kept for backward compatibility in text output."""
+        # Note: Graphiti search results don't expose score attributes
+        # This method is deprecated in favor of _calculate_relevance_score
+        return None
+
+    async def _extract_source_info(self, result) -> Optional[dict[str, str]]:
+        """Extract source URL and title from Graphiti result (simplified)."""
+        try:
+            # Method 1: Try to get episode metadata with YAML frontmatter
+            if hasattr(result, "episodes") and result.episodes:
+                episode_uuids = [str(episode) for episode in result.episodes]
+
+                # Try to retrieve episode content
+                try:
+                    episode_data = await self.client.get_nodes_and_edges_by_episode(episode_uuids[:1])
+
+                    if episode_data and hasattr(episode_data, "nodes"):
+                        # Look for episode nodes with YAML frontmatter
+                        for node in episode_data.nodes:
+                            if hasattr(node, "episode_body") and node.episode_body:
+                                source_info = self._parse_yaml_frontmatter(node.episode_body)
+                                if source_info:
+                                    logger.debug(f"Found source in episode metadata: {source_info['title']}")
+                                    return source_info
+                except Exception as e:
+                    logger.debug(f"Could not retrieve episode content: {e}")
+
+                # Method 2: Parse episode name as fallback
+                if hasattr(result, "episode_name"):
+                    source_info = self._parse_episode_name(result.episode_name)
                     if source_info:
-                        logger.info(f"Extracted source from episode content: {source_info}")
+                        logger.debug(f"Parsed source from episode name: {source_info['title']}")
                         return source_info
 
-            logger.debug("No source info found in episode content")
-            return None
-
-        except Exception as e:
-            logger.error(f"Error extracting source from episode: {e}")
-            return None
-
-    def _parse_filename_to_url(self, filename: str) -> Optional[dict[str, str]]:
-        """Parse filename to extract source URL and title."""
-        try:
-            # Our filenames follow pattern: YYYYMMDD_domain-with-hyphens_title-with-hyphens.md
-            # Example: 20250527_reuters-com_eu-warns-shein-of-fines-in-consumer-protection-pro.md
-
-            if not filename.endswith(".md"):
-                return None
-
-            basename = filename.replace(".md", "")
-            parts = basename.split("_", 2)
-
-            if len(parts) >= 3:
-                date_part = parts[0]
-                domain_part = parts[1].replace("-", ".")
-                title_part = parts[2].replace("-", " ")
-
-                # Construct the likely original URL
-                url = f"https://{domain_part}"
-                title = f"{domain_part} - {title_part[:60]}..."
-
-                return {"url": url, "title": title, "date": date_part}
+                # Try parsing first episode UUID if it looks like a name
+                if episode_uuids and "_" in str(episode_uuids[0]):
+                    source_info = self._parse_episode_name(str(episode_uuids[0]))
+                    if source_info:
+                        logger.debug(f"Parsed source from episode UUID: {source_info['title']}")
+                        return source_info
 
             return None
 
         except Exception as e:
-            logger.warning(f"Could not parse filename: {e}")
+            logger.debug(f"Error extracting source: {e}")
             return None
+
 
     def _parse_episode_name(self, episode_name: str) -> Optional[dict[str, str]]:
         """Parse episode name to extract source information."""
@@ -218,55 +366,6 @@ class GraphitiSearchTool(BaseTool):
             logger.warning(f"Could not parse episode name: {e}")
             return None
 
-    def _parse_source_description(self, description: str) -> Optional[dict[str, str]]:
-        """Parse source description for URL information."""
-        try:
-            # Look for URL patterns in description
-            import re
-
-            url_pattern = r"https?://[^\s]+"
-            urls = re.findall(url_pattern, description)
-
-            if urls:
-                url = urls[0]
-                domain = url.split("/")[2] if "/" in url else url
-                return {"url": url, "title": domain, "date": "unknown"}
-
-            return None
-
-        except Exception as e:
-            logger.warning(f"Could not parse source description: {e}")
-            return None
-
-    def _extract_domain_from_fact(self, fact: str) -> Optional[dict[str, str]]:
-        """Try to extract domain information from the fact text itself."""
-        try:
-            # Look for mentions of news sources, domains, or publications
-            import re
-
-            # Common news domain patterns
-            domain_patterns = [
-                r"(reuters\.com|politico\.eu|bloomberg\.com|ft\.com|techcrunch\.com)",
-                r"(euronews\.com|dw\.com|bbc\.com|cnn\.com)",
-                r"(ec\.europa\.eu|eur-lex\.europa\.eu)",
-                r"([a-z]+\-[a-z]+\.com|[a-z]+\.eu|[a-z]+\.org)",
-            ]
-
-            for pattern in domain_patterns:
-                matches = re.findall(pattern, fact.lower())
-                if matches:
-                    domain = matches[0] if isinstance(matches[0], str) else matches[0][0]
-                    return {
-                        "url": f"https://{domain}",
-                        "title": f"{domain} (extracted from content)",
-                        "date": "unknown",
-                    }
-
-            return None
-
-        except Exception as e:
-            logger.warning(f"Could not extract domain from fact: {e}")
-            return None
 
     def _get_search_config(self, search_type: str):
         """Get appropriate search configuration based on search type."""
@@ -341,3 +440,182 @@ class GraphitiSearchTool(BaseTool):
         except Exception as e:
             logger.warning(f"Could not parse YAML frontmatter: {e}")
             return None
+
+    async def _extract_source_from_episodes(self, result) -> Optional[dict[str, str]]:
+        """Extract source information from episode UUIDs using direct Neo4j query."""
+        try:
+            if not hasattr(result, "episodes") or not result.episodes:
+                return None
+
+            # Get episode UUIDs
+            episode_uuids = [str(ep) for ep in result.episodes[:1]]  # Check first episode only
+
+            # Query Neo4j directly for Episodic node metadata
+            # Format: political_doc_YYYYMMDD_domain_title_timestamp_chunk_N
+            query = """
+                MATCH (e:Episodic)
+                WHERE e.uuid IN $uuids
+                RETURN e.uuid AS uuid, e.name AS name, e.source AS source,
+                       e.source_description AS source_description
+                LIMIT 1
+            """
+
+            async with self.client.driver.session() as session:
+                result_data = await session.run(query, {"uuids": episode_uuids})
+                records = await result_data.data()
+
+                if records:
+                    record = records[0]
+
+                    # First priority: Check source property
+                    if record.get("source"):
+                        source_info = self._parse_source_property(
+                            record["source"],
+                            record.get("source_description")
+                        )
+                        if source_info:
+                            logger.debug(f"Extracted source from Episodic.source: {source_info['title']}")
+                            return source_info
+
+                    # Second priority: Parse episode name
+                    if record.get("name"):
+                        source_info = self._parse_episodic_name(record["name"])
+                        if source_info:
+                            logger.debug(f"Extracted source from Episodic.name: {source_info['title']}")
+                            return source_info
+
+            return None
+
+        except Exception as e:
+            logger.debug(f"Error extracting source from episodes: {e}")
+            return None
+
+    def _parse_source_property(self, source: str, source_description: str = None) -> Optional[dict[str, str]]:
+        """Parse source property from Episodic node."""
+        try:
+            # Source property is usually "text" - not useful
+            # Source description has format: "Political document chunk N/M: YYYYMMDD_domain_title.md"
+            if not source_description:
+                return None
+
+            # Extract filename from source_description
+            # Format: "Political document chunk N/M: YYYYMMDD_domain_title.md"
+            if ":" in source_description:
+                # Split on colon to get filename part
+                parts = source_description.split(":", 1)
+                if len(parts) == 2:
+                    filename = parts[1].strip()
+
+                    # Remove .md extension
+                    if filename.endswith(".md"):
+                        filename = filename[:-3]
+
+                    # Parse the filename using existing method
+                    source_info = self._parse_episodic_name(filename)
+                    if source_info:
+                        return source_info
+
+            return None
+
+        except Exception as e:
+            logger.debug(f"Could not parse source property: {e}")
+            return None
+
+    def _parse_episodic_name(self, name: str) -> Optional[dict[str, str]]:
+        """Parse Episodic node name to extract source information."""
+        try:
+            # Expected format: political_doc_YYYYMMDD_domain_title_timestamp_chunk_N
+            # Example: political_doc_20250516_abcnews-go-com_long-running-eu-antitrust_20251030_112139_chunk_0
+
+            # Remove 'political_doc_' prefix if present
+            if name.startswith("political_doc_"):
+                name = name[14:]  # Remove 'political_doc_'
+
+            # Split by underscore
+            parts = name.split("_")
+
+            if len(parts) < 3:
+                return None
+
+            # First part is date (YYYYMMDD)
+            date_part = parts[0] if parts[0].isdigit() and len(parts[0]) == 8 else None
+
+            # Second part is domain (with hyphens)
+            domain_part = parts[1].replace("-", ".") if len(parts) > 1 else None
+
+            if not domain_part:
+                return None
+
+            # Collect title parts (between domain and timestamp/chunk markers)
+            title_parts = []
+            for i in range(2, len(parts)):
+                part = parts[i]
+                # Stop at timestamp (8 digits followed by 6 digits)
+                if part.isdigit() and len(part) >= 8:
+                    break
+                # Stop at 'chunk'
+                if part == "chunk":
+                    break
+                title_parts.append(part)
+
+            # Build title
+            title = " ".join(title_parts).replace("-", " ") if title_parts else ""
+
+            # Construct URL
+            url = f"https://{domain_part}"
+
+            # Create display title
+            if title:
+                display_title = f"{domain_part}: {title[:60]}"
+                if len(title) > 60:
+                    display_title += "..."
+            else:
+                display_title = domain_part
+
+            return {"url": url, "title": display_title, "date": date_part}
+
+        except Exception as e:
+            logger.debug(f"Could not parse Episodic name: {e}")
+            return None
+
+    def _parse_episode_path(self, path: str) -> Optional[dict[str, str]]:
+        """Legacy method - kept for backward compatibility."""
+        # Delegate to _parse_episodic_name since format is similar
+        return self._parse_episodic_name(path)
+
+    async def _enrich_node_names(self, all_nodes: dict, node_uuids_to_enrich: set):
+        """Enrich node names by querying all nodes at once via Neo4j."""
+        try:
+            # Get all node UUIDs we need to enrich
+            uuid_list = list(node_uuids_to_enrich)
+
+            if not uuid_list:
+                return
+
+            # Query Neo4j directly to get node names
+            # Use client's internal driver to run Cypher query
+            query = """
+                MATCH (n:Entity)
+                WHERE n.uuid IN $uuids
+                RETURN n.uuid AS uuid, n.name AS name, labels(n) AS labels
+            """
+
+            # Run query through Graphiti's driver
+            async with self.client.driver.session() as session:
+                result = await session.run(query, {"uuids": uuid_list})
+                records = await result.data()
+
+                # Update node names
+                for record in records:
+                    node_uuid = str(record["uuid"])
+                    if node_uuid in all_nodes:
+                        all_nodes[node_uuid]["name"] = record.get("name", "Unknown")
+                        labels = record.get("labels", [])
+                        if labels:
+                            all_nodes[node_uuid]["type"] = ", ".join(labels)
+
+                logger.debug(f"Enriched {len(records)} node names from {len(uuid_list)} requested")
+
+        except Exception as e:
+            logger.warning(f"Could not enrich node names: {e}")
+            # Silently fail - nodes will keep "Unknown" name

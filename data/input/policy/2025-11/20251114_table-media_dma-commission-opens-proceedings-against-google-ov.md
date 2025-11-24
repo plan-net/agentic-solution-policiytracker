@@ -2,7 +2,7 @@
 title: DMA: Commission opens proceedings against Google over anti-spam policy
 url: https://table.media/en/europe/news-en/dma-commission-opens-proceedings-against-google-over-anti-spam-policy
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:51.942603
+collected_date: 2025-11-24T03:54:17.665089
 source: Table
 source_url: https://table.media
 author: Corinna Visser

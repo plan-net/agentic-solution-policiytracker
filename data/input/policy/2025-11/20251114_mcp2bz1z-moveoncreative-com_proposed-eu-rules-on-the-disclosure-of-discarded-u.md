@@ -2,7 +2,7 @@
 title: Proposed EU rules on the disclosure of discarded unsold consumer products
 url: https://mcp2bz1z.moveoncreative.com/en/news-and-articles/14237-proposed-eu-rules-on-the-disclosure-of-discarded-unsold-consumer-products
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:39.991229
+collected_date: 2025-11-24T03:54:05.785734
 source: Mcp2Bz1Z
 source_url: https://mcp2bz1z.moveoncreative.com
 author: CMS Belgium

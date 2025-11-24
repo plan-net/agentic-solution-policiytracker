@@ -1,0 +1,116 @@
+---
+title: New EU Proposals to Regulate Digital Markets – What to Expect
+url: https://www.crowell.com/en/insights/client-alerts/new-eu-proposals-to-regulate-digital-markets-what-to-expect
+published_date: 2025-11-24T03:53:59.211280
+collected_date: 2025-11-24T03:53:59.211382
+source: Crowell
+source_url: https://www.crowell.com
+description: "1. [Home](https://www.crowell.com/en)
+2. \| [Insights](https://www.crowell.com/en/insights)
+3. \|New EU Proposals to Regulate Digital Markets – What to Expect"
+language: en
+collection_type: policy_landscape
+---
+
+# New EU Proposals to Regulate Digital Markets – What to Expect
+
+1. [Home](https://www.crowell.com/en)
+2. \| [Insights](https://www.crowell.com/en/insights)
+3. \|New EU Proposals to Regulate Digital Markets – What to Expect
+
+1. [Home](https://www.crowell.com/en)
+2. \| [Insights](https://www.crowell.com/en/insights)
+3. \|New EU Proposals to Regulate Digital Markets – What to Expect
+
+- Print
+- [PDF Link](https://www.crowell.com/print/v2/content/45296/new-eu-proposals-to-regulate-digital-markets-what-to-expect.pdf)
+- Share
+
+- [Email](mailto://www.crowell.com?subject=New%20EU%20Proposals%20to%20Regulate%20Digital%20Markets%20%E2%80%93%20What%20to%20Expect&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-proposals-to-regulate-digital-markets-what-to-expect)
+- [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-proposals-to-regulate-digital-markets-what-to-expect)
+- [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Fnew-eu-proposals-to-regulate-digital-markets-what-to-expect)
+
+# New EU Proposals to Regulate Digital Markets – What to Expect
+
+Client Alert \| 6 min read \| 12.09.20
+
+In the coming weeks or months, the European Commission is expected to table an ambitious set of draft legislation that, if adopted, will have a major impact on the business practices of digital service providers in the EU, including non-EU companies serving European users: the **Digital Services Act (DSA)** and the **Digital Markets Act (DMA)**. The Commission’s legislative proposals aim to strengthen the responsibilities of online platforms and to support fair competition in digital markets.
+
+### 1\. The Digital Services Act (DSA): increasing responsibilities for digital service providers
+
+The DSA’s main objective is to **update the e-Commerce Directive**. This is long overdue, as the legal framework for digital services has remained largely unchanged since the e-Commerce Directive was adopted in 2000. The update aims to **clarify the liability regime for digital intermediaries** active in the EU and to **reinforce oversight and enforcement**.
+
+The DSA will require digital service providers to take **more responsibility** **for dealing with harmful or illegal content and dangerous or counterfeit products**. They will have to put in place clear and simple procedures to deal with notifications about harmful or illegal content or goods on their platforms. They will also have to verify the identity of traders before letting them on their platforms (“know your business customer”). At the same time, they will have to make available simple procedures for platform users to complain if they think the removal of their material was unwarranted.
+
+The DSA will likely also require digital services to be **more transparent concerning how the algorithms they use to recommend products, curate content or target advertising work**. It is expected that e-commerce players will be required to submit their customer profiling practices to regular (annual) audits.
+
+Reportedly, the Commission favors an “asymmetric” approach where (very) large digital platforms would be subject to tougher rules. For instance, large digital platforms would be held to higher standards in terms of policing online content than smaller ones.
+
+The DSA is also expected to **strengthen enforcement by improving cooperation among national authorities**. While the principle that national authorities are responsible for the oversight of digital services in their respective jurisdictions remains unchanged, a “permanent system of cooperation” would be set up to help them work more effectively. It has also been suggested that the EU should be given the possibility to step in when needed, _e.g._, to enforce the rules against (very) large platforms.
+
+### 2\. The Digital Markets Act (DMA): expanding the competition law toolbox
+
+The objective of the DMA proposal is to ensure that competition policy is fit for the new digital economy and to address perceived gaps in competition enforcement. In particular, the DMA proposal aims to complement the (ex post) enforcement of existing competition rules with a regulatory toolkit in order to restrain the power of large digital platforms. The DMA package is expected to have **two pillars**. The first introduces **ex ante regulation of digital platforms with a “gatekeeper” role**; the second provides **a market investigation tool to enable timely and effective intervention against structural competition problems** which (the Commission contends) cannot be adequately tackled under existing competition rules.
+
+Together with the DSA, the DMA also represents a significant reinforcement of the regulatory framework for online platforms compared to the relatively light-touch requirements of fairness, transparency and effective redress vis-à-vis business users outlined in the [platform-to-business (P2B) regulation](https://www.crowell.com/NewsEvents/AlertsNewsletters/all/EU-Regulates-Online-Platforms-and-Search-Engines), which has applied since 12 July 2020.
+
+### A. Ex ante regulation: do’s and don’ts for gatekeepers
+
+The proposal for a DMA will introduce a **list of** **“do’s & don’ts” for platforms with a gatekeeper role**, based on the Commission’s experience of the types of behavior that tend to prevent markets from performing competitively.
+
+For instance, the DMA is expected to prohibit dual-role platforms ( _i.e_., where the platform owner also trades on the platform) from **misusing the data** they collect about their business users to gain an unfair competitive advantage. The DMA probably also will ban **unfair self-preferencing** practices by gatekeeper platforms. Reportedly, no general ban on self-preferencing is likely to be proposed, but only a ban on four specific types of self-preferencing activity, such as manipulating the ranking of search results in order to promote the platform owner’s own services more visibly than those of rivals. Finally, it is expected that gatekeepers will also be banned from **exclusively pre-installing their own apps** on hardware systems ( _e.g_., laptops or smartphones) and **preventing users from uninstalling pre-installed apps**.
+
+Next to this **“black list”** of outlawed practices, there likely also will be a **“grey list”** of practices that require close oversight, but are not necessarily prohibited in all cases, such as **collecting personal data beyond what is necessary** for providing the platform’s services or preventing third-party sellers on the platform from **accessing essential information** on customers.
+
+Additionally, the DMA is expected to include a **white list of affirmative obligations**, such as up-front **interoperability** and **data portability** requirements, ensuring that both business users and consumers have access to the data that they provide to, or which is generated by, the platform.
+
+It **remains unclear how a “gatekeeper platform” will be defined**, and consequently which companies would be covered by the regulation. Reportedly, the scope will be restricted to a small number of very large platforms, most of which are likely to be U.S.-based. However, in a recent meeting with journalists, the EU’s internal market commissioner Thierry Breton (responsible for the EU’s Digital Agenda) indicated that the most important criteria will be “ _the platform’s impact on the single market_” and “ _whether or not the service is ‘unavoidable’_”. He stressed that “ _what we try to capture is definitely the behavior of the platform_” and “ _size, per se, is not a problem_”, although “ _size can amplify the impact of harmful behavior_”.
+
+### B. Market investigation tool: addressing structural problems
+
+The DMA also will introduce a **market investigation tool** (dubbed the “New Competition Tool” or NCT) to address “structural”, market-wide competition issues in digital markets that cannot be tackled using existing competition rules. A particular concern is the risk of markets “tipping”, _i.e._, experiencing a rapid loss of competition due to market forces such as extreme economies of scale, network effects, etc., considered to be prevalent in digital markets. The NCT is intended to enable the Commission both to tackle existing market failures and to prevent new ones from emerging.
+
+To that end, the Commission is seeking powers to conduct market investigations and, where a market failure is identified, impose **behavioral and, where appropriate, structural remedies**. Remedies, such as forced asset sales, might address market-access problems, for example. However, there would be no finding of infringement, and no fines would be imposed.
+
+The objective of the NCT is to allow the Commission to intervene in a timely and effective manner, before the market failures are irreversible ( _e.g_., before the market has “tipped”). As such, the NCT seems to have been born out of a frustration that traditional ex post competition enforcement has often been “too little, too late”.
+
+The publication of the proposals is currently planned for 15 December, having been postponed already twice. However, officials have warned that the timing could slip into 2021, now that the Commission’s regulatory scrutiny board, an independent body that advises the Commission on its legislative texts, has voiced concerns over the legal basis of the NCT proposal. Reportedly, these concerns have already led to a significant watering-down of the proposal.
+Once published, the proposals will follow the ordinary legislative process in the EU Parliament and the Council of Ministers. We will keep you up to date as the developments progress.
+
+_The authors would like to thank Ava Erma for her help in preparing this alert._
+
+- [Thomas De Meese](https://www.crowell.com/en/professionals/thomas-de-meese)
+
+- D \| [+32.2.282.1842](tel:%2B32.2.282.1842)
+
+[dGRlbWVlc2VAY3Jvd2VsbC5jb20=](mailto:dGRlbWVlc2VAY3Jvd2VsbC5jb20=)
+
+- [Karl Stas](https://www.crowell.com/en/professionals/karl-stas)
+
+- D \| [+32.2.214.2888](tel:%2B32.2.214.2888)
+
+[a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
+
+Client Alert \| 3 min read \| 11.21.25
+
+[A Sign of What’s to Come? Court Dismisses FCA Retaliation Complaint Based on Alleged Discriminatory Use of Federal Funding](https://www.crowell.com/en/insights/client-alerts/sign-of-whats-to-come-court-dismisses-fca-retaliation-complaint-based-on-alleged-discriminatory-use-of-federal-funding)
+
+On November 7, 2025, in Thornton v. National Academy of Sciences, No. 25-cv-2155, 2025 WL 3123732 (D.D.C. Nov. 7, 2025), the District Court for the District of Columbia dismissed a False Claims Act (FCA) retaliation complaint on the basis that the plaintiff’s allegations that he was fired after blowing the whistle on purported illegally discriminatory use of federal funding was not sufficient to support his FCA claim. This case appears to be one of the first filed, and subsequently dismissed, following Deputy Attorney General Todd Blanche’s announcement of the creation of the Civil Rights Fraud Initiative on May 19, 2025, which “strongly encourages” private individuals to file lawsuits under the FCA relating to purportedly discriminatory and illegal use of federal funding for diversity, equity, and inclusion (DEI) initiatives in violation of Executive Order 14173, Ending Illegal Discrimination and Restoring Merit-Based Opportunity (Jan. 21, 2025). In this case, the court dismissed the FCA retaliation claim and rejected the argument that an organization could violate the FCA merely by “engaging in discriminatory conduct while conducting a federally funded study.” The analysis in Thornton could be a sign of how forthcoming arguments of retaliation based on reporting allegedly fraudulent DEI activity will be analyzed in the future....
+
+- Client Alert \| 3 min read \| 11.20.25
+
+[Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
+
+- Client Alert \| 3 min read \| 11.20.25
+
+[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
+
+- Client Alert \| 6 min read \| 11.19.25
+
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
+
+[View All Insights](https://www.crowell.com/en/insights?nt=62862)
+
+to the latest insights from our team
+
+[Subscribe Now](https://www.crowell.com/en/subscribe)

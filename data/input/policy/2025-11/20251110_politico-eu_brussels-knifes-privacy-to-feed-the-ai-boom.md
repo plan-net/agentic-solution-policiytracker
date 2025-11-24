@@ -2,7 +2,7 @@
 title: Brussels knifes privacy to feed the AI boom
 url: https://www.politico.eu/article/brussels-knifes-privacy-to-feed-the-ai-boom-gdpr-digital-omnibus/
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-16T02:36:21.334671
+collected_date: 2025-11-24T03:54:14.716139
 source: Politico
 source_url: https://www.politico.eu
 author: Ellen O'Regan

@@ -2,7 +2,7 @@
 title: Zalando Turns to EU Top Court in Fight Over Online Content Rules
 url: https://www.businessoffashion.com/news/retail/zalando-turns-to-eu-top-court-in-fight-over-online-content-rules/
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-16T02:36:27.037886
+collected_date: 2025-11-24T03:53:48.058508
 source: Businessoffashion
 source_url: https://www.businessoffashion.com
 author: Reuters
@@ -71,21 +71,21 @@ _The online fashion retailer’s legal loss supports the EU’s push to hold onl
 
 Analysis and advice from the front lines of the retail transformation.
 
-## [Is Skims Really Worth $5 Billion?](https://www.businessoffashion.com/briefings/retail/is-skims-really-worth-5-billion/)
+## [How Modern Brides Are Redefining ‘Something Old’](https://www.businessoffashion.com/articles/retail/vintage-archival-bridal-boom/)
 
-Kim Kardashian’s shapewear-turned-lifestyle brand has defied all odds to reach a $5 billion valuation — but investors are betting on its future, not its past.
+With the rise of vintage-focused bridal salons and large retailers like David’s Bridal reviving archival pieces, the bridal market is seeing styles from the past walk down the aisle once again.
 
-## [The Debrief \| Why Is Everyone Obsessed With Accessories?](https://www.businessoffashion.com/podcasts/retail/the-debrief-why-is-everyone-obsessed-with-accessories/)
+## [How to Survive Menswear’s Sameness Epidemic](https://www.businessoffashion.com/articles/retail/why-menswear-looks-the-same/)
 
-From Labubu charms to stacked bracelets, shoppers are using accessories to personalise minimalist wardrobes, boosting small labels and hinting at a lasting behavioural shift. Diana Pearl joins The Debrief to unpack this trend.
+A new transatlantic approach to minimalist tailoring and workwear has swept menswear, buoyed by the rise of buzzy upstarts from Japan, Scandinavia and the US. To outlast a current fixation on a sophisticated, pared-back look, labels are searching for ways to make their clothes stand out.
 
-## [Why the Fashion Industry (Mostly) Hates a Weak Dollar](https://www.businessoffashion.com/articles/retail/why-the-fashion-industry-hates-a-weak-dollar/)
+## [Inside Luxury Retailers’ Bare-Knuckle Fight to Win the Holidays](https://www.businessoffashion.com/articles/retail/luxury-retailers-fight-to-win-holidays/)
 
-The greenback’s slide this year is reducing the purchasing power of American consumers, depressing tourism and complicating supply chains already rocked by tariffs. Brands say the overall impact can top 5 percent of sales.
+With market leader Saks struggling and Ssense in bankruptcy, competitors from Bloomingdale’s to Mytheresa to FWRD see a rare opportunity to grab market share. They are openly courting top customers, vendors and even the employees of their struggling competitors.
 
-## [Inditex Takes On the Activewear Market](https://www.businessoffashion.com/articles/retail/inditex-takes-on-the-activewear-market/)
+## [At Sorel, Charting the Course for Brand Reinvention](https://www.businessoffashion.com/articles/retail/at-sorel-charting-the-course-for-brand-reinvention/)
 
-Oysho, the Zara-owner's women's sportswear label, is growing across Europe with its free workout classes and value-led, fashion-focused offering.
+The outdoor footwear brand is redefining its identity under new leadership, blending its purpose-driven heritage with fashion-forward collaborations for an elevated, all-seasons approach.
 
 [view more](https://www.businessoffashion.com/topics/retail/)
 
@@ -93,21 +93,21 @@ Latest News & Analysis
 
 Unrivalled, world class journalism across fashion, luxury and beauty industries.
 
-## [Is Skims Really Worth $5 Billion?](https://www.businessoffashion.com/briefings/retail/is-skims-really-worth-5-billion/)
+## [Trump’s Tariffs Have Already Rewired the Global Fashion Industry](https://www.businessoffashion.com/articles/global-markets/the-state-of-fashion-2026-report-tariffs-trade-us-market/)
 
-Kim Kardashian’s shapewear-turned-lifestyle brand has defied all odds to reach a $5 billion valuation — but investors are betting on its future, not its past.
+Brands and their suppliers have been forced to rapidly adjust to the new US duties, with the ripple effects set to continue into next year, according to the BoF-McKinsey State of Fashion 2026.
 
-## [The BoF Podcast \| Amber Valletta: ‘Do What You Love. Serve a Higher Purpose.’](https://www.businessoffashion.com/podcasts/creative-class/the-bof-podcast-amber-valletta-do-what-you-love-serve-a-higher-purpose/)
+## [The BoF Podcast \| Prada Group CEO Andrea Guerra on Fixing the Luxury Business Model](https://www.businessoffashion.com/podcasts/luxury/the-bof-podcast-prada-group-ceo-andrea-guerra-on-fixing-the-luxury-business-model/)
 
-The supermodel joins BoF founder Imran Amed to trace her journey from Tulsa to the world’s runways, how sobriety transformed her life at 25, and why she believes fashion must finally take responsibility for its impact on the planet.
+The seasoned luxury executive joins Imran Amed at BoF VOICES 2025 to discuss pricing strategies and the importance of creative tension and cultural relevance.
 
-## [Hermès Appoints New Head of Perfume and Beauty](https://www.businessoffashion.com/news/beauty/hermes-new-head-perfume-beauty/)
+## [German Beauty Retailer Parfümerie Pieper Files for Insolvency](https://www.businessoffashion.com/news/beauty/german-beauty-retailer-parfumerie-pieper-files-for-insolvency/)
 
-Anne-Sarah Panhard, the former managing director of Hermès’ home division, assumed the role on Nov. 1, succeeding Agnès de Villers.
+Business operations will continue as the 94-year-old beauty retail chain undergoes restructuring.
 
-## [The Frayed Edge: Survival Is Fashion’s Next Big Climate Challenge](https://www.businessoffashion.com/briefings/sustainability/survival-fashion-climate-challenge-patagonia-pact/)
+## [What the AI ‘Bubble’ Means for Fashion](https://www.businessoffashion.com/briefings/technology/what-the-ai-bubble-means-for-fashion/)
 
-With efforts to avert climate crisis just limping along, the industry needs to brace for a harsh new reality.
+Concerns about the scale and concentration of AI investment in the key US market have reached a boiling point. A correction could have big consequences for brands this holiday season.
 
 [VIEW MORE](https://www.businessoffashion.com/latest/%20)
 

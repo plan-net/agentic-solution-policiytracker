@@ -2,7 +2,7 @@
 title: Europe Flexes Its Regulatory Muscle: Meta and TikTok Face Historic DSA Enforcement Action
 url: https://www.compliancehub.wiki/europe-flexes-its-regulatory-muscle-meta-and-tiktok-face-historic-dsa-enforcement-action/
 published_date: 2025-10-28T00:00:00
-collected_date: 2025-11-16T02:36:48.943481
+collected_date: 2025-11-24T03:54:17.664821
 source: Compliancehub
 source_url: https://www.compliancehub.wiki
 author: Compliance Hub
@@ -270,16 +270,18 @@ _Editor's Note: This article discusses preliminary findings that have not been f
 - [Digital Services Act Full Text](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065&ref=compliancehub.wiki)
 - [DSA Data Access Portal](https://digital-strategy.ec.europa.eu/en/policies/dsa-data-access?ref=compliancehub.wiki)
 
-[**Building Resilience Against Information Threats: A Deep Dive into the UK Government's RESIST 3 Framework** \
+[**Australia's World-First Social Media Ban: What's Really Happening on December 10, 2025** \
 \
-In an era where disinformation can spread faster than facts, governments worldwide are grappling with how to protect democratic institutions, public trust, and policy outcomes from information manipulation. The UK Government's newly updated RESIST 3 framework offers a comprehensive, pragmatic approach that any institution can adapt to strengthen](https://www.compliancehub.wiki/building-resilience-against-information-threats-a-deep-dive-into-the-uk-governments-resist-3-framework/)[**Navigating the U.S. State Privacy Law Patchwork Post-October 2025: A Nationwide Compliance Analysis** \
+Australia is about to implement the world's first nationwide social media ban for users under 16, and the clock is ticking. With Meta already beginning to remove teenage accounts from Instagram and Facebook starting December 4, and the full law taking effect on December 10, 2025, this controversial](https://www.compliancehub.wiki/australias-world-first-social-media-ban-whats-really-happening-on-december-10-2025/)[**Beyond COPPA: The Surprising Legal Maze of U.S. Children's Data Privacy** \
 \
-October 1, 2025 marked a critical inflection point in American data privacy regulation as Maryland's groundbreaking privacy law took effect, joining seven other new state laws that became active throughout 2025. With 18 states now enforcing comprehensive privacy legislation and aggressive enforcement actions intensifying—including Texas AG'](https://www.compliancehub.wiki/navigating-the-u-s-state-privacy-law-patchwork-post-october-2025-a-nationwide-compliance-analysis/)[**SEC Cybersecurity Rules: A Year of Enforcement and Investor Scrutiny** \
+1.0 Introduction: The Privacy Maze Beyond COPPA\
+For years, the conversation around children's online privacy in the United States began and ended with one federal law: the Children's Online Privacy Protection Act (COPPA), which protects the data of children under 13. While COPPA remains the](https://www.compliancehub.wiki/beyond-coppa-the-surprising-legal-maze-of-u-s-childrens-data-privacy/)[**CCO's Holiday Compliance Crisis 2025: Managing 72-Hour Breach Notifications, 61% Third-Party Risk, and 8 State Privacy Laws Mid-Season** \
 \
-As we approach 2026, public companies face unprecedented cybersecurity disclosure obligations and heightened SEC enforcement—here's what you need to know\
-Executive Summary\
-The SEC's cybersecurity disclosure rules, which became effective in December 2023, have fundamentally transformed how public companies approach incident reporting and governance oversight.](https://www.compliancehub.wiki/sec-cybersecurity-rules-a-year-of-enforcement-and-investor-scrutiny/)[**The Global Compliance Landscape 2025: Preparing for the Regulatory Wave of 2026** \
+It's November 15, 2025. Thanksgiving is next week. Black Friday is 12 days away. And if you're a Chief Compliance Officer or Data Protection Officer, you're already behind.\
+The holiday shopping season doesn't wait for compliance readiness. While your security team battles](https://www.compliancehub.wiki/ccos-holiday-compliance-crisis-2025-managing-72-hour-breach-notifications-61-third-party-risk-and-8-state-privacy-laws-mid-season/)[**Brussels Resurrects Chat Control 2.0 Through the Back Door: 'Risk Mitigation' is Mass Surveillance Rebranded** \
 \
-Executive Summary: As 2025 draws to a close, the compliance landscape has reached unprecedented complexity and enforcement intensity. With the EU AI Act now actively enforcing penalties up to €35 million, DORA requiring full financial sector compliance since January 17, 2025, NIS2 facing enforcement proceedings against 13 EU Member States,](https://www.compliancehub.wiki/the-global-compliance-landscape-2025-preparing-for-the-regulatory-wave-of-2026/)
+They said it was dead. They lied.\
+On October 14, 2025, after three failed attempts and massive public opposition, EU officials claimed Chat Control was "off the table." Privacy advocates cautiously celebrated. Tech companies breathed a sigh of relief. Citizens thought their digital rights were safe.\
+They were](https://www.compliancehub.wiki/brussels-resurrects-chat-control-2-0-through-the-back-door-risk-mitigation-is-mass-surveillance-rebranded/)
 
 [Generate Policy](https://generatepolicy.com/) [Global Compliance Map](https://globalcompliancemap.com/) [Policy Quest](https://policyquest.diy/) [Secure Checklists](https://securecheck.tools) [Cyber Templates](https://cybertemplates.com/)

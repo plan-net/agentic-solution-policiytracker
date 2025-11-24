@@ -2,7 +2,7 @@
 title: EU considers relaxing GDPR for AI development
 url: https://www.techzine.eu/news/privacy-compliance/136246/eu-considers-relaxing-gdpr-for-ai-development/
 published_date: 2025-11-11T00:00:00
-collected_date: 2025-11-16T02:36:21.334603
+collected_date: 2025-11-24T03:53:48.058648
 source: Techzine
 source_url: https://www.techzine.eu
 author: Colin Baak

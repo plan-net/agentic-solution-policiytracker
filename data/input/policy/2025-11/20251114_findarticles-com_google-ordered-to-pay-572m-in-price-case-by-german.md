@@ -2,7 +2,7 @@
 title: Google Ordered To Pay €572M In Price Case By German Court
 url: https://www.findarticles.com/google-ordered-to-pay-e572m-in-price-case-by-german-court/
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:51.942235
+collected_date: 2025-11-24T03:54:22.579302
 source: Findarticles
 source_url: https://www.findarticles.com
 author: Gregory Zuckerman
@@ -72,26 +72,26 @@ By [Gregory Zuckerman](https://www.findarticles.com/author/gregory/)
 Gregory Zuckerman is a veteran investigative journalist and financial writer with decades of experience covering global markets, investment strategies, and the business personalities shaping them.
 His writing blends deep reporting with narrative storytelling to uncover the hidden forces behind financial trends and innovations. Over the years, Gregory’s work has earned industry recognition for bringing clarity to complex financial topics, and he continues to focus on long-form journalism that explores hedge funds, private equity, and high-stakes investing.
 
-[WhatsApp to Roll Out Third-Party Chats in Europe](https://www.findarticles.com/whatsapp-to-roll-out-third-party-chats-in-europe/)
+[Google Tasks prepares for deadline sorting](https://www.findarticles.com/google-tasks-prepares-for-deadline-sorting/)
 
-[Vine Reboot Backed by Jack Dorsey Revealed](https://www.findarticles.com/vine-reboot-backed-by-jack-dorsey-revealed/)
+[Share files between iPhones and Android phones using AirDrop](https://www.findarticles.com/share-files-between-iphones-and-android-phones-using-airdrop/)
 
-[Pixel 10 Pro Fold Becomes IP68 Durability Benchmark](https://www.findarticles.com/pixel-10-pro-fold-becomes-ip68-durability-benchmark/)
+[Aurzen Roku TV projectors get significant sale price cuts](https://www.findarticles.com/aurzen-roku-tv-projectors-get-significant-sale-price-cuts/)
 
-[Google Home Gemini Rollout Disappoints Per Survey](https://www.findarticles.com/google-home-gemini-rollout-disappoints-per-survey/)
+[We Grok Elon Musk Better Than Most, Excluding Shohei Ohtani](https://www.findarticles.com/we-grok-elon-musk-better-than-most-excluding-shohei-ohtani/)
 
-[Bose QuietComfort Ultra Dives to Record Low Price](https://www.findarticles.com/bose-quietcomfort-ultra-dives-to-record-low-price/)
+[Nano Banana comes to Google Messages with Remix](https://www.findarticles.com/nano-banana-comes-to-google-messages-with-remix/)
 
-[Apple AirPods 4 Hit Their Lowest Price Ever](https://www.findarticles.com/apple-airpods-4-hit-their-lowest-price-ever/)
+[iScanner: Turn Your iPhone or iPad into a Scanner for $40](https://www.findarticles.com/iscanner-turn-your-iphone-or-ipad-into-a-scanner-for-40/)
 
-[It will allow Amazon Music to be shared on TikTok.](https://www.findarticles.com/it-will-allow-amazon-music-to-be-shared-on-tiktok/)
+[Apple AirPods Pro 3 hits a record low price at $219.99](https://www.findarticles.com/apple-airpods-pro-3-hits-a-record-low-price-at-219-99/)
 
-[The Metroid Prime 4 Preview Is Impressive Yet Worrisome](https://www.findarticles.com/the-metroid-prime-4-preview-is-impressive-yet-worrisome/)
+[Anker SOLIX C300 On Sale For Only $199.99](https://www.findarticles.com/anker-solix-c300-on-sale-for-only-199-99/)
 
-[FastestVPN lifetime access is now just $40](https://www.findarticles.com/fastestvpn-lifetime-access-is-now-just-40/)
+[TikTok Experiments With AI Content Filter and Invisible Watermarks](https://www.findarticles.com/tiktok-experiments-with-ai-content-filter-and-invisible-watermarks/)
 
-[Disney Sees YouTube TV Standoff Continuing](https://www.findarticles.com/disney-sees-youtube-tv-standoff-continuing/)
+[Google Expands AI Scam Defenses in India With New Tools](https://www.findarticles.com/google-expands-ai-scam-defenses-in-india-with-new-tools/)
 
-[Doctorow Reaches Out to EU and Canada for Right to Jailbreak](https://www.findarticles.com/doctorow-reaches-out-to-eu-and-canada-for-right-to-jailbreak/)
+[BitMar Offers $19.99 Lifetime Access to Free Streaming](https://www.findarticles.com/bitmar-offers-19-99-lifetime-access-to-free-streaming/)
 
-[Harvey Is Now A Legal AI Powerhouse Run By An Associate](https://www.findarticles.com/harvey-is-now-a-legal-ai-powerhouse-run-by-an-associate/)
+[Early Black Friday savings on iPad, Lenovo, Samsung and Fire tablets](https://www.findarticles.com/early-black-friday-savings-on-ipad-lenovo-samsung-and-fire-tablets/)

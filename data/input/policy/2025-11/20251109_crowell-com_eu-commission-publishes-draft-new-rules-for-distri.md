@@ -2,7 +2,7 @@
 title: EU Commission Publishes Draft New Rules for Distribution Agreements: What’s to Come for Distribution Relationships in the Digital Age?
 url: https://crowell.com/en/insights/client-alerts/eu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:43.025995
+collected_date: 2025-11-24T03:54:11.960613
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -26,7 +26,7 @@ collection_type: policy_landscape
 - [PDF Link](https://crowell.com/print/v2/content/44899/eu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age.pdf)
 - Share
 
-- [Email](mailto://https:%2F%2Fcrowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age?subject=EU%20Commission%20Publishes%20Draft%20New%20Rules%20for%20Distribution%20Agreements%3A%20What%E2%80%99s%20to%20Come%20for%20Distribution%20Relationships%20in%20the%20Digital%20Age%3F&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
+- [Email](mailto://crowell.com?subject=EU%20Commission%20Publishes%20Draft%20New%20Rules%20for%20Distribution%20Agreements%3A%20What%E2%80%99s%20to%20Come%20for%20Distribution%20Relationships%20in%20the%20Digital%20Age%3F&body=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 - [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 - [Twitter/X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.crowell.com%2Fen%2Finsights%2Fclient-alerts%2Feu-commission-publishes-draft-new-rules-for-distribution-agreements-what-s-to-come-for-distribution-relationships-in-the-digital-age)
 
@@ -49,37 +49,33 @@ The Commission has invited stakeholders to submit comments on the draft revised 
 
 - [Thomas De Meese](https://www.crowell.com/en/professionals/thomas-de-meese)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.282.1842](tel:%2B32.2.282.1842)
 
 [dGRlbWVlc2VAY3Jvd2VsbC5jb20=](mailto:dGRlbWVlc2VAY3Jvd2VsbC5jb20=)
 
 - [Marieke Van Nieuwenborgh](https://www.crowell.com/en/professionals/marieke-van-nieuwenborgh)
 
-- [Brussels](https://www.crowell.com/en/locations/brussels)
-
 - D \| [+32.2.282.4083](tel:%2B32.2.282.4083)
 
 [bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==](mailto:bXZhbm5pZXV3ZW5ib3JnaEBjcm93ZWxsLmNvbQ==)
 
-Client Alert \| 9 min read \| 09.11.25
+Client Alert \| 6 min read \| 11.19.25
 
-[One Year After Illumina/Grail – How Are EU Competition Authorities Now Dealing With Below-Threshold Mergers](https://www.crowell.com/en/insights/client-alerts/one-year-after-illuminagrail-how-are-eu-competition-authorities-now-dealing-with-below-threshold-mergers)
+[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
-About one year ago, the European Court of Justice (CJEU) ruled in its landmark Illumina/Grail judgment that the European Commission could not accept merger referrals from national competition authorities under Article 22 of the EU Merger Regulation (EUMR) unless those authorities had jurisdiction to review the transaction themselves (see our previous alert)....
+The facts before the Third Circuit in the recently decided case of Patel v. United States illustrate how parties can put themselves in a bind if they make factual admissions when resolving a criminal case involving fraud on the government while not simultaneously resolving the government’s civil claims under the False Claims Act (FCA) for the same underlying conduct....
 
-- Client Alert \| 8 min read \| 09.09.25
+- Client Alert \| 4 min read \| 11.18.25
 
-[FTC Stops Defending Rule Banning Noncompete Agreements, Opting Instead for “Aggressive” Case-by-Case Enforcement](https://www.crowell.com/en/insights/client-alerts/ftc-stops-defending-rule-banning-noncompete-agreements-opting-instead-for-aggressive-case-by-case-enforcement)
+[DOJ Announces Major Enforcement Actions Targeting North Korean Remote IT Worker Schemes](https://www.crowell.com/en/insights/client-alerts/doj-announces-major-enforcement-actions-targeting-north-korean-remote-it-worker-schemes)
 
-- Client Alert \| 12 min read \| 09.09.25
+- Client Alert \| 6 min read \| 11.18.25
 
-[The Month in International Trade – August 2025](https://www.crowell.com/en/insights/client-alerts/the-month-in-international-trade-august-2025)
+[The UK’s Cyber Security & Resilience Bill at a glance](https://www.crowell.com/en/insights/client-alerts/the-uks-cyber-security-and-resilience-bill-at-a-glance)
 
-- Client Alert \| 7 min read \| 09.08.25
+- Client Alert \| 2 min read \| 11.14.25
 
-[California’s Climate Disclosure Laws Continue to Roll Forward](https://www.crowell.com/en/insights/client-alerts/californias-climate-disclosure-laws-continue-to-roll-forward)
+[Defining Claim Terms by Implication: Lexicography Lessons from _Aortic Innovations LLC v. Edwards Lifesciences Corporation_](https://www.crowell.com/en/insights/client-alerts/defining-claim-terms-by-implication-lexicography-lessons-from-aortic-innovations-llc-v-edwards-lifesciences-corporation)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

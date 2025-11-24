@@ -1,8 +1,8 @@
 ---
-title: Climate and Energy: EU Policy and Regulation Update for 29 October 2025
+title: Climate and Energy: EU Policy and Regulation Update for ...
 url: https://www.clearygottlieb.com/news-and-insights/publication-listing/climate-energy-eu-policy-regulation-update-2025-10-29
 published_date: 2025-10-29T00:00:00
-collected_date: 2025-11-11T12:26:35.442261
+collected_date: 2025-11-24T03:54:19.687507
 source: Clearygottlieb
 source_url: https://www.clearygottlieb.com
 author: Cleary Gottlieb
@@ -11,7 +11,7 @@ language: en
 collection_type: policy_landscape
 ---
 
-# Climate and Energy: EU Policy and Regulation Update for 29 October 2025
+# Climate and Energy: EU Policy and Regulation Update for ...
 
 *By Cleary Gottlieb*
 

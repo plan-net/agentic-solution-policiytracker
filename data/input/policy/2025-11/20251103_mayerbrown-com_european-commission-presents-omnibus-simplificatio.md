@@ -2,7 +2,7 @@
 title: European Commission Presents “Omnibus” Simplification Package with Amendments to CSRD, CSDDD, CBAM and Taxonomy
 url: https://www.mayerbrown.com/en/insights/publications/2025/02/european-commission-presents-omnibus-simplification-package-with-amendments-to-csrd-csddd-cbam-and-taxonomy?utm_source=vuture&utm_medium=email&utm_campaign=%7Bvx:campaign%20name%7D
 published_date: 2025-11-03T00:00:00
-collected_date: 2025-11-03T03:50:38.186073
+collected_date: 2025-11-24T03:54:18.521711
 source: Mayerbrown
 source_url: https://www.mayerbrown.com
 description: February 27, 2025

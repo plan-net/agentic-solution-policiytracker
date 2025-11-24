@@ -2,7 +2,7 @@
 title: Zalando turns to EU top court in fight over online content rules
 url: https://ww.fashionnetwork.com/news/Zalando-turns-to-eu-top-court-in-fight-over-online-content-rules,1782792.html
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-16T02:36:34.090562
+collected_date: 2025-11-24T03:53:48.058540
 source: Ww
 source_url: https://ww.fashionnetwork.com
 author: FashionNetwork.com WW
@@ -35,34 +35,38 @@ The appeal also argued that the lower tribunal has unfairly flipped the burden o
 
 Tags :[Fashion](https://ww.fashionnetwork.com/news/sector/1,fashion)[Ready-to-wear](https://ww.fashionnetwork.com/news/sector/5,ready-to-wear)[Accessories](https://ww.fashionnetwork.com/news/sector/6,accessories)[Footwear](https://ww.fashionnetwork.com/news/sector/7,footwear)[Fashion](https://ww.fashionnetwork.com/news/sector/31,fashion)[Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Italy weighs one-off levy to bring private gold holdings into formal economy](https://ww.fashionnetwork.com/news/Italy-weighs-one-off-levy-to-bring-private-gold-holdings-into-formal-economy,1783034.html)
+### [Better Cotton Initiative to receive grant from Uzbekistan’s government](https://ww.fashionnetwork.com/news/Better-cotton-initiative-to-receive-grant-from-uzbekistan-s-government,1785219.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Kiabi banks on B2B with new customisable clothing brand Wekrew](https://ww.fashionnetwork.com/news/Kiabi-banks-on-b2b-with-new-customisable-clothing-brand-wekrew,1783001.html)
+### [Chanel reinvents luxury experience at Shanghai’s Plaza 66](https://ww.fashionnetwork.com/news/Chanel-reinvents-luxury-experience-at-shanghai-s-plaza-66,1785152.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Due diligence law: the right and far right unite to dismantle it in the European Parliament](https://ww.fashionnetwork.com/news/Due-diligence-law-the-right-and-far-right-unite-to-dismantle-it-in-the-european-parliament,1782754.html)
+### [Inside Stephen Curry’s $100 million breakup with Under Armour](https://ww.fashionnetwork.com/news/Inside-stephen-curry-s-100-million-breakup-with-under-armour,1785246.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Confindustria Moda: Slowdown in Italian fashion exports in the first seven months to €21.7 billion](https://ww.fashionnetwork.com/news/Confindustria-moda-slowdown-in-italian-fashion-exports-in-the-first-seven-months-to-21-7-billion,1782739.html)
+### [Zara workers plan Black Friday protests at stores across Europe](https://ww.fashionnetwork.com/news/Zara-workers-plan-black-friday-protests-at-stores-across-europe,1785251.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [US says trade talks with Swiss 'very positive'](https://ww.fashionnetwork.com/news/Us-says-trade-talks-with-swiss-very-positive-,1782882.html)
+### [Tod's: Three executives under investigation over labour exploitation](https://ww.fashionnetwork.com/news/Tod-s-three-executives-under-investigation-over-labour-exploitation,1785025.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Luca Sburlati of Confindustria Moda says Italian fashion under attack from both China, the US](https://ww.fashionnetwork.com/news/Luca-sburlati-of-confindustria-moda-says-italian-fashion-under-attack-from-both-china-the-us,1782694.html)
+### [Greenpeace continues to find even more chemicals in Shein clothing](https://ww.fashionnetwork.com/news/Greenpeace-continues-to-find-even-more-chemicals-in-shein-clothing,1785064.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### ['Conscious consumers' demand ethical approach by brands - Eco Age data](https://ww.fashionnetwork.com/news/-conscious-consumers-demand-ethical-approach-by-brands-eco-age-data,1782770.html)
+### [Duty of vigilance: Yves Rocher tells court it had drawn up 'plans'](https://ww.fashionnetwork.com/news/Duty-of-vigilance-yves-rocher-tells-court-it-had-drawn-up-plans-,1785030.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Swiss economy minister back in Washington for tariff talks](https://ww.fashionnetwork.com/news/Swiss-economy-minister-back-in-washington-for-tariff-talks,1782672.html)
+### [24th Altagamma Observatory says luxury industry revenue flat in 2025, recovery to start in 2026](https://ww.fashionnetwork.com/news/24th-altagamma-observatory-says-luxury-industry-revenue-flat-in-2025-recovery-to-start-in-2026,1784757.html)
+
+[Industry](https://ww.fashionnetwork.com/news/type/industrie)
+
+### [Stefano Canali: "We must ensure that luxury goods are priced in line with their true value"](https://ww.fashionnetwork.com/news/Stefano-canali-we-must-ensure-that-luxury-goods-are-priced-in-line-with-their-true-value-,1784902.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)

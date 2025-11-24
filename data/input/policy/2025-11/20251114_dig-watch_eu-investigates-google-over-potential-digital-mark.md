@@ -1,8 +1,8 @@
 ---
-title: EU investigates Google over potential Digital Markets Act ...
+title: EU investigates Google over potential Digital Markets Act breach | Digital Watch Observatory
 url: https://dig.watch/updates/eu-investigates-google-over-potential-digital-markets-act-breach
-published_date: 2025-11-14T02:36:34.663000
-collected_date: 2025-11-16T02:36:35.108605
+published_date: 2025-11-14T00:00:00
+collected_date: 2025-11-24T03:54:01.562933
 source: Dig
 source_url: https://dig.watch
 author: iliasd@diplomacy.edu
@@ -11,7 +11,7 @@ language: en
 collection_type: policy_landscape
 ---
 
-# EU investigates Google over potential Digital Markets Act ...
+# EU investigates Google over potential Digital Markets Act breach | Digital Watch Observatory
 
 *By iliasd@diplomacy.edu*
 
@@ -47,17 +47,17 @@ Senior Commissioners stressed that gatekeepers must offer fair and non-discrimin
 
 [EU's Digital Services Act (DSA) & Digital Markets Act (DMA)](https://dig.watch/processes/eu-digital-service-act-dsa-digital-market-act-dma)
 
-### [New York Times lawsuit prompts OpenAI to strengthen privacy protections](https://dig.watch/updates/new-york-times-lawsuit-prompts-openai-to-strengthen-privacy-protections)
+### [EU unveils vision for a modern justice system](https://dig.watch/updates/eu-unveils-vision-for-a-modern-justice-system)
 
-### [Irish regulator opens DSA probe into X](https://dig.watch/updates/irish-regulator-opens-dsa-probe-into-x)
+### [UK unveils major push to drive national AI growth](https://dig.watch/updates/uk-unveils-major-push-to-drive-national-ai-growth)
 
-### [European Commission launches Culture Compass to strengthen the EU identity](https://dig.watch/updates/european-commission-launches-culture-compass-to-strengthen-the-eu-identity)
+### [Tech groups welcome EU reforms as privacy advocates warn of retreat](https://dig.watch/updates/tech-groups-welcome-eu-reforms-as-privacy-advocates-warn-of-retreat)
 
-### [Brussels leak signals GDPR and AI Act adjustments](https://dig.watch/updates/brussels-leak-signals-gdpr-and-ai-act-adjustments)
+### [EU eases AI and data rules to boost tech growth](https://dig.watch/updates/eu-eases-ai-and-data-rules-to-boost-tech-growth)
 
-### [Banks and insurers pivot to AI agents at scale, Capgemini finds](https://dig.watch/updates/banks-and-insurers-pivot-to-ai-agents-at-scale-capgemini-finds)
+### [US administration pushes back on proposal to restrict Nvidia sales to China](https://dig.watch/updates/us-administration-pushes-back-on-proposal-to-restrict-nvidia-sales-to-china)
 
-### [ChatGPT-5 outperformed by a Chinese startup model](https://dig.watch/updates/chatgpt-5-outperformed-by-a-chinese-startup-model)
+### [AI in healthcare gains regulatory compass from UK experts](https://dig.watch/updates/ai-in-healthcare-gains-regulatory-compass-from-uk-experts)
 
 - [WordPress.org](https://wordpress.org/)
 - [Documentation](https://wordpress.org/documentation/)

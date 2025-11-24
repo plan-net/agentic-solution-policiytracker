@@ -98,6 +98,7 @@ class ChatServer:
         self.orchestrator = None
         self.streaming_orchestrator = None
         self.llm = None
+        self.context_tracker = None
         logger.info("Multi-agent ChatServer initialized with LangWatch observability")
 
     async def _get_graphiti_client(self):
@@ -155,11 +156,31 @@ class ChatServer:
             logger.info("Tool integration manager initialized")
         return self.tool_integration_manager
 
+    async def _get_context_tracker(self):
+        """Lazy initialization of chat context tracker."""
+        if self.context_tracker is None:
+            from neo4j import AsyncGraphDatabase
+            from src.graph_viz.context_tracker import ChatContextTracker
+
+            # Create Neo4j async driver
+            driver = AsyncGraphDatabase.driver(
+                settings.NEO4J_URI,
+                auth=(settings.NEO4J_USERNAME, settings.NEO4J_PASSWORD)
+            )
+
+            self.context_tracker = ChatContextTracker(
+                driver=driver,
+                ttl_minutes=5  # 5 minute TTL for context cache
+            )
+            logger.info("Chat context tracker initialized with Neo4j driver")
+        return self.context_tracker
+
     async def _get_orchestrator(self):
         """Lazy initialization of multi-agent orchestrator."""
         if self.orchestrator is None:
             llm = await self._get_llm()
             tool_manager = await self._get_tool_integration_manager()
+            context_tracker = await self._get_context_tracker()
 
             # Create tools dictionary from tool integration manager
             tools = tool_manager.tools
@@ -167,12 +188,14 @@ class ChatServer:
             # Initialize orchestrator
             self.orchestrator = MultiAgentOrchestrator(llm=llm, tools=tools)
 
-            # Set up tool integration manager
+            # Set up tool integration manager and context tracker
             self.orchestrator.tool_integration_manager = tool_manager
+            self.orchestrator.context_tracker = context_tracker
             self.orchestrator.planning_agent.set_tool_integration_manager(tool_manager)
             self.orchestrator.execution_agent.set_tool_integration_manager(tool_manager)
+            self.orchestrator.execution_agent.set_context_tracker(context_tracker)
 
-            logger.info("Multi-agent orchestrator initialized with knowledge graph tools")
+            logger.info("Multi-agent orchestrator initialized with knowledge graph tools and context tracking")
         return self.orchestrator
 
     async def _get_streaming_orchestrator(self):
@@ -180,6 +203,7 @@ class ChatServer:
         if self.streaming_orchestrator is None:
             llm = await self._get_llm()
             tool_manager = await self._get_tool_integration_manager()
+            context_tracker = await self._get_context_tracker()
 
             # Create tools dictionary from tool integration manager
             tools = tool_manager.tools
@@ -187,12 +211,14 @@ class ChatServer:
             # Initialize streaming orchestrator
             self.streaming_orchestrator = MultiAgentStreamingOrchestrator(llm=llm, tools=tools)
 
-            # Set up tool integration manager
+            # Set up tool integration manager and context tracker
             self.streaming_orchestrator.tool_integration_manager = tool_manager
+            self.streaming_orchestrator.context_tracker = context_tracker
             self.streaming_orchestrator.planning_agent.set_tool_integration_manager(tool_manager)
             self.streaming_orchestrator.execution_agent.set_tool_integration_manager(tool_manager)
+            self.streaming_orchestrator.execution_agent.set_context_tracker(context_tracker)
 
-            logger.info("Streaming multi-agent orchestrator initialized")
+            logger.info("Streaming multi-agent orchestrator initialized with context tracking")
         return self.streaming_orchestrator
 
     @app.get("/health")
@@ -371,9 +397,9 @@ class ChatServer:
                 "messages": [],
             }
 
-            # Start single thinking block
+            # Start single thinking block with session ID
             yield self._create_chunk(
-                chat_id, created, model, f"<think>\nAnalyzing query: '{user_message}'\n\n"
+                chat_id, created, model, f"<think>\n📋 Session ID: {session_id}\n\nAnalyzing query: '{user_message}'\n\n"
             )
 
             # Stream using LangGraph's native streaming

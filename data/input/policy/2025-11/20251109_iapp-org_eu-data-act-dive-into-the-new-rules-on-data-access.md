@@ -2,7 +2,7 @@
 title: EU Data Act: Dive into the new rules on data access and use
 url: https://iapp.org/resources/article/eu-data-act-dive-into-the-new-rules-on-data-access-and-use
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-11T12:26:07.606207
+collected_date: 2025-11-24T03:53:46.382123
 source: Iapp
 source_url: https://iapp.org
 description: [Overview](https://iapp.org/news) [Podcasts](https://iapp.org/news/privacy-advisor-podcast/) [Videos](https://iapp.org/news/videos/) [Write for us](https://iapp.org/news/write-for-us)

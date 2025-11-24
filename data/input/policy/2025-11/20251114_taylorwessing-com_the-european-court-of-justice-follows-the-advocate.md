@@ -2,7 +2,7 @@
 title: The European Court of Justice follows the Advocate General: Provision of a free user accounts constitutes a “sale” within the meaning of the ePrivacy Directive – no additional requirement under the GDPR
 url: https://www.taylorwessing.com/en/insights-and-events/insights/2025/11/european-court-of-justice-backs-the-advocate-general
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-16T02:36:21.124098
+collected_date: 2025-11-24T03:53:46.558547
 source: Taylorwessing
 source_url: https://www.taylorwessing.com
 description: "- [Home](https://www.taylorwessing.com/en/)

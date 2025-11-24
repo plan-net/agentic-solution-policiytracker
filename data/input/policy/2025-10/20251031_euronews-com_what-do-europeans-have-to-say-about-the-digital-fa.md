@@ -2,7 +2,7 @@
 title: What do Europeans have to say about the Digital Fairness ...
 url: https://www.euronews.com/next/2025/10/31/what-do-europeans-have-to-say-about-the-digital-fairness-act
 published_date: 2025-10-31T00:00:00
-collected_date: 2025-11-16T02:36:35.108537
+collected_date: 2025-11-24T03:53:46.558480
 source: Euronews
 source_url: https://www.euronews.com
 description: Advertisement

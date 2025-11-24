@@ -324,3 +324,30 @@ applications:
     min_replicas: 1
     max_replicas: 2
     target_num_ongoing_requests_per_replica: 1
+
+# Graph Visualization Server
+# Provides Neo4j knowledge graph visualization with 2D/3D views
+- name: graph-viz-server
+  route_prefix: /graph-viz
+  import_path: src.graph_viz.app:graph_viz_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j Configuration
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: politicalmonitoring
+
+      # API Keys (required for Text-to-Cypher)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+  ray_actor_options:
+    num_cpus: 1
+    memory: 2000000000  # 2GB
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 5
