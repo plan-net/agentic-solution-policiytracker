@@ -1,15 +1,15 @@
 """
-Entity builder for German Bundestag entities using political schema v4.
+Entity builder for German Bundestag entities using political schema v5.
 
 This module provides the BundestagEntityBuilder class for creating entity objects
-from raw Bundestag data according to the political_schema_v4 definitions.
+from raw Bundestag data according to the political_schema_v5 definitions.
 """
 
 from typing import Any, Optional
 
 import structlog
 
-from src.graphrag.political_schema_v4 import (
+from src.graphrag.political_schema_v5 import (
     BundestagFraktion,
     BundestagPerson,
     Vorgang,

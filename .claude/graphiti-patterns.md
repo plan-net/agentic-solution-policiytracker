@@ -68,10 +68,10 @@ We pass custom schema registries directly to `add_episode()`:
 ```python
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
-from src.graphrag.political_schema_v4 import (
-    ENTITY_TYPE_REGISTRY_V4,  # 28 entity types (20 v3 + 8 German Bundestag)
-    EDGE_TYPE_REGISTRY_V4,    # 52 edge types (37 v3 + 15 German Bundestag)
-    EDGE_TYPE_MAP_V4,         # Valid source-target-edge combinations
+from src.graphrag.political_schema_v5 import (
+    ENTITY_TYPE_REGISTRY_FULL,  # 28 entity types (20 general + 8 German Bundestag)
+    EDGE_TYPE_REGISTRY_FULL,    # 52 edge types (37 v3 + 15 v4)
+    EDGE_TYPE_MAP_FULL,         # Valid source-target-edge combinations
 )
 
 # Initialize Graphiti client
@@ -88,9 +88,9 @@ result = await client.add_episode(
     group_id="political_monitoring_v2",
 
     # ✅ Custom schema parameters
-    entity_types=ENTITY_TYPE_REGISTRY_V4,  # Dict[str, Type[BaseModel]]
-    edge_types=EDGE_TYPE_REGISTRY_V4,      # Dict[str, Type[BaseModel]]
-    edge_type_map=EDGE_TYPE_MAP_V4,        # Dict[Tuple[str, str], List[str]]
+    entity_types=ENTITY_TYPE_REGISTRY_FULL,  # Dict[str, Type[BaseModel]]
+    edge_types=EDGE_TYPE_REGISTRY_FULL,      # Dict[str, Type[BaseModel]]
+    edge_type_map=EDGE_TYPE_MAP_FULL,        # Dict[Tuple[str, str], List[str]]
 )
 
 # Result contains entities conforming to our schema

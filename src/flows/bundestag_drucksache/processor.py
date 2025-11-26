@@ -32,6 +32,7 @@ from src.flows.bundestag_common.field_extractors import (
     safe_list,
     safe_str,
 )
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 
 logger = structlog.get_logger()
@@ -534,6 +535,8 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
     extract_full_text = inputs.get("extract_full_text", False)
     max_concurrent_downloads = inputs.get("max_concurrent_downloads", 5)
     create_relationships = inputs.get("create_relationships", True)
+    # Enable Graphiti registration by default for search compatibility
+    enable_graphiti_registration = inputs.get("enable_graphiti_registration", True)
     start_date = inputs.get("start_date")
     end_date = inputs.get("end_date")
 
@@ -541,10 +544,25 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
     neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
     neo4j_password = os.getenv("NEO4J_PASSWORD", "password123")
-    neo4j_database = os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+    neo4j_database = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
 
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
     upsert_manager = Neo4jUpsertManager(driver=driver, database=neo4j_database)
+
+    # Initialize Graphiti registrar (optional)
+    graphiti_registrar = None
+    if enable_graphiti_registration:
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if openai_api_key:
+            graphiti_registrar = GraphitiNodeRegistrar(
+                neo4j_driver=driver,
+                neo4j_database=neo4j_database,
+                openai_api_key=openai_api_key,
+            )
+            logger.info("✅ Graphiti registrar initialized")
+        else:
+            logger.warning("⚠️ OPENAI_API_KEY not found, Graphiti registration disabled")
+            enable_graphiti_registration = False
 
     # Initialize API client
     api_client = BundestagAPIClient()
@@ -576,6 +594,8 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
         "pdfs_downloaded": 0,
         "pages_created": 0,
         "relationships_created": 0,
+        "graphiti_registered": 0,
+        "graphiti_failed": 0,
         "errors": [],
     }
 
@@ -584,6 +604,9 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
         await tracer.markdown(f"**Wahlperioden:** {', '.join(wahlperioden)}\n")
         await tracer.markdown(f"**Dokumentart:** {dokumentart}\n")
         await tracer.markdown(f"**Extract Full Text:** {'Yes' if extract_full_text else 'No'}\n")
+        await tracer.markdown(
+            f"**Graphiti Registration:** {'✅ Enabled' if enable_graphiti_registration else '❌ Disabled'}\n"
+        )
         await tracer.markdown("\n---\n\n")
 
         for wp in wahlperioden:
@@ -713,6 +736,64 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
                 await tracer.markdown(
                     f"Upserted {drucksache_results['successful']} drucksachen to Neo4j\n"
                 )
+
+                # Register with Graphiti if enabled
+                if (
+                    enable_graphiti_registration
+                    and graphiti_registrar
+                    and drucksache_results["successful"] > 0
+                ):
+                    await tracer.markdown("\nRegistering with Graphiti...\n")
+
+                    registered = 0
+                    failed = 0
+
+                    for entity in drucksache_entities:
+                        try:
+                            # Extract Drucksache identifiers
+                            drucksache_id = entity.get("drucksache_id")
+                            drucksache_nummer = entity.get("drucksache_nummer")
+
+                            if not drucksache_id or not drucksache_nummer:
+                                logger.warning(
+                                    f"Skipping Graphiti registration for entity missing keys: {entity}"
+                                )
+                                failed += 1
+                                continue
+
+                            # Generate entity name for embedding
+                            drucksache_name = drucksache_nummer
+                            if entity.get("titel"):
+                                drucksache_name = f"{drucksache_nummer}: {entity['titel']}"
+
+                            # Register with Graphiti
+                            result_graphiti = await graphiti_registrar.register_drucksache(
+                                drucksache_id=drucksache_id,
+                                drucksache_name=drucksache_name,
+                                additional_properties=None,
+                            )
+
+                            if result_graphiti.get("success"):
+                                registered += 1
+                            else:
+                                failed += 1
+                                logger.warning(
+                                    f"Failed to register Drucksache {drucksache_nummer}: "
+                                    f"{result_graphiti.get('reason')}"
+                                )
+
+                        except Exception as e:
+                            failed += 1
+                            logger.error(
+                                f"Error registering Drucksache with Graphiti: {e}", exc_info=True
+                            )
+
+                    stats["graphiti_registered"] += registered
+                    stats["graphiti_failed"] += failed
+
+                    await tracer.markdown(
+                        f"✅ Registered {registered} drucksachen with Graphiti ({failed} failed)\n"
+                    )
 
                 # DEBUG: Log PDF download decision
                 logger.info(
@@ -845,9 +926,14 @@ async def process_drucksache_batch(inputs: dict[str, Any], tracer):
 - **Drucksachen Skipped** (already exist): {stats['drucksachen_skipped']}
 - **PDFs Downloaded**: {stats['pdfs_downloaded']}
 - **Page Nodes Created**: {stats['pages_created']}
-- **Relationships Created**: {stats['relationships_created']}
-- **Execution Time**: {execution_time:.1f} seconds
+- **Relationships Created**: {stats['relationships_created']}"""
 
+    if enable_graphiti_registration:
+        report += f"\n- **Graphiti Registered**: {stats['graphiti_registered']} ({stats['graphiti_failed']} failed)"
+
+    report += f"\n- **Execution Time**: {execution_time:.1f} seconds\n"
+
+    report += f"""
 ## Configuration
 - **Wahlperioden**: {', '.join(wahlperioden)}
 - **Dokumentart**: {dokumentart}

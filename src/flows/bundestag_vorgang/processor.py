@@ -15,6 +15,7 @@ import structlog
 from kodosumi import core
 from neo4j import GraphDatabase
 
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 
 logger = structlog.get_logger()
@@ -210,15 +211,32 @@ async def process_vorgang_batch(inputs: dict[str, Any], tracer):
     batch_size = inputs.get("batch_size", 100)
     max_vorgaenge = inputs.get("max_vorgaenge", 1000)
     create_relationships = inputs.get("create_relationships", True)
+    # Enable Graphiti registration by default for search compatibility
+    enable_graphiti_registration = inputs.get("enable_graphiti_registration", True)
 
     # Initialize Neo4j connection
     neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
     neo4j_password = os.getenv("NEO4J_PASSWORD", "password123")
-    neo4j_database = os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+    neo4j_database = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
 
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
     upsert_manager = Neo4jUpsertManager(driver=driver, database=neo4j_database)
+
+    # Initialize Graphiti registrar (optional)
+    graphiti_registrar = None
+    if enable_graphiti_registration:
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if openai_api_key:
+            graphiti_registrar = GraphitiNodeRegistrar(
+                neo4j_driver=driver,
+                neo4j_database=neo4j_database,
+                openai_api_key=openai_api_key,
+            )
+            logger.info("✅ Graphiti registrar initialized")
+        else:
+            logger.warning("⚠️ OPENAI_API_KEY not found, Graphiti registration disabled")
+            enable_graphiti_registration = False
 
     stats = {
         "total_fetched": 0,
@@ -227,8 +245,25 @@ async def process_vorgang_batch(inputs: dict[str, Any], tracer):
         "deskriptoren_created": 0,
         "sachgebiete_created": 0,
         "relationships_created": 0,
+        "graphiti_registered": 0,
+        "graphiti_failed": 0,
         "errors": [],
     }
+
+    # Display configuration
+    await tracer.markdown("## Configuration\n")
+    await tracer.markdown(f"- **Wahlperioden**: {', '.join(wahlperioden)}\n")
+    await tracer.markdown(f"- **Vorgangstyp**: {vorgangstyp}\n")
+    await tracer.markdown(f"- **Batch Size**: {batch_size}\n")
+    await tracer.markdown(
+        f"- **Max Vorgänge**: {'All (no limit)' if max_vorgaenge is None else max_vorgaenge}\n"
+    )
+    await tracer.markdown(
+        f"- **Create Relationships**: {'✅ Yes' if create_relationships else '❌ No'}\n"
+    )
+    await tracer.markdown(
+        f"- **Graphiti Registration**: {'✅ Enabled' if enable_graphiti_registration else '❌ Disabled'}\n\n"
+    )
 
     try:
         for wp in wahlperioden:
@@ -286,6 +321,63 @@ async def process_vorgang_batch(inputs: dict[str, Any], tracer):
                 )
                 stats["vorgaenge_created"] += vorgang_results["successful"]
                 stats["total_processed"] += len(vorgang_entities)
+
+                # Register with Graphiti if enabled
+                if (
+                    enable_graphiti_registration
+                    and graphiti_registrar
+                    and vorgang_results["successful"] > 0
+                ):
+                    await tracer.markdown("\n📝 Registering with Graphiti...\n")
+
+                    registered = 0
+                    failed = 0
+
+                    for entity in vorgang_entities:
+                        try:
+                            # Extract Vorgang identifiers
+                            vorgang_id = entity.get("vorgang_id")
+
+                            if not vorgang_id:
+                                logger.warning(
+                                    f"Skipping Graphiti registration for entity missing vorgang_id: {entity}"
+                                )
+                                failed += 1
+                                continue
+
+                            # Generate entity name for embedding
+                            vorgang_name = vorgang_id
+                            if entity.get("titel"):
+                                vorgang_name = f"{vorgang_id}: {entity['titel']}"
+
+                            # Register with Graphiti
+                            result_graphiti = await graphiti_registrar.register_vorgang(
+                                vorgang_id=vorgang_id,
+                                vorgang_name=vorgang_name,
+                                additional_properties=None,
+                            )
+
+                            if result_graphiti.get("success"):
+                                registered += 1
+                            else:
+                                failed += 1
+                                logger.warning(
+                                    f"Failed to register Vorgang {vorgang_id}: "
+                                    f"{result_graphiti.get('reason')}"
+                                )
+
+                        except Exception as e:
+                            failed += 1
+                            logger.error(
+                                f"Error registering Vorgang with Graphiti: {e}", exc_info=True
+                            )
+
+                    stats["graphiti_registered"] += registered
+                    stats["graphiti_failed"] += failed
+
+                    await tracer.markdown(
+                        f"✅ Registered {registered} vorgänge with Graphiti ({failed} failed)\n\n"
+                    )
 
                 # Create related entities and relationships
                 if create_relationships:
@@ -354,7 +446,13 @@ async def process_vorgang_batch(inputs: dict[str, Any], tracer):
 - **Deskriptoren Created**: {stats['deskriptoren_created']}
 - **Sachgebiete Created**: {stats['sachgebiete_created']}
 - **Relationships Created**: {stats['relationships_created']}
+"""
 
+    # Add Graphiti stats if enabled
+    if enable_graphiti_registration:
+        report += f"- **Graphiti Registered**: {stats['graphiti_registered']} ({stats['graphiti_failed']} failed)\n"
+
+    report += """
 ## Configuration
 - **Wahlperioden**: {', '.join(wahlperioden)}
 - **Vorgangstyp**: {vorgangstyp}

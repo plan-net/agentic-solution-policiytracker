@@ -6,6 +6,7 @@ Run with: python src/flows/bundestag_wahlperiode/load_wahlperioden.py
 Or via just: just load-wahlperioden
 """
 
+import asyncio
 import os
 import sys
 from datetime import datetime
@@ -17,38 +18,67 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 from neo4j import GraphDatabase
 
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
+from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.flows.bundestag_wahlperiode.wahlperiode_data import WAHLPERIODE_REFERENCE_DATA
 
 
-def map_wahlperiode_to_entity(wp_data: dict[str, Any]) -> dict[str, Any]:
-    """Map wahlperiode reference data to entity structure."""
+async def map_wahlperiode_to_entity(
+    wp_data: dict[str, Any], entity_builder: BundestagEntityBuilder
+) -> dict[str, Any]:
+    """
+    Map wahlperiode reference data to entity structure using BundestagEntityBuilder.
+
+    This uses the Graphiti-compatible Pydantic model from political_schema_v5.
+
+    Args:
+        wp_data: Raw wahlperiode data
+        entity_builder: BundestagEntityBuilder instance
+
+    Returns:
+        Dictionary representation of validated Wahlperiode entity
+    """
     nummer = wp_data["wahlperiode_nummer"]
     election_date = wp_data.get("election_date")
     start_date = wp_data.get("start_date")
     end_date = wp_data.get("end_date")
 
-    # Compute duration if dates available
+    # Create entity using entity builder (validates against Pydantic model)
+    entity = await entity_builder.create_wahlperiode_entity(
+        wahlperiode_nummer=nummer,
+        von=start_date,  # Pydantic model uses 'von'
+        bis=end_date,  # Pydantic model uses 'bis'
+        bundeskanzler=wp_data.get("bundeskanzler"),
+        koalition=wp_data.get("koalition"),
+        sitze_gesamt=wp_data.get("sitze_gesamt"),
+        wahltag=election_date,
+        besonderheiten=wp_data.get("besonderheiten"),
+    )
+
+    # Compute additional derived fields
     duration_days = None
     if start_date and end_date:
         start_dt = datetime.fromisoformat(start_date)
         end_dt = datetime.fromisoformat(end_date)
         duration_days = (end_dt - start_dt).days
 
-    # Determine status
     status = compute_status(start_date, end_date)
 
-    entity = {
-        "wahlperiode_nummer": nummer,
-        "wahlperiode_name": f"{nummer}. Wahlperiode",
-        "election_date": election_date,
-        "start_date": start_date,
-        "end_date": end_date,
-        "duration_days": duration_days,
-        "is_snap_election": wp_data.get("is_snap_election", False),
-        "status": status,
-    }
+    # Convert Pydantic model to dict and add computed fields
+    entity_dict = entity.model_dump()
+    entity_dict.update(
+        {
+            "wahlperiode_name": f"{nummer}. Wahlperiode",
+            "election_date": election_date,
+            "start_date": start_date,  # Keep for compatibility
+            "end_date": end_date,  # Keep for compatibility
+            "duration_days": duration_days,
+            "is_snap_election": wp_data.get("is_snap_election", False),
+            "status": status,
+        }
+    )
 
-    return entity
+    return entity_dict
 
 
 def compute_status(start_date: Optional[str], end_date: Optional[str]) -> str:
@@ -95,20 +125,21 @@ def create_served_in_relationships(driver, database: str) -> dict[str, int]:
         return {"created": 0, "error": str(e)}
 
 
-def main():
-    """Main execution function."""
+async def main():
+    """Main execution function (async for entity builder)."""
     # Get Neo4j connection from environment or use defaults
     neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
     neo4j_password = os.getenv("NEO4J_PASSWORD", "password123")
-    neo4j_database = os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+    neo4j_database = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")  # Updated default
 
     print("=" * 60)
-    print("Bundestag Wahlperiode Loader")
+    print("Bundestag Wahlperiode Loader (Graphiti-Compatible)")
     print("=" * 60)
     print(f"\n📊 Loading {len(WAHLPERIODE_REFERENCE_DATA)} wahlperioden...")
     print(f"🔗 Connecting to Neo4j: {neo4j_uri}")
-    print(f"📦 Database: {neo4j_database}\n")
+    print(f"📦 Database: {neo4j_database}")
+    print(f"✨ Using BundestagEntityBuilder (Pydantic validation)\n")
 
     # Initialize Neo4j connection
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
@@ -116,11 +147,14 @@ def main():
     try:
         upsert_manager = Neo4jUpsertManager(driver=driver, database=neo4j_database)
 
-        # Map reference data to entities
-        print("⚙️  Mapping wahlperioden...")
+        # Initialize entity builder
+        entity_builder = BundestagEntityBuilder()
+
+        # Map reference data to entities using entity builder
+        print("⚙️  Mapping wahlperioden with entity builder...")
         entities = []
         for wp_data in WAHLPERIODE_REFERENCE_DATA:
-            entity = map_wahlperiode_to_entity(wp_data)
+            entity = await map_wahlperiode_to_entity(wp_data, entity_builder)
             entities.append(entity)
 
         # Count by status for summary
@@ -131,7 +165,7 @@ def main():
 
         snap_elections = sum(1 for e in entities if e.get("is_snap_election", False))
 
-        print(f"✅ Mapped {len(entities)} wahlperioden")
+        print(f"✅ Mapped {len(entities)} wahlperioden (Pydantic validated)")
         print(f"   - Completed: {status_counts.get('completed', 0)}")
         print(f"   - Current: {status_counts.get('current', 0)}")
         print(f"   - Future: {status_counts.get('future', 0)}")
@@ -145,6 +179,38 @@ def main():
 
         print(f"✅ Upserted {results['successful']} wahlperioden ({results['failed']} failed)\n")
 
+        # Register with Graphiti for search compatibility
+        print("🔍 Registering nodes with Graphiti for search compatibility...")
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if not openai_api_key:
+            print("⚠️  WARNING: OPENAI_API_KEY not set, skipping Graphiti registration")
+            graphiti_results = {"successful": 0, "failed": 0}
+        else:
+            registrar = GraphitiNodeRegistrar(driver, neo4j_database, openai_api_key)
+            graphiti_results = {"successful": 0, "failed": 0}
+
+            for entity in entities:
+                try:
+                    wp_nummer = entity["wahlperiode_nummer"]
+                    wp_name = entity["wahlperiode_name"]
+
+                    result = await registrar.register_wahlperiode(
+                        wahlperiode_nummer=wp_nummer,
+                        wahlperiode_name=wp_name,
+                    )
+
+                    if result.get("success"):
+                        graphiti_results["successful"] += 1
+                    else:
+                        graphiti_results["failed"] += 1
+                        print(f"   ⚠️  Failed to register Wahlperiode {wp_nummer}: {result.get('reason')}")
+
+                except Exception as e:
+                    graphiti_results["failed"] += 1
+                    print(f"   ❌ Error registering Wahlperiode {entity.get('wahlperiode_nummer')}: {e}")
+
+            print(f"✅ Registered {graphiti_results['successful']} wahlperioden with Graphiti ({graphiti_results['failed']} failed)\n")
+
         # Create relationships
         print("🔗 Creating SERVED_IN relationships...")
         relationship_results = create_served_in_relationships(driver, neo4j_database)
@@ -153,14 +219,17 @@ def main():
 
         # Final summary
         print("=" * 60)
-        print("✨ SUCCESS! Wahlperiode data loaded")
+        print("✨ SUCCESS! Wahlperiode data loaded (Graphiti-Compatible)")
         print("=" * 60)
         print("\n📈 Summary:")
         print(f"   - Wahlperiode nodes: {results['successful']}")
+        print(f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)")
         print(f"   - SERVED_IN relationships: {relationship_results['created']}")
         print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
+        print(f"   - Validation: Pydantic political_schema_v5.Wahlperiode")
         print("\n🔍 View in Neo4j Browser: http://localhost:7474")
-        print("   Query: MATCH (w:Wahlperiode) RETURN w ORDER BY w.wahlperiode_nummer\n")
+        print("   Query: MATCH (w:Entity:Wahlperiode) RETURN w ORDER BY w.wahlperiode_nummer")
+        print("   Check Graphiti: MATCH (w:Entity:Wahlperiode) RETURN w.uuid, w.name, size(w.name_embedding) AS embedding_dim\n")
 
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
@@ -174,4 +243,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

@@ -2,6 +2,9 @@
 Simple document processor using direct Graphiti API.
 
 Focused on doing one thing well: processing documents into temporal knowledge graph.
+
+Enhanced with entity name normalization to reduce duplicate entity creation from
+common abbreviations and name variations.
 """
 
 import asyncio
@@ -22,10 +25,20 @@ from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
 from src.flows.data_ingestion.document_tracker import DocumentTracker
-from src.graphrag.political_schema_v3 import (
-    EDGE_TYPE_MAP,
-    EDGE_TYPE_REGISTRY,
-    ENTITY_TYPE_REGISTRY,
+from src.flows.data_ingestion.entity_normalizer import EntityNormalizer
+from src.flows.data_ingestion.entity_registry import EntityRegistry
+from src.flows.data_ingestion.deduplicating_graphiti_client import (
+    DeduplicatingGraphitiClient,
+    EntityResolutionResult,
+)
+from src.graphrag.political_schema_v5 import (
+    EDGE_TYPE_MAP_GENERAL as EDGE_TYPE_MAP,
+)
+from src.graphrag.political_schema_v5 import (
+    EDGE_TYPE_REGISTRY_GENERAL as EDGE_TYPE_REGISTRY,
+)
+from src.graphrag.political_schema_v5 import (
+    ENTITY_TYPE_REGISTRY_GENERAL as ENTITY_TYPE_REGISTRY,
 )
 
 logger = structlog.get_logger()
@@ -77,10 +90,13 @@ try:
             self.actor_id = actor_id
             self.clear_mode = clear_mode
             self.graphiti_client = None
+            self.dedupe_client = None  # Phase 2: Deduplicating wrapper
             self.tracker = DocumentTracker()
+            self.entity_normalizer = EntityNormalizer()  # Phase 1: Entity normalizer
+            self.entity_registry = EntityRegistry()  # Phase 2: Entity registry
 
         async def initialize(self):
-            """Initialize the Graphiti client connection with APISIX routing."""
+            """Initialize the Graphiti client connection with APISIX routing and Phase 2 deduplication."""
             try:
                 from src.flows.shared.apisix_llm_client import (
                     AgentContext,
@@ -97,14 +113,26 @@ try:
                 # Get APISIX-configured LLM client
                 llm_client, note = create_graphiti_apisix_config(context)
 
-                # Initialize Graphiti with APISIX routing
+                # Initialize base Graphiti client with APISIX routing
                 self.graphiti_client = Graphiti(
                     NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
                 )
                 await self.graphiti_client.build_indices_and_constraints()
 
+                # Phase 2: Initialize EntityRegistry schema
+                await self.entity_registry.initialize_schema()
+
+                # Phase 2: Wrap base client with DeduplicatingGraphitiClient
+                self.dedupe_client = DeduplicatingGraphitiClient(
+                    base_client=self.graphiti_client,
+                    entity_registry=self.entity_registry,
+                    entity_normalizer=self.entity_normalizer,
+                    enable_deduplication=True,
+                    enable_alias_registration=True,
+                )
+
                 logger.info(
-                    f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing"
+                    f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing and Phase 2 deduplication"
                 )
                 logger.warning(note)  # Log the Week 1 limitation
                 return True
@@ -127,7 +155,20 @@ try:
             # Apply preprocessing (link removal, deduplication, whitespace cleaning)
             from src.flows.data_ingestion.document_preprocessor import preprocess_document
 
-            return preprocess_document(content, enable_link_removal=True)
+            preprocessed = preprocess_document(content, enable_link_removal=True)
+
+            # Apply entity name normalization to reduce duplicate entity creation
+            normalized = self.entity_normalizer.normalize_text(preprocessed)
+
+            # Log normalization statistics
+            norm_stats = self.entity_normalizer.get_statistics(preprocessed)
+            if norm_stats["total_abbreviations"] > 0:
+                logger.info(
+                    f"Actor {self.actor_id}: Normalized {norm_stats['total_abbreviations']} abbreviations in {doc_path.name}",
+                    abbreviations=norm_stats["abbreviation_counts"],
+                )
+
+            return normalized
 
         async def _process_chunked_document(self, doc_path: Path, chunks: list[dict]) -> dict:
             """
@@ -169,8 +210,9 @@ try:
                     # Chain linking: link to previous chunk if it exists
                     previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
 
-                    # Process chunk through Graphiti
-                    result = await self.graphiti_client.add_episode(
+                    # Phase 2: Process chunk through DeduplicatingGraphitiClient (wraps base Graphiti)
+                    # This will automatically check EntityRegistry and reuse canonical entity UUIDs
+                    result = await self.dedupe_client.add_episode(
                         name=episode_name,
                         episode_body=chunk_text,
                         source_description=source_description,
@@ -194,11 +236,37 @@ try:
                     total_entities += entity_count
                     total_relationships += relationship_count
 
+                    # Phase 2: Extract entity tracking data for chunk-aware tracking
+                    entity_names = [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                    entity_uuids = [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+
+                    # Phase 2: Extract canonical UUIDs from deduplication metadata
+                    canonical_uuids = []
+                    if hasattr(result, "metadata") and "entity_resolution_map" in result.metadata:
+                        resolution_map = result.metadata["entity_resolution_map"]
+                        # Get canonical UUIDs in same order as entity_uuids
+                        canonical_uuids = [
+                            resolution_map.get(entity_uuid, EntityResolutionResult(
+                                original_uuid=entity_uuid,
+                                canonical_uuid=entity_uuid,
+                                is_reused=False,
+                                match_type="new",
+                                confidence=1.0
+                            )).canonical_uuid
+                            for entity_uuid in entity_uuids
+                        ]
+                    else:
+                        # Fallback: use entity UUIDs as canonical (no deduplication applied)
+                        canonical_uuids = entity_uuids
+
                     chunk_results.append(
                         {
                             "chunk_index": chunk_index,
                             "episode_uuid": episode_uuid,
-                            "entities": entity_count,
+                            "entities": entity_names,  # Phase 2: entity names list
+                            "entity_uuids": entity_uuids,  # Phase 2: Graphiti UUIDs
+                            "canonical_uuids": canonical_uuids,  # Phase 2: EntityRegistry canonical UUIDs
+                            "entity_count": entity_count,  # Keep for backward compatibility
                             "relationships": relationship_count,
                             "tokens": chunk_token_count,
                             "boundary_type": chunk.get("boundary_type", "unknown"),
@@ -229,14 +297,13 @@ try:
 
             processing_time = (datetime.now() - start_time).total_seconds()
 
-            # Track in document tracker (will add mark_processed_chunked method)
+            # Phase 2: Track in document tracker with chunk-aware tracking
             if success_rate >= 0.5:  # At least 50% of chunks succeeded
-                # For now, use the regular mark_processed with aggregated data
-                self.tracker.mark_processed(
+                # Use Phase 2 chunk-aware tracking
+                self.tracker.mark_processed_chunked_v2(
                     str(doc_path),
-                    episode_uuids[0] if episode_uuids else None,
-                    total_entities,
-                    total_relationships,
+                    chunk_results,  # Pass Phase 2 chunk_results with canonical_uuids
+                    len(chunks),
                 )
             else:
                 error_msg = f"Chunked processing failed: only {successful_chunks}/{len(chunks)} chunks succeeded"
@@ -389,6 +456,8 @@ class SimpleDocumentProcessor:
     def __init__(self, tracker: DocumentTracker, clear_mode: bool = False):
         self.tracker = tracker
         self.clear_mode = clear_mode
+        self.entity_normalizer = EntityNormalizer()  # Phase 1: Entity normalizer
+        self.entity_registry = EntityRegistry()  # Phase 2: Entity registry
         self.processing_stats = {
             "total_documents": 0,
             "processed": 0,
@@ -503,11 +572,37 @@ class SimpleDocumentProcessor:
                 total_entities += entity_count
                 total_relationships += relationship_count
 
+                # Phase 2: Extract entity tracking data for chunk-aware tracking
+                entity_names = [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                entity_uuids = [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+
+                # Phase 2: Extract canonical UUIDs from deduplication metadata
+                canonical_uuids = []
+                if hasattr(result, "metadata") and "entity_resolution_map" in result.metadata:
+                    resolution_map = result.metadata["entity_resolution_map"]
+                    # Get canonical UUIDs in same order as entity_uuids
+                    canonical_uuids = [
+                        resolution_map.get(entity_uuid, EntityResolutionResult(
+                            original_uuid=entity_uuid,
+                            canonical_uuid=entity_uuid,
+                            is_reused=False,
+                            match_type="new",
+                            confidence=1.0
+                        )).canonical_uuid
+                        for entity_uuid in entity_uuids
+                    ]
+                else:
+                    # Fallback: use entity UUIDs as canonical (no deduplication applied)
+                    canonical_uuids = entity_uuids
+
                 chunk_results.append(
                     {
                         "chunk_index": chunk_index,
                         "episode_uuid": episode_uuid,
-                        "entities": entity_count,
+                        "entities": entity_names,  # Phase 2: entity names list
+                        "entity_uuids": entity_uuids,  # Phase 2: Graphiti UUIDs
+                        "canonical_uuids": canonical_uuids,  # Phase 2: EntityRegistry canonical UUIDs
+                        "entity_count": entity_count,  # Keep for backward compatibility
                         "relationships": relationship_count,
                         "tokens": chunk_token_count,
                         "boundary_type": chunk.get("boundary_type", "unknown"),
@@ -574,13 +669,13 @@ class SimpleDocumentProcessor:
 
         processing_time = (datetime.now() - start_time).total_seconds()
 
-        # Track in document tracker
+        # Phase 2: Track in document tracker with chunk-aware tracking
         if success_rate >= 0.5:  # At least 50% of chunks succeeded
-            self.tracker.mark_processed(
+            # Use Phase 2 chunk-aware tracking
+            self.tracker.mark_processed_chunked_v2(
                 str(doc_path),
-                episode_uuids[0] if episode_uuids else None,
-                total_entities,
-                total_relationships,
+                chunk_results,  # Pass Phase 2 chunk_results with canonical_uuids
+                len(chunks),
             )
             self.processing_stats["processed"] += 1
         else:
@@ -616,10 +711,22 @@ class SimpleDocumentProcessor:
         }
 
     async def process_document(self, doc_path: Path, graphiti_client: Graphiti) -> dict[str, any]:
-        """Process a single document through Graphiti."""
+        """Process a single document through Graphiti with Phase 2 deduplication."""
         start_time = datetime.now()
 
         try:
+            # Phase 2: Initialize EntityRegistry schema (if not already done)
+            await self.entity_registry.initialize_schema()
+
+            # Phase 2: Wrap graphiti_client with DeduplicatingGraphitiClient
+            dedupe_client = DeduplicatingGraphitiClient(
+                base_client=graphiti_client,
+                entity_registry=self.entity_registry,
+                entity_normalizer=self.entity_normalizer,
+                enable_deduplication=True,
+                enable_alias_registration=True,
+            )
+
             # Check if already processed (unless clear mode)
             if not self.clear_mode and self.tracker.is_processed(str(doc_path)):
                 logger.info(f"Skipping already processed document: {doc_path}")
@@ -665,7 +772,8 @@ class SimpleDocumentProcessor:
 
             # Process all chunks (delegates to _process_chunked_document)
             try:
-                result = await self._process_chunked_document(doc_path, chunks, graphiti_client)
+                # Phase 2: Pass dedupe_client instead of base graphiti_client
+                result = await self._process_chunked_document(doc_path, chunks, dedupe_client)
 
                 # Return the result from chunked processing
                 doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name

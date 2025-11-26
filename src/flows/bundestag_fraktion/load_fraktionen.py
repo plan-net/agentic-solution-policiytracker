@@ -6,6 +6,7 @@ Run with: python src/flows/bundestag_fraktion/load_fraktionen.py
 Or via just: just load-fraktionen
 """
 
+import asyncio
 import os
 import sys
 from typing import Any
@@ -16,6 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 from neo4j import GraphDatabase
 
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 from src.flows.bundestag_fraktion.fraktion_data import FRAKTION_REFERENCE_DATA
 
 
@@ -118,13 +120,13 @@ def create_successor_relationships(driver, database: str) -> dict[str, int]:
         return {"created": 0, "error": str(e)}
 
 
-def main():
-    """Main execution function."""
+async def main():
+    """Main execution function (async for Graphiti registration)."""
     # Get Neo4j connection from environment or use defaults
     neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
     neo4j_password = os.getenv("NEO4J_PASSWORD", "password123")
-    neo4j_database = os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+    neo4j_database = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")  # Fixed typo
 
     print("=" * 60)
     print("Bundestag Fraktion Loader")
@@ -170,6 +172,45 @@ def main():
 
         print(f"✅ Upserted {results['successful']} fraktionen ({results['failed']} failed)\n")
 
+        # Register with Graphiti for search compatibility
+        print("🔍 Registering nodes with Graphiti for search compatibility...")
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        if not openai_api_key:
+            print("⚠️  WARNING: OPENAI_API_KEY not set, skipping Graphiti registration")
+            graphiti_results = {"successful": 0, "failed": 0}
+        else:
+            registrar = GraphitiNodeRegistrar(driver, neo4j_database, openai_api_key)
+            graphiti_results = {"successful": 0, "failed": 0}
+
+            for entity in entities:
+                try:
+                    fraktion_id = entity["fraktion_id"]
+                    fraktion_name = entity["fraktion_name"]
+
+                    # Generate embedding
+                    embedding = await registrar.generate_embedding(fraktion_name)
+
+                    # Use generic add_entity_metadata since this is :Fraktion not :BundestagFraktion
+                    result = registrar.add_entity_metadata(
+                        entity_label="Fraktion",
+                        entity_id_field="fraktion_id",
+                        entity_id_value=fraktion_id,
+                        entity_name=fraktion_name,
+                        name_embedding=embedding,
+                    )
+
+                    if result.get("success"):
+                        graphiti_results["successful"] += 1
+                    else:
+                        graphiti_results["failed"] += 1
+                        print(f"   ⚠️  Failed to register Fraktion {fraktion_id}: {result.get('reason')}")
+
+                except Exception as e:
+                    graphiti_results["failed"] += 1
+                    print(f"   ❌ Error registering Fraktion {entity.get('fraktion_id')}: {e}")
+
+            print(f"✅ Registered {graphiti_results['successful']} fraktionen with Graphiti ({graphiti_results['failed']} failed)\n")
+
         # Create ACTIVE_IN relationships
         print("🔗 Creating ACTIVE_IN relationships...")
         active_in_results = create_active_in_relationships(driver, neo4j_database)
@@ -187,16 +228,18 @@ def main():
 
         # Final summary
         print("=" * 60)
-        print("✨ SUCCESS! Fraktion data loaded")
+        print("✨ SUCCESS! Fraktion data loaded (Graphiti-Compatible)")
         print("=" * 60)
         print("\n📈 Summary:")
         print(f"   - Fraktion nodes: {results['successful']}")
+        print(f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)")
         print(f"   - ACTIVE_IN relationships: {active_in_results['created']}")
         print(f"   - MEMBER_OF relationships: {member_of_results['created']}")
         print(f"   - SUCCESSOR_OF relationships: {successor_results['created']}")
         print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
         print("\n🔍 View in Neo4j Browser: http://localhost:7474")
-        print("   Query: MATCH (f:Fraktion) RETURN f ORDER BY f.founding_date")
+        print("   Query: MATCH (f:Entity:Fraktion) RETURN f ORDER BY f.founding_date")
+        print("   Check Graphiti: MATCH (f:Entity:Fraktion) RETURN f.uuid, f.name, size(f.name_embedding) AS embedding_dim")
         print(
             "   Query: MATCH (p:BundestagPerson)-[r:MEMBER_OF]->(f:Fraktion) RETURN p, r, f LIMIT 100\n"
         )
@@ -213,4 +256,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

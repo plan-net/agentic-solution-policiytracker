@@ -40,6 +40,14 @@ async def process_bundestag_persons(inputs: dict[str, Any], tracer) -> core.resp
         def entity_type(self) -> str:
             return "BundestagPerson"
 
+        @property
+        def entity_id_field(self) -> str:
+            return "person_id"
+
+        def get_entity_name(self, entity: dict[str, Any]) -> str:
+            """Extract person name for Graphiti registration."""
+            return entity.get("person_name", "Unknown Person")
+
         def map_api_to_entity(self, api_data: dict[str, Any]) -> dict[str, Any]:
             """Map Person API data to BundestagPerson entity."""
             person_id = safe_str(api_data.get("id"))
@@ -103,7 +111,13 @@ async def process_bundestag_persons(inputs: dict[str, Any], tracer) -> core.resp
 
             return entity
 
-    # Initialize flow
+    # Get OpenAI API key for Graphiti registration
+    openai_api_key = inputs.get("openai_api_key")
+    if not openai_api_key:
+        import os
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+
+    # Initialize flow with Graphiti registration enabled
     flow = BundestagPersonFlow(
         api_key=inputs["api_key"],
         api_url=inputs["api_url"],
@@ -111,6 +125,8 @@ async def process_bundestag_persons(inputs: dict[str, Any], tracer) -> core.resp
         neo4j_username=inputs["neo4j_username"],
         neo4j_password=inputs["neo4j_password"],
         neo4j_database=inputs["neo4j_database"],
+        enable_graphiti_registration=True if openai_api_key else False,
+        openai_api_key=openai_api_key,
     )
 
     try:

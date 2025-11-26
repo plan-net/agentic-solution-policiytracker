@@ -5,6 +5,7 @@ Uses the PlenarprotokollCollector from bundestag_ingestion to fetch and
 process plenary session protocols.
 """
 
+import os
 import time
 from datetime import datetime
 from typing import Any
@@ -14,6 +15,7 @@ from kodosumi import core
 from neo4j import GraphDatabase
 
 from src.flows.bundestag_common.api_client import BundestagAPIClient
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_ingestion.collectors.plenarprotokoll_collector import (
     PlenarprotokollCollector,
@@ -53,6 +55,8 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
     max_protocols = inputs.get("max_protocols")  # Can be None for unlimited
     fetch_full_text = inputs.get("fetch_full_text", False)
     create_relationships = inputs.get("create_relationships", True)
+    # Enable Graphiti registration by default for search compatibility
+    enable_graphiti_registration = inputs.get("enable_graphiti_registration", True)
 
     await tracer.markdown("## Configuration\n")
     await tracer.markdown(f"- **Wahlperioden**: {', '.join(map(str, wahlperioden))}\n")
@@ -61,6 +65,9 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
     )
     await tracer.markdown(f"- **Batch size**: {batch_size}\n")
     await tracer.markdown(f"- **Fetch full text**: {'✅ Yes' if fetch_full_text else '❌ No'}\n")
+    await tracer.markdown(
+        f"- **Graphiti registration**: {'✅ Enabled' if enable_graphiti_registration else '❌ Disabled'}\n"
+    )
     await tracer.markdown(f"- **Date range**: {start_date or 'Any'} to {end_date or 'Any'}\n\n")
 
     if fetch_full_text:
@@ -77,7 +84,24 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
         api_client = BundestagAPIClient()
 
         # Upsert manager
-        upsert_manager = Neo4jUpsertManager(driver, "politicamonitoring.v2")
+        upsert_manager = Neo4jUpsertManager(driver, "politicalmonitoring.v3")
+
+        # Graphiti registrar (optional)
+        graphiti_registrar = None
+        if enable_graphiti_registration:
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+            if not openai_api_key:
+                await tracer.markdown(
+                    "⚠️ OPENAI_API_KEY not found, Graphiti registration disabled\n"
+                )
+                enable_graphiti_registration = False
+            else:
+                graphiti_registrar = GraphitiNodeRegistrar(
+                    neo4j_driver=driver,
+                    neo4j_database="politicalmonitoring.v3",
+                    openai_api_key=openai_api_key,
+                )
+                await tracer.markdown("✅ Graphiti registrar initialized\n")
 
         await tracer.markdown("✅ All components initialized\n\n")
 
@@ -95,13 +119,15 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
     total_entities = 0
     total_edges = 0
     total_errors = 0
+    total_graphiti_registered = 0
+    total_graphiti_failed = 0
 
     for wahlperiode in wahlperioden:
         await tracer.markdown(f"\n### Processing Wahlperiode {wahlperiode}\n")
 
         # Create collector with neo4j_driver for automatic saving
         collector = PlenarprotokollCollector(
-            api_client=api_client, neo4j_driver=driver, neo4j_database="politicamonitoring.v2"
+            api_client=api_client, neo4j_driver=driver, neo4j_database="politicalmonitoring.v3"
         )
 
         # Build filters
@@ -176,6 +202,65 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
 
                 await tracer.markdown(f"✅ Upserted **{successful}** protocols\n\n")
 
+                # Register with Graphiti if enabled
+                if enable_graphiti_registration and graphiti_registrar and successful > 0:
+                    await tracer.markdown("### Registering with Graphiti\n")
+
+                    registered = 0
+                    failed = 0
+
+                    for entity in entities:
+                        try:
+                            # Extract Plenarprotokoll identifiers
+                            sitzungsnummer = entity.get("sitzungsnummer")
+                            entity_wahlperiode = entity.get("wahlperiode")
+
+                            if not sitzungsnummer or not entity_wahlperiode:
+                                logger.warning(
+                                    f"Skipping Graphiti registration for entity missing keys: {entity.get('id')}"
+                                )
+                                failed += 1
+                                continue
+
+                            # Generate entity name for embedding
+                            plenarprotokoll_name = (
+                                f"Plenarprotokoll {entity_wahlperiode}/{sitzungsnummer}"
+                            )
+                            if entity.get("titel"):
+                                plenarprotokoll_name = entity["titel"]
+
+                            # Register with Graphiti
+                            result_graphiti = await graphiti_registrar.register_plenarprotokoll(
+                                sitzungsnummer=sitzungsnummer,
+                                wahlperiode=entity_wahlperiode,
+                                plenarprotokoll_name=plenarprotokoll_name,
+                                additional_properties=None,
+                            )
+
+                            if result_graphiti.get("success"):
+                                registered += 1
+                            else:
+                                failed += 1
+                                logger.warning(
+                                    f"Failed to register Plenarprotokoll {entity_wahlperiode}/{sitzungsnummer}: "
+                                    f"{result_graphiti.get('reason')}"
+                                )
+
+                        except Exception as e:
+                            failed += 1
+                            logger.error(
+                                f"Error registering Plenarprotokoll with Graphiti: {e}",
+                                exc_info=True,
+                            )
+
+                    total_graphiti_registered += registered
+                    total_graphiti_failed += failed
+
+                    await tracer.markdown(
+                        f"✅ Registered **{registered}** protocols with Graphiti "
+                        f"({failed} failed)\n\n"
+                    )
+
                 # Create relationships if requested
                 if create_relationships and result.get("edges"):
                     await tracer.markdown("### Creating Relationships\n")
@@ -196,6 +281,11 @@ async def process_plenarprotokoll_batch(inputs: dict[str, Any], tracer):
     await tracer.markdown(f"- **Total protocols**: {total_protocols}\n")
     await tracer.markdown(f"- **Total entities**: {total_entities}\n")
     await tracer.markdown(f"- **Total edges**: {total_edges}\n")
+    if enable_graphiti_registration:
+        await tracer.markdown(
+            f"- **Graphiti registered**: {total_graphiti_registered} "
+            f"({total_graphiti_failed} failed)\n"
+        )
     await tracer.markdown(f"- **Errors**: {total_errors}\n")
     await tracer.markdown(f"- **Duration**: {duration:.1f} seconds\n")
     await tracer.markdown(f"**End Time:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")

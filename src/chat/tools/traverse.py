@@ -1,7 +1,7 @@
 """Graph traversal tools for exploring multi-hop relationships in the knowledge graph."""
 
 import logging
-from typing import List, Optional
+from typing import Optional
 
 from graphiti_core import Graphiti
 from langchain_core.callbacks import CallbackManagerForToolRun
@@ -16,10 +16,13 @@ class TraverseFromEntityInput(BaseModel):
 
     entity_name: str = Field(description="Starting entity to traverse from")
     relationship_types: Optional[list[str]] = Field(
-        default=None, description="[DEPRECATED] Not used - tool now finds ALL relationships and applies relevance filtering"
+        default=None,
+        description="[DEPRECATED] Not used - tool now finds ALL relationships and applies relevance filtering",
     )
     max_depth: int = Field(default=2, description="Maximum depth to traverse (1-3 recommended)")
-    max_results: int = Field(default=15, description="Maximum number of most relevant results to return")
+    max_results: int = Field(
+        default=15, description="Maximum number of most relevant results to return"
+    )
 
 
 class FindPathsInput(BaseModel):
@@ -160,7 +163,9 @@ class TraverseFromEntityTool(BaseTool):
                 )
                 records = await result.data()
 
-                logger.info(f"Cypher traversal found {len(records)} connected entities (all relationship types)")
+                logger.info(
+                    f"Cypher traversal found {len(records)} connected entities (all relationship types)"
+                )
                 return records
 
         except Exception as e:
@@ -340,7 +345,9 @@ class TraverseFromEntityTool(BaseTool):
             logger.debug(f"Could not parse Episodic name: {e}")
             return None
 
-    def _apply_relevance_filtering(self, traversal_results: list[dict], source_entity_name: str, max_final_results: int = 15) -> list[dict]:
+    def _apply_relevance_filtering(
+        self, traversal_results: list[dict], source_entity_name: str, max_final_results: int = 15
+    ) -> list[dict]:
         """Apply relevance scoring and filter to top results.
 
         Args:
@@ -358,10 +365,7 @@ class TraverseFromEntityTool(BaseTool):
         scored_results = []
         for result in traversal_results:
             score = self._calculate_relevance_score(result, source_entity_name)
-            scored_results.append({
-                "data": result,
-                "relevance_score": score
-            })
+            scored_results.append({"data": result, "relevance_score": score})
 
         # Sort by relevance score (highest first)
         scored_results.sort(key=lambda x: x["relevance_score"], reverse=True)
@@ -394,7 +398,9 @@ class TraverseFromEntityTool(BaseTool):
     async def _arun(
         self,
         entity_name: str,
-        relationship_types: Optional[list[str]] = None,  # Kept for backwards compatibility, but not used for filtering
+        relationship_types: Optional[
+            list[str]
+        ] = None,  # Kept for backwards compatibility, but not used for filtering
         max_depth: int = 2,
         max_results: int = 15,
         run_manager: Optional[CallbackManagerForToolRun] = None,
@@ -429,7 +435,9 @@ class TraverseFromEntityTool(BaseTool):
 
             if not traversal_results:
                 response = f"## Relationship Traversal from: {resolved_name}\n\n"
-                response += f"❌ No connections found within {max_depth} hops.\n\n**Suggestions:**\n"
+                response += (
+                    f"❌ No connections found within {max_depth} hops.\n\n**Suggestions:**\n"
+                )
                 response += "- Increase max_depth to explore further\n"
                 response += "- Try exploring neighbors of related entities\n"
                 response += "- Verify the entity has relationships in the graph\n"
@@ -437,16 +445,14 @@ class TraverseFromEntityTool(BaseTool):
 
             # Step 3: Apply relevance filtering to get top results
             filtered_results = self._apply_relevance_filtering(
-                traversal_results,
-                resolved_name,
-                max_final_results=max_results
+                traversal_results, resolved_name, max_final_results=max_results
             )
 
             # Step 4: Format structured output
             response = f"## Relationship Traversal from: {resolved_name}\n\n"
             response += f"**Traversal Depth**: {max_depth} levels\n"
             response += f"**Total Entities Found**: {len(traversal_results)} (showing top {len(filtered_results)} most relevant)\n"
-            response += f"**Relevance Filtering**: Applied intelligent scoring based on relationship importance, path distance, and context richness\n"
+            response += "**Relevance Filtering**: Applied intelligent scoring based on relationship importance, path distance, and context richness\n"
             response += "\n"
 
             # Group by depth level (using filtered results)
@@ -460,7 +466,9 @@ class TraverseFromEntityTool(BaseTool):
             # Display results by depth level
             for depth in sorted(depth_groups.keys()):
                 entities_at_depth = depth_groups[depth]
-                response += f"### Level {depth} Connections ({len(entities_at_depth)} entities):\n\n"
+                response += (
+                    f"### Level {depth} Connections ({len(entities_at_depth)} entities):\n\n"
+                )
 
                 for entity_data in entities_at_depth[:10]:  # Show top 10 per level
                     target_name = entity_data["target_name"]
@@ -479,7 +487,10 @@ class TraverseFromEntityTool(BaseTool):
                     if rel_chain:
                         response += "  Path: "
                         path_str = " → ".join(
-                            [f"{hop['source_name']} --[{hop['type']}]--> {hop['target_name']}" for hop in rel_chain]
+                            [
+                                f"{hop['source_name']} --[{hop['type']}]--> {hop['target_name']}"
+                                for hop in rel_chain
+                            ]
                         )
                         # Truncate if too long
                         if len(path_str) > 150:
@@ -497,7 +508,9 @@ class TraverseFromEntityTool(BaseTool):
 
                 # Show remaining count if more exist
                 if len(entities_at_depth) > 10:
-                    response += f"  ... and {len(entities_at_depth) - 10} more entities at this level\n\n"
+                    response += (
+                        f"  ... and {len(entities_at_depth) - 10} more entities at this level\n\n"
+                    )
 
             # Add detailed summary sections (like search tool)
             response += "\n---\n\n"
@@ -510,7 +523,7 @@ class TraverseFromEntityTool(BaseTool):
                     entities_found[uuid] = {
                         "name": result["target_name"],
                         "types": [t for t in result.get("target_types", []) if t != "Entity"],
-                        "uuid": uuid
+                        "uuid": uuid,
                     }
 
             # 2. Collect unique relationships
@@ -519,7 +532,9 @@ class TraverseFromEntityTool(BaseTool):
                 rel_chain = result.get("relationship_chain", [])
                 for hop in rel_chain:
                     rel_type = hop["type"]
-                    relationships_discovered[rel_type] = relationships_discovered.get(rel_type, 0) + 1
+                    relationships_discovered[rel_type] = (
+                        relationships_discovered.get(rel_type, 0) + 1
+                    )
 
             # 3. Extract source citations from episodes (if available)
             source_citations = []
@@ -553,11 +568,13 @@ class TraverseFromEntityTool(BaseTool):
                         if key in props and props[key]:
                             date_val = str(props[key])
                             if date_val not in seen_dates:
-                                temporal_aspects.append({
-                                    "date": date_val,
-                                    "relationship": hop["type"],
-                                    "context": f"{hop['source_name']} → {hop['target_name']}"
-                                })
+                                temporal_aspects.append(
+                                    {
+                                        "date": date_val,
+                                        "relationship": hop["type"],
+                                        "context": f"{hop['source_name']} → {hop['target_name']}",
+                                    }
+                                )
                                 seen_dates.add(date_val)
 
             # Format summary sections
@@ -579,11 +596,15 @@ class TraverseFromEntityTool(BaseTool):
             response += f"### Relationships Discovered ({len(relationships_discovered)} types)\n"
             if relationships_discovered:
                 # Sort by count (most common first)
-                sorted_rels = sorted(relationships_discovered.items(), key=lambda x: x[1], reverse=True)
+                sorted_rels = sorted(
+                    relationships_discovered.items(), key=lambda x: x[1], reverse=True
+                )
                 for rel_type, count in sorted_rels[:10]:  # Show top 10
                     response += f"- **{rel_type}**: {count} occurrence{'s' if count > 1 else ''}\n"
                 if len(relationships_discovered) > 10:
-                    response += f"- ... and {len(relationships_discovered) - 10} more relationship types\n"
+                    response += (
+                        f"- ... and {len(relationships_discovered) - 10} more relationship types\n"
+                    )
             else:
                 response += "- No relationships found\n"
             response += "\n"
@@ -593,7 +614,7 @@ class TraverseFromEntityTool(BaseTool):
             if source_citations:
                 for i, source in enumerate(source_citations[:5], 1):  # Show top 5
                     response += f"{i}. {source['title']}\n"
-                    if source.get('url'):
+                    if source.get("url"):
                         response += f"   URL: {source['url']}\n"
                 if len(source_citations) > 5:
                     response += f"- ... and {len(source_citations) - 5} more sources\n"
@@ -607,7 +628,9 @@ class TraverseFromEntityTool(BaseTool):
                 # Sort by date (most recent first)
                 sorted_temporal = sorted(temporal_aspects, key=lambda x: x["date"], reverse=True)
                 for aspect in sorted_temporal[:5]:  # Show top 5
-                    response += f"- **{aspect['date']}**: {aspect['relationship']} - {aspect['context']}\n"
+                    response += (
+                        f"- **{aspect['date']}**: {aspect['relationship']} - {aspect['context']}\n"
+                    )
                 if len(temporal_aspects) > 5:
                     response += f"- ... and {len(temporal_aspects) - 5} more temporal entries\n"
             else:
@@ -669,7 +692,9 @@ class FindPathsTool(BaseTool):
                 if records:
                     # Return best match (shortest name containing the search term)
                     best_match = records[0]
-                    logger.info(f"Found entity node: {best_match['name']} (UUID: {best_match['uuid']})")
+                    logger.info(
+                        f"Found entity node: {best_match['name']} (UUID: {best_match['uuid']})"
+                    )
                     return best_match
 
                 logger.warning(f"No entity node found for: {entity_name}")
@@ -685,7 +710,7 @@ class FindPathsTool(BaseTool):
         target_uuid: str,
         max_path_length: int = 4,
         max_paths: int = 5,
-    ) -> List[dict]:
+    ) -> list[dict]:
         """Find paths between two entities using Neo4j shortest path algorithms."""
         try:
             # Use allShortestPaths to find multiple shortest paths
@@ -831,7 +856,9 @@ class FindPathsTool(BaseTool):
     ) -> str:
         """Find paths between two entities using Neo4j shortest path algorithms."""
         try:
-            logger.info(f"Finding paths between: {source_entity} -> {target_entity} (max_length={max_path_length})")
+            logger.info(
+                f"Finding paths between: {source_entity} -> {target_entity} (max_length={max_path_length})"
+            )
 
             # Step 1: Find both entity nodes using smart Neo4j matching
             source_node = await self._find_entity_node(source_entity)
@@ -910,7 +937,9 @@ class FindPathsTool(BaseTool):
                             if "episode_uuids" in props and props["episode_uuids"]:
                                 episode_key = props["episode_uuids"][0]
                                 if episode_key not in all_sources:
-                                    source_info = await self._extract_source_from_episode(episode_key)
+                                    source_info = await self._extract_source_from_episode(
+                                        episode_key
+                                    )
                                     if source_info:
                                         all_sources[episode_key] = source_info
                     else:
@@ -979,7 +1008,9 @@ class FindPathsTool(BaseTool):
             if temporal_data:
                 response += f"### Temporal Aspects ({len(temporal_data)})\n"
                 # Sort by date
-                sorted_temporal = sorted(temporal_data, key=lambda x: x.get("date", ""), reverse=True)
+                sorted_temporal = sorted(
+                    temporal_data, key=lambda x: x.get("date", ""), reverse=True
+                )
                 for i, temp in enumerate(sorted_temporal[:10], 1):
                     date = temp.get("date", "Unknown date")
                     rel_type = temp.get("rel_type", "")
@@ -1314,7 +1345,9 @@ class GetNeighborsTool(BaseTool):
 
                 for idx, neighbor in enumerate(outgoing[:20], 1):  # Top 20
                     neighbor_name = neighbor["neighbor_name"]
-                    neighbor_types = [t for t in neighbor.get("neighbor_types", []) if t != "Entity"]
+                    neighbor_types = [
+                        t for t in neighbor.get("neighbor_types", []) if t != "Entity"
+                    ]
                     rel_chain = neighbor.get("relationship_chain", [])
 
                     # Extract relationship types from chain
@@ -1336,7 +1369,7 @@ class GetNeighborsTool(BaseTool):
                 if len(outgoing) > 20:
                     response += f"*... and {len(outgoing) - 20} more outgoing neighbors*\n\n"
             else:
-                response += f"### Outgoing Relationships (0)\n*No outgoing relationships found*\n\n"
+                response += "### Outgoing Relationships (0)\n*No outgoing relationships found*\n\n"
 
             # Format incoming neighbors (neighbors → entity)
             if incoming:
@@ -1345,7 +1378,9 @@ class GetNeighborsTool(BaseTool):
 
                 for idx, neighbor in enumerate(incoming[:20], 1):  # Top 20
                     neighbor_name = neighbor["neighbor_name"]
-                    neighbor_types = [t for t in neighbor.get("neighbor_types", []) if t != "Entity"]
+                    neighbor_types = [
+                        t for t in neighbor.get("neighbor_types", []) if t != "Entity"
+                    ]
                     rel_chain = neighbor.get("relationship_chain", [])
 
                     # Extract relationship types from chain
@@ -1367,7 +1402,7 @@ class GetNeighborsTool(BaseTool):
                 if len(incoming) > 20:
                     response += f"*... and {len(incoming) - 20} more incoming neighbors*\n\n"
             else:
-                response += f"### Incoming Relationships (0)\n*No incoming relationships found*\n\n"
+                response += "### Incoming Relationships (0)\n*No incoming relationships found*\n\n"
 
             # Step 4: Add summary sections (like Tool 6)
             response += "---\n\n"
@@ -1386,7 +1421,9 @@ class GetNeighborsTool(BaseTool):
             # 1. Entities Found
             response += f"### Entities Found ({len(all_neighbors)})\n"
             for neighbor_data in sorted(all_neighbors.values(), key=lambda x: x["name"])[:20]:
-                types_str = f" ({', '.join(neighbor_data['types'])})" if neighbor_data['types'] else ""
+                types_str = (
+                    f" ({', '.join(neighbor_data['types'])})" if neighbor_data["types"] else ""
+                )
                 response += f"- **{neighbor_data['name']}**{types_str}\n"
             if len(all_neighbors) > 20:
                 response += f"- *... and {len(all_neighbors) - 20} more*\n"
@@ -1424,9 +1461,9 @@ class GetNeighborsTool(BaseTool):
                 response += f"### Source Citations ({len(source_citations)})\n"
                 for idx, source in enumerate(source_citations[:10], 1):
                     response += f"{idx}. {source['title']}\n"
-                    if source['url']:
+                    if source["url"]:
                         response += f"   URL: {source['url']}\n"
-                    if source.get('date'):
+                    if source.get("date"):
                         response += f"   Date: {source['date']}\n"
                 if len(source_citations) > 10:
                     response += f"*... and {len(source_citations) - 10} more sources*\n"
@@ -1443,11 +1480,13 @@ class GetNeighborsTool(BaseTool):
                         if key in props and props[key]:
                             date_val = str(props[key])
                             if date_val not in seen_dates:
-                                temporal_aspects.append({
-                                    "date": date_val,
-                                    "relationship": hop["type"],
-                                    "context": f"{hop['source_name']} → {hop['target_name']}"
-                                })
+                                temporal_aspects.append(
+                                    {
+                                        "date": date_val,
+                                        "relationship": hop["type"],
+                                        "context": f"{hop['source_name']} → {hop['target_name']}",
+                                    }
+                                )
                                 seen_dates.add(date_val)
 
             if temporal_aspects:
@@ -1455,7 +1494,9 @@ class GetNeighborsTool(BaseTool):
                 # Sort by date (most recent first)
                 sorted_temporal = sorted(temporal_aspects, key=lambda x: x["date"], reverse=True)
                 for aspect in sorted_temporal[:10]:
-                    response += f"- **{aspect['date']}**: {aspect['relationship']} - {aspect['context']}\n"
+                    response += (
+                        f"- **{aspect['date']}**: {aspect['relationship']} - {aspect['context']}\n"
+                    )
                 if len(temporal_aspects) > 10:
                     response += f"*... and {len(temporal_aspects) - 10} more temporal entries*\n"
                 response += "\n"

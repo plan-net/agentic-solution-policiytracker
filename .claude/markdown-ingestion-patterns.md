@@ -671,10 +671,10 @@ Processes chunks through Graphiti temporal knowledge graph system to extract ent
 ```python
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
-from src.graphrag.political_schema_v4 import (
-    ENTITY_TYPE_REGISTRY_V4,  # 28 entity types
-    EDGE_TYPE_REGISTRY_V4,    # 52 edge types
-    EDGE_TYPE_MAP_V4,         # Valid source-target-edge patterns
+from src.graphrag.political_schema_v5 import (
+    ENTITY_TYPE_REGISTRY_FULL,  # 28 entity types (20 general + 8 German Bundestag)
+    EDGE_TYPE_REGISTRY_FULL,    # 52 edge types (37 v3 + 15 v4)
+    EDGE_TYPE_MAP_FULL,         # Valid source-target-edge patterns
 )
 
 # Initialize Graphiti client
@@ -777,9 +777,9 @@ async def process_single_document(self, doc_path: Path) -> Dict:
             reference_time=reference_time,
             source=EpisodeType.text,
             group_id=GROUP_ID,  # "political_monitoring_v2"
-            entity_types=ENTITY_TYPE_REGISTRY_V4,
-            edge_types=EDGE_TYPE_REGISTRY_V4,
-            edge_type_map=EDGE_TYPE_MAP_V4,
+            entity_types=ENTITY_TYPE_REGISTRY_FULL,
+            edge_types=EDGE_TYPE_REGISTRY_FULL,
+            edge_type_map=EDGE_TYPE_MAP_FULL,
             previous_episode_uuids=previous_episodes,
         )
 
@@ -1203,7 +1203,7 @@ async def process_documents(inputs: dict, tracer: Tracer):
 ## References
 
 - **Graphiti Documentation**: Temporal knowledge graph patterns in `.claude/graphiti-patterns.md`
-- **Political Schema v4**: Entity and edge definitions in `src/graphrag/political_schema_v4.py`
+- **Political Schema v5**: Unified entity and edge definitions in `src/graphrag/political_schema_v5.py` (GENERAL and FULL registries)
 - **Kodosumi Patterns**: Flow deployment in `.claude/kodosumi-patterns.md`
 - **Ray Deployment**: Parallel processing in `.claude/ray-deployment-patterns.md`
 

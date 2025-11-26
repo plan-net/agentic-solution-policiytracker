@@ -1,7 +1,9 @@
 """Unit tests for traverse_from_entity tool with real Neo4j graph traversal."""
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+
 from src.chat.tools.traverse import TraverseFromEntityTool
 
 
@@ -255,7 +257,9 @@ class TestTraverseFromEntityTool:
         assert len(results) == 0
 
     @pytest.mark.asyncio
-    async def test_traverse_graph_cypher_handles_exception(self, traverse_tool, mock_graphiti_client):
+    async def test_traverse_graph_cypher_handles_exception(
+        self, traverse_tool, mock_graphiti_client
+    ):
         """Test error handling in Cypher traversal."""
         # Mock exception
         mock_session = AsyncMock()
@@ -377,7 +381,12 @@ class TestTraverseFromEntityTool:
         """Test _arun with relationship type filter (parameter now ignored - backwards compatibility)."""
         # Mock _find_entity_node
         traverse_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity"], "properties": {}}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity"],
+                "properties": {},
+            }
         )
 
         # Mock _traverse_graph_cypher (returns multiple results for filtering)
@@ -411,7 +420,7 @@ class TestTraverseFromEntityTool:
                     }
                 ],
                 "depth": 1,
-            }
+            },
         ]
         traverse_tool._traverse_graph_cypher = AsyncMock(return_value=raw_results)
 
@@ -441,9 +450,7 @@ class TestTraverseFromEntityTool:
 
         # Verify _apply_relevance_filtering was called
         traverse_tool._apply_relevance_filtering.assert_called_once_with(
-            raw_results,
-            "Meta",
-            max_final_results=15
+            raw_results, "Meta", max_final_results=15
         )
 
     @pytest.mark.asyncio
@@ -464,7 +471,12 @@ class TestTraverseFromEntityTool:
         """Test _arun with multi-level traversal results."""
         # Mock _find_entity_node
         traverse_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity"], "properties": {}}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity"],
+                "properties": {},
+            }
         )
 
         # Mock _traverse_graph_cypher with multi-level results
