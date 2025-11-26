@@ -275,6 +275,6 @@ curl http://localhost:8001/bundestag-ingestion/health
 ## References
 
 - Bundestag DIP API: https://dip.bundestag.de/
-- Political Schema v4: See `docs/schemas/political_schema_v4.md`
+- Political Schema v5: See `docs/schemas/political_schema_v5.md` (unified schema with GENERAL and FULL registries)
 - Kodosumi Patterns: See `.claude/kodosumi-patterns.md`
 - Flow Architecture: See `.claude/project-architecture.md`

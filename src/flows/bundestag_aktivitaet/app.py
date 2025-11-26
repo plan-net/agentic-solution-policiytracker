@@ -115,7 +115,7 @@ async def ingest_bundestag_aktivitaeten(request: fastapi.Request, inputs: dict):
     neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
     neo4j_password = os.getenv("NEO4J_PASSWORD", "password123")
-    neo4j_database = os.getenv("NEO4J_DATABASE", "politicamonitoring.v2")
+    neo4j_database = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
 
     # Launch the aktivitaet collection workflow
     return Launch(

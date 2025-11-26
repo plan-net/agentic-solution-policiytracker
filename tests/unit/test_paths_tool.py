@@ -1,7 +1,9 @@
 """Unit tests for FindPathsTool (Tool 8)."""
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+
 from src.chat.tools.traverse import FindPathsTool
 
 
@@ -58,7 +60,9 @@ class TestFindPathsTool:
         mock_session.run.assert_called_once()
         call_args = mock_session.run.call_args
         query = call_args.args[0] if call_args.args else call_args.kwargs.get("query", "")
-        params = call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        params = (
+            call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        )
         assert "MATCH (n:Entity)" in query
         assert params.get("entity_name") == "Meta"
 
@@ -165,7 +169,9 @@ class TestFindPathsTool:
         mock_session.run.assert_called_once()
         call_args = mock_session.run.call_args
         query = call_args.args[0] if call_args.args else call_args.kwargs.get("query", "")
-        params = call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        params = (
+            call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        )
         assert "allShortestPaths" in query
         assert params["source_uuid"] == "source-uuid"
         assert params["target_uuid"] == "target-uuid"
@@ -230,6 +236,7 @@ class TestFindPathsTool:
     @pytest.mark.asyncio
     async def test_arun_target_entity_not_found(self, paths_tool):
         """Test _arun when target entity is not found."""
+
         # Mock _find_entity_node: source found, target not found
         async def mock_find(entity_name):
             if entity_name == "Meta":
@@ -249,6 +256,7 @@ class TestFindPathsTool:
     @pytest.mark.asyncio
     async def test_arun_success_with_paths(self, paths_tool):
         """Test _arun with successful path discovery."""
+
         # Mock _find_entity_node for both entities
         async def mock_find(entity_name):
             if entity_name == "Meta":
@@ -324,6 +332,7 @@ class TestFindPathsTool:
     @pytest.mark.asyncio
     async def test_arun_no_paths_found(self, paths_tool):
         """Test _arun when no paths are found."""
+
         # Mock _find_entity_node for both entities
         async def mock_find(entity_name):
             if entity_name == "Meta":
@@ -365,12 +374,17 @@ class TestFindPathsTool:
     @pytest.mark.asyncio
     async def test_arun_with_longer_path(self, paths_tool):
         """Test _arun with longer path (3+ hops)."""
+
         # Mock _find_entity_node
         async def mock_find(entity_name):
             if entity_name == "Meta":
                 return {"uuid": "meta-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
             elif entity_name == "Target":
-                return {"uuid": "target-uuid", "name": "Target", "labels": ["Entity", "Organization"]}
+                return {
+                    "uuid": "target-uuid",
+                    "name": "Target",
+                    "labels": ["Entity", "Organization"],
+                }
             return None
 
         paths_tool._find_entity_node = AsyncMock(side_effect=mock_find)
@@ -384,7 +398,11 @@ class TestFindPathsTool:
                         {"uuid": "node2-uuid", "name": "Node2", "types": ["Entity", "Policy"]},
                         {"uuid": "node3-uuid", "name": "Node3", "types": ["Entity", "Regulation"]},
                         {"uuid": "node4-uuid", "name": "Node4", "types": ["Entity", "Committee"]},
-                        {"uuid": "target-uuid", "name": "Target", "types": ["Entity", "Organization"]},
+                        {
+                            "uuid": "target-uuid",
+                            "name": "Target",
+                            "types": ["Entity", "Organization"],
+                        },
                     ],
                     "path_relationships": [
                         {
@@ -425,7 +443,9 @@ class TestFindPathsTool:
         paths_tool._extract_source_from_episode = AsyncMock(return_value=None)
 
         # Execute
-        result = await paths_tool._arun(source_entity="Meta", target_entity="Target", max_path_length=6)
+        result = await paths_tool._arun(
+            source_entity="Meta", target_entity="Target", max_path_length=6
+        )
 
         # Assert
         assert "### Path 1 (4 hops)" in result
@@ -434,6 +454,7 @@ class TestFindPathsTool:
     @pytest.mark.asyncio
     async def test_arun_with_summary_sections(self, paths_tool):
         """Test _arun includes proper summary sections."""
+
         # Mock _find_entity_node
         async def mock_find(entity_name):
             if entity_name == "Meta":

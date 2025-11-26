@@ -13,7 +13,7 @@ from typing import Any
 import structlog
 
 from src.flows.bundestag_ingestion.collectors.base_collector import BaseCollector
-from src.graphrag.political_schema_v4 import (
+from src.graphrag.political_schema_v5 import (
     BundestagPerson,
     InWahlperiode,
     MemberOfFraktion,

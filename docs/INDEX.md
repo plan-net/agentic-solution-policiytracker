@@ -34,6 +34,11 @@
 - **SETUP.md** - Initial setup instructions
 - **QUICK_REFERENCE.md** - Quick reference for common commands
 
+### `/deduplication/` - Entity Deduplication (Phase 1 & 2)
+- ⚡ **PHASE2_QUICK_REFERENCE.md** - Quick reference for Phase 2 commands, scripts, and troubleshooting
+- **phase2_implementation_summary.md** - ✅ Complete Phase 2 implementation guide with Neo4j optimization
+- **deduplication_phase2_plan.md** - Phase 2 architecture and implementation plan
+
 ### `/testing/` - Test Documentation
 - **test_questions_graphrag.md** - GraphRAG test questions and results
 - **test_questions_politicalmonitoring.md** - Political monitoring test cases
@@ -82,7 +87,12 @@
 1. [CRUD Quickstart](guides/QUICKSTART_CRUD.md)
 2. [Estimation Guide](guides/ESTIMATION_GUIDE.md)
 
+### Data Quality & Deduplication
+1. ⚡ [Phase 2 Quick Reference](PHASE2_QUICK_REFERENCE.md) - Commands, scripts, and troubleshooting
+2. ✅ [Phase 2 Implementation Summary](phase2_implementation_summary.md) - Complete guide with Neo4j optimization
+3. [Phase 2 Architecture Plan](deduplication_phase2_plan.md) - Detailed architecture and roadmap
+
 ---
 
-**Last Updated**: 2025-11-20
+**Last Updated**: 2025-11-25
 **Project**: Political Monitoring Agent v0.2.0

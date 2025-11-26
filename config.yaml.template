@@ -179,37 +179,38 @@ applications:
 #     target_num_ongoing_requests_per_replica: 1.0
 # 
 # Chat Server: LLM Interface for Knowledge Graph
-- name: chat-server
-  route_prefix: /v1
-  import_path: src.chat.server.app:chat_app
-  runtime_env:
-    env_vars:
-      PYTHONPATH: .
-      LOG_LEVEL: INFO
-
-      # Neo4j Configuration
-      NEO4J_URI: ${NEO4J_URI}
-      NEO4J_USER: ${NEO4J_USER}
-      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-      NEO4J_DATABASE: politicalmonitoring
-      DEFAULT_DATABASE: politicalmonitoring
-
-      # API Keys (required for LLM operations)
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-
-      # Langfuse (optional observability)
-      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
-      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
-      LANGFUSE_HOST: http://localhost:3001
-
-  ray_actor_options:
-    num_cpus: 1
-    memory: 2000000000  # 2GB
-  autoscaling_config:
-    min_replicas: 1
-    max_replicas: 3
-    target_num_ongoing_requests_per_replica: 5
+# TEMPORARILY DISABLED - Focusing on Bundestag data ingestion flows
+#- name: chat-server
+#  route_prefix: /v1
+#  import_path: src.chat.server.app:chat_app
+#  runtime_env:
+#    env_vars:
+#      PYTHONPATH: .
+#      LOG_LEVEL: INFO
+#
+#      # Neo4j Configuration
+#      NEO4J_URI: ${NEO4J_URI}
+#      NEO4J_USER: ${NEO4J_USER}
+#      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+#      NEO4J_DATABASE: politicalmonitoring.v3
+#      DEFAULT_DATABASE: politicalmonitoring.v3
+#
+#      # API Keys (required for LLM operations)
+#      OPENAI_API_KEY: ${OPENAI_API_KEY}
+#      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+#
+#      # Langfuse (optional observability)
+#      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+#      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+#      LANGFUSE_HOST: http://localhost:3001
+#
+#  ray_actor_options:
+#    num_cpus: 1
+#    memory: 2000000000  # 2GB
+#  autoscaling_config:
+#    min_replicas: 1
+#    max_replicas: 3
+#    target_num_ongoing_requests_per_replica: 5
 
 
 # Flow 5: Bundestag Data Ingestion
@@ -251,11 +252,85 @@ applications:
 #     max_replicas: 2
 #     target_num_ongoing_requests_per_replica: 1
 # 
+# Flow 5a: Bundestag Person Ingestion
+# Collects German Bundestag members of parliament (Abgeordnete) data
+- name: flow5a-bundestag-person
+  route_prefix: /bundestag-person
+  import_path: src.flows.bundestag_person.app:fast_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j Configuration
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: ${NEO4J_DATABASE}
+
+      # Bundestag DIP API
+      BUNDESTAG_API_KEY: ${BUNDESTAG_API_KEY}
+      BUNDESTAG_API_URL: https://search.dip.bundestag.de/api/v1
+
+      # API Keys (required for LLM operations)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 1
+
 # Flow 5b: Bundestag Vorgang Ingestion
 # Collects German Bundestag procedures (Vorgänge) - legislative processes
 - name: flow5b-bundestag-vorgang
   route_prefix: /bundestag-vorgang
   import_path: src.flows.bundestag_vorgang.app:fast_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j Configuration
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: ${NEO4J_DATABASE}
+
+      # Bundestag DIP API
+      BUNDESTAG_API_KEY: ${BUNDESTAG_API_KEY}
+      BUNDESTAG_API_URL: https://search.dip.bundestag.de/api/v1
+
+      # API Keys (required for LLM operations)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+  ray_actor_options:
+    num_cpus: 4
+    memory: 8000000000
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 1
+
+# Flow 5c: Bundestag Drucksache Ingestion
+# Collects German Bundestag printed documents (Drucksachen) - bills, motions, reports
+- name: flow5c-bundestag-drucksache
+  route_prefix: /bundestag-drucksache
+  import_path: src.flows.bundestag_drucksache.app:fast_app
   runtime_env:
     env_vars:
       PYTHONPATH: .
@@ -326,28 +401,29 @@ applications:
     target_num_ongoing_requests_per_replica: 1
 
 # Graph Visualization Server
+# TEMPORARILY DISABLED - Focusing on Bundestag data ingestion flows
 # Provides Neo4j knowledge graph visualization with 2D/3D views
-- name: graph-viz-server
-  route_prefix: /graph-viz
-  import_path: src.graph_viz.app:graph_viz_app
-  runtime_env:
-    env_vars:
-      PYTHONPATH: .
-      LOG_LEVEL: INFO
-
-      # Neo4j Configuration
-      NEO4J_URI: ${NEO4J_URI}
-      NEO4J_USER: ${NEO4J_USER}
-      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-      NEO4J_DATABASE: politicalmonitoring
-
-      # API Keys (required for Text-to-Cypher)
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-
-  ray_actor_options:
-    num_cpus: 1
-    memory: 2000000000  # 2GB
-  autoscaling_config:
-    min_replicas: 1
-    max_replicas: 2
-    target_num_ongoing_requests_per_replica: 5
+#- name: graph-viz-server
+#  route_prefix: /graph-viz
+#  import_path: src.graph_viz.app:graph_viz_app
+#  runtime_env:
+#    env_vars:
+#      PYTHONPATH: .
+#      LOG_LEVEL: INFO
+#
+#      # Neo4j Configuration
+#      NEO4J_URI: ${NEO4J_URI}
+#      NEO4J_USER: ${NEO4J_USER}
+#      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+#      NEO4J_DATABASE: politicalmonitoring.v3
+#
+#      # API Keys (required for Text-to-Cypher)
+#      OPENAI_API_KEY: ${OPENAI_API_KEY}
+#
+#  ray_actor_options:
+#    num_cpus: 1
+#    memory: 2000000000  # 2GB
+#  autoscaling_config:
+#    min_replicas: 1
+#    max_replicas: 2
+#    target_num_ongoing_requests_per_replica: 5

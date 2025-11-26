@@ -3,7 +3,7 @@
 
 from neo4j import GraphDatabase
 
-from src.graphrag.political_schema_v4 import Plenarprotokoll
+from src.graphrag.political_schema_v5 import Plenarprotokoll
 
 # Connect to Neo4j
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password123"))

@@ -1,7 +1,9 @@
 """Unit tests for GetNeighborsTool (Tool 7)."""
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+
 from src.chat.tools.traverse import GetNeighborsTool
 
 
@@ -58,7 +60,9 @@ class TestGetNeighborsTool:
         mock_session.run.assert_called_once()
         call_args = mock_session.run.call_args
         query = call_args.args[0] if call_args.args else call_args.kwargs.get("query", "")
-        params = call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        params = (
+            call_args.args[1] if len(call_args.args) > 1 else call_args.kwargs.get("params", {})
+        )
         assert "MATCH (n:Entity)" in query
         assert params.get("entity_name") == "Meta"
 
@@ -255,7 +259,11 @@ class TestGetNeighborsTool:
         """Test _arun with successful neighbor discovery."""
         # Mock _find_entity_node
         neighbors_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity", "Company"],
+            }
         )
 
         # Mock _get_neighbors_cypher
@@ -324,7 +332,11 @@ class TestGetNeighborsTool:
         """Test _arun when no neighbors are found."""
         # Mock _find_entity_node
         neighbors_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity", "Company"],
+            }
         )
 
         # Mock _get_neighbors_cypher to return empty results
@@ -344,7 +356,11 @@ class TestGetNeighborsTool:
         """Test _arun with neighbor_types parameter (now deprecated)."""
         # Mock _find_entity_node
         neighbors_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity", "Company"],
+            }
         )
 
         # Mock _get_neighbors_cypher
@@ -408,7 +424,11 @@ class TestGetNeighborsTool:
         """Test _arun with max_depth=2."""
         # Mock _find_entity_node
         neighbors_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity", "Company"],
+            }
         )
 
         # Mock _get_neighbors_cypher with depth 2 neighbors
@@ -457,7 +477,11 @@ class TestGetNeighborsTool:
         """Test _arun includes proper summary sections."""
         # Mock _find_entity_node
         neighbors_tool._find_entity_node = AsyncMock(
-            return_value={"uuid": "entity-123-uuid", "name": "Meta", "labels": ["Entity", "Company"]}
+            return_value={
+                "uuid": "entity-123-uuid",
+                "name": "Meta",
+                "labels": ["Entity", "Company"],
+            }
         )
 
         # Mock _get_neighbors_cypher

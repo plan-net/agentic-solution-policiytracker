@@ -1,15 +1,15 @@
 """
-Edge builder for German Bundestag relationships using political schema v4.
+Edge builder for German Bundestag relationships using political schema v5.
 
 This module provides the BundestagEdgeBuilder class for creating edge/relationship
-objects between Bundestag entities according to the political_schema_v4 definitions.
+objects between Bundestag entities according to the political_schema_v5 definitions.
 """
 
 from typing import Any, Optional
 
 import structlog
 
-from src.graphrag.political_schema_v4 import (
+from src.graphrag.political_schema_v5 import (
     AuthorsDrucksache,
     DebatedInPlenum,
     InitiatesVorgang,

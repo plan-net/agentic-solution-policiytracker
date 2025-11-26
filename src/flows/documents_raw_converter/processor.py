@@ -188,9 +188,7 @@ async def execute_raw_document_conversion(inputs: dict, tracer: Tracer):
         conversion_failed = 0
 
         if not unprocessed_docs:
-            await tracer.markdown(
-                f"✅ No unprocessed raw documents found in `{raw_docs_dir}`.\n\n"
-            )
+            await tracer.markdown(f"✅ No unprocessed raw documents found in `{raw_docs_dir}`.\n\n")
             await tracer.markdown("---\n\n")
             # Don't return early - continue to Phase 2 to check for unprocessed markdown files
         else:

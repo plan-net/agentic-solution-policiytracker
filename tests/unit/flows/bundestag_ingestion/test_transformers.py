@@ -8,7 +8,7 @@ import pytest
 
 from src.flows.bundestag_ingestion.transformers.edge_builder import BundestagEdgeBuilder
 from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
-from src.graphrag.political_schema_v4 import (
+from src.graphrag.political_schema_v5 import (
     BundestagFraktion,
     BundestagPerson,
     Wahlperiode,
@@ -87,7 +87,7 @@ class TestBundestagEdgeBuilder:
     async def test_build_edges_for_vorgang(self, builder):
         """Test edge creation for Vorgang entity."""
         # Create mock Vorgang entity
-        from src.graphrag.political_schema_v4 import Vorgang
+        from src.graphrag.political_schema_v5 import Vorgang
 
         vorgang_data = SAMPLE_VORGANG_RESPONSE["documents"][0]
         vorgang_entity = Vorgang(

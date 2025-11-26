@@ -42,6 +42,18 @@ async def process_bundestag_aktivitaeten(inputs: dict[str, Any], tracer) -> core
         def entity_type(self) -> str:
             return "Aktivitaet"
 
+        @property
+        def entity_id_field(self) -> str:
+            return "aktivitaet_id"
+
+        def get_entity_name(self, entity: dict[str, Any]) -> str:
+            """Extract aktivitaet name for Graphiti registration."""
+            titel = entity.get("titel", "")
+            aktivitaetsart = entity.get("aktivitaetsart", "")
+            if titel:
+                return titel
+            return f"{aktivitaetsart} {entity.get('aktivitaet_id', 'Unknown')}"
+
         async def process(self, inputs: dict[str, Any], tracer) -> core.response.Markdown:
             """
             Override process to add relationship creation after entity upsert.
@@ -372,7 +384,13 @@ Access your data at: http://localhost:7474
 
             return stats
 
-    # Initialize flow
+    # Get OpenAI API key for Graphiti registration
+    openai_api_key = inputs.get("openai_api_key")
+    if not openai_api_key:
+        import os
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+
+    # Initialize flow with Graphiti registration enabled
     flow = BundestagAktivitaetFlow(
         api_key=inputs["api_key"],
         api_url=inputs["api_url"],
@@ -380,6 +398,8 @@ Access your data at: http://localhost:7474
         neo4j_username=inputs["neo4j_username"],
         neo4j_password=inputs["neo4j_password"],
         neo4j_database=inputs["neo4j_database"],
+        enable_graphiti_registration=True if openai_api_key else False,
+        openai_api_key=openai_api_key,
     )
 
     try:

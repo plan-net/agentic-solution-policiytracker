@@ -5,6 +5,7 @@ Provides common functionality for API fetching, entity creation, and Neo4j upser
 Each specific endpoint flow (person, vorgang, etc.) inherits from this base.
 """
 
+import os
 import time
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -16,6 +17,7 @@ from kodosumi.core import Tracer
 from neo4j import GraphDatabase
 
 from src.flows.bundestag_common.api_client import BundestagAPIClient
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_common.pagination import PaginationHelper
 
@@ -30,11 +32,14 @@ class BaseBundestagFlow(ABC):
     1. Fetching data from a specific API endpoint
     2. Mapping API data to entity objects (deterministic, no auto-detection)
     3. Upserting entities to Neo4j with automatic deduplication
+    4. [Optional] Registering entities with Graphiti for hybrid search
 
     Subclasses must implement:
     - endpoint property: API endpoint name
     - entity_type property: Neo4j label
+    - entity_id_field property: Primary key field name
     - map_api_to_entity(): Convert API data to entity dict
+    - get_entity_name(): Extract entity name for Graphiti
     """
 
     def __init__(
@@ -45,6 +50,8 @@ class BaseBundestagFlow(ABC):
         neo4j_username: str,
         neo4j_password: str,
         neo4j_database: str = "neo4j",
+        enable_graphiti_registration: bool = False,
+        openai_api_key: Optional[str] = None,
     ):
         """
         Initialize base flow.
@@ -56,6 +63,8 @@ class BaseBundestagFlow(ABC):
             neo4j_username: Neo4j username
             neo4j_password: Neo4j password
             neo4j_database: Neo4j database name
+            enable_graphiti_registration: Enable automatic Graphiti registration
+            openai_api_key: OpenAI API key (required if enable_graphiti_registration=True)
         """
         # Initialize API client
         self.api_client = BundestagAPIClient(api_key=api_key, base_url=api_url)
@@ -67,11 +76,37 @@ class BaseBundestagFlow(ABC):
         # Initialize upsert manager
         self.upsert_manager = Neo4jUpsertManager(driver=self.neo4j_driver, database=neo4j_database)
 
+        # Initialize Graphiti registrar (optional)
+        self.enable_graphiti_registration = enable_graphiti_registration
+        self.graphiti_registrar: Optional[GraphitiNodeRegistrar] = None
+
+        if enable_graphiti_registration:
+            if not openai_api_key:
+                openai_api_key = os.getenv("OPENAI_API_KEY")
+
+            if not openai_api_key:
+                raise ValueError(
+                    "openai_api_key is required when enable_graphiti_registration=True"
+                )
+
+            self.graphiti_registrar = GraphitiNodeRegistrar(
+                neo4j_driver=self.neo4j_driver,
+                neo4j_database=neo4j_database,
+                openai_api_key=openai_api_key,
+            )
+
+            logger.info(
+                "Graphiti registration enabled",
+                endpoint=self.endpoint,
+                entity_type=self.entity_type,
+            )
+
         logger.info(
             "Initialized BaseBundestagFlow",
             endpoint=self.endpoint,
             entity_type=self.entity_type,
             database=neo4j_database,
+            graphiti_enabled=enable_graphiti_registration,
         )
 
     @property
@@ -84,6 +119,19 @@ class BaseBundestagFlow(ABC):
     @abstractmethod
     def entity_type(self) -> str:
         """Neo4j entity label (e.g., 'BundestagPerson', 'Vorgang')."""
+        pass
+
+    @property
+    @abstractmethod
+    def entity_id_field(self) -> str:
+        """
+        Primary key field name for this entity type.
+
+        Examples:
+        - "person_id" for BundestagPerson
+        - "vorgang_id" for Vorgang
+        - "drucksache_id" for Drucksache
+        """
         pass
 
     @abstractmethod
@@ -99,6 +147,28 @@ class BaseBundestagFlow(ABC):
 
         Returns:
             Entity properties dict ready for Neo4j
+        """
+        pass
+
+    @abstractmethod
+    def get_entity_name(self, entity: dict[str, Any]) -> str:
+        """
+        Extract entity name for Graphiti registration.
+
+        This name is used for:
+        1. Generating embeddings
+        2. Semantic search via Graphiti
+
+        Args:
+            entity: Entity properties dict
+
+        Returns:
+            Human-readable entity name
+
+        Examples:
+        - For BundestagPerson: "Olaf Scholz"
+        - For Vorgang: "Gesetz zur Änderung des Grundgesetzes"
+        - For Drucksache: "Drucksache 20/1234"
         """
         pass
 
@@ -163,6 +233,17 @@ class BaseBundestagFlow(ABC):
             f"({upsert_results['failed']} failed)\n\n"
         )
 
+        # Stage 4: Register with Graphiti (optional)
+        graphiti_results = {"registered": 0, "failed": 0}
+        if self.enable_graphiti_registration and upsert_results["successful"] > 0:
+            await tracer.markdown("## Stage 4: Registering with Graphiti\n")
+            graphiti_results = await self.register_entities_with_graphiti(entities, tracer)
+
+            await tracer.markdown(
+                f"✅ Registered **{graphiti_results['registered']}** entities with Graphiti "
+                f"({graphiti_results['failed']} failed)\n\n"
+            )
+
         # Generate report
         duration = time.time() - start_time
         await tracer.markdown(f"**Duration:** {duration:.1f} seconds\n")
@@ -172,6 +253,7 @@ class BaseBundestagFlow(ABC):
             items_fetched=len(items),
             entities_created=len(entities),
             upsert_results=upsert_results,
+            graphiti_results=graphiti_results,
             duration=duration,
             inputs=inputs,
         )
@@ -283,11 +365,115 @@ class BaseBundestagFlow(ABC):
 
         return results
 
+    async def register_entities_with_graphiti(
+        self, entities: list[dict[str, Any]], tracer: Tracer
+    ) -> dict[str, int]:
+        """
+        Register entities with Graphiti for hybrid search.
+
+        Adds :Entity label, embeddings, and metadata to make Direct Neo4j
+        nodes searchable via Graphiti's client.search().
+
+        Args:
+            entities: Entity property dicts
+            tracer: Progress tracer
+
+        Returns:
+            Registration results with counts
+        """
+        if not self.graphiti_registrar:
+            logger.warning("Graphiti registrar not initialized")
+            return {"registered": 0, "failed": 0}
+
+        await tracer.markdown(f"Registering **{len(entities)}** entities with Graphiti...\n")
+
+        registered = 0
+        failed = 0
+
+        for i, entity in enumerate(entities):
+            try:
+                # Extract entity ID
+                entity_id = entity.get(self.entity_id_field)
+                if not entity_id:
+                    logger.warning(
+                        "Entity missing ID field",
+                        entity_type=self.entity_type,
+                        id_field=self.entity_id_field,
+                    )
+                    failed += 1
+                    continue
+
+                # Get entity name for embedding
+                entity_name = self.get_entity_name(entity)
+
+                # Register based on entity type
+                result = await self._register_single_entity(
+                    entity_id=entity_id,
+                    entity_name=entity_name,
+                    entity_dict=entity,
+                )
+
+                if result.get("success"):
+                    registered += 1
+                else:
+                    failed += 1
+
+                # Progress update every 50 entities
+                if (i + 1) % 50 == 0:
+                    await tracer.markdown(f"- Registered {i + 1}/{len(entities)} entities...\n")
+
+            except Exception as e:
+                logger.error(
+                    "Failed to register entity with Graphiti",
+                    entity_type=self.entity_type,
+                    entity=entity,
+                    error=str(e),
+                )
+                failed += 1
+
+        logger.info(
+            "Completed Graphiti registration",
+            endpoint=self.endpoint,
+            entity_type=self.entity_type,
+            registered=registered,
+            failed=failed,
+        )
+
+        return {"registered": registered, "failed": failed}
+
+    async def _register_single_entity(
+        self, entity_id: Any, entity_name: str, entity_dict: dict[str, Any]
+    ) -> dict[str, Any]:
+        """
+        Register a single entity with Graphiti using appropriate method.
+
+        Subclasses can override this to handle special cases (e.g., composite keys).
+
+        Args:
+            entity_id: Entity identifier
+            entity_name: Entity display name
+            entity_dict: Full entity properties
+
+        Returns:
+            Registration result
+        """
+        # Default implementation uses add_entity_metadata directly
+        embedding = await self.graphiti_registrar.generate_embedding(entity_name)
+
+        return self.graphiti_registrar.add_entity_metadata(
+            entity_label=self.entity_type,
+            entity_id_field=self.entity_id_field,
+            entity_id_value=entity_id,
+            entity_name=entity_name,
+            name_embedding=embedding,
+        )
+
     def generate_report(
         self,
         items_fetched: int,
         entities_created: int,
         upsert_results: dict[str, int],
+        graphiti_results: dict[str, int],
         duration: float,
         inputs: dict[str, Any],
     ) -> str:
@@ -298,12 +484,27 @@ class BaseBundestagFlow(ABC):
             items_fetched: Number of items from API
             entities_created: Number of entities mapped
             upsert_results: Neo4j upsert results
+            graphiti_results: Graphiti registration results
             duration: Total execution time
             inputs: Original form inputs
 
         Returns:
             Markdown report
         """
+        # Build Graphiti section if enabled
+        graphiti_section = ""
+        if self.enable_graphiti_registration and graphiti_results["registered"] > 0:
+            graphiti_section = f"""
+## Graphiti Registration
+
+| Result | Count |
+|--------|-------|
+| Registered with Graphiti | {graphiti_results['registered']} |
+| Failed Registration | {graphiti_results['failed']} |
+
+✅ Entities are now searchable via Graphiti `client.search()`
+"""
+
         report = f"""# {inputs.get('job_name', 'Bundestag Data Ingestion')} - Report
 
 ## Summary
@@ -311,6 +512,7 @@ class BaseBundestagFlow(ABC):
 **Endpoint:** {self.endpoint}
 **Entity Type:** {self.entity_type}
 **Execution Time:** {duration:.1f} seconds
+**Graphiti Registration:** {'Enabled' if self.enable_graphiti_registration else 'Disabled'}
 
 ## Results
 
@@ -319,8 +521,8 @@ class BaseBundestagFlow(ABC):
 | Items Fetched from API | {items_fetched} |
 | Entities Mapped | {entities_created} |
 | Successfully Upserted | {upsert_results['successful']} |
-| Failed | {upsert_results['failed']} |
-
+| Failed Upsert | {upsert_results['failed']} |
+{graphiti_section}
 ## Neo4j Statistics
 
 **Total {self.entity_type} in database:** {self.upsert_manager.get_entity_count(self.entity_type)}

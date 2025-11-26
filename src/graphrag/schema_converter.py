@@ -13,11 +13,17 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.graphrag.political_schema_v3 import (
-    EDGE_TYPE_MAP,
-    EDGE_TYPE_REGISTRY,
-    ENTITY_TYPE_REGISTRY,
-    SCHEMA_INFO,
+from src.graphrag.political_schema_v5 import (
+    EDGE_TYPE_MAP_GENERAL as EDGE_TYPE_MAP,
+)
+from src.graphrag.political_schema_v5 import (
+    EDGE_TYPE_REGISTRY_GENERAL as EDGE_TYPE_REGISTRY,
+)
+from src.graphrag.political_schema_v5 import (
+    ENTITY_TYPE_REGISTRY_GENERAL as ENTITY_TYPE_REGISTRY,
+)
+from src.graphrag.political_schema_v5 import (
+    SCHEMA_INFO_V5 as SCHEMA_INFO,
 )
 
 
