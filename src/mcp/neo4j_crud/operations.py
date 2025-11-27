@@ -1,9 +1,13 @@
 """Neo4j CRUD operations using Neo4jUpsertManager."""
 
 import logging
+import os
 from typing import Any, Optional
 
 from neo4j import Driver
+
+# Import Graphiti registration for data consistency
+from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
 
 # Import the existing upsert manager
 from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
@@ -16,7 +20,7 @@ class Neo4jCRUDOperations:
 
     def __init__(self, driver: Driver, database: str):
         """
-        Initialize CRUD operations.
+        Initialize CRUD operations with Graphiti registration support.
 
         Args:
             driver: Neo4j driver instance
@@ -25,11 +29,32 @@ class Neo4jCRUDOperations:
         self.driver = driver
         self.database = database
         self.upsert_manager = Neo4jUpsertManager(driver, database)
+
+        # Initialize Graphiti registrar for data consistency
+        openai_key = os.getenv("OPENAI_API_KEY")
+        enable_graphiti = os.getenv("ENABLE_GRAPHITI_REGISTRATION", "true").lower() == "true"
+
+        if enable_graphiti and openai_key:
+            try:
+                self.graphiti_registrar = GraphitiNodeRegistrar(
+                    neo4j_driver=driver, neo4j_database=database, openai_api_key=openai_key
+                )
+                logger.info("✅ Graphiti registration enabled in MCP Server")
+            except Exception as e:
+                logger.warning(f"⚠️ Graphiti registration failed to initialize: {e}")
+                self.graphiti_registrar = None
+        else:
+            self.graphiti_registrar = None
+            if not enable_graphiti:
+                logger.info("ℹ️ Graphiti registration disabled via ENABLE_GRAPHITI_REGISTRATION")
+            if not openai_key:
+                logger.warning("⚠️ Graphiti registration disabled: OPENAI_API_KEY not found")
+
         logger.info(f"Initialized Neo4jCRUDOperations for database: {database}")
 
-    def create_node(self, entity_type: str, properties: dict[str, Any]) -> dict[str, Any]:
+    async def create_node(self, entity_type: str, properties: dict[str, Any]) -> dict[str, Any]:
         """
-        Create a new node.
+        Create a new node with mandatory Graphiti registration.
 
         Args:
             entity_type: Entity label (e.g., 'BundestagPerson')
@@ -37,29 +62,52 @@ class Neo4jCRUDOperations:
 
         Returns:
             Dict with success status and node details
+
+        Raises:
+            Exception if Graphiti registration fails (node will be rolled back)
         """
         logger.info(f"Creating node: {entity_type}")
 
         try:
-            # Use existing upsert manager (MERGE operation)
+            # Step 1: Create node via upsert manager
             success = self.upsert_manager.upsert_entity(entity_type, properties)
 
-            if success:
-                # Get the ID field for this entity type
-                id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(entity_type)
-                node_id = properties.get(id_field) if id_field else None
-
-                return {
-                    "success": True,
-                    "message": "Node created successfully",
-                    "data": {"entity_type": entity_type, "node_id": node_id},
-                }
-            else:
+            if not success:
                 return {
                     "success": False,
                     "message": "Failed to create node",
                     "error": "Upsert operation returned False",
                 }
+
+            # Get the ID field for this entity type
+            id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(entity_type)
+            node_id = properties.get(id_field) if id_field else None
+
+            # Step 2: Register with Graphiti (MANDATORY for data consistency)
+            if self.graphiti_registrar:
+                try:
+                    await self._register_with_graphiti(entity_type, properties)
+                    logger.info(
+                        f"✅ Node created with Graphiti registration: {entity_type} {node_id}"
+                    )
+                except Exception as e:
+                    # ROLLBACK: Delete the node we just created
+                    logger.error(
+                        f"❌ Graphiti registration failed, rolling back node creation: {e}"
+                    )
+                    self._rollback_node_creation(entity_type, properties)
+                    return {
+                        "success": False,
+                        "message": "Operation failed: Graphiti registration error",
+                        "error": f"Graphiti registration failed: {str(e)}. Node was rolled back.",
+                    }
+
+            return {
+                "success": True,
+                "message": "Node created successfully"
+                + (" with Graphiti registration" if self.graphiti_registrar else ""),
+                "data": {"entity_type": entity_type, "node_id": node_id},
+            }
 
         except Exception as e:
             logger.error(f"Error creating node: {e}")
@@ -441,3 +489,130 @@ class Neo4jCRUDOperations:
                 "neo4j_connected": False,
                 "message": f"Neo4j connection failed: {str(e)}",
             }
+
+    # ========================================================================
+    # Graphiti Registration Helper Methods (for Data Consistency)
+    # ========================================================================
+
+    async def _register_with_graphiti(self, entity_type: str, properties: dict[str, Any]) -> None:
+        """
+        Register node with Graphiti metadata (mandatory for search compatibility).
+
+        Args:
+            entity_type: Entity label
+            properties: Node properties
+
+        Raises:
+            Exception if registration fails
+        """
+        # Get entity ID
+        id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(entity_type)
+        if not id_field:
+            raise ValueError(f"Unknown entity type: {entity_type}")
+
+        entity_id = properties.get(id_field)
+        if not entity_id:
+            raise ValueError(f"Missing entity ID field: {id_field}")
+
+        # Generate entity name for embedding
+        entity_name = properties.get("name") or self._generate_name(entity_type, properties)
+
+        # Generate embedding using Graphiti's OpenAI client
+        embedding = await self.graphiti_registrar.generate_embedding(entity_name)
+
+        # Add Entity label + metadata to the node
+        result = self.graphiti_registrar.add_entity_metadata(
+            entity_label=entity_type,
+            entity_id_field=id_field,
+            entity_id_value=entity_id,
+            entity_name=entity_name,
+            name_embedding=embedding,
+        )
+
+        if not result.get("success"):
+            raise Exception(f"Failed to add Graphiti metadata: {result.get('error')}")
+
+        logger.debug(f"Graphiti registration successful: {entity_type} {entity_id}")
+
+    def _generate_name(self, entity_type: str, properties: dict[str, Any]) -> str:
+        """
+        Generate display name for entity (for Graphiti embedding).
+
+        Args:
+            entity_type: Entity label
+            properties: Node properties
+
+        Returns:
+            Human-readable entity name
+        """
+        if entity_type == "BundestagPerson":
+            vorname = properties.get("vorname", "")
+            nachname = properties.get("nachname", "")
+            name = f"{vorname} {nachname}".strip()
+            return name if name else f"Person {properties.get('person_id', '')}"
+
+        elif entity_type == "Vorgang":
+            return properties.get("titel") or f"Vorgang {properties.get('vorgang_id', '')}"
+
+        elif entity_type == "Drucksache":
+            nummer = properties.get("drucksache_nummer", "")
+            titel = properties.get("titel", "")
+            if titel:
+                return f"Drucksache {nummer}: {titel}"
+            return f"Drucksache {nummer}"
+
+        elif entity_type == "Plenarprotokoll":
+            wp = properties.get("wahlperiode", "")
+            sitzung = properties.get("sitzungsnummer", "")
+            return f"Plenarprotokoll {wp}/{sitzung}"
+
+        elif entity_type == "Aktivitaet":
+            return properties.get("titel") or f"Aktivität {properties.get('aktivitaet_id', '')}"
+
+        else:
+            # Fallback: use first available descriptive field
+            for field in ["titel", "name", "bezeichnung", "title"]:
+                if field in properties and properties[field]:
+                    return str(properties[field])
+
+            # Last resort: use ID field
+            id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(entity_type)
+            if id_field and id_field in properties:
+                return f"{entity_type} {properties[id_field]}"
+
+            return f"{entity_type} (unnamed)"
+
+    def _rollback_node_creation(self, entity_type: str, properties: dict[str, Any]) -> None:
+        """
+        Delete node if Graphiti registration failed (rollback for data consistency).
+
+        Args:
+            entity_type: Entity label
+            properties: Node properties
+        """
+        try:
+            id_field = self.upsert_manager.ENTITY_ID_FIELDS.get(entity_type)
+            if not id_field:
+                logger.error(f"Cannot rollback: unknown entity type {entity_type}")
+                return
+
+            entity_id = properties.get(id_field)
+            if not entity_id:
+                logger.error(f"Cannot rollback: missing {id_field} in properties")
+                return
+
+            with self.driver.session(database=self.database) as session:
+                result = session.run(
+                    f"MATCH (n:{entity_type} {{{id_field}: $id}}) DELETE n RETURN count(n) as deleted",
+                    id=entity_id,
+                )
+                deleted = result.single()["deleted"]
+                if deleted > 0:
+                    logger.info(f"✅ Rolled back node creation: {entity_type} {entity_id}")
+                else:
+                    logger.warning(f"⚠️ Rollback failed: node not found {entity_type} {entity_id}")
+
+        except Exception as rollback_error:
+            logger.error(
+                f"❌ Rollback failed for {entity_type} (manual cleanup required): {rollback_error}"
+            )

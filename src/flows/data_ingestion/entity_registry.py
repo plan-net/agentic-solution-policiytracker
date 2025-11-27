@@ -17,9 +17,9 @@ Architecture:
 """
 
 import hashlib
+import json
 import os
-from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Optional
 
 import structlog
 from neo4j import GraphDatabase
@@ -64,6 +64,7 @@ class EntityRegistry:
         neo4j_user: str = None,
         neo4j_password: str = None,
         database: str = None,
+        enable_fuzzy_matching: bool = False,
     ):
         """
         Initialize EntityRegistry with Neo4j connection.
@@ -73,11 +74,13 @@ class EntityRegistry:
             neo4j_user: Neo4j username (default: from env NEO4J_USER)
             neo4j_password: Neo4j password (default: from env NEO4J_PASSWORD)
             database: Neo4j database name (default: from env NEO4J_DATABASE)
+            enable_fuzzy_matching: Enable expensive fuzzy matching (default: False for performance)
         """
         self.neo4j_uri = neo4j_uri or os.getenv("NEO4J_URI", "bolt://localhost:7687")
         self.neo4j_user = neo4j_user or os.getenv("NEO4J_USER", "neo4j")
         self.neo4j_password = neo4j_password or os.getenv("NEO4J_PASSWORD", "password123")
         self.database = database or os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
+        self.enable_fuzzy_matching = enable_fuzzy_matching
 
         # Initialize driver
         self.driver = GraphDatabase.driver(
@@ -88,6 +91,7 @@ class EntityRegistry:
             "EntityRegistry initialized",
             neo4j_uri=self.neo4j_uri,
             database=self.database,
+            enable_fuzzy_matching=enable_fuzzy_matching,
         )
 
     def close(self):
@@ -233,7 +237,7 @@ class EntityRegistry:
         name: str,
         entity_type: str,
         entity_uuid: str,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
     ) -> bool:
         """
         Register a new canonical entity in the registry.
@@ -270,7 +274,7 @@ class EntityRegistry:
                         "uuid": entity_uuid,
                         "name": name,
                         "entity_type": entity_type,
-                        "metadata": metadata,
+                        "metadata": json.dumps(metadata),  # Serialize dict to JSON string
                     }
                 else:
                     query = """
@@ -389,7 +393,7 @@ class EntityRegistry:
 
     async def get_canonical_entity(
         self, entity_name: str, entity_type: Optional[str] = None
-    ) -> Optional[Dict]:
+    ) -> Optional[dict]:
         """
         Resolve entity name to canonical form.
 
@@ -420,7 +424,8 @@ class EntityRegistry:
                     """
                     MATCH (ce:CanonicalEntity)
                     WHERE toLower(ce.name) = toLower($entity_name)
-                    """ + (" AND ce.entity_type = $entity_type" if entity_type else "")
+                    """
+                    + (" AND ce.entity_type = $entity_type" if entity_type else "")
                     + """
                     RETURN
                         ce.uuid AS canonical_uuid,
@@ -444,7 +449,8 @@ class EntityRegistry:
                     """
                     MATCH (ea:EntityAlias)-[:ALIAS_OF]->(ce:CanonicalEntity)
                     WHERE toLower(ea.alias) = toLower($entity_name)
-                    """ + (" AND ce.entity_type = $entity_type" if entity_type else "")
+                    """
+                    + (" AND ce.entity_type = $entity_type" if entity_type else "")
                     + """
                     RETURN
                         ce.uuid AS canonical_uuid,
@@ -463,41 +469,48 @@ class EntityRegistry:
                 if record:
                     return dict(record)
 
-                # Step 3: Fuzzy match (requires APOC)
-                try:
-                    fuzzy_result = session.run(
-                        """
-                        MATCH (ce:CanonicalEntity)
-                        WHERE apoc.text.levenshteinSimilarity(
-                            toLower(ce.name),
-                            toLower($entity_name)
-                        ) >= 0.85
-                        """ + (" AND ce.entity_type = $entity_type" if entity_type else "")
-                        + """
-                        RETURN
-                            ce.uuid AS canonical_uuid,
-                            ce.name AS canonical_name,
-                            ce.entity_type AS entity_type,
-                            apoc.text.levenshteinSimilarity(
+                # Step 3: Fuzzy match (requires APOC) - EXPENSIVE, disabled by default
+                if self.enable_fuzzy_matching:
+                    try:
+                        fuzzy_result = session.run(
+                            """
+                            MATCH (ce:CanonicalEntity)
+                            WHERE apoc.text.levenshteinSimilarity(
                                 toLower(ce.name),
                                 toLower($entity_name)
-                            ) AS confidence,
-                            'fuzzy' AS match_type,
-                            ce.usage_count AS usage_count
-                        ORDER BY confidence DESC
-                        LIMIT 1
-                        """,
+                            ) >= 0.85
+                            """
+                            + (" AND ce.entity_type = $entity_type" if entity_type else "")
+                            + """
+                            RETURN
+                                ce.uuid AS canonical_uuid,
+                                ce.name AS canonical_name,
+                                ce.entity_type AS entity_type,
+                                apoc.text.levenshteinSimilarity(
+                                    toLower(ce.name),
+                                    toLower($entity_name)
+                                ) AS confidence,
+                                'fuzzy' AS match_type,
+                                ce.usage_count AS usage_count
+                            ORDER BY confidence DESC
+                            LIMIT 1
+                            """,
+                            entity_name=entity_name,
+                            entity_type=entity_type,
+                        )
+
+                        record = fuzzy_result.single()
+                        if record:
+                            return dict(record)
+
+                    except Exception as fuzzy_error:
+                        # APOC might not be available, skip fuzzy matching
+                        logger.debug(f"Fuzzy matching not available: {fuzzy_error}")
+                else:
+                    logger.debug(
+                        "Fuzzy matching disabled for performance",
                         entity_name=entity_name,
-                        entity_type=entity_type,
                     )
-
-                    record = fuzzy_result.single()
-                    if record:
-                        return dict(record)
-
-                except Exception as fuzzy_error:
-                    # APOC might not be available, skip fuzzy matching
-                    logger.debug(f"Fuzzy matching not available: {fuzzy_error}")
 
                 # No match found
                 return None
@@ -508,7 +521,7 @@ class EntityRegistry:
 
     async def find_similar_entities(
         self, entity_name: str, threshold: float = 0.85, limit: int = 10
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """
         Find similar canonical entities using fuzzy matching.
 
@@ -551,7 +564,7 @@ class EntityRegistry:
             logger.error(f"Failed to find similar entities: {e}", entity_name=entity_name)
             return []
 
-    async def get_entity_usage_stats(self, canonical_uuid: str) -> Optional[Dict]:
+    async def get_entity_usage_stats(self, canonical_uuid: str) -> Optional[dict]:
         """
         Get usage statistics for a canonical entity.
 
@@ -681,7 +694,7 @@ class EntityRegistry:
             )
             return False
 
-    async def get_registry_stats(self) -> Dict:
+    async def get_registry_stats(self) -> dict:
         """
         Get overall registry statistics.
 

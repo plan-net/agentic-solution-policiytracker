@@ -14,7 +14,7 @@ import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import structlog
 
@@ -159,7 +159,7 @@ class DocumentTracker:
         episode_id: str,
         entity_count: int = 0,
         relationship_count: int = 0,
-        entity_names: Optional[List[str]] = None,
+        entity_names: Optional[list[str]] = None,
     ) -> None:
         """
         Mark document as processed with metadata.
@@ -199,7 +199,7 @@ class DocumentTracker:
         entity_count: int = 0,
         relationship_count: int = 0,
         chunk_results: list[dict] = None,
-        entity_names: Optional[List[str]] = None,
+        entity_names: Optional[list[str]] = None,
     ) -> None:
         """
         Mark chunked document as processed with detailed chunk metadata.
@@ -323,7 +323,7 @@ class DocumentTracker:
             if data.get("status") == "completed"
         ]
 
-    def _calculate_entity_hash(self, entity_names: List[str]) -> str:
+    def _calculate_entity_hash(self, entity_names: list[str]) -> str:
         """
         Calculate hash of entity names for duplicate detection.
 
@@ -344,8 +344,8 @@ class DocumentTracker:
         return hashlib.sha256(hash_input.encode("utf-8")).hexdigest()[:16]  # First 16 chars
 
     def find_similar_documents(
-        self, entity_names: List[str], similarity_threshold: float = 0.5
-    ) -> List[dict]:
+        self, entity_names: list[str], similarity_threshold: float = 0.5
+    ) -> list[dict]:
         """
         Find documents with similar entity sets.
 
@@ -447,7 +447,7 @@ class DocumentTracker:
     def mark_processed_chunked_v2(
         self,
         doc_path: str,
-        chunk_results: List[dict],
+        chunk_results: list[dict],
         total_chunks: int,
     ) -> None:
         """
@@ -555,7 +555,7 @@ class DocumentTracker:
             f"{len(all_canonical_uuids)} canonical)"
         )
 
-    def get_chunk_entity_overlap(self, doc_path: str) -> dict[str, List[str]]:
+    def get_chunk_entity_overlap(self, doc_path: str) -> dict[str, list[str]]:
         """
         Get entities that appear in multiple chunks of a document.
 

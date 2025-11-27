@@ -175,8 +175,8 @@ class GraphRAGSettings(BaseSettings):
     GRAPHRAG_EMBEDDING_DIMS: int = Field(default=1536, description="Embedding dimensions")
 
     # Chunking Configuration (Legacy - for backward compatibility)
-    GRAPHRAG_CHUNK_SIZE: int = Field(default=1000, description="Document chunk size (legacy)")
-    GRAPHRAG_CHUNK_OVERLAP: int = Field(default=200, description="Chunk overlap size (legacy)")
+    GRAPHRAG_CHUNK_SIZE: int = Field(default=1500, description="Document chunk size (legacy)")
+    GRAPHRAG_CHUNK_OVERLAP: int = Field(default=10, description="Chunk overlap size (legacy)")
 
     # Flow Orchestration Settings
     ENABLE_AUTO_TRIGGER_FLOW1: bool = Field(
@@ -203,6 +203,16 @@ class GraphRAGSettings(BaseSettings):
     )
     ENABLE_LINK_REMOVAL: bool = Field(
         default=True, description="Remove links from scraped documents before processing"
+    )
+
+    # Entity Deduplication Configuration (Phase 2)
+    ENABLE_FUZZY_MATCHING: bool = Field(
+        default=False,
+        description="Enable expensive fuzzy matching in entity deduplication (disabled by default for performance)",
+    )
+    ENABLE_DEDUPLICATION: bool = Field(
+        default=False,
+        description="Enable Phase 2 entity deduplication (disabled by default due to blocking sync Neo4j calls causing infinite loops)",
     )
 
     # Ray Data Configuration

@@ -3,11 +3,13 @@ Document preprocessing utilities for cleaning scraped web content.
 
 This module handles:
 - YAML frontmatter extraction and preservation
+- HTML entity decoding
 - Link removal (markdown, images, bare URLs)
 - Duplicate line removal
 - Whitespace cleaning
 """
 
+import html
 import re
 
 import structlog
@@ -34,6 +36,27 @@ def extract_frontmatter(content: str) -> tuple[str, str]:
     if match:
         return match.group(1), match.group(2)
     return "", content
+
+
+def decode_html_entities(text: str) -> str:
+    """
+    Decode HTML entities to their Unicode equivalents.
+
+    Converts:
+    - &amp; → &
+    - &lt; → <
+    - &gt; → >
+    - &quot; → "
+    - &#39; → '
+    - And all other HTML entities
+
+    Args:
+        text: Text containing HTML entities
+
+    Returns:
+        Text with HTML entities decoded
+    """
+    return html.unescape(text)
 
 
 def remove_links(text: str) -> str:
@@ -93,6 +116,40 @@ def remove_duplicate_lines(text: str) -> str:
     return "\n".join(deduplicated)
 
 
+def remove_promotional_content(text: str) -> str:
+    """
+    Remove promotional and marketing content that confuses LLM extraction.
+
+    Removes sections like:
+    - "7 Best Stocks for the Next 30 Days"
+    - "Want the latest recommendations"
+    - "Click to get this free report"
+    - Marketing calls-to-action
+
+    Args:
+        text: Text with potential promotional content
+
+    Returns:
+        Text with promotional sections removed
+    """
+    # Common promotional phrases to filter
+    promotional_patterns = [
+        r"7 Best Stocks for the Next 30 Days.*?(?=\n\n|\Z)",
+        r"Just released: Experts distill.*?(?=\n\n|\Z)",
+        r"Want the latest recommendations.*?(?=\n\n|\Z)",
+        r"Click to get this free report.*?(?=\n\n|\Z)",
+        r"See them now >>.*?(?=\n\n|\Z)",
+        r"Free Stock Analysis Report.*?(?=\n\n|\Z)",
+        r"This article originally published on.*?(?=\n\n|\Z)",
+        r"The views and opinions expressed herein.*?(?=\n\n|\Z)",
+    ]
+
+    for pattern in promotional_patterns:
+        text = re.sub(pattern, "", text, flags=re.DOTALL | re.IGNORECASE)
+
+    return text
+
+
 def clean_whitespace(text: str) -> str:
     """
     Clean excessive whitespace.
@@ -122,10 +179,12 @@ def preprocess_document(content: str, enable_link_removal: bool = True) -> str:
 
     Pipeline:
     1. Extract and preserve frontmatter (YAML metadata)
-    2. Remove links from body (optional)
-    3. Remove duplicate consecutive lines
-    4. Clean excessive whitespace
-    5. Reassemble document
+    2. Decode HTML entities (&amp; → &, &gt; → >, etc.)
+    3. Remove promotional/marketing content
+    4. Remove links from body (optional)
+    5. Remove duplicate consecutive lines
+    6. Clean excessive whitespace
+    7. Reassemble document
 
     Args:
         content: Raw document content
@@ -140,7 +199,20 @@ def preprocess_document(content: str, enable_link_removal: bool = True) -> str:
     if frontmatter:
         logger.debug("Extracted frontmatter from document")
 
-    # Step 2: Clean body
+    # Step 2: Decode HTML entities
+    original_body = body
+    body = decode_html_entities(body)
+    if body != original_body:
+        logger.debug("Decoded HTML entities in document body")
+
+    # Step 3: Remove promotional content
+    original_length = len(body)
+    body = remove_promotional_content(body)
+    removed_chars = original_length - len(body)
+    if removed_chars > 0:
+        logger.debug(f"Removed promotional content: reduced by {removed_chars} characters")
+
+    # Step 4: Clean body
     if enable_link_removal:
         original_length = len(body)
         body = remove_links(body)
@@ -151,7 +223,7 @@ def preprocess_document(content: str, enable_link_removal: bool = True) -> str:
     body = remove_duplicate_lines(body)
     body = clean_whitespace(body)
 
-    # Step 3: Reassemble document
+    # Step 5: Reassemble document
     if frontmatter:
         return f"---\n{frontmatter}\n---\n\n{body}"
     return body

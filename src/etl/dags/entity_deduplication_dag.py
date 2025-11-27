@@ -227,7 +227,6 @@ def _parse_duplicates_count(output: str) -> int:
 def _save_dry_run_report(dry_run_result: dict[str, Any], config: dict[str, Any]) -> None:
     """Save dry-run report to file."""
     try:
-        import os
         from pathlib import Path
 
         # Ensure report directory exists
@@ -240,7 +239,7 @@ def _save_dry_run_report(dry_run_result: dict[str, Any], config: dict[str, Any])
 
         # Write report
         with open(report_file, "w") as f:
-            f.write(f"Entity Deduplication Dry-Run Report\n")
+            f.write("Entity Deduplication Dry-Run Report\n")
             f.write(f"{'=' * 60}\n\n")
             f.write(f"Execution Timestamp: {dry_run_result['execution_timestamp']}\n")
             f.write(f"Similarity Threshold: {dry_run_result['similarity_threshold']}\n")
@@ -308,7 +307,9 @@ def run_live_consolidation(**context) -> dict[str, Any]:
             task_ids="run_dry_run_consolidation", key="dry_run_result"
         )
 
-        logger.info(f"Starting live consolidation of {dry_run_result['duplicates_found']} duplicates")
+        logger.info(
+            f"Starting live consolidation of {dry_run_result['duplicates_found']} duplicates"
+        )
 
         # Build command (no --dry-run flag)
         cmd = [

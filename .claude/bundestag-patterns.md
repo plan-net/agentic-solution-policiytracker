@@ -143,6 +143,41 @@ class FilterBuilder:
 ### Overview
 Deduplication prevents duplicate data ingestion and ensures efficient processing. We implement deduplication at multiple levels: database, entity, document, and relationship.
 
+### Quick Reference: 9 Deduplication Strategies
+
+**One-Liner Summary**:
+1. **Database-Level (MERGE)** - Use `MERGE` instead of `CREATE` to ensure node/relationship uniqueness at database level (idempotent, automatic)
+2. **Pre-Processing Check** - Check if entity exists in Neo4j before expensive operations like PDF downloads or API calls (saves bandwidth/time)
+3. **Related Entity (In-Memory)** - Deduplicate related entities (Deskriptoren, Sachgebiete) in-memory using dictionaries before batch upsert (prevents within-batch duplicates)
+4. **URL-Based Tracking** - Track document URLs in ETL pipeline to skip already-collected articles (prevents duplicate document ingestion)
+5. **Temporal Check** - Skip entity updates if database version is newer than API version using `aktualisiert` timestamps (avoids stale overwrites)
+6. **Batch-Level Tracking** - Use offset-free pagination and track processed IDs across batches to prevent duplicate collection (handles pagination edge cases)
+7. **Relationship (MERGE)** - MERGE automatically prevents duplicate relationships between same source/target nodes (no manual deduplication needed)
+8. **Canonical Entities (EntityRegistry)** - Resolve entity names to canonical forms before ingestion using Neo4j registry with fuzzy matching (prevents duplicates proactively via sub-ms lookups)
+9. **Automated Cleanup (Airflow DAG)** - Weekly Airflow job finds and merges duplicate entities using Levenshtein similarity with dry-run preview (automated post-processing cleanup)
+
+**Strategy Comparison**:
+```
+Strategy              | Type        | When            | Savings              | Implementation
+---------------------|-------------|-----------------|----------------------|-------------------
+1. MERGE             | Database    | Write           | 100% (prevents)      | ✅ Built-in
+2. Pre-check         | Application | Before download | 70% time/bandwidth   | ✅ Implemented
+3. In-memory dict    | Application | Collection      | ~20% batch size      | ✅ Implemented
+4. URL tracking      | ETL         | Collection      | ~50% duplicates      | ✅ Implemented
+5. Timestamp check   | Application | Update          | ~30% unnecessary     | ✅ Implemented
+6. Cross-batch       | Application | Pagination      | ~10% edge cases      | ✅ Implemented
+7. MERGE (rels)      | Database    | Write           | 100% (prevents)      | ✅ Built-in
+8. EntityRegistry    | Application | Ingestion       | 60% entity reuse     | 🚧 Phase 2
+9. Airflow DAG       | Automation  | Weekly cleanup  | 30-40% post-process  | ✅ Implemented
+```
+
+**Strategy Selection Guide**:
+- **Prevention (Strategies 1-3, 8)**: Stop duplicates before they're created
+- **Detection (Strategies 4-6)**: Identify and skip duplicates during collection
+- **Cleanup (Strategy 9)**: Find and merge duplicates after creation
+- **Automatic (Strategies 1, 7)**: Database-enforced, no code needed
+- **Manual (Strategies 2-6, 8-9)**: Application logic required
+
 ### 1. Database-Level Deduplication (Primary Strategy)
 
 #### Neo4j MERGE Pattern

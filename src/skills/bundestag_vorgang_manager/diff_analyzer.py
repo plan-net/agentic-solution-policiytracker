@@ -58,19 +58,24 @@ class VorgangDiffAnalyzer:
 
         logger.info("VorgangDiffAnalyzer initialized")
 
-    async def analyze_all_vorgaenge(self, limit: Optional[int] = None) -> list[VorgangDiff]:
+    async def analyze_all_vorgaenge(
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None
+    ) -> list[VorgangDiff]:
         """Analyze all Vorgänge and find differences.
 
         Args:
             limit: Maximum number of Vorgänge to analyze (None = all)
+            wahlperiode: Filter by Wahlperiode (e.g., "21")
 
         Returns:
             List of VorgangDiff objects
         """
-        logger.info(f"Starting analysis of all Vorgänge (limit={limit})")
+        logger.info(f"Starting analysis of all Vorgänge (limit={limit}, wahlperiode={wahlperiode})")
 
         # 1. Get all Vorgang IDs from DIP API
-        dip_vorgang_ids = await self.dip_client.get_all_vorgang_ids(limit=limit)
+        dip_vorgang_ids = await self.dip_client.get_all_vorgang_ids(
+            limit=limit, wahlperiode=wahlperiode
+        )
         logger.info(f"Found {len(dip_vorgang_ids)} Vorgänge in DIP API")
 
         # 2. Get all Vorgang IDs from Neo4j
@@ -181,7 +186,6 @@ class VorgangDiffAnalyzer:
         """
         query = """
         MATCH (v:Vorgang)
-        WHERE v.active = true
         RETURN v.vorgang_id as vorgang_id
         ORDER BY v.vorgang_id
         """
@@ -201,7 +205,6 @@ class VorgangDiffAnalyzer:
         """
         query = """
         MATCH (v:Vorgang {vorgang_id: $vorgang_id})
-        WHERE v.active = true
         RETURN v
         """
 

@@ -118,7 +118,7 @@ class BundestagVorgangManager:
         logger.info("BundestagVorgangManager initialized")
 
     async def sync_all_vorgaenge(
-        self, limit: Optional[int] = None, dry_run: bool = False
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None, dry_run: bool = False
     ) -> SyncResult:
         """Synchronize all Vorgänge from Bundestag DIP API to Neo4j.
 
@@ -126,18 +126,23 @@ class BundestagVorgangManager:
 
         Args:
             limit: Maximum number of Vorgänge to sync (None = all)
+            wahlperiode: Filter by Wahlperiode (e.g., "21")
             dry_run: If True, analyze differences but don't execute operations
 
         Returns:
             SyncResult with execution details
         """
-        logger.info(f"Starting full Vorgang sync (limit={limit}, dry_run={dry_run})")
+        logger.info(
+            f"Starting full Vorgang sync (limit={limit}, wahlperiode={wahlperiode}, dry_run={dry_run})"
+        )
         start_time = datetime.now()
 
         try:
             # Step 1: Analyze differences
             logger.info("Step 1: Analyzing differences...")
-            diffs = await self.diff_analyzer.analyze_all_vorgaenge(limit=limit)
+            diffs = await self.diff_analyzer.analyze_all_vorgaenge(
+                limit=limit, wahlperiode=wahlperiode
+            )
             diff_summary = self.diff_analyzer.generate_summary(diffs)
 
             logger.info(f"Analysis complete: {diff_summary['total_diffs']} differences found")

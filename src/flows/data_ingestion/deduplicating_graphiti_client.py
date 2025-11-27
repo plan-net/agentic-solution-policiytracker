@@ -44,7 +44,7 @@ Example:
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 import structlog
 from graphiti_core import Graphiti
@@ -204,17 +204,8 @@ class DeduplicatingGraphitiClient:
                 self.stats["total_entities_created"] += dedup_result.entities_created
                 self.stats["total_aliases_registered"] += dedup_result.aliases_registered
 
-                # Attach deduplication metadata to result
-                if not hasattr(result, "metadata"):
-                    result.metadata = {}
-                result.metadata["deduplication"] = {
-                    "enabled": True,
-                    "entities_reused": dedup_result.entities_reused,
-                    "entities_created": dedup_result.entities_created,
-                    "aliases_registered": dedup_result.aliases_registered,
-                    "reuse_rate": dedup_result.reuse_rate,
-                    "processing_time_seconds": dedup_result.processing_time_seconds,
-                }
+                # Note: Deduplication stats are tracked in self.stats
+                # AddEpisodeResults doesn't support custom metadata attributes
 
                 processing_time = asyncio.get_event_loop().time() - start_time
                 logger.info(
@@ -229,8 +220,35 @@ class DeduplicatingGraphitiClient:
 
             return result
 
+        except KeyError as e:
+            # Graphiti bug: LLM extraction sometimes produces edges with empty UUIDs
+            # This causes KeyError: '' in edge_operations.py when trying to resolve edges
+            if str(e) == "''" or e.args[0] == "":
+                logger.warning(
+                    f"Skipping episode due to Graphiti extraction bug (empty UUID in edges): {name}",
+                    episode_name=name,
+                    error_type="GraphitiExtractionBug",
+                    message="LLM produced edges with empty node UUIDs - document content may be confusing the extraction model",
+                )
+                # Re-raise with clearer error message
+                raise ValueError(
+                    "Graphiti LLM extraction failed: produced edges with empty node UUIDs. "
+                    "This document's content format is not compatible with Graphiti's extraction model."
+                ) from e
+            else:
+                # Some other KeyError - re-raise as is
+                raise
+
         except Exception as e:
-            logger.error(f"Failed to process episode with deduplication: {e}", episode_name=name)
+            import traceback
+
+            error_details = traceback.format_exc()
+            logger.error(
+                f"Failed to process episode with deduplication: {e}",
+                episode_name=name,
+                error_type=type(e).__name__,
+                error_details=error_details,
+            )
             raise
 
     async def _deduplicate_entities(self, result, episode_name: str) -> DeduplicationStats:
@@ -256,7 +274,7 @@ class DeduplicatingGraphitiClient:
         aliases_registered = 0
 
         # Track entity resolution for this episode
-        resolution_map: Dict[str, EntityResolutionResult] = {}
+        resolution_map: dict[str, EntityResolutionResult] = {}
 
         for entity in result.nodes:
             entity_name = entity.name
@@ -319,7 +337,11 @@ class DeduplicatingGraphitiClient:
                 )
 
                 if registered:
-                    logger.debug("Registered new canonical entity", entity_name=entity_name, entity_type=entity_type)
+                    logger.debug(
+                        "Registered new canonical entity",
+                        entity_name=entity_name,
+                        entity_type=entity_type,
+                    )
 
         # Calculate statistics
         total_entities = len(result.nodes)
@@ -335,14 +357,12 @@ class DeduplicatingGraphitiClient:
             processing_time_seconds=processing_time,
         )
 
-        # Store resolution map in result metadata for downstream use
-        if not hasattr(result, "metadata"):
-            result.metadata = {}
-        result.metadata["entity_resolution_map"] = resolution_map
+        # Note: resolution_map is available in stats.entity_resolution_map if needed
+        # We don't store it in result.metadata as AddEpisodeResults doesn't support custom attributes
 
         return stats
 
-    async def get_deduplication_stats(self) -> Dict:
+    async def get_deduplication_stats(self) -> dict:
         """
         Get overall deduplication statistics for this client instance.
 
@@ -464,7 +484,9 @@ if __name__ == "__main__":
             # Print deduplication metadata
             if hasattr(result, "metadata") and "deduplication" in result.metadata:
                 dedup_meta = result.metadata["deduplication"]
-                print(f"   Entities extracted: {dedup_meta.get('entities_reused', 0) + dedup_meta.get('entities_created', 0)}")
+                print(
+                    f"   Entities extracted: {dedup_meta.get('entities_reused', 0) + dedup_meta.get('entities_created', 0)}"
+                )
                 print(f"   Entities reused: {dedup_meta.get('entities_reused', 0)}")
                 print(f"   Entities created: {dedup_meta.get('entities_created', 0)}")
                 print(f"   Reuse rate: {dedup_meta.get('reuse_rate', 0):.1%}")

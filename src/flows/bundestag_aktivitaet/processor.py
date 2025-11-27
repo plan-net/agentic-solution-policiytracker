@@ -388,6 +388,7 @@ Access your data at: http://localhost:7474
     openai_api_key = inputs.get("openai_api_key")
     if not openai_api_key:
         import os
+
         openai_api_key = os.getenv("OPENAI_API_KEY")
 
     # Initialize flow with Graphiti registration enabled

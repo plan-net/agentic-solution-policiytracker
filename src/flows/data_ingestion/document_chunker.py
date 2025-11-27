@@ -105,16 +105,13 @@ class HybridDocumentChunker:
             strip_headers=False,  # Keep headers in content for context
         )
 
-        # Character-based estimate for RecursiveCharacterTextSplitter
-        # Rough estimate: 4 characters ≈ 1 token
-        char_chunk_size = max_tokens * 4
-        char_overlap = self.overlap_tokens * 4
-
+        # Use token-based chunking for consistency
+        # When using length_function=count_tokens, chunk_size should be in tokens
         self.paragraph_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=char_chunk_size,
-            chunk_overlap=char_overlap,
+            chunk_size=max_tokens,  # In tokens when using count_tokens
+            chunk_overlap=self.overlap_tokens,  # In tokens when using count_tokens
             separators=["\n\n", "\n", ". ", " ", ""],
-            length_function=count_tokens,  # Use actual token counting
+            length_function=count_tokens,  # Count tokens for accurate chunking
         )
 
     def create_chunks(self, content: str) -> list[dict[str, any]]:

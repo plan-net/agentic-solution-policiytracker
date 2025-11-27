@@ -17,8 +17,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from neo4j import GraphDatabase
 
-from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
+from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_ingestion.transformers.entity_builder import BundestagEntityBuilder
 from src.flows.bundestag_wahlperiode.wahlperiode_data import WAHLPERIODE_REFERENCE_DATA
 
@@ -139,7 +139,7 @@ async def main():
     print(f"\n📊 Loading {len(WAHLPERIODE_REFERENCE_DATA)} wahlperioden...")
     print(f"🔗 Connecting to Neo4j: {neo4j_uri}")
     print(f"📦 Database: {neo4j_database}")
-    print(f"✨ Using BundestagEntityBuilder (Pydantic validation)\n")
+    print("✨ Using BundestagEntityBuilder (Pydantic validation)\n")
 
     # Initialize Neo4j connection
     driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_username, neo4j_password))
@@ -203,13 +203,19 @@ async def main():
                         graphiti_results["successful"] += 1
                     else:
                         graphiti_results["failed"] += 1
-                        print(f"   ⚠️  Failed to register Wahlperiode {wp_nummer}: {result.get('reason')}")
+                        print(
+                            f"   ⚠️  Failed to register Wahlperiode {wp_nummer}: {result.get('reason')}"
+                        )
 
                 except Exception as e:
                     graphiti_results["failed"] += 1
-                    print(f"   ❌ Error registering Wahlperiode {entity.get('wahlperiode_nummer')}: {e}")
+                    print(
+                        f"   ❌ Error registering Wahlperiode {entity.get('wahlperiode_nummer')}: {e}"
+                    )
 
-            print(f"✅ Registered {graphiti_results['successful']} wahlperioden with Graphiti ({graphiti_results['failed']} failed)\n")
+            print(
+                f"✅ Registered {graphiti_results['successful']} wahlperioden with Graphiti ({graphiti_results['failed']} failed)\n"
+            )
 
         # Create relationships
         print("🔗 Creating SERVED_IN relationships...")
@@ -223,13 +229,17 @@ async def main():
         print("=" * 60)
         print("\n📈 Summary:")
         print(f"   - Wahlperiode nodes: {results['successful']}")
-        print(f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)")
+        print(
+            f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)"
+        )
         print(f"   - SERVED_IN relationships: {relationship_results['created']}")
         print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
-        print(f"   - Validation: Pydantic political_schema_v5.Wahlperiode")
+        print("   - Validation: Pydantic political_schema_v5.Wahlperiode")
         print("\n🔍 View in Neo4j Browser: http://localhost:7474")
         print("   Query: MATCH (w:Entity:Wahlperiode) RETURN w ORDER BY w.wahlperiode_nummer")
-        print("   Check Graphiti: MATCH (w:Entity:Wahlperiode) RETURN w.uuid, w.name, size(w.name_embedding) AS embedding_dim\n")
+        print(
+            "   Check Graphiti: MATCH (w:Entity:Wahlperiode) RETURN w.uuid, w.name, size(w.name_embedding) AS embedding_dim\n"
+        )
 
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
