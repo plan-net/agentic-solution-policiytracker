@@ -144,6 +144,9 @@ services:
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8002
       LOG_LEVEL: INFO
+      # Graphiti registration (for Skills + Subagents compatibility)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ENABLE_GRAPHITI_REGISTRATION: "true"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
       interval: 30s

@@ -17,7 +17,7 @@ Usage:
 """
 
 import re
-from typing import Dict, List, Optional
+from typing import Optional
 
 import structlog
 
@@ -39,28 +39,23 @@ class EntityNormalizer:
         "EU": "European Union",
         "E.U.": "European Union",
         "the EU": "the European Union",
-
         # European Commission
         "EU Commission": "European Commission",
         "EC": "European Commission",
-
         # United States
         "US": "United States",
         "U.S.": "United States",
         "USA": "United States",
         "U.S.A.": "United States",
-
         # United Kingdom
         "UK": "United Kingdom",
         "U.K.": "United Kingdom",
-
         # Common political entities
         "EP": "European Parliament",
         "ECJ": "European Court of Justice",
         "CJEU": "Court of Justice of the European Union",
         "EDPB": "European Data Protection Board",
         "EDPS": "European Data Protection Supervisor",
-
         # German entities
         "BT": "Bundestag",
         "BR": "Bundesrat",
@@ -69,14 +64,12 @@ class EntityNormalizer:
         "CDU": "Christian Democratic Union",
         "CSU": "Christian Social Union",
         "FDP": "Free Democratic Party",
-
         # Regulations (preserve acronyms but standardize)
         "GDPR": "General Data Protection Regulation",
         "DSA": "Digital Services Act",
         "DMA": "Digital Markets Act",
         "AI Act": "Artificial Intelligence Act",
         "ePrivacy": "ePrivacy Regulation",
-
         # Companies (standardize variations)
         "Meta Platforms": "Meta",
         "Facebook": "Meta",  # Post-rebrand
@@ -89,7 +82,7 @@ class EntityNormalizer:
 
     def __init__(
         self,
-        custom_mappings: Optional[Dict[str, str]] = None,
+        custom_mappings: Optional[dict[str, str]] = None,
         enable_abbreviation_expansion: bool = True,
         enable_whitespace_normalization: bool = True,
         enable_possessive_normalization: bool = True,
@@ -127,7 +120,7 @@ class EntityNormalizer:
     def _compile_patterns(self):
         """Pre-compile regex patterns for efficient text processing."""
         # Pattern for excessive whitespace
-        self.whitespace_pattern = re.compile(r'\s+')
+        self.whitespace_pattern = re.compile(r"\s+")
 
         # Pattern for possessives (e.g., "EU's" or "Meta's")
         self.possessive_pattern = re.compile(r"(\b\w+)'s\b")
@@ -138,12 +131,12 @@ class EntityNormalizer:
         for abbrev, full_form in self.abbreviation_map.items():
             # Create pattern with word boundaries
             # Use \b for most cases, but handle special cases like "U.S."
-            if '.' in abbrev:
+            if "." in abbrev:
                 # For dotted abbreviations, escape dots
                 pattern_str = re.escape(abbrev)
             else:
                 # For regular abbreviations, use word boundaries
-                pattern_str = r'\b' + re.escape(abbrev) + r'\b'
+                pattern_str = r"\b" + re.escape(abbrev) + r"\b"
 
             flags = 0 if self.case_sensitive else re.IGNORECASE
             self.abbreviation_patterns[abbrev] = re.compile(pattern_str, flags)
@@ -185,15 +178,15 @@ class EntityNormalizer:
         Preserves paragraph breaks (double newlines).
         """
         # Replace multiple spaces/tabs with single space
-        text = self.whitespace_pattern.sub(' ', text)
+        text = self.whitespace_pattern.sub(" ", text)
 
         # Preserve paragraph breaks
-        text = re.sub(r'\n\n+', '\n\n', text)
+        text = re.sub(r"\n\n+", "\n\n", text)
 
         # Strip leading/trailing whitespace from lines
-        lines = text.split('\n')
+        lines = text.split("\n")
         lines = [line.strip() for line in lines]
-        text = '\n'.join(lines)
+        text = "\n".join(lines)
 
         return text.strip()
 
@@ -210,9 +203,7 @@ class EntityNormalizer:
         # Sort by length (longest first) to handle multi-word abbreviations correctly
         # E.g., "EU Commission" should be handled before "EU"
         sorted_abbrevs = sorted(
-            self.abbreviation_map.items(),
-            key=lambda x: len(x[0]),
-            reverse=True
+            self.abbreviation_map.items(), key=lambda x: len(x[0]), reverse=True
         )
 
         for abbrev, full_form in sorted_abbrevs:
@@ -226,7 +217,7 @@ class EntityNormalizer:
                     "Expanded abbreviation",
                     abbreviation=abbrev,
                     full_form=full_form,
-                    count=len(matches)
+                    count=len(matches),
                 )
 
         return expanded
@@ -257,13 +248,9 @@ class EntityNormalizer:
         # Recompile patterns with new mapping
         self._compile_patterns()
 
-        logger.info(
-            "Added custom mapping",
-            abbreviation=abbreviation,
-            full_form=full_form
-        )
+        logger.info("Added custom mapping", abbreviation=abbreviation, full_form=full_form)
 
-    def get_statistics(self, text: str) -> Dict[str, int]:
+    def get_statistics(self, text: str) -> dict[str, int]:
         """
         Get statistics about potential normalizations in text.
 
@@ -346,5 +333,5 @@ if __name__ == "__main__":
         print(f"Normalized: {normalized}")
         stats = normalizer.get_statistics(text)
         print(f"Stats: {stats['total_abbreviations']} abbreviations found")
-        if stats['abbreviation_counts']:
+        if stats["abbreviation_counts"]:
             print(f"  Details: {stats['abbreviation_counts']}")

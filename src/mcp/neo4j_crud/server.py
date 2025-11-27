@@ -78,7 +78,7 @@ async def health_check():
 @app.post("/create_node", response_model=OperationResponse)
 async def create_node(request: CreateNodeRequest):
     """
-    Create a new node.
+    Create a new node with Graphiti registration.
 
     Args:
         request: CreateNodeRequest with entity_type and properties
@@ -88,7 +88,10 @@ async def create_node(request: CreateNodeRequest):
     """
     logger.info(f"POST /create_node: {request.entity_type}")
 
-    result = crud_ops.create_node(entity_type=request.entity_type, properties=request.properties)
+    # Await the async create_node method (now includes Graphiti registration)
+    result = await crud_ops.create_node(
+        entity_type=request.entity_type, properties=request.properties
+    )
 
     if result["success"]:
         return OperationResponse(**result)

@@ -16,8 +16,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 from neo4j import GraphDatabase
 
-from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_common.graphiti_registration import GraphitiNodeRegistrar
+from src.flows.bundestag_common.neo4j_upsert import Neo4jUpsertManager
 from src.flows.bundestag_fraktion.fraktion_data import FRAKTION_REFERENCE_DATA
 
 
@@ -203,13 +203,17 @@ async def main():
                         graphiti_results["successful"] += 1
                     else:
                         graphiti_results["failed"] += 1
-                        print(f"   ⚠️  Failed to register Fraktion {fraktion_id}: {result.get('reason')}")
+                        print(
+                            f"   ⚠️  Failed to register Fraktion {fraktion_id}: {result.get('reason')}"
+                        )
 
                 except Exception as e:
                     graphiti_results["failed"] += 1
                     print(f"   ❌ Error registering Fraktion {entity.get('fraktion_id')}: {e}")
 
-            print(f"✅ Registered {graphiti_results['successful']} fraktionen with Graphiti ({graphiti_results['failed']} failed)\n")
+            print(
+                f"✅ Registered {graphiti_results['successful']} fraktionen with Graphiti ({graphiti_results['failed']} failed)\n"
+            )
 
         # Create ACTIVE_IN relationships
         print("🔗 Creating ACTIVE_IN relationships...")
@@ -232,14 +236,18 @@ async def main():
         print("=" * 60)
         print("\n📈 Summary:")
         print(f"   - Fraktion nodes: {results['successful']}")
-        print(f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)")
+        print(
+            f"   - Graphiti registered: {graphiti_results['successful']} (with :Entity label + embeddings)"
+        )
         print(f"   - ACTIVE_IN relationships: {active_in_results['created']}")
         print(f"   - MEMBER_OF relationships: {member_of_results['created']}")
         print(f"   - SUCCESSOR_OF relationships: {successor_results['created']}")
         print("   - Coverage: 1949 (WP 1) to 2029 (WP 21)")
         print("\n🔍 View in Neo4j Browser: http://localhost:7474")
         print("   Query: MATCH (f:Entity:Fraktion) RETURN f ORDER BY f.founding_date")
-        print("   Check Graphiti: MATCH (f:Entity:Fraktion) RETURN f.uuid, f.name, size(f.name_embedding) AS embedding_dim")
+        print(
+            "   Check Graphiti: MATCH (f:Entity:Fraktion) RETURN f.uuid, f.name, size(f.name_embedding) AS embedding_dim"
+        )
         print(
             "   Query: MATCH (p:BundestagPerson)-[r:MEMBER_OF]->(f:Fraktion) RETURN p, r, f LIMIT 100\n"
         )

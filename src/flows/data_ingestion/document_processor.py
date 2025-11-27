@@ -16,6 +16,9 @@ from typing import Optional
 
 import structlog
 
+from src import config  # For accessing ENABLE_FUZZY_MATCHING
+from src.config import graphrag_settings
+
 # Configure logging for Ray environment
 from src.flows.data_ingestion.logging_config import configure_logging
 
@@ -24,13 +27,13 @@ configure_logging()
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
-from src.flows.data_ingestion.document_tracker import DocumentTracker
-from src.flows.data_ingestion.entity_normalizer import EntityNormalizer
-from src.flows.data_ingestion.entity_registry import EntityRegistry
 from src.flows.data_ingestion.deduplicating_graphiti_client import (
     DeduplicatingGraphitiClient,
     EntityResolutionResult,
 )
+from src.flows.data_ingestion.document_tracker import DocumentTracker
+from src.flows.data_ingestion.entity_normalizer import EntityNormalizer
+from src.flows.data_ingestion.entity_registry import EntityRegistry
 from src.graphrag.political_schema_v5 import (
     EDGE_TYPE_MAP_GENERAL as EDGE_TYPE_MAP,
 )
@@ -47,6 +50,7 @@ logger = structlog.get_logger()
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
 GROUP_ID = os.getenv("GRAPHITI_GROUP_ID", "political_monitoring_v2")
 
 
@@ -93,7 +97,10 @@ try:
             self.dedupe_client = None  # Phase 2: Deduplicating wrapper
             self.tracker = DocumentTracker()
             self.entity_normalizer = EntityNormalizer()  # Phase 1: Entity normalizer
-            self.entity_registry = EntityRegistry()  # Phase 2: Entity registry
+            # Phase 2: Entity registry with fuzzy matching disabled by default for performance
+            self.entity_registry = EntityRegistry(
+                enable_fuzzy_matching=config.graphrag_settings.ENABLE_FUZZY_MATCHING
+            )
 
         async def initialize(self):
             """Initialize the Graphiti client connection with APISIX routing and Phase 2 deduplication."""
@@ -117,23 +124,37 @@ try:
                 self.graphiti_client = Graphiti(
                     NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
                 )
+
+                # Configure database to use politicalmonitoring.v3 instead of default
+                self.graphiti_client.database = NEO4J_DATABASE
+                logger.info(
+                    f"Actor {self.actor_id}: Configured Graphiti to use database: {NEO4J_DATABASE}"
+                )
+
                 await self.graphiti_client.build_indices_and_constraints()
 
-                # Phase 2: Initialize EntityRegistry schema
-                await self.entity_registry.initialize_schema()
+                # Phase 2: Conditionally enable deduplication based on config flag
+                if config.graphrag_settings.ENABLE_DEDUPLICATION:
+                    # Initialize EntityRegistry schema
+                    await self.entity_registry.initialize_schema()
 
-                # Phase 2: Wrap base client with DeduplicatingGraphitiClient
-                self.dedupe_client = DeduplicatingGraphitiClient(
-                    base_client=self.graphiti_client,
-                    entity_registry=self.entity_registry,
-                    entity_normalizer=self.entity_normalizer,
-                    enable_deduplication=True,
-                    enable_alias_registration=True,
-                )
-
-                logger.info(
-                    f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing and Phase 2 deduplication"
-                )
+                    # Wrap base client with DeduplicatingGraphitiClient
+                    self.dedupe_client = DeduplicatingGraphitiClient(
+                        base_client=self.graphiti_client,
+                        entity_registry=self.entity_registry,
+                        entity_normalizer=self.entity_normalizer,
+                        enable_deduplication=True,
+                        enable_alias_registration=True,
+                    )
+                    logger.info(
+                        f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing and Phase 2 deduplication"
+                    )
+                else:
+                    # Use base Graphiti client directly without deduplication wrapper
+                    self.dedupe_client = self.graphiti_client
+                    logger.info(
+                        f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing (deduplication DISABLED)"
+                    )
                 logger.warning(note)  # Log the Week 1 limitation
                 return True
             except Exception as e:
@@ -237,8 +258,12 @@ try:
                     total_relationships += relationship_count
 
                     # Phase 2: Extract entity tracking data for chunk-aware tracking
-                    entity_names = [node.name for node in result.nodes] if hasattr(result, "nodes") else []
-                    entity_uuids = [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                    entity_names = (
+                        [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                    )
+                    entity_uuids = (
+                        [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                    )
 
                     # Phase 2: Extract canonical UUIDs from deduplication metadata
                     canonical_uuids = []
@@ -246,13 +271,16 @@ try:
                         resolution_map = result.metadata["entity_resolution_map"]
                         # Get canonical UUIDs in same order as entity_uuids
                         canonical_uuids = [
-                            resolution_map.get(entity_uuid, EntityResolutionResult(
-                                original_uuid=entity_uuid,
-                                canonical_uuid=entity_uuid,
-                                is_reused=False,
-                                match_type="new",
-                                confidence=1.0
-                            )).canonical_uuid
+                            resolution_map.get(
+                                entity_uuid,
+                                EntityResolutionResult(
+                                    original_uuid=entity_uuid,
+                                    canonical_uuid=entity_uuid,
+                                    is_reused=False,
+                                    match_type="new",
+                                    confidence=1.0,
+                                ),
+                            ).canonical_uuid
                             for entity_uuid in entity_uuids
                         ]
                     else:
@@ -281,12 +309,21 @@ try:
                     )
 
                 except Exception as e:
+                    import traceback
+
+                    error_details = traceback.format_exc()
                     error_msg = f"Failed to process chunk {chunk_index}: {e}"
-                    logger.error(f"Actor {self.actor_id}: {error_msg}")
+                    logger.error(
+                        f"Actor {self.actor_id}: {error_msg}",
+                        error_type=type(e).__name__,
+                        error_details=error_details,
+                    )
                     chunk_results.append(
                         {
                             "chunk_index": chunk_index,
-                            "error": str(e),
+                            "error": str(e)
+                            if str(e)
+                            else f"{type(e).__name__}: (empty error message)",
                             "tokens": chunk_token_count,
                         }
                     )
@@ -319,14 +356,17 @@ try:
             )
 
             return {
-                "status": "success" if success_rate >= 0.5 else "partial_failure",
+                "status": "completed" if success_rate >= 0.5 else "failed",
                 "path": str(doc_path),
+                "file_path": str(doc_path),  # Flow 1B expects this field
                 "actor_id": self.actor_id,
                 "episode_uuids": episode_uuids,
                 "total_chunks": len(chunks),
                 "successful_chunks": successful_chunks,
                 "entity_count": total_entities,
+                "entities_extracted": total_entities,  # Flow 1B expects this field
                 "relationship_count": total_relationships,
+                "relationships_extracted": total_relationships,  # Flow 1B expects this field
                 "processing_time": processing_time,
                 "chunk_results": chunk_results,
                 "chunking_strategy": "hybrid",
@@ -347,6 +387,7 @@ try:
                         "status": "skipped",
                         "reason": "already_processed",
                         "path": str(doc_path),
+                        "file_path": str(doc_path),
                         "actor_id": self.actor_id,
                         "processing_time": 0.0,
                     }
@@ -368,15 +409,20 @@ try:
                         "status": "failed",
                         "error": error_msg,
                         "path": str(doc_path),
+                        "file_path": str(doc_path),
                         "actor_id": self.actor_id,
                         "processing_time": (datetime.now() - start_time).total_seconds(),
+                        "entities_extracted": 0,
+                        "relationships_extracted": 0,
                     }
 
                 # Chunk the document using hybrid strategy (ALWAYS chunk for consistency)
                 from src.flows.data_ingestion.document_chunker import HybridDocumentChunker
 
-                # Initialize chunker with default settings (120K tokens, 10% overlap)
-                chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
+                # Initialize chunker from config settings
+                max_tokens = graphrag_settings.MAX_EPISODE_TOKENS
+                overlap_ratio = graphrag_settings.CHUNK_OVERLAP_PERCENTAGE / 100
+                chunker = HybridDocumentChunker(max_tokens=max_tokens, overlap_ratio=overlap_ratio)
                 chunks = chunker.create_chunks(content)
 
                 logger.info(
@@ -412,8 +458,11 @@ try:
                         "status": "failed",
                         "error": error_msg,
                         "path": str(doc_path),
+                        "file_path": str(doc_path),
                         "actor_id": self.actor_id,
                         "processing_time": (datetime.now() - start_time).total_seconds(),
+                        "entities_extracted": 0,
+                        "relationships_extracted": 0,
                     }
 
             except Exception as e:
@@ -425,8 +474,11 @@ try:
                     "status": "failed",
                     "error": error_msg,
                     "path": str(doc_path),
+                    "file_path": str(doc_path),
                     "actor_id": self.actor_id,
                     "processing_time": (datetime.now() - start_time).total_seconds(),
+                    "entities_extracted": 0,
+                    "relationships_extracted": 0,
                 }
 
         async def process_batch(self, doc_paths: list[str]) -> list[dict[str, any]]:
@@ -457,7 +509,10 @@ class SimpleDocumentProcessor:
         self.tracker = tracker
         self.clear_mode = clear_mode
         self.entity_normalizer = EntityNormalizer()  # Phase 1: Entity normalizer
-        self.entity_registry = EntityRegistry()  # Phase 2: Entity registry
+        # Phase 2: Entity registry with fuzzy matching disabled by default for performance
+        self.entity_registry = EntityRegistry(
+            enable_fuzzy_matching=config.graphrag_settings.ENABLE_FUZZY_MATCHING
+        )
         self.processing_stats = {
             "total_documents": 0,
             "processed": 0,
@@ -573,8 +628,12 @@ class SimpleDocumentProcessor:
                 total_relationships += relationship_count
 
                 # Phase 2: Extract entity tracking data for chunk-aware tracking
-                entity_names = [node.name for node in result.nodes] if hasattr(result, "nodes") else []
-                entity_uuids = [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                entity_names = (
+                    [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                )
+                entity_uuids = (
+                    [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                )
 
                 # Phase 2: Extract canonical UUIDs from deduplication metadata
                 canonical_uuids = []
@@ -582,13 +641,16 @@ class SimpleDocumentProcessor:
                     resolution_map = result.metadata["entity_resolution_map"]
                     # Get canonical UUIDs in same order as entity_uuids
                     canonical_uuids = [
-                        resolution_map.get(entity_uuid, EntityResolutionResult(
-                            original_uuid=entity_uuid,
-                            canonical_uuid=entity_uuid,
-                            is_reused=False,
-                            match_type="new",
-                            confidence=1.0
-                        )).canonical_uuid
+                        resolution_map.get(
+                            entity_uuid,
+                            EntityResolutionResult(
+                                original_uuid=entity_uuid,
+                                canonical_uuid=entity_uuid,
+                                is_reused=False,
+                                match_type="new",
+                                confidence=1.0,
+                            ),
+                        ).canonical_uuid
                         for entity_uuid in entity_uuids
                     ]
                 else:
@@ -715,17 +777,29 @@ class SimpleDocumentProcessor:
         start_time = datetime.now()
 
         try:
-            # Phase 2: Initialize EntityRegistry schema (if not already done)
-            await self.entity_registry.initialize_schema()
+            # Configure database to use politicalmonitoring.v3 instead of default
+            if not graphiti_client.database:
+                graphiti_client.database = NEO4J_DATABASE
+                logger.info(f"Configured Graphiti to use database: {NEO4J_DATABASE}")
 
-            # Phase 2: Wrap graphiti_client with DeduplicatingGraphitiClient
-            dedupe_client = DeduplicatingGraphitiClient(
-                base_client=graphiti_client,
-                entity_registry=self.entity_registry,
-                entity_normalizer=self.entity_normalizer,
-                enable_deduplication=True,
-                enable_alias_registration=True,
-            )
+            # Phase 2: Conditionally enable deduplication based on config flag
+            if config.graphrag_settings.ENABLE_DEDUPLICATION:
+                # Initialize EntityRegistry schema (if not already done)
+                await self.entity_registry.initialize_schema()
+
+                # Wrap graphiti_client with DeduplicatingGraphitiClient
+                dedupe_client = DeduplicatingGraphitiClient(
+                    base_client=graphiti_client,
+                    entity_registry=self.entity_registry,
+                    entity_normalizer=self.entity_normalizer,
+                    enable_deduplication=True,
+                    enable_alias_registration=True,
+                )
+                logger.info("Using DeduplicatingGraphitiClient (Phase 2 deduplication enabled)")
+            else:
+                # Use base Graphiti client directly without deduplication wrapper
+                dedupe_client = graphiti_client
+                logger.info("Using base Graphiti client (deduplication DISABLED)")
 
             # Check if already processed (unless clear mode)
             if not self.clear_mode and self.tracker.is_processed(str(doc_path)):
@@ -759,8 +833,10 @@ class SimpleDocumentProcessor:
             # Chunk the document using hybrid strategy (ALWAYS chunk for consistency)
             from src.flows.data_ingestion.document_chunker import HybridDocumentChunker
 
-            # Initialize chunker with default settings (120K tokens, 10% overlap)
-            chunker = HybridDocumentChunker(max_tokens=120000, overlap_ratio=0.10)
+            # Initialize chunker from config settings
+            max_tokens = graphrag_settings.MAX_EPISODE_TOKENS
+            overlap_ratio = graphrag_settings.CHUNK_OVERLAP_PERCENTAGE / 100
+            chunker = HybridDocumentChunker(max_tokens=max_tokens, overlap_ratio=overlap_ratio)
             chunks = chunker.create_chunks(content)
 
             doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name

@@ -1,8 +1,37 @@
 # Phase 2 Entity Deduplication - Quick Reference
 
-**Status**: ✅ Production Ready
-**Version**: 2.1
-**Last Updated**: 2025-11-25
+**Status**: ⚠️ Temporarily Disabled (see Known Issues)
+**Version**: 2.1.1
+**Last Updated**: 2025-11-27
+
+## ⚠️ IMPORTANT: Known Issue (2025-11-27)
+
+**Phase 2 deduplication is currently DISABLED by default** due to an infinite loop bug caused by blocking synchronous Neo4j calls in async context.
+
+### Quick Fix Applied
+A feature flag `ENABLE_DEDUPLICATION` was added (defaults to `False`). Flow 1B now works without deduplication.
+
+### To Check Status
+```python
+from src.config import graphrag_settings
+print(f"Deduplication enabled: {graphrag_settings.ENABLE_DEDUPLICATION}")
+```
+
+### What Still Works
+- Document ingestion (Flow 1B) - works normally
+- Entity extraction - works normally
+- Knowledge graph population - works normally
+- Weekly deduplication DAG - still available for post-processing
+
+### What's Disabled
+- Real-time entity deduplication at ingestion time
+- EntityRegistry lookups during processing
+- Alias registration during processing
+
+### Proper Fix Coming
+The proper fix requires converting EntityRegistry to use `neo4j.AsyncGraphDatabase` and batching entity queries. See [CHANGELOG_2025-11-27_DEDUP_FIX.md](changelog/CHANGELOG_2025-11-27_DEDUP_FIX.md) for details.
+
+---
 
 ## 📋 Quick Links
 
@@ -319,6 +348,25 @@ assert self.dedupe_client is not None, "dedupe_client is None"
 ```
 
 **Fix**: Ensure `dedupe_client.add_episode()` is called, not base `graphiti_client.add_episode()`
+
+### Problem: Flow 1B gets stuck in infinite loop (FIXED)
+
+**Cause**: Blocking synchronous Neo4j calls in async EntityRegistry methods combined with N+1 query pattern.
+
+**Diagnosis**:
+```python
+from src.config import graphrag_settings
+print(f"Deduplication enabled: {graphrag_settings.ENABLE_DEDUPLICATION}")
+# If True, this may cause the loop
+```
+
+**Fix**: Ensure deduplication is disabled (default):
+```bash
+# In .env, either remove ENABLE_DEDUPLICATION or set:
+ENABLE_DEDUPLICATION=false
+```
+
+**Details**: See [CHANGELOG_2025-11-27_DEDUP_FIX.md](changelog/CHANGELOG_2025-11-27_DEDUP_FIX.md)
 
 ## 🎯 Success Indicators
 

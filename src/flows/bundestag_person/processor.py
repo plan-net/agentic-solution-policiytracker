@@ -115,6 +115,7 @@ async def process_bundestag_persons(inputs: dict[str, Any], tracer) -> core.resp
     openai_api_key = inputs.get("openai_api_key")
     if not openai_api_key:
         import os
+
         openai_api_key = os.getenv("OPENAI_API_KEY")
 
     # Initialize flow with Graphiti registration enabled

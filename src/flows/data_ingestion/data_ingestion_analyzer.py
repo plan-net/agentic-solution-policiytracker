@@ -92,6 +92,7 @@ Found **{len(available_docs)}** documents to process:
                 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
                 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
                 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password123")
+                NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3")
 
                 # Create agent context for cost tracking
                 agent_context = AgentContext(
@@ -105,6 +106,11 @@ Found **{len(available_docs)}** documents to process:
 
                 # Initialize Graphiti with APISIX routing
                 client = Graphiti(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client)
+
+                # Configure database to use politicalmonitoring.v3 instead of default
+                client.database = NEO4J_DATABASE
+                logger.info(f"Configured Graphiti to use database: {NEO4J_DATABASE}")
+
                 await client.build_indices_and_constraints()
 
                 logger.info("Graphiti client initialized with APISIX routing for clearing")

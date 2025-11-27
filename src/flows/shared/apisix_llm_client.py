@@ -291,6 +291,7 @@ def create_graphiti_apisix_config(
     agent_context: AgentContext,
     model: str = "gpt-4o-mini",
     temperature: float = 0.1,
+    max_tokens: int = 16000,  # Increased from default 8192 to handle large entity extractions
 ):
     """
     Create Graphiti-compatible LLM configuration that routes through APISIX.
@@ -333,8 +334,14 @@ def create_graphiti_apisix_config(
     # APISIX gateway URL
     base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080/v1")
 
-    # Create LLMConfig with APISIX base URL
-    config = LLMConfig(api_key=api_key, model=model, base_url=base_url, temperature=temperature)
+    # Create LLMConfig with APISIX base URL and increased max_tokens for entity extraction
+    config = LLMConfig(
+        api_key=api_key,
+        model=model,
+        base_url=base_url,
+        temperature=temperature,
+        max_tokens=max_tokens,  # Increased to handle large entity extraction responses
+    )
 
     # Create OpenAIClient (concrete implementation of LLMClient)
     llm_client = OpenAIClient(config=config, cache=False)

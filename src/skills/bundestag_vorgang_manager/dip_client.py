@@ -23,44 +23,97 @@ class BundestagVorgangDIPClient:
 
         logger.info(f"BundestagVorgangDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> list[str]:
-        """Get all Vorgang IDs from DIP API.
+    async def get_all_vorgang_ids(
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None
+    ) -> list[str]:
+        """Get all Vorgang IDs from DIP API with cursor-based pagination.
 
         Args:
             limit: Maximum number of IDs to return
+            wahlperiode: Filter by Wahlperiode (e.g., "21")
 
         Returns:
             List of Vorgang IDs
         """
         endpoint = "/vorgang"
-        params = {"format": "json"}
+        all_vorgang_ids = []
+        collected = 0
+        cursor = None
+        page_num = 0
 
-        if limit:
-            params["rows"] = limit
+        # Base params for all requests
+        base_params = {"format": "json"}
+
+        # Add API key as query parameter (required by DIP API)
+        if self.api_key:
+            base_params["apikey"] = self.api_key
+
+        if wahlperiode:
+            base_params["f.wahlperiode"] = wahlperiode
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.get(
-                    f"{self.api_base_url}{endpoint}",
-                    params=params,
-                    headers=self._get_headers(),
+                # Paginate through all results
+                while True:
+                    page_num += 1
+                    params = base_params.copy()
+
+                    # Add cursor for pagination (if not first page)
+                    if cursor:
+                        params["cursor"] = cursor
+
+                    logger.info(f"Fetching page {page_num} (collected so far: {collected})")
+
+                    response = await client.get(
+                        f"{self.api_base_url}{endpoint}",
+                        params=params,
+                        headers=self._get_headers(),
+                    )
+
+                    if response.status_code == 200:
+                        data = response.json()
+
+                        # Extract Vorgang IDs from response
+                        vorgaenge = data.get("documents", [])
+                        page_ids = [v.get("id") for v in vorgaenge if v.get("id")]
+
+                        all_vorgang_ids.extend(page_ids)
+                        collected += len(page_ids)
+
+                        logger.info(
+                            f"Page {page_num}: Retrieved {len(page_ids)} Vorgang IDs (total: {collected})"
+                        )
+
+                        # Check if we've reached the limit
+                        if limit and collected >= limit:
+                            logger.info(f"Reached limit of {limit} Vorgang IDs")
+                            all_vorgang_ids = all_vorgang_ids[:limit]  # Trim to exact limit
+                            break
+
+                        # Check for next page cursor
+                        cursor = data.get("cursor")
+                        if not cursor:
+                            logger.info("No more pages available")
+                            break
+
+                    elif response.status_code == 429:
+                        # Rate limit - log and stop
+                        logger.warning(
+                            f"Rate limit hit at page {page_num}, returning {collected} IDs collected so far"
+                        )
+                        break
+                    else:
+                        logger.error(f"DIP API error: {response.status_code} - {response.text}")
+                        break
+
+                logger.info(
+                    f"Retrieved total of {len(all_vorgang_ids)} Vorgang IDs from DIP API across {page_num} pages"
                 )
-
-                if response.status_code == 200:
-                    data = response.json()
-                    # Extract Vorgang IDs from response
-                    vorgaenge = data.get("documents", [])
-                    vorgang_ids = [v.get("id") for v in vorgaenge if v.get("id")]
-
-                    logger.info(f"Retrieved {len(vorgang_ids)} Vorgang IDs from DIP API")
-                    return vorgang_ids
-                else:
-                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
-                    return []
+                return all_vorgang_ids
 
         except Exception as e:
             logger.error(f"Error fetching Vorgang IDs from DIP API: {e}")
-            return []
+            return all_vorgang_ids  # Return what we collected before the error
 
     async def get_vorgang_by_id(self, vorgang_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Vorgang data by ID.
@@ -72,12 +125,17 @@ class BundestagVorgangDIPClient:
             Vorgang data dictionary or None
         """
         endpoint = f"/vorgang/{vorgang_id}"
+        params = {"format": "json"}
+
+        # Add API key as query parameter (required by DIP API)
+        if self.api_key:
+            params["apikey"] = self.api_key
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.get(
                     f"{self.api_base_url}{endpoint}",
-                    params={"format": "json"},
+                    params=params,
                     headers=self._get_headers(),
                 )
 
@@ -198,16 +256,28 @@ class MockBundestagVorgangDIPClient:
             },
         }
 
-    async def get_all_vorgang_ids(self, limit: Optional[int] = None) -> list[str]:
+    async def get_all_vorgang_ids(
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None
+    ) -> list[str]:
         """Get all mock Vorgang IDs.
 
         Args:
             limit: Maximum number of IDs to return
+            wahlperiode: Filter by Wahlperiode (e.g., "21")
 
         Returns:
             List of Vorgang IDs
         """
         vorgang_ids = list(self.mock_vorgaenge.keys())
+
+        # Filter by wahlperiode if specified
+        if wahlperiode:
+            wahlperiode_int = int(wahlperiode)
+            vorgang_ids = [
+                vid
+                for vid in vorgang_ids
+                if self.mock_vorgaenge[vid].get("wahlperiode") == wahlperiode_int
+            ]
 
         if limit:
             vorgang_ids = vorgang_ids[:limit]

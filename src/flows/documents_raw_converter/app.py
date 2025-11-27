@@ -105,6 +105,7 @@ async def process_raw_documents(request: fastapi.Request, inputs: dict):
             "job_name": inputs["job_name"],
             "raw_docs_dir": inputs["raw_docs_dir"],
             "output_dir": inputs["output_dir"],
+            "enable_graphiti": inputs.get("enable_graphiti", True),  # Pass Graphiti checkbox
         },
     )
 
