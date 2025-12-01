@@ -101,12 +101,33 @@ try:
             self.entity_registry = EntityRegistry(
                 enable_fuzzy_matching=config.graphrag_settings.ENABLE_FUZZY_MATCHING
             )
+            # Progress tracking state
+            self._progress = {
+                "current_file": None,
+                "current_file_index": 0,
+                "total_files": 0,
+                "files_completed": 0,
+                "current_chunk": 0,
+                "total_chunks": 0,
+                "entities_extracted": 0,
+                "relationships_extracted": 0,
+                "status": "idle",
+            }
+
+        def get_progress(self) -> dict:
+            """Get current processing progress for this actor."""
+            return self._progress.copy()
+
+        def _update_progress(self, **kwargs):
+            """Update progress state."""
+            self._progress.update(kwargs)
 
         async def initialize(self):
             """Initialize the Graphiti client connection with APISIX routing and Phase 2 deduplication."""
             try:
                 from src.flows.shared.apisix_llm_client import (
                     AgentContext,
+                    create_apisix_graphiti_embedder,
                     create_graphiti_apisix_config,
                 )
 
@@ -120,9 +141,14 @@ try:
                 # Get APISIX-configured LLM client
                 llm_client, note = create_graphiti_apisix_config(context)
 
-                # Initialize base Graphiti client with APISIX routing
+                # Get APISIX-configured embedder for embedding cost tracking
+                embedder = create_apisix_graphiti_embedder()
+
+                # Initialize base Graphiti client with APISIX routing for BOTH LLM and embeddings
                 self.graphiti_client = Graphiti(
-                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, llm_client=llm_client
+                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD,
+                    llm_client=llm_client,
+                    embedder=embedder,  # Route embeddings through APISIX for cost tracking
                 )
 
                 # Configure database to use politicalmonitoring.v3 instead of default
@@ -143,7 +169,7 @@ try:
                         base_client=self.graphiti_client,
                         entity_registry=self.entity_registry,
                         entity_normalizer=self.entity_normalizer,
-                        enable_deduplication=True,
+                        enable_deduplication=True,  # Re-enabled after cost comparison test
                         enable_alias_registration=True,
                     )
                     logger.info(
@@ -210,6 +236,13 @@ try:
             total_relationships = 0
             chunk_results = []
             previous_episode_uuid = None
+
+            # Update progress for chunk tracking
+            self._update_progress(
+                current_chunk=0,
+                total_chunks=len(chunks),
+                status="processing_chunks",
+            )
 
             logger.info(
                 f"Actor {self.actor_id}: Processing chunked document: {doc_path.name} ({len(chunks)} chunks)"
@@ -299,6 +332,13 @@ try:
                             "tokens": chunk_token_count,
                             "boundary_type": chunk.get("boundary_type", "unknown"),
                         }
+                    )
+
+                    # Update progress after each chunk
+                    self._update_progress(
+                        current_chunk=chunk_index + 1,
+                        entities_extracted=total_entities,
+                        relationships_extracted=total_relationships,
                     )
 
                     logger.debug(
@@ -482,11 +522,37 @@ try:
                 }
 
         async def process_batch(self, doc_paths: list[str]) -> list[dict[str, any]]:
-            """Process a batch of documents."""
+            """Process a batch of documents with progress tracking."""
             results = []
-            for doc_path in doc_paths:
+            total_files = len(doc_paths)
+
+            # Initialize batch progress
+            self._update_progress(
+                total_files=total_files,
+                files_completed=0,
+                status="processing_batch",
+            )
+
+            for idx, doc_path in enumerate(doc_paths):
+                # Update progress for current file
+                file_name = Path(doc_path).name
+                self._update_progress(
+                    current_file=file_name,
+                    current_file_index=idx + 1,
+                    status="processing_file",
+                )
+
                 result = await self.process_document(doc_path)
                 results.append(result)
+
+                # Update progress after file completion
+                self._update_progress(
+                    files_completed=idx + 1,
+                    status="file_completed",
+                )
+
+            # Mark batch as complete
+            self._update_progress(status="batch_completed")
             return results
 
         async def cleanup(self):
@@ -792,7 +858,7 @@ class SimpleDocumentProcessor:
                     base_client=graphiti_client,
                     entity_registry=self.entity_registry,
                     entity_normalizer=self.entity_normalizer,
-                    enable_deduplication=True,
+                    enable_deduplication=True,  # Re-enabled after cost comparison test
                     enable_alias_registration=True,
                 )
                 logger.info("Using DeduplicatingGraphitiClient (Phase 2 deduplication enabled)")

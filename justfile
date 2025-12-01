@@ -73,6 +73,7 @@ status:
     @echo "  🚪 APISIX Gateway: http://localhost:9080 (LLM API Gateway)"
     @echo "  🎛️  APISIX Dashboard: http://localhost:9000 (admin/admin)"
     @echo "  📊 Cost Analytics: http://localhost:8090 (Cost tracking API)"
+    @echo "  📈 Grafana:        http://localhost:3002 (admin/admin123)"
     @echo ""
     @echo "  📡 API Endpoints:"
     @echo "  🗨️  Chat API:       http://localhost:8001/v1/chat/completions"
@@ -383,7 +384,7 @@ clean-all: stop clean
 # Start APISIX gateway services
 apisix-up:
     @echo "🚪 Starting APISIX gateway services..."
-    docker compose up -d etcd apisix apisix-dashboard timescaledb
+    docker compose up -d etcd apisix apisix-dashboard timescaledb cost-analytics
     @echo "⏳ Waiting for services to be healthy..."
     @sleep 10
     @just apisix-status
@@ -391,7 +392,7 @@ apisix-up:
 # Stop APISIX services
 apisix-down:
     @echo "🛑 Stopping APISIX services..."
-    docker compose stop timescaledb apisix-dashboard apisix etcd
+    docker compose stop cost-analytics timescaledb apisix-dashboard apisix etcd
 
 # Restart APISIX services
 apisix-restart:
@@ -498,6 +499,41 @@ apisix-setup:
     @echo "5. Analytics API: http://localhost:8090"
     @echo ""
     @echo "For detailed documentation, see: apisix/README.md"
+
+# === Grafana Cost Dashboard ===
+
+# Start Grafana dashboard
+grafana-up:
+    @echo "📊 Starting Grafana dashboard..."
+    docker compose up -d grafana
+    @echo "⏳ Waiting for Grafana to be healthy..."
+    @sleep 10
+    @just grafana-status
+
+# Stop Grafana service
+grafana-down:
+    @echo "🛑 Stopping Grafana..."
+    docker compose stop grafana
+
+# View Grafana logs
+grafana-logs:
+    docker compose logs -f grafana
+
+# Check Grafana service status
+grafana-status:
+    @echo "📊 Grafana Service Status:"
+    @docker compose ps grafana
+    @echo ""
+    @echo "🌐 Grafana Dashboard: http://localhost:3002"
+    @echo "🔐 Login: admin / admin123"
+    @echo ""
+    @echo "Testing Grafana health..."
+    @curl -s http://localhost:3002/api/health | python3 -m json.tool || echo "❌ Grafana not responding"
+
+# Open Grafana dashboard in browser
+grafana-ui:
+    @echo "🌐 Opening Grafana Dashboard..."
+    open http://localhost:3002 || xdg-open http://localhost:3002 || echo "Please visit: http://localhost:3002 (admin/admin123)"
 
 # === LangWatch Observability ===
 

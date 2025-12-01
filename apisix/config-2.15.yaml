@@ -34,6 +34,23 @@ plugins:
   - prometheus
   - request-id
   - serverless-pre-function
+  - llm-cost-tracker
+
+# Custom plugin path
+extra_lua_path: "/usr/local/apisix/apisix/plugins/?.lua"
+extra_lua_cpath: "/usr/local/apisix/apisix/plugins/?.so"
+
+# Plugin attributes (global config for plugins)
+plugin_attr:
+  llm-cost-tracker:
+    db_host: "timescaledb"
+    db_port: 5432
+    db_name: "llm_costs"
+    db_user: "timescale"
+    db_password: "timescale_secure_password"
+    batch_size: 10
+    flush_interval: 5.0
+    log_debug: true
 
 nginx_config:
   error_log: "/usr/local/apisix/logs/error.log"

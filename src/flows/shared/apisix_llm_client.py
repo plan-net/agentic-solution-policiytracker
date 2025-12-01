@@ -358,3 +358,82 @@ def create_graphiti_apisix_config(
     """
 
     return llm_client, note
+
+
+def create_apisix_openai_embeddings(
+    model: str = "text-embedding-3-small",
+    dimensions: int = 1536,
+    **kwargs,
+):
+    """
+    Create OpenAIEmbeddings routed through APISIX for cost tracking.
+
+    This function creates a LangChain OpenAIEmbeddings client that routes
+    all embedding requests through APISIX gateway, enabling cost tracking
+    in TimescaleDB/Grafana.
+
+    Args:
+        model: OpenAI embedding model name (default: text-embedding-3-small)
+        dimensions: Embedding dimensions (default: 1536)
+        **kwargs: Additional OpenAIEmbeddings arguments
+
+    Returns:
+        OpenAIEmbeddings instance configured to use APISIX gateway
+
+    Example:
+        >>> embeddings = create_apisix_openai_embeddings()
+        >>> vector = embeddings.embed_query("Hello world")
+    """
+    from langchain_openai import OpenAIEmbeddings
+
+    base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080/v1")
+
+    return OpenAIEmbeddings(
+        model=model,
+        dimensions=dimensions,
+        openai_api_base=base_url,
+        **kwargs,
+    )
+
+
+def create_apisix_graphiti_embedder(
+    embedding_model: str = "text-embedding-3-small",
+):
+    """
+    Create Graphiti OpenAIEmbedder routed through APISIX for cost tracking.
+
+    This function creates a Graphiti-compatible embedder that routes all
+    embedding requests through APISIX gateway, enabling cost tracking in
+    TimescaleDB/Grafana.
+
+    Use this when initializing Graphiti to ensure embedding costs are tracked:
+
+    Args:
+        embedding_model: OpenAI embedding model name (default: text-embedding-3-small)
+
+    Returns:
+        OpenAIEmbedder instance configured to use APISIX gateway
+
+    Example:
+        >>> embedder = create_apisix_graphiti_embedder()
+        >>> graphiti = Graphiti(
+        ...     neo4j_uri, neo4j_user, neo4j_password,
+        ...     llm_client=llm_client,
+        ...     embedder=embedder,  # Route embeddings through APISIX
+        ... )
+    """
+    from graphiti_core.embedder.openai import OpenAIEmbedder, OpenAIEmbedderConfig
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable not set")
+
+    base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080/v1")
+
+    config = OpenAIEmbedderConfig(
+        api_key=api_key,
+        base_url=base_url,
+        embedding_model=embedding_model,
+    )
+
+    return OpenAIEmbedder(config=config)

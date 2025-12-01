@@ -17,6 +17,7 @@ Required Graphiti Metadata:
 - created_at: Timestamp
 """
 
+import os
 import uuid as uuid_lib
 from datetime import datetime
 from typing import Any, Optional
@@ -66,13 +67,20 @@ class GraphitiNodeRegistrar:
         """
         self.driver = neo4j_driver
         self.database = neo4j_database
-        self.openai_client = AsyncOpenAI(api_key=openai_api_key)
+
+        # Route embeddings through APISIX for cost tracking
+        apisix_base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080/v1")
+        self.openai_client = AsyncOpenAI(
+            api_key=openai_api_key,
+            base_url=apisix_base_url,
+        )
 
         logger.info(
             "Initialized GraphitiNodeRegistrar",
             database=neo4j_database,
             group_id=GROUP_ID,
             embedding_model=EMBEDDING_MODEL,
+            apisix_base_url=apisix_base_url,
         )
 
     async def generate_embedding(self, text: str) -> list[float]:

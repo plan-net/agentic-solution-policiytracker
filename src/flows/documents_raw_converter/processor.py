@@ -372,21 +372,68 @@ Found **{len(unprocessed_md_files)}** unprocessed markdown files:
                         "⏳ **Processing documents through Graphiti in parallel...**\n\n"
                     )
 
-                    # Wait for results with progress tracking using Ray's wait
-                    completed = 0
+                    # Live progress tracking with periodic polling
+                    completed_actors = 0
                     pending_refs = batch_refs.copy()
+                    last_progress_update = {}  # Track last shown progress per actor
+                    poll_count = 0
 
                     while pending_refs:
-                        # Use Ray's wait (not asyncio.wait) - returns lists, not sets
-                        done_refs, pending_refs = ray.wait(pending_refs, num_returns=1, timeout=5)
+                        poll_count += 1
+
+                        # Poll actor progress
+                        for i, actor in enumerate(successful_actors):
+                            if i < len(actor_info):
+                                try:
+                                    progress = ray.get(actor.get_progress.remote(), timeout=2)
+                                    actor_id = actor_info[i]["actor_id"]
+
+                                    files_done = progress.get("files_completed", 0)
+                                    total_files = progress.get("total_files", 0)
+                                    current_file = progress.get("current_file", "")
+                                    current_chunk = progress.get("current_chunk", 0)
+                                    total_chunks = progress.get("total_chunks", 0)
+                                    entities = progress.get("entities_extracted", 0)
+                                    relationships = progress.get("relationships_extracted", 0)
+                                    status = progress.get("status", "idle")
+
+                                    # Create a state tuple for change detection
+                                    last_key = f"actor_{actor_id}"
+                                    current_state = (files_done, current_file, current_chunk, entities)
+
+                                    # Show update if state changed OR first poll with actual progress
+                                    show_update = last_progress_update.get(last_key) != current_state
+
+                                    if show_update and current_file:
+                                        last_progress_update[last_key] = current_state
+
+                                        chunk_info = f" (chunk {current_chunk}/{total_chunks})" if total_chunks > 0 else ""
+
+                                        if status in ("processing_file", "processing_chunks") and current_file:
+                                            await tracer.markdown(
+                                                f"📄 **Actor {actor_id}**: Processing `{current_file}`{chunk_info} "
+                                                f"[{files_done}/{total_files} files, {entities} entities]\n\n"
+                                            )
+                                        elif status == "file_completed":
+                                            await tracer.markdown(
+                                                f"✓ **Actor {actor_id}**: Completed file {files_done}/{total_files} "
+                                                f"({entities} entities, {relationships} rels)\n\n"
+                                            )
+                                except Exception as e:
+                                    # Log exception on first few failures for debugging
+                                    if poll_count <= 2:
+                                        logger.debug(f"Progress poll failed for actor {i}: {e}")
+
+                        # Use Ray's wait to check for completed actors (shorter timeout for more responsive polling)
+                        done_refs, pending_refs = ray.wait(pending_refs, num_returns=1, timeout=2)
 
                         for ref in done_refs:
-                            completed += 1
+                            completed_actors += 1
                             actor_idx = batch_refs.index(ref)
                             await tracer.markdown(
                                 f"✅ **Actor {actor_info[actor_idx]['actor_id']}** completed: "
                                 f"{actor_info[actor_idx]['batch_size']} documents processed "
-                                f"({completed}/{len(successful_actors)} actors done)\n\n"
+                                f"({completed_actors}/{len(successful_actors)} actors done)\n\n"
                             )
 
                     # Gather all results using Ray's get

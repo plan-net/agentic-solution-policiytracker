@@ -403,6 +403,8 @@ services:
     depends_on:
       etcd:
         condition: service_healthy
+      timescaledb:
+        condition: service_healthy
     ports:
       - "9080:9080"  # HTTP Gateway
       - "9443:9443"  # HTTPS Gateway
@@ -410,6 +412,9 @@ services:
     volumes:
       - ./apisix/config-2.15.yaml:/usr/local/apisix/conf/config.yaml
       - ./apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml
+      - ./apisix/plugins/llm-cost-tracker.lua:/usr/local/apisix/apisix/plugins/llm-cost-tracker.lua:ro
+      - ./apisix/plugins/llm-cost-tracker:/usr/local/apisix/apisix/plugins/llm-cost-tracker:ro
+      - ./apisix/config:/usr/local/apisix/conf/custom:ro
       - apisix_logs:/usr/local/apisix/logs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9080/apisix/status"]
@@ -458,28 +463,50 @@ services:
     restart: unless-stopped
 
   # Cost Analytics API - FastAPI service for cost queries
-  # COMMENTED OUT: Missing Dockerfile - needs to be implemented
-  # cost-analytics:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apisix/analytics/Dockerfile
-  #   container_name: policiytracker-cost-analytics
-  #   depends_on:
-  #     timescaledb:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8090:8000"
-  #   environment:
-  #     - DATABASE_URL=postgresql://timescale:timescale_secure_password@timescaledb:5432/llm_costs
-  #     - LOG_LEVEL=INFO
-  #   volumes:
-  #     - ./apisix/analytics:/app:ro
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #   restart: unless-stopped
+  cost-analytics:
+    build:
+      context: .
+      dockerfile: ./apisix/analytics/Dockerfile
+    container_name: policiytracker-cost-analytics
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - "8090:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://timescale:timescale_secure_password@timescaledb:5432/llm_costs
+      - LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Grafana - Cost Analytics Dashboard
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: policiytracker-grafana
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
 volumes:
   postgres_data:
@@ -500,6 +527,7 @@ volumes:
   etcd_data:
   apisix_logs:
   timescaledb_data:
+  grafana_data:
 
 networks:
   default:
