@@ -207,11 +207,11 @@ class GraphRAGSettings(BaseSettings):
 
     # Entity Deduplication Configuration (Phase 2)
     ENABLE_FUZZY_MATCHING: bool = Field(
-        default=False,
+        default=True,
         description="Enable expensive fuzzy matching in entity deduplication (disabled by default for performance)",
     )
     ENABLE_DEDUPLICATION: bool = Field(
-        default=False,
+        default=True,
         description="Enable Phase 2 entity deduplication (disabled by default due to blocking sync Neo4j calls causing infinite loops)",
     )
 

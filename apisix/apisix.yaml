@@ -27,8 +27,8 @@ routes:
               local core = require("apisix.core")
               local user_agent = core.request.header(ctx, "User-Agent") or ""
 
-              -- Detect Graphiti calls by User-Agent pattern
-              if string.find(user_agent, "AsyncOpenAI") then
+              -- Detect Graphiti/OpenAI SDK calls by User-Agent pattern
+              if string.find(user_agent, "OpenAI") or string.find(user_agent, "python") then
                 -- Check if agent headers are already present
                 local agent_type = core.request.header(ctx, "X-Agent-Type")
 
@@ -44,9 +44,12 @@ routes:
             end
 
       # Proxy rewrite to forward to OpenAI
+      # Remove Accept-Encoding to get uncompressed JSON for cost tracking
       proxy-rewrite:
         scheme: "https"
         host: "api.openai.com"
+        headers:
+          Accept-Encoding: ""
 
       # Rate limiting (adjust based on your OpenAI tier)
       limit-req:
@@ -66,6 +69,11 @@ routes:
           http_statuses: [200, 201]
           successes: 2
 
+      # LLM Cost Tracking
+      llm-cost-tracker:
+        enabled: true
+        log_debug: true
+
   - id: openai-embeddings
     name: "OpenAI Embeddings API"
     uri: /v1/embeddings
@@ -73,14 +81,44 @@ routes:
       - POST
     upstream_id: openai-upstream
     plugins:
+      # Inject agent headers for tracking (same as chat completions)
+      serverless-pre-function:
+        phase: "rewrite"
+        functions:
+          - |
+            return function(conf, ctx)
+              local core = require("apisix.core")
+              local user_agent = core.request.header(ctx, "User-Agent") or ""
+
+              -- Detect Graphiti/OpenAI SDK calls
+              if string.find(user_agent, "OpenAI") or string.find(user_agent, "python") then
+                local agent_type = core.request.header(ctx, "X-Agent-Type")
+
+                if not agent_type then
+                  core.request.set_header(ctx, "X-Agent-Type", "kodosumi_flow")
+                  core.request.set_header(ctx, "X-Agent-Name", "graphiti_embedder")
+                  core.request.set_header(ctx, "X-Flow-Name", "data_ingestion")
+                  core.request.set_header(ctx, "X-Project-ID", "political_monitoring_v2")
+                  core.log.info("Injected default Graphiti embedder headers")
+                end
+              end
+            end
+
+      # Remove Accept-Encoding to get uncompressed JSON for cost tracking
       proxy-rewrite:
         scheme: "https"
         host: "api.openai.com"
+        headers:
+          Accept-Encoding: ""
       limit-req:
         rate: 100
         burst: 50
         key_type: "var"
         key: "remote_addr"
+      # LLM Cost Tracking
+      llm-cost-tracker:
+        enabled: true
+        log_debug: true
 
   - id: openai-models
     name: "OpenAI Models API"
@@ -103,9 +141,12 @@ routes:
       - POST
     upstream_id: anthropic-upstream
     plugins:
+      # Remove Accept-Encoding to get uncompressed JSON for cost tracking
       proxy-rewrite:
         scheme: "https"
         host: "api.anthropic.com"
+        headers:
+          Accept-Encoding: ""
       limit-req:
         rate: 50
         burst: 25
@@ -119,6 +160,10 @@ routes:
         healthy:
           http_statuses: [200, 201]
           successes: 2
+      # LLM Cost Tracking
+      llm-cost-tracker:
+        enabled: true
+        log_debug: true
 
   #
   # Health Check Route

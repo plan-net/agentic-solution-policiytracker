@@ -327,10 +327,14 @@ def create_page_embedding(page_text: str) -> list[float]:
         List of floats representing the embedding vector (1536 dimensions)
     """
     try:
-        # Initialize embeddings using config
+        # Route embeddings through APISIX for cost tracking
+        apisix_base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080/v1")
+
+        # Initialize embeddings using config with APISIX routing
         embeddings = OpenAIEmbeddings(
             model=graphrag_settings.GRAPHRAG_EMBEDDING_MODEL,
             dimensions=graphrag_settings.GRAPHRAG_EMBEDDING_DIMS,
+            openai_api_base=apisix_base_url,
         )
 
         # Create embedding
