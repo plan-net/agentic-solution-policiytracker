@@ -27,6 +27,40 @@ from neo4j import GraphDatabase
 logger = structlog.get_logger()
 
 
+def validate_entity_name(name: str) -> tuple[bool, str]:
+    """
+    Validate entity name before processing to prevent embedding API errors.
+
+    Checks:
+    - Name is not None or empty
+    - Name has at least 2 characters after stripping whitespace
+    - Name is not just whitespace/special characters
+
+    Args:
+        name: Entity name to validate
+
+    Returns:
+        Tuple of (is_valid, reason)
+    """
+    if name is None:
+        return False, "Entity name is None"
+
+    stripped = name.strip()
+
+    if not stripped:
+        return False, "Entity name is empty or whitespace only"
+
+    if len(stripped) < 2:
+        return False, f"Entity name too short: '{stripped}' (min 2 characters)"
+
+    # Check for names that are only special characters or numbers
+    alphanumeric_count = sum(1 for c in stripped if c.isalnum())
+    if alphanumeric_count < 2:
+        return False, f"Entity name has insufficient alphanumeric characters: '{stripped}'"
+
+    return True, "OK"
+
+
 class EntityRegistry:
     """
     Manage canonical entity names and aliases in Neo4j.
@@ -249,8 +283,19 @@ class EntityRegistry:
             metadata: Optional additional metadata
 
         Returns:
-            True if successfully registered, False if already exists
+            True if successfully registered, False if already exists or invalid
         """
+        # Validate entity name before processing
+        is_valid, reason = validate_entity_name(name)
+        if not is_valid:
+            logger.warning(
+                "Skipping invalid entity name",
+                name=name,
+                entity_type=entity_type,
+                reason=reason,
+            )
+            return False
+
         try:
             with self.driver.session(database=self.database) as session:
                 # Build query dynamically based on whether metadata exists

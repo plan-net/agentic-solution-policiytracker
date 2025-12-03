@@ -2,7 +2,7 @@
 title: Digital Markets Act: The European Commission Unveils Plans to Regulate Digital 'Gatekeepers'
 url: https://crowell.com/en/insights/client-alerts/digital-markets-act-the-european-commission-unveils-plans-to-regulate-digital-gatekeepers
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-24T03:54:11.960459
+collected_date: 2025-12-01T11:34:18.497171
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)

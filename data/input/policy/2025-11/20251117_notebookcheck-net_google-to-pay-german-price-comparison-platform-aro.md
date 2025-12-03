@@ -1,8 +1,8 @@
 ---
 title: Google to pay German price comparison platform around $538 million in damages
 url: https://www.notebookcheck.net/Google-to-pay-German-price-comparison-platform-around-538-million-in-damages.1164739.0.html
-published_date: 2025-11-17T00:00:00
-collected_date: 2025-11-24T03:54:22.579283
+published_date: 2025-11-17T20:25:59
+collected_date: 2025-12-01T11:35:29.680096
 source: Notebookcheck
 source_url: https://www.notebookcheck.net
 author: Ronald Matta (translated by Jacob Fisher), Published 11/17/2025 🇩🇪

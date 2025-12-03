@@ -1,8 +1,8 @@
 ---
 title: European Union Mandates New Ecodesign Rules for Virtually All Physical Products → Policy
 url: https://news.sustainability-directory.com/policy/european-union-mandates-new-ecodesign-rules-for-virtually-all-physical-products/
-published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-24T03:54:05.785758
+published_date: 2025-11-10T23:09:51
+collected_date: 2025-12-01T11:34:52.197803
 source: News
 source_url: https://news.sustainability-directory.com
 author: Sustainability Directory

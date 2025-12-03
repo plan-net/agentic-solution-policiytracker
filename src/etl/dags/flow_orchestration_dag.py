@@ -61,9 +61,13 @@ def get_unprocessed_documents():
     else:
         print("No tracking file found, treating all documents as unprocessed")
 
-    # Get all markdown documents from both news and policy directories
+    # Get all markdown documents from news, policy, and website directories
     all_docs = []
-    base_paths = [Path("/opt/airflow/data/input/news"), Path("/opt/airflow/data/input/policy")]
+    base_paths = [
+        Path("/opt/airflow/data/input/news"),
+        Path("/opt/airflow/data/input/policy"),
+        Path("/opt/airflow/data/input/website"),
+    ]
 
     for base_path in base_paths:
         if not base_path.exists():

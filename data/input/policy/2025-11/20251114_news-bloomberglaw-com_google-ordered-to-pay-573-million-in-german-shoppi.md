@@ -1,8 +1,8 @@
 ---
 title: Google Ordered to Pay €573 Million in German Shopping Suits (1)
 url: https://news.bloomberglaw.com/antitrust/google-ordered-to-pay-573-million-in-german-shopping-suits
-published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:54:08.951551
+published_date: 2025-11-14T12:08:48
+collected_date: 2025-12-01T11:35:34.644522
 source: News
 source_url: https://news.bloomberglaw.com
 author: Karin Matussek

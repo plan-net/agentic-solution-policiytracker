@@ -2,7 +2,7 @@
 title: European Commission moves to loosen GDPR for AI and cookie tracking
 url: https://www.computerworld.com/article/4087347/european-commission-moves-to-loosen-gdpr-for-ai-and-cookie-tracking.html
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-24T03:53:46.558667
+collected_date: 2025-12-01T11:34:13.615127
 source: Computerworld
 source_url: https://www.computerworld.com
 author: by Gyana Swain
@@ -102,6 +102,12 @@ Gyana Swain is a seasoned technology journalist with over 20 years' experience c
 ## More from this author
 
 - [news\
+**HP to slash up to 6,000 jobs as component costs and AI reshape operations** \
+Nov 26, 2025 5 mins](https://www.computerworld.com/article/4096707/hp-to-slash-up-to-6000-jobs-as-component-costs-and-ai-pivot-reshape-operations.html)
+- [news\
+**Anthropic’s Claude Opus 4.5 pricing cut signals a shift in the enterprise AI market** \
+Nov 25, 2025 6 mins](https://www.computerworld.com/article/4095903/anthropics-claude-opus-4-5-pricing-cut-signals-a-shift-in-the-enterprise-ai-market-2.html)
+- [news\
 **Synopsys to eliminate 10% of staff following Ansys integration** \
 Nov 13, 2025 5 mins](https://www.computerworld.com/article/4089177/synopsys-to-eliminate-10-of-staff-following-ansys-integration.html)
 - [news\
@@ -119,44 +125,38 @@ Oct 23, 2025 5 mins](https://www.computerworld.com/article/4077869/googles-quant
 - [news\
 **Call to ban AI superintelligence could redraw the global tech race between the US and China** \
 Oct 22, 2025 6 mins](https://www.computerworld.com/article/4077074/call-to-ban-ai-superintelligence-could-redraw-the-global-tech-race-between-the-us-and-china.html)
-- [news\
-**Intel bets on on-device AI and US fabs to power the next generation of PCs** \
-Oct 10, 2025 6 mins](https://www.computerworld.com/article/4070872/intel-bets-on-on-device-ai-and-us-fabs-to-power-the-next-generation-of-pcs.html)
-- [news\
-**Deloitte’s AI governance failure exposes critical gap in enterprise quality controls** \
-Oct 8, 2025 6 mins](https://www.computerworld.com/article/4069521/deloittes-ai-governance-failure-exposes-critical-gap-in-enterprise-quality-controls.html)
 
 PopularArticlesPodcastsVideos
 
-[opinion\
+[news\
 \
-**Will Apple block Google’s AirDrop Integration?** \
+**Microsoft gives Windows admins a legacy migration headache with WINS sunset** \
 \
-By Jonny Evans\
+By John E. Dunn\
 \
-Nov 21, 20254 mins\
+Nov 28, 20256 mins\
 \
-AndroidSmartphonesiPhone](https://www.computerworld.com/article/4094541/will-apple-block-googles-airdrop-integration.html)
+Network AdministratorNetwork SecurityRoles](https://www.computerworld.com/article/4098085/microsoft-gives-windows-admins-a-legacy-migration-headache-with-wins-sunset.html)
 
-[opinion\
+[feature\
 \
-**Singin' the Agentic Windows blues** \
+**Spotlight: Making the most of multicloud** \
 \
-By Steven Vaughan-Nichols\
+By Computerworld Staff\
 \
-Nov 21, 20256 mins\
+Nov 28, 20251 min\
 \
-Artificial IntelligenceGenerative AIMicrosoft](https://www.computerworld.com/article/4094314/singin-the-agentic-windows-blues.html)
+Cloud ComputingEnterprise Buyer’s GuidesMulticloud](https://us.resources.computerworld.com/resources/form?placement_id=7f710e0d-983c-4952-b7e2-d5221eb5d1a6&brand_id=128&locale_id=1)
 
-[opinion\
+[news\
 \
-**Do higher RAM prices make Apple a better option?** \
+**EU ‘Chat Control’ proposals should be red flag to businesses everywhere** \
 \
-By Jonny Evans\
+By Maxwell Cooter\
 \
-Nov 20, 20255 mins\
+Nov 27, 20253 mins\
 \
-AppleComputer ComponentsSystem Memory (RAM)](https://www.computerworld.com/article/4093857/do-higher-ram-prices-make-apple-a-better-option.html)
+Data PrivacyPrivacySecurity](https://www.computerworld.com/article/4097740/eu-chat-control-proposals-should-be-red-flag-to-businesses-everywhere-2.html)
 
 [podcast\
 \

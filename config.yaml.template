@@ -48,6 +48,39 @@ applications:
     max_replicas: 3
     target_num_ongoing_requests_per_replica: 1
 
+# Weekly Regulatory Intelligence Digest
+# Generates weekly reports on EU and German regulatory developments
+- name: weekly-report
+  route_prefix: /weekly-report
+  import_path: src.flows.weekly_report.app:fast_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+
+      # Neo4j Configuration
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USER: ${NEO4J_USER}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: ${NEO4J_DATABASE}
+
+      # API Keys (required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # Langfuse (optional observability)
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 1
+
 # Flow 1D: Raw Document Auto-Conversion + Graphiti Processing
 # Active - Document conversion and processing pipeline
 - name: flow1d-raw-converter

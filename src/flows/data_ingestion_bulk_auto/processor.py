@@ -90,11 +90,12 @@ def get_unprocessed_documents(
     else:
         logger.info("No tracking file found, treating all documents as unprocessed")
 
-    # Get all markdown documents from news, policy, and documents_md directories
+    # Get all markdown documents from news, policy, website, and documents_md directories
     all_docs = []
     base_paths = [
         Path(base_path) / "news",
         Path(base_path) / "policy",
+        Path(base_path) / "website",
         Path(base_path) / "documents_md",
     ]
 

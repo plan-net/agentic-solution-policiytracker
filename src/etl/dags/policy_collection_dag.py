@@ -8,6 +8,8 @@ Schedule: Weekly (Sundays at 2 AM UTC)
 Purpose: Flow 1 - Policy Landscape Analysis
 """
 
+from __future__ import annotations
+
 import logging
 import os
 from datetime import datetime, timedelta

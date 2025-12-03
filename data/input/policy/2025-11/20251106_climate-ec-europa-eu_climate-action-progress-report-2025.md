@@ -2,7 +2,7 @@
 title: Climate Action Progress Report 2025
 url: https://climate.ec.europa.eu/document/download/abb61407-e976-482c-b309-2c36625df8c1_en?filename=capr2025_report_en.pdf&prefLang=fr
 published_date: 2025-11-06T00:00:00
-collected_date: 2025-11-16T02:36:49.606307
+collected_date: 2025-12-01T11:34:59.015154
 source: Climate
 source_url: https://climate.ec.europa.eu
 author: HLAVACEK Jan (CLIMA)
@@ -1533,4 +1533,1179 @@ Industrial carbon
 management
 53
 5. Industrial carbon management
-The 2040 climate target impact assessment shows that up to 300 million
+The 2040 climate target impact assessment shows that up to 300 million tonnes of 
+CO2 would need to be captured and approximately 200 million tonnes of CO2 stored 
+by 2040 to meet the proposed 2040 target to reduce greenhouse gas emissions by 
+90%. Approximately 450 million tonnes of CO2 would need to be captured and 
+roughly 250 million tonnes of CO2 stored by mid-century. The Industrial Carbon 
+Management strategy sets out a vision and proposes a list of actions to reach these 
+targets.
+CO2 can be captured to prevent it from being released into the atmosphere, and then
+either stored or used. These practices are known as carbon capture and storage (CCS)
+and carbon capture and utilisation (CCU). Most of the CO2 expected to be captured 
+should come from industrial processes (e.g. waste incineration or clinker plants) 
+feedstocks.
+Captured CO2 can also be of a biogenic or atmospheric origin. Biogenic CO2 is
+produced through biological processes and can be captured from biomass power
+plants or waste-to-energy plants, for instance. Atmospheric CO2 is found naturally in
+the atmosphere. Capturing and permanently storing CO2 of biogenic or atmospheric
+origin is a practice known as permanent carbon removals.
+Figure 21: Scheme of carbon capture, utilisation and storage
+54
+The Industrial Carbon Management strategy is an important step towards a more
+homogenous deployment of carbon capture and storage (CCS), carbon capture and 
+utilisation (CCU) and permanent carbon removals in Europe. The strategy supports the
+creation of a single market for CO2 transport and storage services throughout Europe
+by 2030.
+Adopted in late 2024, the Carbon Removal Certification Framework sets EU rules to 
+measure and verify high-quality carbon removal activities. It is intended to support 
+the voluntary market and could provide a basis for the future integration of domestic 
+permanent removals into the EU ETS. The 2025 Clean Industrial Deal ties climate 
+goals to industrial competitiveness, prioritising carbon capture, utilisation and storage 
+for hard-to-abate sectors and signalling a possible EU ETS change to reward 
+permanent CO₂ storage.
+Since December 2024, Member States must submit an annual progress report on
+carbon capture, transport and storage needs. This report contains:
+• ongoing CO2 capture, storage and transport projects,
+• corresponding needs for injection and storage capacities,
+• national support measures, strategies, and targets on the CO2 capture.
+The EU aims to create an EU market for CO2 storage services. To achieve that, the 
+Net-Zero Industry Act sets an EU CO2 injection capacity target of at least 50 million
+tonnes per year by 2030 and obligates 44 EU oil and gas producers to achieve this
+target. These producers must develop annual CO2 injection capacity in the EU by
+2030 44. From 2025, the European Commission will publish an annual report on 
+progress towards reaching the target.
+By 30 June 2025, producers had to submit a detailed plan to the Commission
+explaining how they are preparing to contribute to the EU’s 2030 CO2 injection 
+capacity target. These plans should confirm the volume of new CO2 storage and
+injection capacity they aim to have ready by 2030 and specify the methods and
+intermediate targets they will use to achieve this. As of 30 June 2026, oil and gas
+producers must report annually to the Commission, detailing their progress towards
+the target. The Commission will make these reports publicly available.
+44 Commission Decision (EU) 2025/1479 of 22 May 2025 specifying the pro rata contributions to the EU CO2 injection capacity 
+objective by 2030 from entities holding an authorisation as defined in Article 1, point 3, of Directive 94/22/EC of the European 
+Parliament and of the Council.
+All Member States annual reports are available on the carbon storage target website.
+55
+Projects in focus
+CO2LLECT
+The German-based CO2LLECT project has been awarded a EUR 157 million grant from the 
+Innovation Fund in the 2023 call for Net-zero Technologies (IF23 Call). This large-scale 
+carbon capture and storage (CCS) project aims to achieve negative emissions at Germany’s 
+largest cement plant in Rüdersdorf.
+By deploying innovative adsorptive-cryogenic separation technology, captured CO2 will be 
+liquified and transported by rail to a CO2 hub in Northern Germany. It will then be shipped to 
+an offshore storage site off the coast of Denmark and stored beneath the seabed of the 
+North Sea. To further reduce the greenhouse gas emissions in the combustion process, the 
+project will inject green hydrogen that will be produced by an electrolyser on site. Located in 
+the water-scarce area of Brandenburg, the project has included an onsite water treatment 
+plant to enhance water circularity and lower electricity consumption. Over the first ten years 
+of operation, the project is expected to cut around 12.6 million tonnes of CO2 equivalent.
+Rüdersdorf, Germany
+EUR 157 million
+Innovation Fund
+56
+Key highlights
+• Climate hazards are undermining Europe’s competitiveness, security and 
+prosperity. Climate resilience should urgently become an integral part of 
+all European policies.
+• Work is ongoing to create an integrated EU framework for climate 
+resilience to be proposed in 2026.
+• Resilience by design is a central principle. It means all investment 
+vulnerable or exposed to climate impacts must be designed to face and 
+withstand climate risks that could materialise in their lifetime, without 
+unacceptable loss of their value or utility.
+• EU Member States made significant progress in developing resilience and 
+adaptation policy over the last year, albeit not yet measuring up to the 
+required transformational changes.
+• Significant further attention is needed to prepare and implement 
+adaptation actions in all sectors.
+In Spain, flash floods caused 
+EUR 10 billion in losses in 2024
+Chapter 6 
+Climate resicilience 
+and adaptation
+57
+6. Climate resilience and adaptation
+The impacts of climate change are here. Storms, heatwaves, droughts, wildfires and 
+floods are damaging homes, roads, nature, finances and the wider economy across all 
+the EU countries. EU law requires the EU and its Member States to make progress on:
+• building capacity to adapt: learn what’s coming and plan accordingly;
+• strengthening resilience: help people, places, and systems to withstand 
+disruptions and recover quickly; and
+• reducing vulnerability: cut the exposure of communities and assets to climate 
+harm.
+Although progress has been made, EU and national measures are still falling short of 
+what is needed at this stage.
+6.1 Climate hazards and economic losses
+In 2024, the EEA published the first European Climate Risk Assessment. This 
+assessment revealed that 34 of 36 major climate risks across five risk clusters 
+(ecosystems, health, infrastructure, food and economy and finance) could reach 
+critical or even catastrophic levels during this century under high warming scenarios. 
+The results of the 2024 European State of the Climate report 45 also found that those 
+risks are threating the lives, livelihoods and wellbeing of many Europeans.
+Since the 1980s, Europe has been warming twice as fast as the global average, 
+making it the fastest‑warming continent. 2024 was the warmest year on record in 
+Europe, as tracked in all datasets, with record‑high annual temperatures in nearly half 
+(around 48%) of the continent. The annual average sea and lake surface temperature 
+for Europe in 2024 also reached the highest level on record, slightly above the 
+previous record set in 2023. The glaciers in Scandinavia experienced their highest 
+recorded mass loss and the largest globally.
+In Europe, extreme heat causes about 95% of all climate-related deaths 46. Over 
+the past 20 years, heat deaths have risen by about 30%, hitting people living in dense 
+cities the hardest due to the urban heat island effect 47.
+Wildfires burnt over 400 000 hectares (4 000 km2) in 2024 in 21 of 27 EU 
+countries and affecting 42 000 people. This is slightly above the average over the 
+period 2006-2023, but less than during the previous three years 48. However, serious 
+wildfires broke out early in the main season, in July, on several Greek islands and in 
+Madeira, Portugal. In only in one week, Portugal’s wildfires burnt over 100 000 
+45 Unless stated otherwise, all data in this section are based on this report.
+46 Economic losses from weather- and climate-related extremes in Europe | European Environment Agency's home page
+47 Extreme weather and human health | Copernicus
+48 This numbers represent around 80% of the amount recorded in 2023 and only half of 2022’s total. Advance report on forest 
+fires in Europe, Middle East and North Africa 2024 - Publications Office of the EU (p.10)
+58
+hectares of land, some 32% of all burnt surface in Europe 49. In Bulgaria, the total 
+recorded burnt area was the highest for more than a decade, with 256 fires burning 
+45 000 hectares of land. By the end of August 2025, almost one million hectares had 
+burnt since the beginning of the year, more than three times the average rate of 
+293 000 hectares during 2006-2024 50.
+Alongside warmer than average temperatures, the prolonged lack of rainfall across 
+most of south-eastern Europe affected river flows and impacted agriculture, 
+ecosystems and energy production. As an example, information from several 
+sources show that in Sicily reservoirs were below alert levels in early July 2024, with 
+volumes 45% lower than the previous year 51. Many municipalities issued watersaving regulations as drought caused losses to agricultural production. This severely 
+affected crops of citrus fruits, wheat and vineyards, with economic damages 
+estimated at EUR 2.7 billion 52.
+In 2024, while south-eastern Europe experienced the most severe dry conditions and 
+had its driest summer for 12 years, September saw the wettest conditions in central 
+Europe since 1979, due to extreme precipitation from Storm Boris falling over eight 
+Member States. The resulting widespread severe flooding affected an estimated 
+413 000 people in 2024, resulting in the loss of 335 lives or more.
+Damage from storms and flooding across Europe in 2024 is estimated to have 
+cost at least EUR 18 billion and the insured losses due to flooding in 2024 were the 
+second highest ever 53. Of all the natural disasters that hit Europe in 2024, the 
+three costliest were caused by floods. Ranked by overall losses, Spain’s flash flood 
+caused EUR 10 billion in losses, with less than half of the assets insured. The flash 
+floods in Germany, Poland, Italy, Austria and Czechia caused overall losses of 
+EUR 5 billion, with only 2 billion insured. The floods caused by Storm Boris in Czechia, 
+Austria, Poland, Italy, Slovakia, Romania, Hungary caused losses of EUR 4 billion, half 
+of which was insured 54. Climate change has been the cause of over third of all 
+weather-related insurance losses over the last 20 years 55. In 2023, only about 
+a quarter of economic losses in the EU were insured and the share was below 5% in 
+some EU countries 56.
+The increase in the frequency and intensity of many of these extreme weather events 
+also poses heightened risks to the built environment and infrastructure in Europe, 
+and to the services they provide. A Commission’s study shows that climate change 
+49 Wildfires | Copernicus
+50 EFFIS - Statistics Portal
+51 Persistent droughts: critical water shortages and crops threatened - European Commission
+52 Persistent droughts: critical water shortages and crops threatened - European Commission
+53 Hurricanes, severe thunderstorms and floods drive insured losses above USD 100 billion for 5th consecutive year, says Swiss Re 
+Institute | Swiss Re
+54 Munich Reinsurance Company 2024 Factsheet
+55 Climate change accounts for over a third of insured weather losses this century and rising - Insure Our Future Global
+56 EIOPA and ECB joint paper: Towards a European system for natural catastrophe risk management - EIOPA
+59
+will accelerate corrosion in older reinforced concrete buildings, with repair costs 
+projected at EUR 76 billion to 883 billion by 2100.
+Extreme heatwaves and fires, heavy rainfall and flooding, heavy snowfall and 
+thunderstorms severely test the resilience of the transport system, impacting 
+operational and economic functionality and resulting in accidents, incidents and rail 
+transport service delays or cancellation57. Marine heatwaves also have significant 
+socio‑economic consequences, particularly for industries such as fisheries, 
+aquaculture and tourism. Climate change is having an impact on specific groups of 
+people and cultures in Europe too. For example, in northern Europe, climate change is 
+having profound impacts on the livelihoods of the Saami people, threatening the 
+culture and wellbeing of the Indigenous communities in Europe.
+The extent of future economic losses will depend both on the action taken to 
+mitigate climate impacts, to implement climate adaptation actions and to 
+increase the resilience of exposed assets. Across all scenarios, EU’s annual losses 
+could reach 2.2% of GDP by 2070, and a quarter of EU regions could experience GDP 
+losses greater than 5% 58. If global warming stays more permanently above the 
+1.5 degrees threshold set under the Paris Agreement, the cumulative additional loss 
+in GDP for the EU could amount to EUR 2.4 trillion from 2031 to 2050 59.
+The European Commission recently carried out a study on labour productivity losses 
+caused by rising heat stress in EU regions. The study shows that heat stress from 
+climate change will reduce labour productivity and GDP across Europe, with southern 
+and south-eastern regions being the most affected. By 2050, productivity losses may 
+reach around 0.9%, and GDP losses up to 0.7% in the most affected regions, relative 
+to a future without heat stress impacts. These losses are projected to deepen by 
+2080, with a loss in productivity reaching 2.5% and GDP losses exceeding 1.5%. If 
+adaptation action is not taken, and the worst-case climate scenarios materialise, 
+labour productivity losses could exceed 6% in a few regions, and GDP losses could 
+exceed 4%.
+6.2 EU action to boost climate resilience
+Given the wide range of climate hazards, it is essential to boost climate resilience 
+across our economy, society and infrastructure to maintain core societal functions 
+and ensure wellbeing of people. Climate resilience and risk management are vital for 
+a competitive, secure, and prosperous EU.
+The Preparedness Union strategy aims to enhance the EU’s civilian and military 
+preparedness and readiness for future crises so that everyone is ready and capable of 
+responding quickly and effectively if needed. The strategy will help national 
+57 2024 Rail Environmental Report | European Union Agency for Railways (p. 76)
+58 World Bank Group, 2024. Climate Adaptation Costing in a Changing World. Economics for Disaster Prevention and Preparedness
+59 EC. 2024. Europe’s 2040 climate target and path to climate neutrality by 2050 building a sustainable, just and prosperous 
+society
+60
+preparedness action by stepping up coordination and efficiency under existing 
+strategies and by fostering a culture of resilience to all types of future crises.
+The strategy recognises that climate risks are part of the key crisis landscape. It 
+stresses the importance of anticipation and prevention, and the need to tackle risks 
+and threats in a comprehensive manner, considering how they interact and produce 
+cascading effects. With this main aim, the strategy commits to develop 
+a comprehensive cross-sectoral EU-level risk and threat assessment. The strategy 
+also explicitly sets out to embed ‘climate resilience by design’ and ‘preparedness 
+by design’ into all EU policies and actions. Using common climate reference 
+scenarios, this would ensure better climate-proofing of policies so as to head off 
+future crises and strengthen proactive climate, environment and water risk 
+management across the EU.
+In 2024, the focus has been on launching work on an integrated framework for 
+climate resilience, including a public call for evidence. The European Environment 
+Agency has led the preparation of a second European Climate Risk Assessment. The 
+integrated framework will seek to ensure that all investments vulnerable to the 
+impacts of climate change are designed to tackle the climate risks that could 
+materialise in their lifetime (‘resilience by design’).
+Fully aligned with the above policies, the Competitiveness Compass asks the EU and 
+Member States to regularly update climate risk assessments and improve critical 
+infrastructure based on the resilience by design principle. The Competitiveness 
+Compass sets out options to avoid supply chains and production sites getting 
+compromised by hazardous events, including action to integrate climate resilience in 
+urban planning, deploying nature-based solutions, and developing nature credits and 
+adaptation in agriculture while preserving food security.
+The Vision for EU Agriculture and Food depicts the impacts of extreme weather 
+events and changing precipitation patterns for farmers. To reduce their vulnerability 
+and exposure to risks, incentives will be increased to fund adaptation at farm level 
+and for risk sharing via producer organisations or cooperatives. Under the strategy, 
+the future common agriculture policy will provide more targeted for measures and 
+investments that make the agricultural sector more resilient to the changing 
+conditions. More ambitious transformational changes will be needed in places where 
+current production is not sustainable over the longer term, involving for example new 
+local strategies, research and innovation.
+As highlighted in the water resilience strategy, another important aspect of 
+strengthening the EU’s resilience is support for public authorities, businesses and the 
+public in preparing for future climate risks. This may include support for the use of 
+digital tools for EU real-time early warning and monitoring systems. The strategy 
+calls for action to empower people and communities to adapt and protect themselves
+from risks. A first step towards building societal resilience is to make sure information 
+is widely available on the specific risks that people, businesses, land and, 
+infrastructure face. Although, there may already be many tools to protect the 
+61
+population from climate-related disasters or mitigate the impact, they are not always 
+sufficiently known or used. The EU and Member States must therefore strengthen the 
+links between existing risk management tools at European level (such as the early 
+warning tools of the Copernicus Emergency Management Service) and the tools 
+available at national and local levels.
+Embedding climate-related risks in fiscal policy is also key to strengthening resilience. 
+As the economic and fiscal costs of climate change are rising and transition efforts 
+accelerate, it becomes essential to assess the macro-fiscal impacts of climate change 
+and integrate them into national budgetary frameworks. Significant progress was 
+made in 2024 with amendments to the directive on requirements for budgetary 
+frameworks of the Member States, adopted as part of the revised EU Economic 
+Governance Framework. From 2026, all EU Member States are required to assess and 
+report in their budget documents, to the extent possible, on how the macro-fiscal risks 
+from climate change may affect the medium- and long-term sustainability of public 
+finances, on disaster- and climate-related contingent liabilities and on the fiscal costs 
+incurred due to disasters and climate-related shocks. These provisions aim to 
+strengthen the understanding and management of climate-related fiscal impacts, 
+foster more proactive and risk-informed budgeting practices, and support evidencebased policy and investment decisions.
+6.3 Progress in the Member States on climate resilience and 
+adaptation policies and legislation
+The overall climate resilience and adaptation policy landscape and frameworks 
+are well established across Europe 60. The Member States use a range of policies to 
+tackle climate risks and aim to boost climate resilience and adaptation action, such 
+as:
+• dedicated climate adaptation laws;
+• national climate laws and other legislative acts with adaptation rules;
+• national adaptation strategies and plans; and
+• sector-specific and regional adaptation plans.
+Germany has adopted a specific, standalone climate adaptation law, and Lithuania 
+is currently preparing one. A growing number of countries are putting adaptation 
+rules into their national climate laws to give greater legal force to adaptation action. 
+13 Member States give adaptation full legal force this way.
+National adaptation planning and up-to-date climate risk assessments are 
+a prerequisite for policy implementation. EU law requires the Member States to adopt 
+and implement national adaptation strategies and plans. Progress has been made on 
+this front. In 2025, all EU countries have an adaptation strategy or plan in place
+60 From adaptation to action: insights into progress and challenges across Europe. EEA 2025.
+62
+(see Figure 22). Between 2023-2025, 11 Member States adopted or updated their 
+strategy or plan.
+EU countries are making progress in developing their national climate risk 
+assessments. They are taking action to generate and update knowledge about 
+climate-related hazards, vulnerabilities, impacts and risks, strengthening efforts for 
+evidence-based policy making on adaptation. Nearly all Member States tackle climate 
+risks in some form, ranging from thematic or sector-specific analyses to multi-risk 
+and multi-sectoral, comprehensive climate risk assessments.
+Six Member States have reported having completed their new or updated national 
+climate risk assessment from 2023-2025. The number of Member States with 
+a comprehensive and national assessment available has increased to 21. 13 Member 
+States report new national, comprehensive assessments as planned or in progress.
+At least one third of Member States have completed new thematic or sectoral 
+climate risk assessments. Most Member States have at least some form of sectoral 
+or thematic climate risk or vulnerability assessment available.
+Even if the level of policy preparedness of the Member States has steadily risen at 
+national level, more coherent policy and monitoring, reporting and evaluation 
+frameworks are needed at all levels. Currently, there is no coherent data available 
+on the implementation of adaptation policies in all Member States, but recent 
+evaluations show that implementation and methods to evaluate adaptation efficiency 
+and effectiveness are lagging. It is crucial to mainstream adaptation into sectoral 
+policy. Despite the growing trend of sectoral and thematic adaptation policies at 
+national level, more action is needed on sectoral policies, e.g. in the health sector.
+National, regional and local governments are increasingly incorporating justice into 
+their adaptation policymaking and planning. Similarly, at regional and local level, 
+justice has increasingly been taken into consideration in urban adaptation planning. 
+With many examples around Europe, participatory processes are being used to inform 
+policy. Nevertheless, inclusion of vulnerable groups and justice still need attention 
+(see Chapter 11 of the accompanying staff working document for further details).
+The development described above is aligned with the Commission recommendations 
+and the responses given to them by the Member States. In its assessment, In 
+September 2023, the Commission found that Member States’ measures were often in 
+need for improvements to become more consistent with the EU’s and the 
+international agreements’ objectives to ensure continuous progress in enhancing 
+adaptive capacity, strengthening resilience and reducing vulnerability to climate 
+change. Following the assessment, the Commission issued tailored recommendations 
+to 26 Member States, addressing a broad range of aspects across the policy cycle 
+(see Chapter 11 of the accompanying staff working document for further details).
+You can find more information about climate resilience and adaptation including 
+country profiles, case studies, guidance, data and publications on Climate-ADAPT 
+portal.
+63
+Figure 22: Adaptation strategies, plans and climate laws with adaptation provisions rules in 
+the EU
+Legend: National adaptation 
+strategy National adaptation plan National or federal climate law with adaptation rules
+64
+6.4 Regional and local action 61
+Across the EU, regions and cities are stepping up climate resilience and adaptation 
+work. They are making progress on two tracks:
+• Legal requirements. An increasing number of Member States now oblige 
+regional and local authorities to prepare and implement climate adaptation 
+plans. Countries that have these legal requirements often have strategies in 
+place or are integrating resilience and adaptation into sector programmes, 
+policies and regulations and are rolling out measures through multilevel 
+coordination.
+• Voluntary action. In countries without legal requirements, regions and cities 
+are increasingly taking voluntary action, often under national adaptation plans 
+or EU cross-border programmes. Governments often support this with 
+incentives, guidance and joint initiatives.
+Multilevel institutionalised networks are becoming more commonplace, supporting 
+local, regional and national bodies in sharing knowledge and aligning policies. EU 
+funds are helping regions and municipalities finance climate resilience and adaptation 
+projects. (For more information, see Chapter 7).
+The Covenant of Mayors initiative, created in 2008 and supported by the European 
+Commission, brings together thousands of local governments seeking to secure 
+a better future for their citizens. By joining the initiative, the local governments 
+voluntarily commit to implementing EU climate and energy objectives. The initiative is 
+a key enabler of local adaptation planning across Europe by providing tools, networks 
+and peer-to-peer support. Over 10 000 local governments have committed to action 
+under the three pillars of the covenant, including strengthening resilience and 
+alleviating energy poverty.
+61 Preliminary assessment of the 2025 Governance Regulation dataset / subnational adaptation
+65
+Projects in focus
+NBS4Drought
+The NBS4Drought project aims to demonstrate the cost-effectiveness of 
+wetland-based nature-based solutions for sustainable water management, 
+particularly in alleviating the impacts of extreme droughts, and to expedite their 
+widespread adoption across Europe. 
+Seven different wetland showcases from five distinct bioclimatic zones in Europe 
+have been selected in rural, peri-urban (including an island), and urban 
+environments. Each intervention is tailored to enhance the area’s resilience 
+against droughts by increasing water retention capacity, improving biodiversity 
+and ecosystem services, and enhancing water treatment efficiency for safe 
+water reuse.
+Denmark, Germany, Poland, 
+Spain
+EUR 7.9 million
+Horizon Europe
+66
+Key highlights
+• Investing now means saving tomorrow. Between 1980 and 2023, climaterelated extreme events caused economic losses of EUR 738 billion in the 
+EU, with EUR 162 billion in just 2021–2023. Accelerating green 
+investment reduces future costs, creates jobs and strengthens Europe’s 
+resilience and energy security.
+• Significant investments are needed to meet EU climate and energy 
+targets. Annual investment in the EU’s energy system must more than 
+double to around EUR 565 billion per year in 2021–2030 compared with 
+2011–2020.
+• Private capital is essential for the transition. The EU’s Sustainable Finance 
+Framework is mobilising significant private investment for sustainable 
+activities, with green bond issuance in the EU reaching a record 
+EUR 314 billion in 2024.
+• The EU budget mainstreams climate action across programmes. About 
+EUR 662 billion (34% of the 2021–2027 budget) is earmarked for climate 
+objectives through programmes such as the Recovery and Resilience 
+Facility, cohesion policy, InvestEU and Horizon Europe.
+In 2024, solar and wind accounted for 
+47% of the EU’s total power generation 
+capacity
+Chapter 7 
+Investments in
+climate action
+67
+7. Investments in climate action
+7.1 Investment needs
+Between 1980 and 2023, climate-related extreme events caused an estimated 
+EUR 738 billion in economic losses across the EU. Strikingly, EUR 162 billion (22% of 
+all losses) occurred between 2021 and 2023 alone 62. These rising costs show the 
+urgency and importance of taking action to tackle climate change, to reduce GHG 
+emissions and to prepare for increasing climate impacts. As well as reducing climate 
+impacts, climate action brings wider economic and social benefits. These benefits 
+include cleaner air, better public health, and lower healthcare costs. This is also an 
+investment in the EU’s strategic independence – it not only saves money, but also 
+reduces the EU’s dependency on imported energy and exposure to shocks. By 
+switching to renewable energy, the EU could reduce the cost spent on importing fossil 
+fuels by EUR 2.8 trillion between 2031 and 2050, compared with the 2011-2020 
+average 63.
+Future needs
+It is important to invest both in action to mitigate greenhouse gas emissions and in 
+building our resilience to manage the growing climate impacts.
+To limit climate change and meet the EU’s 2030 climate and energy targets, 
+investment in the EU’s energy system must increase significantly to reach around 
+EUR 565 billion a year between 2021 and 2030, up from the EUR 250 billion invested 
+per year in the previous decade 64. It does not include investments to decarbonise the 
+transport sector.
+Shifting away from fossil fuels and meeting rising demand for electricity will require 
+major investments in strengthened and modernised low-emission electricity systems.
+Investment in new power generation, mainly wind and solar, and upgrading existing 
+power plants will need to more than double, from about EUR 45 billion to 
+EUR 90 billion annually.
+The largest required increase on the supply side is in power grids. Investment in 
+transmission and distribution infrastructure must triple to ensure reliable and efficient 
+delivery of electricity.
+On the demand side, investments must also more than double. The residential sector 
+has the highest absolute needs, with an estimated needs of EUR 215 billion a year to 
+renovate buildings and replace heating systems and appliances. This is nearly twice 
+the average investment made in 2011-2020.
+62 European Environment Agency (2024). Economic losses from weather- and climate-related extremes in Europe.
+63 2040 target impact assessment
+64 All numbers are based on 2040 target impact assessment and Net Zero Industry Act impact assessment.
+68
+The sharpest relative increase is needed in industry. Although annual needs are lower 
+in absolute terms, estimated at about EUR 40 billion, they represent a sixfold increase 
+compared to the previous decade. Investments are especially needed to modernise 
+and decarbonise energy-intensive sectors such as steel, cement, and chemicals.
+Estimating the investment gap in climate adaptation requires more work. Currently, 
+many investments assume that historic climatic conditions will continue in the future. 
+An approach is needed that properly factors in expected future climatic developments 
+for all investments exposed to physical risks (the principle of climate resilience by 
+design, as explained in Section 6.2).
+Table 3: Average annual investment needs in the energy system (EUR 2023, billion)
+Progress made
+Recent trends show encouraging signs that investment in the climate and energy 
+transition is picking up. The total installed capacity of wind and solar power 
+generation increased by almost fivefold between 2010 and 2024 and by 70% 
+between 2020 and 2024. The rapidly falling cost of solar panels has led to an annual 
+increase in installed capacity in excess of 20% in 2022-2024, and a 15% annual 
+increase in wind power over the same period. In 2024, the combined installed 
+capacity of solar and wind power generation amounted to 535 gigawatt, around 47% 
+of total installed capacity.
+Sector 2011-2020 2021-2030
+Energy supply side 80 200
+Power grid 20 60
+Power plants 45 90
+Other 20 45
+Energy demand side 170 365
+Industrial sector 5 40
+Residential 115 215
+Services 30 80
+Agriculture 15 30
+Total 250 565
+69
+Figure 23: Wind and solar power generation capacity
+Source: Eurostat (IRENA for 2024)
+New registrations of battery-electric cars and plug-in hybrids have also picked up 
+significantly in recent years, to reach 1.5 million and 0.8 million, respectively, in 
+2024. Investment in heat pumps has also gathered momentum over the past few 
+years, although not as rapid an increase as for solar and wind power generation as 
+hurdles remains in terms of consumer acceptance and installation capacity, among 
+others.
+Figure 24: New car registrations (battery electric cars and plug-in hybrids)
+Source: Eurostat
+70
+Figure 25: Heat pump installed capacity
+Source: Eurostat
+7.2 Mobilising private-sector investment
+Given the scale of investment needs, private-sector contributions to financing both 
+climate resilience and climate mitigation need to be substantial. This is why the EU 
+put together a policy framework that aims to facilitate private-sector investments
+in sustainable activities. The Sustainable Finance Framework provides investors with 
+robust definitions of sustainable activities (the EU Taxonomy) and requires companies 
+and banks to disclose their impact on the environment and climate (Corporate 
+Sustainability Reporting Directive, Sustainable Finance Disclosure Regulation). The 
+rules governing sustainable finance are currently being simplified to reduce their
+administrative burden on companies, while making the framework more workable 
+and impactful. In February 2025, the Commission put forward legislative proposals to 
+reduce the volume of sustainability reports and the number of companies that need 
+to report this information. The Commission is also considering other simplification 
+measures.
+Over the past years, the corporate and financial sectors have channelled significant 
+resources towards green objectives in the EU. For instance, according to the latest 
+report from the Platform on Sustainable Finance, taxonomy-aligned capital 
+expenditure from large listed European companies reached EUR 250 billion in
+2023 65.
+In the financial sector, certain instruments have emerged as a fundamental tool to 
+mobilise private capital. Figure 26 presents the annual amounts of ESG 
+(environmental, social or corporate governance) bonds in the EU, until the first half of 
+June 2025. Green bonds (i.e. bonds financing green projects) continue to dominate the 
+ESG market. The volume of new green bond issuance amounted to EUR 314 billion 
+65 Platform on Sustainable Finance report: Monitoring capital flows to sustainable investments
+71
+in 2024, its highest level since the first issuance of a green bond in 2007. In contrast, 
+sustainability-linked bonds (i.e. bonds for which issuers pay a higher interest if they 
+do not meet their pre-defined ‘sustainability’ objectives) continue to decrease, 
+amounting only to EUR 26 billion in 2024, compared to EUR 66 billion in 2021 and 
+EUR 45 billion in 2022. This decrease reflects the more rigorous approach to 
+sustainability taken by investors. Similarly social bonds (i.e. bonds financing social 
+projects) and sustainability bonds (i.e. bonds financing a combination of green and 
+social projects) both saw a decrease, reinforcing the prevalence of green bonds.
+Figure 26: Annual issued volumes in the EU – ESG bonds
+Source: LSEG, JRC calculations. Data as at15 June 2025.
+The EU is a global leader in the green bonds market (see Figure 27). In every year 
+between 2021 and 2024 they accounted for over 3% of all bond issuances (touching 
+2.7% in mid-2025), remarkably higher than the non-EU share of green bonds at less 
+than 0.5%.
+To bring greater transparency and credibility to these financial instruments, the EU 
+adopted as of December 2024 the European Green Bond Regulation, a voluntary 
+framework for issuers who wish to label their bonds as European Green Bonds. This 
+standard is based on the detailed criteria of the EU taxonomy to define green 
+economic activities, ensuring transparency levels that align with market best 
+practices. It also brings in supervision for companies conducting pre- and postissuance reviews at European level.
+72
+Figure 27: Annual issued volumes and green bond share – all bond types
+Source: LSEG, JRC calculations. Data as at 15 June 2025.
+The market for ESG loans (defined as a club deal, a syndication or a bilateral 
+transaction) is traditionally less well defined than the ESG bond market, with no EU 
+regulation. Green loan issuances have steadily increased since 2016, reaching 
+EUR 71 billion in 2024, up from EUR 53 billion in 2023 (see Figure 28).
+Figure 28: Annual issuance of ESG loans in the EU
+Source: LSEG, JRC calculations. Data as at 16 June 2025
+To facilitate and accelerate the corporate transition to net zero, the Commission will 
+also develop sector-specific transition pathways, with the direct involvement of key 
+73
+industries. These pathways should enable more informed investment decisions and 
+help mobilise more capital for the transition.
+The upcoming integrated framework for climate resilience will include action to 
+mobilise climate resilience financing to ensure that all investments vulnerable to the 
+impacts of climate change are designed to face climate risks that could materialise in 
+their lifetime (‘resilience by design’).
+7.3 Funding from the EU Emission Trading System
+Three funds use revenues from the EU Emission Trading System to support clean 
+technologies, renewable energy and energy efficiency:
+• Innovation Fund;
+• Modernisation Fund; and
+• Social Climate Fund.
+Moreover, the Recovery and Resilience Facility is partially financed by ETS revenues.
+Innovation Fund
+The Innovation Fund is one of the world’s largest funding programmes for the 
+deployment of low-carbon technologies. The goal is to bring to market new clean 
+energy and industrial technologies so the EU can reduce emissions, reach climate 
+neutrality and stay competitive. The fund has an estimated budget of EUR 40 billion
+between 2020 and 2030 (based on a carbon price of EUR 75 per tonne). Projects 
+from the EU, Iceland, Liechtenstein and Norway can apply for support from the fund.
+Since 2020, the Commission has launched 11 calls for proposals, including two 
+auctions under the European Hydrogen Bank. The Innovation Fund now backs about 
+190 large- and small-scale ongoing projects with funding totalling around 
+EUR 10.8 billion.
+Calls for proposals in 2024
+The Commission opened three calls for proposals in December 2024 with a budget of 
+EUR 4.6 billion.
+• Net-zero technologies. This call for proposals had a budget of EUR 2.4 billion 
+and received 359 proposals from 28 countries when it closed in April 2025. 
+The Commission has just published the results of the evaluation and the list of 
+projects pre-selected for grant agreement preparation.
+• Batteries. For the first time, this call for proposals will support the 
+manufacturing of electric vehicle battery cells. The call had a budget of 
+EUR 1 billion and received 14 proposals from 8 countries in April 2025. In July 
+2025, it was announced that six projects were awarded funding: two from 
+France and Germany and one from Sweden and Poland receiving a combined 
+74
+EUR 852 million of support. These projects will have a combined battery 
+manufacturing capacity of around 56 gigawatt-hours (GWh) of EV battery 
+cells per year.
+• Hydrogen auction. This call for proposals was for the second round of the 
+European Hydrogen Bank auction for the production of renewable hydrogen. 
+The budget was EUR 1.2 billion, including a new allocation of EUR 200 million 
+specifically earmarked for projects in the maritime sector. The auction closed 
+in February 2025 with 66 bids from 11 countries and 15 projects in 5 
+different countries receiving support. These projects are expected to produce 
+nearly 2.2 million tonnes of renewable hydrogen over 10 years, avoiding more 
+than 15 million tonnes of CO₂ emissions.
+As announced in the Clean Industrial Deal communication, the Innovation Fund will 
+launch new call for proposals to support clean technology, battery manufacturing and 
+renewable hydrogen at the end of 2025. It will also launch a new auction for 
+decarbonising heat in industrial processes.
+Innovation Fund services
+The Innovation Fund provides several services that let additional projects receive 
+financing even after the initial budget of a call for proposals has been allocated.
+Germany, Austria and Spain have all made contributions under the ‘auctions-as-aservice’ mechanism, deploying up to EUR 836 million to support promising projects 
+that did not receive funding in the last hydrogen auction.
+The Commission is working to set up a similar feature for the regular calls for 
+proposals, called ‘grants-as-a-service’.
+Both features enable Member States to use the Innovation Fund evaluation 
+procedures and avoid unnecessary administrative and financial burdens to develop 
+and run new support schemes for the same technologies.
+Support from the Innovation Fund goes beyond public financing. In particular, smallscale projects or projects from lower-income countries can receive Project 
+Development Assistance. The European Investment Bank offers tailored technical 
+and financial advisory to improve the maturity of innovative projects and ensure 
+balanced spread of Innovation Fund support across regions and sectors.
+Modernisation Fund
+The Modernisation Fund uses revenue from the EU ETS to help lower-income Member States meet 
+their 2030 climate and energy targets. 13 Member States: Bulgaria, Croatia, Czechia, 
+Estonia, Greece, Hungary, Latvia, Lithuania, Poland, Portugal, Romania, Slovakia and 
+Slovenia can benefit from this support.
+All projects, country fiches and interactive dashboards are available in Innovation Fund 
+Project Portfolio.
+75
+The Fund finances renewable energy sources, modernisation of energy networks, and 
+energy efficiency in buildings and industry. These investments speed up the clean 
+transition and keep the whole EU competitive.
+The Modernisation Fund has an estimated budget of EUR 57 billion from 2021 to 
+2030, assuming an average carbon price of EUR 75/tCO2. Since 2021, EUR 19.1 billion 
+has already been disbursed to 12 beneficiary Member States.
+The latest disbursements include EUR 2.7 billion in December 2024 and EUR 3.7 
+billion in June 2025. The latter is the largest disbursement since the Fund was 
+created. These recent disbursements saw the first ever funds invested in Slovenia 
+(December 2024) and Greece (June 2025).
+Social Climate Fund
+The Social Climate Fund was set up together with the ETS2 (see Chapter 2), the EU’s 
+emissions trading system for fuel used in buildings, road transport, and small 
+industry. Its main goal is to help reduce the social and economic impact of this new 
+system by providing help to the most affected people, especially households and 
+microenterprises struggling with higher costs of energy and transport. Together with 
+a mandatory contribution from Member States it should provide at least 
+EUR 87 billion in public support from 2026 to 2032, ensuring no one is left behind as 
+we shift to a cleaner economy.
+A description of how the funding from the Social Climate Fund will be spent is 
+contained within Social Climate Plans to be adopted by Member States and that need 
+to be positively assessed by the Commission. These plans must identify the most 
+vulnerable groups in relation to energy and transport poverty as well as ETS2 
+impacts, and describe the measures and investments to support them. In designing 
+their plans, Member States must conduct public consultation, involving a range of 
+stakeholders broadly defined: regional and local authorities, representatives of 
+economic and social partners, relevant civil society organisations, youth organisations, 
+etc. A summary of the consultation as well as an explanation of how input has been 
+integrated should also be included in the plan. The involvement of regional and local 
+actors continues in the implementation of investments on the ground and throughout 
+the duration of the fund, so to ensure tailored and effective action.
+So far Sweden and Latvia have submitted their draft Social Climate Plans to the 
+Commission. The European Commission has started reviewing the plans and a final 
+decision is expected within the five-month legal deadline following their submission. 
+The Commission is also in close contact with remaining Member States to help 
+finalise and submit all plans.
+If a Member State’s plan is positively assessed, funding can begin on 1 January 2026. 
+However, only countries that fully convert the ETS2 into their national law will be able 
+to access the fund.
+76
+7.4 Climate expenditure in the EU budget
+The EU budget – both the EU’s ‘multiannual financial framework’ covering the 2021-
+2027 period and the post-Covid recovery instrument NextGenerationEU – is a key 
+driver of the green transition.
+Current budget commitments suggest that in 2021-2027 the EU will spend around 
+EUR 662 billion on climate action. This is 34% of the whole EU budget and above the 
+30% target.
+With 78 % of its budget going to climate, the Connecting Europe Facility (CEF) has 
+one of the highest shares of spending on climate of any EU programme. The LIFE 
+programme and the Recovery and Resilience Facility (RRF) also spend a large share of 
+their budgets on climate projects (see Figure 29).
+Figure 29: Expected share of the EU budget and of selected funds and policies spent on 
+climate (%, 2021-2027)
+Source: Budget commitments on climate. Climate mainstreaming - European Commission
+All these funds deliver tangible results. For example:
+• 45 gigawatt-hours of estimated energy efficiency savings per year from 
+private and public buildings;
+• 98 million tonnes of carbon dioxide equivalent avoided per year, of which 
+more than half was through Next Generation EU green bond investment. 
+Additionally, 452 million tonnes of carbon dioxide reduction are expected from 
+the Innovation Fund over the first 10 years of operation.
+• 543 additional gigawatt-hours of renewable energy capacity installed.
+The Commission’s July 2025 proposals for the multiannual financial framework 
+2028-2034 include a 35% spending target on climate and environment objectives. 
+This would mobilise over EUR 700 billion to support green investments. The proposal 
+also envisages applying the ‘do no significant harm’ principle across the entire budget 
+to ensure that EU funding does not run counter to EU climate and environmental 
+objectives. The proposal also includes a ‘climate resilience by design’ principle, which 
+would be applied for the first time to EU funding.
+77
+Connecting Europe Facility
+The Connecting Europe Facility (CEF) is the EU’s funding scheme for transport, energy 
+and digital infrastructure. The facility has total budget of EUR 33 billion, of which 
+60% is earmarked for climate action. It comfortably exceeds that target, with 78 % of 
+the budget, almost EUR 26 billion, going to climate related investments such as 
+electricity transmission upgrades, alternative fuel supply points and new or improved 
+railway lines.
+Recovery and Resilience Facility
+The Recovery and Resilience Facility is a temporary fund and the main part of 
+NextGenerationEU, the EU’s plan to recover after the recent crises: the COVID-19 
+pandemic and the energy crisis triggered by Russia’s invasion of Ukraine. It has 
+a budget of up to EUR 650 billion and enables Member States to significantly increase 
+climate-related investments 66.
+All Member States committed to spend more than required 37% on climate, with 
+some Member States projected to spend well over half of their allocation on climate 
+action. Collectively Member States plan to spend 42.5% of their allocations on climate 
+(EUR 276 billion). By September 2025, climate-related disbursements had reached 
+EUR 62 billion.
+Substantial progress has been made and several success stories have materialised on 
+the ground. However, since the RRF sets deadlines for spending this temporary fund 
+(all payments to be made by end 2026), it will be essential to accelerate and finalise 
+implementation over the coming year.
+InvestEU
+The InvestEU uses an EU budget guarantee to help international and national 
+promotional banks finance sustainable investment, innovation and job creation. One 
+of the four priority ‘windows’ is sustainable infrastructure, which supports clean 
+transport, renewable energy, energy efficiency and other clean technologies.
+The programme aims to trigger EUR 372 billion in investment, with at least 30% 
+going to climate action. By the end of 2024, it had already mobilised EUR 300 billion, 
+38% of which was climate related. For 2021-2027, it expects to invest EUR 
+110 billion into climate projects, roughly 35% of all investments.
+66 In 2023 and 2024, Member States complemented their recovery and resilience plans with new chapters on 
+REPowerEU in response to the energy crisis caused by Russia’s invasion of Ukraine. New or scaled-up reforms and 
+investments in Members States to help phase out the EU’s dependence on Russian fossil fuels and accelerate the 
+clean energy transition are supported by additional financial power (EUR 19 billion of new grants, transfers from 
+other funds and use of remaining Next Generation EU loans).
+78
+Horizon Europe programme
+The Horizon Europe framework programme is the EU’s key funding programme for 
+research and innovation. It tackles climate change, helps to achieve the UN’s 
+Sustainable Development Goals and boosts the EU’s competitiveness and growth.
+The Horizon Europe programme has a total budget of EUR 95.5 billion for the whole 
+2021-2027 timeframe. The programme must contribute at least 35% of expenditure 
+to climate objectives – this is equivalent to EUR 34.8 billion in funding over the 2021-
+2027 timeframe.
+Given the budget allocated to climate for the years 2021-2024, and the estimates for 
+2025-2027, the programme is on track to meet the overall commitment of 35%. By 
+end of 2024, nearly EUR 20 billion have already been earmarked to research and 
+innovation activities supporting climate action 67. This demonstrates the programme’s 
+commitment to tackling climate change and advancing sustainability goals.
+Horizon Europe supports climate research and innovation activities in areas such as 
+climate science and climate adaptation, renewable energy and energy storage, 
+industry decarbonisation, circularity, sustainable mobility, buildings upgrades and biobased solutions.
+Horizon Europe includes several timebound ‘missions’ that target major challenges 
+such as adapting to climate change, improving soil health and creating climate 
+neutral cities. One such mission, adaptation to climate change, aims to make at least 
+150 European regions and communities climate resilient by 2030. So far it has 
+awarded EUR 517 million to 61 projects. By handing resources and decisions to local 
+and regional bodies, the mission speeds up action and stimulates innovation and 
+nature-based, digital and other systemic solutions. The mission on climate-neutral 
+cities supported 92 cities through contracts that include a commitment as well as an 
+action and investment plan.
+LIFE programme
+The LIFE programme is the EU fund for environment, energy and climate. LIFE 
+projects focus on innovative industrial solutions to reduce GHG emissions, carbon 
+removals in agricultural and forests, climate adaptation in urban and rural areas and 
+greater preparedness for extreme weather events. With an overall budget of 
+EUR 5.4 billion for the 2021-2027 period, the LIFE programme has a specific 
+subprogramme on climate change mitigation and adaptation.
+61% of the total budget should be spent on climate action. The programme is slightly 
+below this target at 59%.
+Since the beginning of the programming cycle in 2021, the climate subprogramme 
+has financed 117 projects providing EUR 367 million. Under the 2024 calls for 
+67 Preliminary figures
+79
+proposals, the subprogramme awarded 23 projects including two strategic integrated 
+projects, for a total EUR 25 million.
+Cohesion policy
+Cohesion policy is the cornerstone of balanced and fair development across EU 
+regions. Its main goal is to ensure that everyone, no matter where they live, gets the 
+same chance to succeed. This is important because it helps create fair opportunities 
+and reduces inequalities across the EU.
+Cohesion policy also drives climate action. It finances projects that reduce energy 
+consumption, boost renewable energy, improve public transport, protect nature and 
+strengthen local and regional resilience to extreme weather. By linking regional 
+growth with clean and green solutions, cohesion policy helps the EU reach its climate 
+goals while ensuring no region is left behind.
+In September 2025, based on the Commission’s mid-term review, new rules were 
+adopted to make it easier for Member States to support the EU’s strategic priorities. 
+For example, new rules would allow the European Regional Development Fund to fund 
+large businesses in key areas such as decarbonisation or strategic technologies.
+European Regional Development Fund, Cohesion Fund and Interreg
+Member States’ have allocated about 57% (EUR 22.29 billion) of their Cohesion Fund 
+and 33% (EUR 70.63 billion) of their European Regional Development Fund 
+allocations to climate action. Additionally, about 24.5% of the EUR 10.7 billion of 
+programmes focused on European regional cooperation (Interreg funds) financed by 
+the EU are expected to support climate-relevant measures. Combined, these 
+investments will not only significantly reduce GHG emissions and boost adaptation to 
+climate change, but they will also create jobs, increase competitiveness, enhance 
+mobility and maintain balanced regional development across the EU. Figure 30 shows 
+the funding allocated to climate relevant policy areas as a share of total spending 
+from the European Regional Development Fund, the Cohesion Fund and Interreg on 
+climate action.
+All data, interactive charts and illustrative stories on cohesion policy are available on 
+the Cohesion Open Data Platform.
+80
+Figure 30: Share of cohesion policy funds allocated to climate action by thematic area
+By 30 June 2025, some 45% of the European Regional Development Fund and 61% 
+of Cohesion Fund for the 2021-2027 period had been allocated to specific projects.
+Just Transition Fund
+The Just Transition Fund provides EUR 19.7 billion to help people and regions the 
+most affected by the transition to climate neutrality, such as areas where coal mines 
+are closing or heavy industry is transforming. Currently, it supports 96 coal and 
+carbon-intensive regions with tailored just transition plans, for example by supporting 
+diversification of the local economy, and helping people acquire new skills. Up to 
+120 000 unemployed people will benefit from the measure and almost 200 000 
+people will gain new skills.
+The Just Transition Fund is moving forward: 47% of the fund had already been 
+assigned to projects by June 2025, up from 22% a year before. There are notable 
+differences in progress. Estonia and Malta have selected all projects and Luxembourg, 
+Sweden and the Netherlands have selected almost all projects to be financed. On the 
+other hand, Belgium, Hungary and Bulgaria have assigned less than 10% of the total 
+budget.
+81
+European Social Fund
+In the 2021-2027 programming period, the European Social Fund Plus is investing 
+EUR 5.7 billion in green skills and jobs and in measures and reforms supporting the 
+green economy. This includes upskilling and reskilling of workers, support to displaced 
+workers or workers working for enterprises affected by the green transition or training 
+of employed and unemployed people in green skills.
+Projects in focus
+Střimická výsypka
+Střimická výsypka is the largest NGO-managed bird park in Czechia. It aims to transform 
+251 hectares of coal spoil heap into biodiversity hotspot and flagship example of ‘new 
+nature’ on post-mining land. The project was co-financed by citizen fundraising. More than 
+2 thousand donors raised almost EUR 240 000 and strengthen public support for 
+transformation of coal regions.
+The spoil heap adjoins the popular recreational area of Lake Most. The project combines 
+nature conservation with recreation and public education, in the spirit of its motto ‘For birds 
+and for people’. It will also support scientific research, particularly the monitoring of how 
+large-scale restoration measures affect ecosystems. Because the area is an artificial 
+landscape, extensive interventions such as the large-area removal of non-native tree species 
+can be implemented here. This approach enables the targeted creation of valuable habitats
+on a large scale. The Střimice spoil heap is set to become one of the largest sites in Czechia
+to undergo this type of nature restoration.
+Most, Czechia
+EUR 1.2 million
+Just Transtion Fund
+82
+Key highlights
+• The EU played an important role at COP29 in Azerbaijan to reach an 
+agreement on the new post-2025 collective quantified goal on climate 
+finance and on finalising the Paris agreement rules for international 
+carbon markets.
+• The EU submitted its first biennial transparency report in November 2024, 
+providing a leading example under the Paris Agreement’s Enhanced 
+Transparency Framework and on implementation of ambitious climate 
+action.
+• The EU climate inisters agreed on an EU nationally determined 
+contribution ahead of COP30, with an indicative 2035 target of reduction 
+in net GHG emissions of between 66.25%. and 72.5%. compared to 1990 
+levels.
+• The EU strengthened its climate dialogue with key countries around the 
+world including China, Brazil, India, South Africa and Canada.
+• In 2024, the Commission committed to provide EUR 4.6 billion in climate 
+finance. Of this amount, 27% were committed to adaptation, 46% to 
+mitigation, and 27% to cross-cutting actions addressing both mitigation 
+and adaptation priorities.
+The EU works with the United Nations to 
+promote a clean transition and high climate 
+ambition.
+Chapter 8 
+International climate action
+83
+8. International climate action
+The EU plays a significant role in advancing global action to achieve the Paris 
+Agreement goals by working both at international and bilateral level. Its impact 
+encompasses financial support, negotiations under the United Nations Framework 
+Convention on Climate Change (UNFCCC) and the Paris Agreement, diplomatic 
+engagement, capacity building, and regulatory leadership.
+8.1 Multilateral engagement
+The past year has seen the EU engaging in several high-level and technical 
+international meetings to push for a higher level of ambition at global level in 
+climate negotiations, to increase transparency, mobilise resources and to share knowledge on 
+climate action amid an increasingly volatile geopolitical context.
+In October 2025, the Commission and the High Representative presented 
+an international strategy for securing Europe's place in global markets. The new EU 
+global climate and energy vision presents the EU's offer to the world: using diplomacy 
+to protect our core interests, promoting standards for a fair transition by assisting our 
+partners to develop theirs, and addressing the new security threats and challenges 
+that endanger both European interests and those of our partners.
+Implementing the Paris Agreement
+The EU engaged constructively at COP29 in Azerbaijan to achieve the main mandates 
+set for the conference. Parties agreed on a new post-2025 collective quantified goal 
+on climate finance, which outlines that developed will take the lead in providing and 
+mobilising at least USD 300 billion per year by 2035 for developing countries for 
+climate action, from a wide variety of sources, with developing countries encouraged 
+to make contributions on a voluntary basis. The new goal is complemented by a call 
+to all actors to work together to enable the scaling up of finance for developing 
+countries from all public and private sources, to at least USD 1.3 trillion annually.
+Another key outcome was the finalisation of the rulebook for carbon markets (under 
+Article 6 of the Paris Agreement). In promoting transparent and high-integrity 
+cooperations, these rules will help countries raise and achieve their climate targets.
+On 21 November 2024, the EU submitted its first biennial transparency report. The 
+report details the progress made to reach the 2030 target and progress in assessing 
+the effects of EU climate policies and measures in reducing greenhouse gas 
+emissions and building resilience to climate change. It also details the contributions 
+made to international capacity building and climate finance. See Chapter 5 of 
+accompanying staff working document for more details.
+The Biennial Transparency Report is available on the UNFCCC website.
+84
+Under the UNFCCC mitigation work programme, the EU shared best practices and 
+mitigation solutions for buildings and urban systems (4th Global Dialogue and 
+Investment Focused Events in October 2024) and for the forest sector (5th Global 
+Dialogue and Investment Focused Events in May 2025). As part of the Just Transition 
+Work programme, the EU participated in two Just Transition Dialogues to share 
+experiences and good practices on just climate resilience and just energy transition 
+pathways.
+On climate adaptation, the EU actively engaged with other countries to make progress 
+under the UAE-Belém work programme on adaptation indicators. This is needed to 
+implement the ‘UAE Framework for Global Climate Resilience’ adopted at COP28 in 
+2023 and to achieve the Global Goal on Adaptation.
+To prepare for the 30th Conference of Parties (COP30) in Belém in November 2025, 
+the EU constructively advocates in the negotiations for successful decisions on the 
+outcomes described in the mandates. These include delivering on the indicators to 
+track progress towards the Global Goal on Adaptation, reaching an agreement on 
+the gender action plan and actively participating in the discussions on the Baku to 
+Belém Roadmap to USD 1.3 trillion, which aims to scale up climate finance flows to 
+developing countries. The EU also continues to participate in the constituted bodies 
+set up to support the parties and the intergovernmental process under the UNFCCC, 
+with a view to achieve the outcomes stated in the mandates.
+Implementation of the first Global Stocktake Outcomes and the EU’s nationally 
+determined contribution
+Building on the outcomes of the first global stocktake, and to keep the momentum of 
+the milestone collective agreement on the energy transition, the EU led the launch of 
+the Global Energy Transitions Forum in January 2025. The forum unites leaders, 
+ministers and stakeholder groups and aims to ensure that the commitments to 
+accelerate the clean energy transition by tripling renewable energy capacity and 
+doubling energy efficiency are integrated into the next round of nationally determined 
+contribution.
+The EU has agreed to submit its nationally determined contribution, ahead of COP30, 
+with an indicative 2035 target between 66.25% and 72.5% reduction in net GHG 
+emissions compared to 1990 levels.
+Engaging in other multilateral and plurilateral fora
+The EU’s work with the United Nations and its agencies continues to promote a clean 
+transition and high climate ambition. The adoption of the Pact for the Future at the 
+79th session of the Unites Nations General Assembly reaffirmed the need for stronger 
+action against climate change. At the 80th session of the United Nations General 
+Assembly, the EU highlighted its climate commitments and ambition at leaders’ highlevel event on Climate Action and shared its vision on the deployment of renewable 
+energy in the Global Renewables Summit.
+85
+The EU remains leading participant in the G7 and G20, with a view to further climate 
+action. Despite geopolitical pressures progress was made in these fora over the past 
+year. The G7 called for fast, deep emission cuts by major economies, including 
+through the phase out of unabated coal power in the first half 2030, while the G20 
+endorsed a ‘enhanced ambition agenda’ to keep 1.5c within reach. The EU has 
+encouraged both fora to agree on concrete steps to carry out the Paris Agreement 
+and the Global Stocktake.
+The EU remains active in the Climate Club, a high-level forum for industry 
+decarbonisation. The Club’s activities focus mainly on decarbonising steel and cement 
+production. In 2024, the club launched a Global Matching Platform designed to fasttrack the decarbonisation of heavy-emitting industries in emerging and developing 
+economies by connecting to technical and financial solutions.
+The EU has also worked with the OECD to further climate action in member and 
+candidate countries. It has participated in the climate change work of multiple bodies 
+such as the Environment Policy Committee and the Working Parties on Climate 
+Change and on Finance and Investment for Environmental Goals. It has also engaged 
+in the Inclusive Forum on Carbon Mitigation Approaches and in the Carbon Market 
+Platform, launched by under the OECD as a fora to discuss mitigation policies and 
+carbon pricing and markets policies freely.
+As part of the Clean Energy Ministerial, the Commission has launched a campaign 
+promoting sustainable lifestyles and fairness to reduce emissions, which includes 
+a high-level declaration endorsed by several countries, such as China, India, and 
+Brazil.
+The EU continues to invest in initiatives to tackle the effects of climate change and 
+environmental degradation that accentuate threats to peace, stability, security and 
+risks undermining European defence. In 2025, the EU published a progress report on 
+implementation of the joint communication on climate and security. The report 
+highlights how, among others, the impact of environmental degradation and climate 
+change on peace and security and defence now features prominently in exchanges 
+with non-EU countries, regional organisations and organisations such as NATO – and 
+how this new focus is leading to tangible initiatives.
+8.2 Bilateral engagement
+Bilateral engagement creates opportunities to exchange with third countries on how 
+we collectively meet the Paris Agreement goals, to share knowledge and experiences 
+on mitigation and adaptation, to provide technical insight drawn from the EU’s 
+extensive experience with climate policy, including carbon pricing. Climate-security 
+concerns are also part of the EU’s bilateral engagement and regular contacts with 
+regional and civil-society partners.
+In 2024 and 2025, bilateral engagement with non-EU countries focused on the 
+delivery of ambitious new nationally determined contributions by COP30, which 
+86
+took place in November 2025. Several events were organised in Latin America, Asia 
+and Africa to exchange with countries’ stakeholders and governments on modelling 
+and NDC ambition.
+Carbon pricing is a cornerstone of EU climate policy and at the heart of the EU’s 
+climate diplomacy. Building on its experience, the EU works with partners to enhance 
+carbon pricing policies such as emissions trading systems or carbon taxes.
+Following the finalisation of the rulebook for carbon markets at COP29, the EU also 
+aims to work closely with partner countries to harness the benefits of high integrity 
+international carbon markets.
+The EU has initiated cooperation with countries such as Brazil which adopted its 
+carbon market legislation in December 2024, India, countries in the Association of 
+Southeast Asian Nations, etc. It complements the existing engagement with countries 
+such as China and Canada where carbon pricing schemes are already established.
+The EU is also engaging with the countries that are candidates to join the EU to 
+ensure they swiftly align with the EU’s climate legislation. Particular emphasis is on 
+making progress on carbon pricing and the alignment with the rules of EU emission 
+trading system. The enlargement process is moving faster than at any point in the 
+last 15 years. In September 2025, the EU formally opened accession negotiations 
+with Albania on green and sustainable connectivity policies, including environment 
+and climate. During the reporting period, the EU also screened Moldova’s and 
+Ukraine’s legislations to check how ready they are to follow EU climate laws.
+Progress was also made in implementing existing Green Alliances (Japan, Norway 
+and Canada) and Green Partnerships (Morocco and South Korea) with strengthened 
+dialogue and cooperation in areas of relevance to the green transition. In January 
+2024, a four-year EU-Korea Green Partnership Programme was launched in South 
+Korea. The aim of the programme is to step up the EU’s green diplomacy, promote 
+bilateral cooperation while supporting the implementation of the Green Partnership. 
+A similar programme, the Green Alliance facility, is also running in Japan since July 
+2024.
+In the context of the EU-China High Environment and Climate Dialogue, the EU has 
+exchanged with China on various policies to accelerate the green transition, including 
+on China’s emissions trading system (inspired by the EU’s system), on modelling of 
+emissions and the impact of climate change, measuring and controlling methane 
+emissions and stimulating finance for resilience. Through its climate diplomacy, from 
+top political levels to technical levels, the EU has encouraged China to contribute its 
+share to supporting global climate action. A Joint declaration on climate was 
+published following the EU-China Summit in July 2025.
+The EU boosted relations with India by a College visit in spring 2025. This led to the 
+publication of a new EU-India strategic agenda in September 2025 which, among 
+other things, focuses on the green transition, clean technologies and climate 
+87
+resilience. Technical cooperation on carbon pricing and climate modelling is also 
+growing.
+In September 2025, the first ministerial dialogue on climate and environment 
+between the EU and the Association of Southeast Asian Nations took place. The 
+dialogue confirmed joint commitment to the multilateral climate agenda and strong 
+political engagement to cooperate for ambitious climate action.
+A financing cooperation mechanism, the Just Energy Transition Partnerships, is 
+gaining positive momentum in Indonesia. The partnership takes the form of 
+a USD 20 billion agreement to decarbonise Indonesia’s coal-powered economy. So far, 
+some USD 1.2 billion has already been approved in loans and grants, including 
+support for a 60 MW floating solar power plant in West Java.
+The EU has the same partnership with Senegal, South Africa and Vietnam. Under its 
+USD 15 billion partnership, Vietnam is also making progress on climate action and 
+major renewable projects are close to the approval stage.
+Under the EU’s Global Gateway strategy, climate and energy are key priorities in 
+Africa. The EU’s approach is already delivering concrete results. In March 2025, the EU 
+launched a EUR 4.4 billion investment package to support clean energy projects in 
+South Africa. The EU also opened negotiations on a new type of trade and climate 
+deal with South Africa - the clean trade and investment partnership. These 
+initiatives will help EU companies diversify their green supply chains, strengthen EU’s 
+competitiveness and support South Africa in reducing its emissions.
+In September 2025, the second Africa Climate Summit showcased the EU’s 
+commitment to work with African partners to pursue objectives of the Paris 
+Agreement and EU’s support to Africa’s green transition and climate resilience. It also 
+paved the way to the EU-African Union summit, which will take place in November 
+2025 in Angola.
+Calls for more cooperation to increase climate action feature at the agenda and 
+outcomes of all EU bilateral Summits with third countries, such as the EU-Canada, 
+EU-Japan, EU-Central Asia Summits in 2025.
+The EU Climate Dialogues programme is a key instrument to drive policy dialogue 
+and cooperation on climate policy between the EU and representatives from 
+governments, business, academia, and social and economic organisations in non-EU 
+countries, with the ultimate goal to implement commitments under the Paris 
+Agreement the Paris Agreement. A new EUR 30 million phase started in January 2025 
+and will run until mid-2029, supporting climate policy talks in 26 priority countries.
+88
+8.3 Climate finance and international cooperation
+Together with climate finance from private sources, international public climate 
+finance plays an important role in helping developing countries to implement the 
+Paris Agreement.
+Overall, the EU, its Member States and financial institutions, are the leading 
+contributor of development assistance and the world’s biggest climate finance 
+contributor, accounting for about a third of global public climate finance. In 2024, the 
+EU and its Member States contributed EUR 31.7 billion in climate finance from public 
+sources and mobilised an additional EUR 11.0 billion of private finance to support 
+developing countries to reduce their greenhouse gas emissions and adapt to the 
+impacts of climate change (with a 50/50 share between mitigation and adaptation).
+Two-thirds of the financial support the EU provided directly to other countries came 
+with special, more favourable terms, with nearly one-quarter supporting least 
+developed countries.
+In 2024, the Commission committed to provide EUR 4.6 billion in climate finance. Of 
+this amount, 27% were committed to adaptation, 46% to mitigation, and 27% to 
+cross-cutting actions addressing both mitigation and adaptation priorities (see 
+Table 4).
+Table 4: Committed climate finance (2024)
+The Commission continues to support partner countries through its financing 
+instruments. For instance, at least 30% of the Neighbourhood, Development and 
+International Cooperation Instrument (NDICI – Global Europe) is dedicated to climate 
+action. This includes actions in fragile, and conflict affected settings in recognition of 
+the complex interdependencies between climate change, environmental degradation,
+fragility and conflict.
+The Global Gateway is a EUR 300 billion strategy to boost smart, clean, and secure 
+infrastructure in partner countries, focusing on digital, climate, energy, and transport. 
+It also invests in people, education, research, and health. One concrete example is 
+EUROCLIMA, part of the Global Gateway, which builds partnerships between the EU 
+and Latin America and the Caribbean to drive a green and just transition.
+Sum of committed
+(EUR million) % of committed total
+Adaptation 1 221 27%
+Cross-cutting 1 252 27%
+Mitigation 2 087 46 %
+Total 4 560 100%
+89
+The Instrument for Pre-Accession Assistance (IPA III) also sets a climate change 
+spending target of 18%, rising to 20% by 2027. This is an unprecedented investment 
+of EUR 4 billion in reducing emissions and in helping EU candidate countries build 
+resilience to the effects of climate change.
+To address concerns of Small Island Developing States and Least Developed 
+Countries about climate finance, the European Commission, together with the UK, 
+France, Ireland and Spain, held a ministerial dialogue during the Fourth Finance for 
+Development Conference in Seville (30 June – 4 July 2025). Ministers, senior officials 
+and key partners identified the foundations of a long-term partnership to improve 
+both the volume and accessibility of climate finance for these vulnerable countries.
+The EU and its Member States also remain active on loss and damage support, 
+pledging more than USD 400 million to the Fund for responding to Loss and 
+Damage, with over USD 25 million coming from the European Commission. The EU 
+also actively participates in the operationalisation of the fund, as a member of the 
+board.
+Efforts are also ongoing to promote the involvement of the private sector in climate 
+action through the European Fund for Sustainable Development Plus (EFSD+). The 
+EFSD+ provides a comprehensive set of tools, including guarantees, grants and 
+technical assistance, to mobilise private sector investments for sustainable 
+development in partner countries. It contributes, among others, to climate change 
+mitigation, adaptation and environmental protection and management. Offering 
+a variety of risk-sharing instruments of up to EUR 40 billion, the EFSD+ has the 
+potential to mobilise more than half a trillion euros in investments for 2021-2027, 
+largely from the private sector.
+The Commission continues cooperation on sustainable aviation through dedicated 
+support to feasibility and business implementation studies for sustainable aviation 
+fuels in several African countries and India. Furthermore, the Commission continues 
+supporting many countries in Africa and Latin America on advance clean urban 
+mobility, including the promotion of clean and efficient transport technologies (rail 
+and buses). The EU also backs the capacity building in shipping under Net-Zero 
+Framework of the International Maritime Organisation and supports the 
+establishment of green maritime corridors and exploring opportunities on the 
+production and use of renewable and low carbon fuels in the sector.
+90
+Projects in focus
+Green Blue Alliance for the Pacific 
+and Timor-Leste
+Dual-purpose project EU’s contribution projected to amount to EUR 500 million for the period 
+2021-2027. The initiative builds on the shared ambition of the two regions for a low carbon 
+and resilient global economy by 2050. The initiative includes:
+• protecting climate change resilience of Pacific Islands’ ecosystems.
+• Timor-Leste: planting 4 million trees with a sustainability strategy and including 
+carbon credits certification to provide income for communities.
+• Solomon and Papua New Guinea: Global Gateway projects for the development of 
+water and wastewater infrastructure.
+• Papua New Guinea: upgrading rural roads, contributing to safer and more 
+environmentally friendly transport.
+Pacific Solutions: an integrated ocean management project to sustain livelihoods today and 
+into the future.
+Pacific islands
+EUR 500 million
+Getting in touch with the EU
+In person
+All over the European Union there are hundreds of Europe Direct centres. You can find the 
+address of the centre nearest you online (european-union.europa.eu/contact-eu/meet-us_en).
+On the phone or in writing
+Europe Direct is a service that answers your questions about the European Union. You can 
+contact this service:
+– by freephone: 00 800 6 7 8 9 10 11 (certain operators may charge for these calls),
+– at the following standard number: +32 22999696,
+– via the following form: european-union.europa.eu/contact-eu/write-us_en.
+Finding information about the EU
+Online
+Information about the European Union in all the official languages of the EU is available on the 
+Europa website (european-union.europa.eu).
+EU publications
+You can view or order EU publications at op.europa.eu/en/publications. Multiple copies of free 
+publications can be obtained by contacting Europe Direct or your local documentation centre 
+(european-union.europa.eu/contact-eu/meet-us_en).
+EU law and related documents
+For access to legal information from the EU, including all EU law since 1951 in all the official 
+language versions, go to EUR-Lex (eur-lex.europa.eu).
+EU open data
+The portal data.europa.eu provides access to open datasets from the EU institutions, bodies and 
+agencies. These can be downloaded and reused for free, for both commercial and noncommercial purposes. The portal also provides access to a wealth of datasets from European 
+countries.

@@ -1,0 +1,1086 @@
+# Website Discovery Configuration
+# Policy Tracker - German Government & Political Websites
+
+websites:
+  # Federal Government (Bundesregierung)
+  bundesregierung:
+    domain: bundesregierung.de
+    name: Bundesregierung
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundesregierung.de/service/rss/breg-de/1151242/feed.xml
+              category: kompakt  # Press releases, articles, speeches, interviews, government statements
+            - url: https://www.bundesregierung.de/service/rss/breg-de/1151244/feed.xml
+              category: pressemitteilungen  # Latest press releases
+            - url: https://www.bundesregierung.de/service/rss/breg-de/1151246/feed.xml
+              category: artikel  # Latest articles
+            - url: https://www.bundesregierung.de/service/rss/breg-de/2318648/feed.xml
+              category: bulletin  # Latest bulletins
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # News sections
+            - path: /breg-de/aktuelles
+              name: Aktuelles (Übersicht)
+              depth: 1
+            - path: /breg-de/aktuelles/pressemitteilungen
+              name: Pressemitteilungen
+              depth: 2
+            - path: /breg-de/aktuelles/pressekonferenzen-und-reden
+              name: Pressekonferenzen und Reden
+              depth: 2
+            - path: /breg-de/aktuelles/artikel
+              name: Artikel
+              depth: 2
+            # Government sections
+            - path: /breg-de/schwerpunkte
+              name: Schwerpunkte
+              depth: 1
+            - path: /breg-de/bundesregierung
+              name: Bundesregierung
+              depth: 1
+            - path: /breg-de/bundesregierung/bundeskabinett
+              name: Bundeskabinett
+              depth: 2
+            - path: /breg-de/bundesregierung/kabinettsthemen
+              name: Kabinettsthemen
+              depth: 2
+          follow_pagination: true
+          max_pages: 10
+
+      - type: sitemap
+        priority: 3
+        config:
+          # Using actual sitemap index from robots.txt
+          sitemap_url: https://www.bundesregierung.de/service-sitemap-4d4e784d6cdbde1a37901f96601df03f-sitemap_index.xml
+          include_patterns:
+            - "/breg-de/aktuelles/*"
+            - "/breg-de/schwerpunkte/*"
+            - "/breg-de/bundesregierung/*"
+          exclude_patterns:
+            - "*.pdf"
+            - "*.jpg"
+            - "*.png"
+            - "/breg-de/mediathek/*"
+            - "/breg-de/service/*"
+          max_urls: 500
+
+  # Ministry of Justice (Bundesministerium der Justiz)
+  bmjv:
+    domain: bmjv.de
+    name: Bundesministerium der Justiz
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            # Working RSS feeds (verified Dec 2025)
+            - url: https://www.bmjv.de/SiteGlobals/Functions/RSSNewsfeed/DE/RSSNewsfeed/RSSNewsfeedPressemitteilungen.xml
+              category: pressemitteilungen  # Press releases
+            - url: https://www.bmjv.de/SiteGlobals/Functions/RSSNewsfeed/DE/RSSNewsfeed/RSSNewsfeedGesetzgebungsverfahren.xml
+              category: gesetzgebungsverfahren  # Legislative procedures
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # Press section
+            - path: /DE/presse/presse_node.html
+              name: Presse (Übersicht)
+              depth: 1
+            # Themen (Topics) - main policy areas
+            - path: /DE/themen/digitales
+              name: Digitales
+              depth: 2
+            - path: /DE/themen/verbraucherschutz
+              name: Verbraucherschutz
+              depth: 2
+            - path: /DE/themen/wirtschaft_finanzen
+              name: Wirtschaft und Finanzen
+              depth: 2
+            - path: /DE/themen/gesellschaft_familie
+              name: Gesellschaft und Familie
+              depth: 2
+            - path: /DE/themen/buerokratieabbau_rechtsetzung
+              name: Bürokratieabbau und Rechtsetzung
+              depth: 2
+            - path: /DE/themen/menschenrechte
+              name: Menschenrechte
+              depth: 2
+            # Rechtsstaat kompakt (Rule of Law summaries)
+            - path: /DE/rechtsstaat_kompakt
+              name: Rechtsstaat kompakt
+              depth: 1
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          # Correct sitemap index from robots.txt
+          sitemap_url: https://www.bmjv.de/Sitemap_Index.xml
+          include_patterns:
+            - "/DE/presse/*"
+            - "/DE/themen/*"
+            - "/SharedDocs/Pressemitteilungen/*"
+            - "/SharedDocs/Gesetzgebungsverfahren/*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/DE/service/*"
+            - "/SharedDocs/Publikationen/*"
+          max_urls: 300
+
+  # CDU (Christian Democratic Union)
+  cdu:
+    domain: cdu.de
+    name: CDU Deutschland
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.cdu.de/rss.xml
+              category: general
+          max_items_per_feed: 30
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /aktuelles
+              name: Aktuelles
+              depth: 2
+            - path: /themen
+              name: Themen
+              depth: 1
+            - path: /pressemitteilungen
+              name: Pressemitteilungen
+              depth: 2
+          follow_pagination: true
+          max_pages: 10
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.cdu.de/sitemap.xml
+          include_patterns:
+            - "/aktuelles/*"
+            - "/themen/*"
+            - "/pressemitteilungen/*"
+          exclude_patterns:
+            - "*.pdf"
+          max_urls: 200
+
+  # BSW (Bündnis Sahra Wagenknecht)
+  bsw:
+    domain: bsw-vg.de
+    name: Bündnis Sahra Wagenknecht
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: section
+        priority: 1
+        config:
+          sections:
+            - path: /aktuelles
+              name: Aktuelles
+              depth: 2
+            - path: /pressemitteilungen
+              name: Pressemitteilungen
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 2
+        config:
+          sitemap_url: https://bsw-vg.de/sitemap.xml
+          include_patterns:
+            - "/aktuelles/*"
+            - "/pressemitteilungen/*"
+          max_urls: 100
+
+  # Ministry of Economic Affairs (Bundesministerium für Wirtschaft und Klimaschutz)
+  # Note: bmwk.de redirects to bundeswirtschaftsministerium.de
+  bmwk:
+    domain: bundeswirtschaftsministerium.de
+    name: Bundesministerium für Wirtschaft und Klimaschutz
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            # Working RSS feeds (verified Dec 2025)
+            - url: https://www.bundeswirtschaftsministerium.de/SiteGlobals/BMWI/Functions/RSSFeed/DE/RSSFeed-Kompakt.xml
+              category: kompakt  # All news combined
+            - url: https://www.bundeswirtschaftsministerium.de/SiteGlobals/BMWI/Functions/RSSFeed/DE/RSSFeed-Pressemitteilung.xml
+              category: pressemitteilungen  # Press releases
+            - url: https://www.bundeswirtschaftsministerium.de/SiteGlobals/BMWI/Functions/RSSFeed/DE/RSSFeed-Ausschreibungen.xml
+              category: ausschreibungen  # Tenders/announcements
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # Media room - press content
+            - path: /Navigation/DE/Service/Medienraum/medienraum.html
+              name: Medienraum (Übersicht)
+              depth: 1
+            - path: /Navigation/DE/Service/Presseservice/presseservice.html
+              name: Presseservice
+              depth: 2
+            # Key topic dossiers
+            - path: /Redaktion/DE/Dossier/energiewende.html
+              name: Energiewende
+              depth: 2
+            - path: /Redaktion/DE/Dossier/konjunktur-und-wachstum.html
+              name: Konjunktur und Wachstum
+              depth: 2
+            - path: /Redaktion/DE/Dossier/moderne-industriepolitik.html
+              name: Industriepolitik
+              depth: 2
+            - path: /Redaktion/DE/Dossier/politik-fuer-den-mittelstand.html
+              name: Mittelstand
+              depth: 2
+            # Open Data / XML content
+            - path: /Navigation/DE/Service/OpenData/OpenDataAngebote.html
+              name: Open Data
+              depth: 1
+          follow_pagination: true
+          max_pages: 10
+
+      # Note: No sitemap.xml available on this domain (returns 404)
+      # Content discovery relies on RSS feeds and section crawling
+
+  # Ministry of Labour and Social Affairs (Bundesministerium für Arbeit und Soziales)
+  bmas:
+    domain: bmas.de
+    name: Bundesministerium für Arbeit und Soziales
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            # Working RSS feed (verified Dec 2025)
+            - url: https://www.bmas.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/RSSNewsfeed.xml
+              category: allgemein  # General news feed (includes articles, press releases, videos, speeches, publications)
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # Press section
+            - path: /DE/Service/Presse/Pressemitteilungen/pressemitteilungen.html
+              name: Pressemitteilungen
+              depth: 2
+            - path: /DE/Service/Presse/Meldungen/meldungen.html
+              name: Meldungen
+              depth: 2
+            - path: /DE/Service/Presse/Reden/reden.html
+              name: Reden
+              depth: 2
+            # Key policy areas
+            - path: /DE/Arbeit/Arbeitsrecht/arbeitsrecht.html
+              name: Arbeitsrecht
+              depth: 2
+            - path: /DE/Arbeit/Digitalisierung-der-Arbeitswelt/digitalisierung-der-arbeitswelt.html
+              name: Digitalisierung der Arbeitswelt
+              depth: 2
+            - path: /DE/Arbeit/Fachkraeftesicherung/fachkraeftesicherung.html
+              name: Fachkräftesicherung
+              depth: 2
+            - path: /DE/Soziales/Sozialversicherung/sozialversicherung.html
+              name: Sozialversicherung
+              depth: 2
+            - path: /DE/Europa-und-die-Welt/Europa/europa.html
+              name: Europa
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bmas.de/sitemap.xml
+          include_patterns:
+            - "/DE/Service/Presse/*"
+            - "/DE/Arbeit/*"
+            - "/DE/Soziales/*"
+            - "/DE/Europa-und-die-Welt/*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/DE/Leichte-Sprache/*"
+            - "/SharedDocs/Videos/*"
+            - "/DE/Service/Publikationen/*"
+          max_urls: 400
+
+  # Ministry for Housing, Urban Development and Building (Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen)
+  bmwsb:
+    domain: bmwsb.bund.de
+    name: Bundesministerium für Wohnen, Stadtentwicklung und Bauwesen
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            # Working RSS feed (verified Dec 2025)
+            - url: https://www.bmwsb.bund.de/DE/tools-services/rssfeed/_functions/rssnewsfeed.xml
+              category: allgemein  # General news feed
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # Press section
+            - path: /DE/tools-services/presse/pressemitteilungen/pressemitteilungen_node.html
+              name: Pressemitteilungen
+              depth: 2
+            - path: /DE/tools-services/presse/reden/reden_node.html
+              name: Reden
+              depth: 2
+            - path: /DE/ministerium/aktuelle-meldungen/aktuelle-meldungen_node.html
+              name: Aktuelle Meldungen
+              depth: 2
+            # Key policy areas
+            - path: /DE/wohnen/wohnen_node.html
+              name: Wohnen
+              depth: 2
+            - path: /DE/stadtentwicklung/stadtentwicklung_node.html
+              name: Stadtentwicklung
+              depth: 2
+            - path: /DE/bauen/bauen_node.html
+              name: Bauen
+              depth: 2
+            - path: /DE/raum-und-region/raum-und-region_node.html
+              name: Raum und Region
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bmwsb.bund.de/Sitemap_Index.xml
+          include_patterns:
+            - "/DE/tools-services/presse/*"
+            - "/DE/ministerium/*"
+            - "/DE/wohnen/*"
+            - "/DE/stadtentwicklung/*"
+            - "/DE/bauen/*"
+            - "/DE/raum-und-region/*"
+            - "/SharedDocs/pressemitteilungen/*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/DE/tools-services/publikationen/*"
+            - "/SharedDocs/downloads/*"
+          max_urls: 300
+
+  # Ministry for Digital Affairs and State Modernization (Bundesministerium für Digitales und Staatsmodernisierung)
+  bmds:
+    domain: bmds.bund.de
+    name: Bundesministerium für Digitales und Staatsmodernisierung
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      # Note: No RSS feed available on this website (newer ministry, site under construction)
+      # Content discovery relies on section crawling and sitemap
+
+      - type: section
+        priority: 1
+        config:
+          sections:
+            # News/Press section
+            - path: /aktuelles/pressemitteilungen
+              name: Pressemitteilungen
+              depth: 2
+            - path: /aktuelles/aktuelle-meldungen
+              name: Aktuelle Meldungen
+              depth: 2
+            - path: /aktuelles/reden
+              name: Reden
+              depth: 2
+            - path: /aktuelles/interviews-und-gastbeitraege
+              name: Interviews und Gastbeiträge
+              depth: 2
+            - path: /aktuelles/presse
+              name: Pressebereich
+              depth: 1
+            # Key policy areas (highly relevant for digital/e-commerce regulation)
+            - path: /themen/digitaler-staat
+              name: Digitaler Staat
+              depth: 2
+            - path: /themen/staatsmodernisierung
+              name: Staatsmodernisierung
+              depth: 2
+            - path: /themen/digitale-wirtschaft
+              name: Digitale Wirtschaft
+              depth: 2
+            - path: /themen/digitale-souveraenitaet
+              name: Digitale Souveränität
+              depth: 2
+            - path: /themen/digitale-infrastrukturen
+              name: Digitale Infrastrukturen
+              depth: 2
+            - path: /themen/internationale-digitalpolitik
+              name: Internationale Digitalpolitik
+              depth: 2
+            # Service - legislative procedures
+            - path: /service/gesetzgebungsverfahren
+              name: Gesetzgebungsverfahren
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 2
+        config:
+          sitemap_url: https://bmds.bund.de/sitemap.xml
+          include_patterns:
+            - "/aktuelles/*"
+            - "/themen/*"
+            - "/service/gesetzgebungsverfahren/*"
+            - "/ministerium/*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/service/mediathek/*"
+            - "/service/publikationen/*"
+            - "/service/soziale-medien/*"
+          max_urls: 300
+
+  # Bundestag - Committee for Economy and Energy (Ausschuss für Wirtschaft und Energie)
+  # Note: This is a section of bundestag.de, configured as a focused website entry
+  bundestag_wirtschaft:
+    domain: bundestag.de
+    name: Bundestag Ausschuss für Wirtschaft und Energie
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            # Topic-specific RSS feed for "Wirtschaft und Energie" covering committee activities
+            - url: https://www.bundestag.de/static/appdata/includes/rss/wirtschaft.rss
+              category: wirtschaft_und_energie  # All news related to economy and energy topics
+            # General committee agenda feed (covers all committees, will be filtered)
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen  # Committee meeting agendas
+            # Short news bulletins (hib) - often contains committee reports
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen  # Brief news items including committee reports
+            # Official parliamentary documents
+            - url: https://www.bundestag.de/static/appdata/includes/rss/drucksachen.rss
+              category: drucksachen  # Official parliamentary printed documents
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            # Main committee page
+            - path: /ausschuesse/a09_wirtschaft
+              name: Ausschuss für Wirtschaft und Energie (Übersicht)
+              depth: 1
+            # Committee sub-sections
+            - path: /ausschuesse/a09_wirtschaft/tagesordnungen
+              name: Tagesordnungen
+              depth: 2
+            - path: /ausschuesse/a09_wirtschaft/anhoerungen
+              name: Anhörungen
+              depth: 2
+            - path: /ausschuesse/a09_wirtschaft/beschlussempfehlungen
+              name: Beschlussempfehlungen
+              depth: 2
+            - path: /ausschuesse/a09_wirtschaft/protokolle
+              name: Protokolle (öffentliche Sitzungen)
+              depth: 2
+            - path: /ausschuesse/a09_wirtschaft/mitglieder
+              name: Mitglieder
+              depth: 1
+            # Alternate path /wirtschaft redirects to committee
+            - path: /wirtschaft
+              name: Wirtschaft (Shortcut)
+              depth: 1
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            # Committee-specific content
+            - "/ausschuesse/a09_wirtschaft/*"
+            - "/wirtschaft*"
+            # Parliamentary documents related to economy
+            - "/dokumente/*wirtschaft*"
+            - "/presse/hib/*wirtschaft*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/services/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+  # Bundestag - Committee for Environment, Climate Protection, Nature Conservation and Nuclear Safety
+  bundestag_umwelt:
+    domain: bundestag.de
+    name: Bundestag Ausschuss für Umwelt, Klimaschutz, Naturschutz und nukleare Sicherheit
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundestag.de/static/appdata/includes/rss/umwelt.rss
+              category: umwelt_klimaschutz
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /umwelt
+              name: Ausschuss für Umwelt (Übersicht)
+              depth: 1
+            - path: /ausschuesse/a16_umwelt
+              name: Ausschuss für Umwelt (Archiv-Pfad)
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            - "/umwelt*"
+            - "/ausschuesse/*umwelt*"
+            - "/dokumente/*umwelt*"
+            - "/dokumente/*klima*"
+            - "/presse/hib/*umwelt*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+  # Bundestag - Committee for Law and Consumer Protection
+  bundestag_recht:
+    domain: bundestag.de
+    name: Bundestag Ausschuss für Recht und Verbraucherschutz
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundestag.de/static/appdata/includes/rss/recht.rss
+              category: recht_verbraucherschutz
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/drucksachen.rss
+              category: drucksachen
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /recht
+              name: Ausschuss für Recht (Übersicht)
+              depth: 1
+            - path: /ausschuesse/a06_recht
+              name: Ausschuss für Recht (Archiv-Pfad)
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            - "/recht*"
+            - "/ausschuesse/*recht*"
+            - "/dokumente/*recht*"
+            - "/dokumente/*verbrauch*"
+            - "/presse/hib/*recht*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+  # Bundestag - Committee for Labour and Social Affairs
+  bundestag_arbeit:
+    domain: bundestag.de
+    name: Bundestag Ausschuss für Arbeit und Soziales
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundestag.de/static/appdata/includes/rss/arbeitsoziales.rss
+              category: arbeit_soziales
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /arbeit
+              name: Ausschuss für Arbeit und Soziales (Übersicht)
+              depth: 1
+            - path: /ausschuesse/a11_arbeit_soziales
+              name: Ausschuss für Arbeit und Soziales
+              depth: 2
+            - path: /ausschuesse/a11_arbeit_soziales/tagesordnungen
+              name: Tagesordnungen
+              depth: 2
+            - path: /ausschuesse/a11_arbeit_soziales/anhoerungen
+              name: Anhörungen
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            - "/arbeit*"
+            - "/ausschuesse/*arbeit*"
+            - "/dokumente/*arbeit*"
+            - "/dokumente/*sozial*"
+            - "/presse/hib/*arbeit*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+  # Bundestag - Committee for Digital Affairs and State Modernization
+  bundestag_digitales:
+    domain: bundestag.de
+    name: Bundestag Ausschuss für Digitales und Staatsmodernisierung
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundestag.de/static/appdata/includes/rss/digitales.rss
+              category: digitales_staatsmodernisierung
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /digitales
+              name: Ausschuss für Digitales (Übersicht)
+              depth: 1
+            - path: /ausschuesse/a23_digitales
+              name: Ausschuss für Digitales (Archiv-Pfad)
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            - "/digitales*"
+            - "/ausschuesse/*digital*"
+            - "/dokumente/*digital*"
+            - "/dokumente/*staatsmodernisierung*"
+            - "/presse/hib/*digital*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+  # Bundestag - Committee on Internal Affairs
+  bundestag_inneres:
+    domain: bundestag.de
+    name: Bundestag Innenausschuss
+    language: de
+    enabled: true
+
+    discovery_strategies:
+      - type: rss
+        priority: 1
+        config:
+          feeds:
+            - url: https://www.bundestag.de/static/appdata/includes/rss/inneres.rss
+              category: inneres
+            - url: https://www.bundestag.de/static/appdata/includes/rss/tagesordnungen.rss
+              category: tagesordnungen
+            - url: https://www.bundestag.de/static/appdata/includes/rss/hib.rss
+              category: kurzmeldungen
+          max_items_per_feed: 50
+
+      - type: section
+        priority: 2
+        config:
+          sections:
+            - path: /inneres
+              name: Innenausschuss (Übersicht)
+              depth: 1
+            - path: /ausschuesse/a04_innen
+              name: Innenausschuss (Archiv-Pfad)
+              depth: 2
+          follow_pagination: true
+          max_pages: 5
+
+      - type: sitemap
+        priority: 3
+        config:
+          sitemap_url: https://www.bundestag.de/service-sitemap-bundestagde-sitemap_index.xml
+          include_patterns:
+            - "/inneres*"
+            - "/ausschuesse/*innen*"
+            - "/dokumente/*innen*"
+            - "/dokumente/*migration*"
+            - "/dokumente/*sicherheit*"
+            - "/presse/hib/*innen*"
+          exclude_patterns:
+            - "*.pdf"
+            - "/mediathek/*"
+            - "/abgeordnete/*"
+          max_urls: 300
+
+# Global Discovery Settings
+discovery_settings:
+  # Rate limiting
+  request_delay_seconds: 1.5
+  max_concurrent_requests: 3
+  request_timeout_seconds: 30
+
+  # User agent
+  user_agent: "PolicyTracker/1.0 (Political Monitoring Research; https://example.com/bot)"
+
+  # Robots.txt compliance
+  respect_robots_txt: true
+
+# Relevance Filtering Configuration
+filtering:
+  strategy: hybrid  # keyword_only | llm_only | hybrid
+
+  keyword_filter:
+    min_keyword_matches: 1
+    use_client_context: true
+    # Score thresholds (0-100 scale, but typical scores range 2-30)
+    high_confidence_threshold: 70.0  # Above = definitely relevant
+    low_confidence_threshold: 5.0    # Below = definitely not relevant
+    additional_keywords:
+      # ===== COMPANY TERMS (from client.yaml) =====
+      - zalando
+
+      # ===== CORE INDUSTRIES (English + German) =====
+      # English
+      - e-commerce
+      - online retail
+      - fashion
+      - apparel
+      - marketplace
+      - digital commerce
+      # German
+      - handel
+      - online-handel
+      - einzelhandel
+      - mode
+      - bekleidung
+      - marktplatz
+      - digitaler handel
+      - textil
+      - versandhandel
+
+      # ===== PRIMARY MARKETS (English + German) =====
+      # English
+      - european union
+      - eu
+      - germany
+      - poland
+      - france
+      - italy
+      - spain
+      - belgium
+      - netherlands
+      - austria
+      - czech republic
+      # German
+      - europäische union
+      - deutschland
+      - polen
+      - frankreich
+      - italien
+      - spanien
+      - belgien
+      - niederlande
+      - österreich
+      - tschechien
+      - europa
+
+      # ===== SECONDARY MARKETS =====
+      - uk
+      - switzerland
+      - sweden
+      - denmark
+      - finland
+      - norway
+      - schweiz
+      - schweden
+      - dänemark
+      - finnland
+      - norwegen
+
+      # ===== STRATEGIC THEMES (English + German) =====
+      # English
+      - digital transformation
+      - sustainability
+      - customer experience
+      - data privacy
+      - supply chain
+      - logistics
+      - payment systems
+      - mobile commerce
+      - artificial intelligence
+      - automation
+      # German
+      - digitalisierung
+      - digitale transformation
+      - nachhaltigkeit
+      - kundenerfahrung
+      - datenschutz
+      - lieferkette
+      - logistik
+      - zahlungssysteme
+      - mobiler handel
+      - künstliche intelligenz
+      - ki
+      - automatisierung
+
+      # ===== TOPIC PATTERNS: DATA PROTECTION (English + German) =====
+      # English
+      - gdpr
+      - data privacy
+      - personal information
+      - data protection
+      - privacy policy
+      - data processing
+      - consent management
+      # German
+      - dsgvo
+      - datenschutzgrundverordnung
+      - personenbezogene daten
+      - datenschutz
+      - datenschutzrichtlinie
+      - datenverarbeitung
+      - einwilligung
+      - einwilligungsmanagement
+
+      # ===== TOPIC PATTERNS: COMPLIANCE (English + German) =====
+      # English
+      - regulatory compliance
+      - legal requirement
+      - enforcement action
+      - compliance obligation
+      - regulatory framework
+      - legal framework
+      # German
+      - compliance
+      - rechtliche anforderungen
+      - durchsetzung
+      - regulatorische anforderungen
+      - rechtsrahmen
+      - gesetzliche vorgaben
+      - pflichten
+
+      # ===== TOPIC PATTERNS: E-COMMERCE REGULATION (English + German) =====
+      # English
+      - digital services act
+      - dsa
+      - digital markets act
+      - dma
+      - online platform
+      - marketplace regulation
+      - consumer protection
+      # German
+      - plattformregulierung
+      - verbraucherschutz
+      - online-plattform
+      - marktplatzregulierung
+      - digitale dienste
+      - digitale märkte
+
+      # ===== TOPIC PATTERNS: SUSTAINABILITY (English + German) =====
+      # English
+      - esg
+      - environmental
+      - carbon footprint
+      - circular economy
+      - sustainable fashion
+      - green logistics
+      - climate change
+      # German
+      - umwelt
+      - klimaschutz
+      - kreislaufwirtschaft
+      - nachhaltige mode
+      - grüne logistik
+      - klimawandel
+      - co2-fußabdruck
+      - umweltschutz
+
+      # ===== TOPIC PATTERNS: COMPETITION (English + German) =====
+      # English
+      - antitrust
+      - competition law
+      - market dominance
+      - monopoly
+      - merger control
+      # German
+      - wettbewerb
+      - kartellrecht
+      - marktbeherrschung
+      - monopol
+      - fusionskontrolle
+      - wettbewerbsrecht
+
+      # ===== DIRECT IMPACT KEYWORDS (English + German) =====
+      # English
+      - must comply
+      - required to
+      - obligation
+      - penalty
+      - enforcement
+      - violation
+      - breach
+      - non-compliance
+      - legal action
+      - investigation
+      # German
+      - verpflichtung
+      - strafe
+      - bußgeld
+      - verstoß
+      - sanktion
+      - rechtsverstoß
+      - untersuchung
+      - ermittlung
+      - vollzug
+
+      # ===== GERMAN POLITICAL/REGULATORY TERMS =====
+      - politik
+      - gesetz
+      - gesetzentwurf
+      - verordnung
+      - regulierung
+      - richtlinie
+      - beschluss
+      - kabinett
+      - bundestag
+      - bundesrat
+      - eu-recht
+      - digitalgesetz
+
+      # ===== GERMAN GOVERNMENT TERMS =====
+      - bundesregierung
+      - ministerium
+      - staatssekretär
+      - koalition
+      - fraktion
+      - abgeordneter
+      - wirtschaft
+      - wettbewerbsfähigkeit
+      - innovation
+      - förderung
+      - subvention
+      - haushalt
+
+    # Exclusion terms (from client.yaml) - content matching these will be deprioritized
+    exclusion_keywords:
+      # English
+      - sports
+      - automotive
+      - real estate
+      - agriculture
+      - mining
+      - oil and gas
+      # German
+      - sport
+      - automobil
+      - immobilien
+      - landwirtschaft
+      - bergbau
+      - öl und gas
+
+  llm_filter:
+    enabled: false  # Set to true to enable LLM for borderline cases
+    model: gpt-4o-mini
+    batch_size: 10
+    relevance_threshold: 50.0
+
+# URL Deduplication Settings
+deduplication:
+  strategy: url_hash
+  state_file: data/state/website_discovery_state.json
+  lookback_days: 90

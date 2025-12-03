@@ -1,8 +1,8 @@
 ---
 title: DMA: EU Commission examines possible media discrimination by Google
 url: https://www.heise.de/en/news/DMA-EU-Commission-examines-possible-media-discrimination-by-Google-11077498.html
-published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-24T03:54:11.960653
+published_date: 2025-11-13T19:37:00
+collected_date: 2025-12-01T11:35:34.644495
 source: Heise
 source_url: https://www.heise.de
 author: Falk Steiner

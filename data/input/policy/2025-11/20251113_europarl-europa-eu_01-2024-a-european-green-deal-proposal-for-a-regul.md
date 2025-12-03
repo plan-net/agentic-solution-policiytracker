@@ -2,7 +2,7 @@
 title: 01 2024 | A European Green Deal | Proposal for a regulation on nature restoration
 url: https://www.europarl.europa.eu/legislative-train/carriage/restoration-of-healthy-ecosystems/report?sid=7701
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-16T02:36:49.035434
+collected_date: 2025-12-01T11:35:27.186181
 source: Europarl
 source_url: https://www.europarl.europa.eu
 author: European Parliament

@@ -2,7 +2,7 @@
 title: Commission opens investigation into potential Digital Markets Act breach by Google in demoting media publishers’ content in search results
 url: https://europeansting.com/2025/11/14/commission-opens-investigation-into-potential-digital-markets-act-breach-by-google-in-demoting-media-publishers-content-in-search-results/
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:54:12.491028
+collected_date: 2025-12-01T11:35:27.187437
 source: Europeansting
 source_url: https://europeansting.com
 author: European Union

@@ -1,8 +1,8 @@
 ---
 title: Zalando turns to EU top court in fight over online content rules
 url: https://ww.fashionnetwork.com/news/Zalando-turns-to-eu-top-court-in-fight-over-online-content-rules,1782792.html
-published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-24T03:53:48.058540
+published_date: 2025-11-13T16:51:41
+collected_date: 2025-12-01T11:34:38.375821
 source: Ww
 source_url: https://ww.fashionnetwork.com
 author: FashionNetwork.com WW
@@ -35,38 +35,38 @@ The appeal also argued that the lower tribunal has unfairly flipped the burden o
 
 Tags :[Fashion](https://ww.fashionnetwork.com/news/sector/1,fashion)[Ready-to-wear](https://ww.fashionnetwork.com/news/sector/5,ready-to-wear)[Accessories](https://ww.fashionnetwork.com/news/sector/6,accessories)[Footwear](https://ww.fashionnetwork.com/news/sector/7,footwear)[Fashion](https://ww.fashionnetwork.com/news/sector/31,fashion)[Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Better Cotton Initiative to receive grant from Uzbekistan’s government](https://ww.fashionnetwork.com/news/Better-cotton-initiative-to-receive-grant-from-uzbekistan-s-government,1785219.html)
+### [As AI reshapes shopping, US retailers try to change how they're seen online](https://ww.fashionnetwork.com/news/As-ai-reshapes-shopping-us-retailers-try-to-change-how-they-re-seen-online,1786387.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Chanel reinvents luxury experience at Shanghai’s Plaza 66](https://ww.fashionnetwork.com/news/Chanel-reinvents-luxury-experience-at-shanghai-s-plaza-66,1785152.html)
+### [Finisterre in textile recycling initiative, launches related wool capsule collection](https://ww.fashionnetwork.com/news/Finisterre-in-textile-recycling-initiative-launches-related-wool-capsule-collection,1786128.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Inside Stephen Curry’s $100 million breakup with Under Armour](https://ww.fashionnetwork.com/news/Inside-stephen-curry-s-100-million-breakup-with-under-armour,1785246.html)
+### [SportsShoes.com invests £1.5m in semi-automated warehouse system to boost growth strategy](https://ww.fashionnetwork.com/news/Sportsshoes-com-invests-1-5m-in-semi-automated-warehouse-system-to-boost-growth-strategy,1786124.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Zara workers plan Black Friday protests at stores across Europe](https://ww.fashionnetwork.com/news/Zara-workers-plan-black-friday-protests-at-stores-across-europe,1785251.html)
+### [French workers at EssilorLuxottica stage strike for better pay](https://ww.fashionnetwork.com/news/French-workers-at-essilorluxottica-stage-strike-for-better-pay,1786075.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Tod's: Three executives under investigation over labour exploitation](https://ww.fashionnetwork.com/news/Tod-s-three-executives-under-investigation-over-labour-exploitation,1785025.html)
+### [Mango drives forward education for refugee women in partnership with UNHCR](https://ww.fashionnetwork.com/news/Mango-drives-forward-education-for-refugee-women-in-partnership-with-unhcr,1786053.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Greenpeace continues to find even more chemicals in Shein clothing](https://ww.fashionnetwork.com/news/Greenpeace-continues-to-find-even-more-chemicals-in-shein-clothing,1785064.html)
+### [Textiles group Compagnie Chargeurs Invest prepares to sell Novacel protective films](https://ww.fashionnetwork.com/news/Textiles-group-compagnie-chargeurs-invest-prepares-to-sell-novacel-protective-films,1785891.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Duty of vigilance: Yves Rocher tells court it had drawn up 'plans'](https://ww.fashionnetwork.com/news/Duty-of-vigilance-yves-rocher-tells-court-it-had-drawn-up-plans-,1785030.html)
+### [Top Africa clothing retailer Pepkor prepares to establish bank presence](https://ww.fashionnetwork.com/news/Top-africa-clothing-retailer-pepkor-prepares-to-establish-bank-presence,1785951.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [24th Altagamma Observatory says luxury industry revenue flat in 2025, recovery to start in 2026](https://ww.fashionnetwork.com/news/24th-altagamma-observatory-says-luxury-industry-revenue-flat-in-2025-recovery-to-start-in-2026,1784757.html)
+### [Woolmark joins forces with Ajio Luxe and Tata Cliq Luxury to promote Merino wool in India](https://ww.fashionnetwork.com/news/Woolmark-joins-forces-with-ajio-luxe-and-tata-cliq-luxury-to-promote-merino-wool-in-india,1785901.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)
 
-### [Stefano Canali: "We must ensure that luxury goods are priced in line with their true value"](https://ww.fashionnetwork.com/news/Stefano-canali-we-must-ensure-that-luxury-goods-are-priced-in-line-with-their-true-value-,1784902.html)
+### [APICCAPS presents Portuguese footwear as the future of the sector](https://ww.fashionnetwork.com/news/Apiccaps-presents-portuguese-footwear-as-the-future-of-the-sector,1785717.html)
 
 [Industry](https://ww.fashionnetwork.com/news/type/industrie)

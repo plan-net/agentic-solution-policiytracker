@@ -8,6 +8,8 @@ Schedule: Weekly (Sundays at 3 AM UTC - after policy collection)
 Purpose: Phase 1 Deduplication Strategy - Post-Processing Cleanup
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import subprocess

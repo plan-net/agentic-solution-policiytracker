@@ -2,7 +2,7 @@
 title: EU Digital Markets Act: 101
 url: https://iapp.org/resources/article/eu-digital-markets-act-101
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-24T03:53:46.558604
+collected_date: 2025-12-01T11:34:12.012208
 source: Iapp
 source_url: https://iapp.org
 author: Isabelle Roccia, CIPP/E
@@ -68,11 +68,11 @@ On this topic page, you can find the IAPP’s collection of coverage, analysis a
 [Global Summit: Privacy \| AI governance \| Cybersecurity law\
 The world's largest forum for connecting with other privacy, AI governance and digital responsibility professionals.](https://iapp.org/conference/global-privacy-summit/) [Navigate: Digital Policy Leadership Summit\
 Moderated discussion on digital regulation, risk and responsibility. Co-hosted by the Berkman Klein Center for Internet & Society at Harvard University and the IAPP.](https://iapp.org/conference/navigate-leadership-retreat/) [AI Governance Global Europe\
-The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [Privacy. Security. Risk.\
-P.S.R. focuses on the intersection of privacy, AI governance, digital responsibility and technology. Register today for the San Diego event.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
+The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [Privacy. Security. Risk. + AI Governance Global\
+Find solutions where technology and digital responsibility meet. The 2026 call for speaking proposals is open.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
 Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Asia Forum: Privacy \| AI governance \| Cybersecurity law\
-The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Data Protection Congress\
-Meet us in Brussels to learn about the latest in privacy, AI governance and cybersecurity law.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
+The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Congress: Privacy \| AI governance \| Cybersecurity law\
+Learn about the latest privacy and artificial intelligence topics from European leaders, experts, academics and regulators.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
 Get a U.K. perspective on global developments and learn how the U.K. plays a key role in integration and implementation.](https://iapp.org/conference/iapp-data-protection-intensive-uk/) [Speak at an IAPP event\
 View our open calls and submission instructions.](https://iapp.org/conference/speak-at-an-iapp-conference/) [Sponsor an event\
 Increase visibility for your organization — check out sponsorship opportunities today.](https://iapp.org/conference/sponsoring)

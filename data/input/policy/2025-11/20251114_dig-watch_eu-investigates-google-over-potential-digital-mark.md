@@ -1,8 +1,8 @@
 ---
 title: EU investigates Google over potential Digital Markets Act breach | Digital Watch Observatory
 url: https://dig.watch/updates/eu-investigates-google-over-potential-digital-markets-act-breach
-published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:54:01.562933
+published_date: 2025-11-14T12:19:42
+collected_date: 2025-12-01T11:35:27.187506
 source: Dig
 source_url: https://dig.watch
 author: iliasd@diplomacy.edu
@@ -47,17 +47,17 @@ Senior Commissioners stressed that gatekeepers must offer fair and non-discrimin
 
 [EU's Digital Services Act (DSA) & Digital Markets Act (DMA)](https://dig.watch/processes/eu-digital-service-act-dsa-digital-market-act-dma)
 
-### [EU unveils vision for a modern justice system](https://dig.watch/updates/eu-unveils-vision-for-a-modern-justice-system)
+### [SAP expands sovereign cloud vision with EU AI Cloud](https://dig.watch/updates/sap-expands-sovereign-cloud-vision-with-eu-ai-cloud)
 
-### [UK unveils major push to drive national AI growth](https://dig.watch/updates/uk-unveils-major-push-to-drive-national-ai-growth)
+### [Australia moves to curb nudify tools after eSafety action](https://dig.watch/updates/australia-moves-to-curb-nudify-tools-after-esafety-action)
 
-### [Tech groups welcome EU reforms as privacy advocates warn of retreat](https://dig.watch/updates/tech-groups-welcome-eu-reforms-as-privacy-advocates-warn-of-retreat)
+### [Australia strengthens parent support for new social media age rules](https://dig.watch/updates/australia-strengthens-parent-support-for-new-social-media-age-rules)
 
-### [EU eases AI and data rules to boost tech growth](https://dig.watch/updates/eu-eases-ai-and-data-rules-to-boost-tech-growth)
+### [Gemini 3 marks Google’s latest step in the AI competition](https://dig.watch/updates/gemini-3-marks-googles-latest-step-in-the-ai-competition)
 
-### [US administration pushes back on proposal to restrict Nvidia sales to China](https://dig.watch/updates/us-administration-pushes-back-on-proposal-to-restrict-nvidia-sales-to-china)
+### [Warner Music partners with AI song generator Suno](https://dig.watch/updates/warner-music-partners-with-ai-song-generator-suno)
 
-### [AI in healthcare gains regulatory compass from UK experts](https://dig.watch/updates/ai-in-healthcare-gains-regulatory-compass-from-uk-experts)
+### [INQUBATOR set to build a competitive quantum ecosystem over four years](https://dig.watch/updates/inqubator-set-to-build-a-competitive-quantum-ecosystem-over-four-years)
 
 - [WordPress.org](https://wordpress.org/)
 - [Documentation](https://wordpress.org/documentation/)

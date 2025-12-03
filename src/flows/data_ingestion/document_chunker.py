@@ -17,10 +17,11 @@ from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharac
 
 logger = structlog.get_logger()
 
-# Default configuration (can be overridden)
-DEFAULT_MAX_TOKENS = 120000  # Safety margin below 128K limit
-DEFAULT_OVERLAP_RATIO = 0.10  # 10% overlap
-MIN_CHUNK_TOKENS = 1000  # Minimum viable chunk size
+# Default configuration (aligned with GraphRAGSettings in config.py)
+# These values are typically overridden by graphrag_settings.MAX_EPISODE_TOKENS
+DEFAULT_MAX_TOKENS = 1500  # Max tokens per chunk (matches GraphRAGSettings.MAX_EPISODE_TOKENS)
+DEFAULT_OVERLAP_RATIO = 0.10  # 10% overlap (matches GraphRAGSettings.CHUNK_OVERLAP_PERCENTAGE / 100)
+MIN_CHUNK_TOKENS = 50  # Minimum viable chunk size (matches GraphRAGSettings.MIN_CHUNK_TOKENS)
 
 
 def count_tokens(text: str, model: str = "gpt-4") -> int:

@@ -1,8 +1,8 @@
 ---
 title: European Union moves to revoke duty-free status for parcel imports
 url: https://www.freightwaves.com/news/european-union-moves-to-revoke-duty-free-status-for-parcel-imports
-published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-24T03:53:53.625043
+published_date: 2025-11-13T20:33:51
+collected_date: 2025-12-01T11:34:50.871493
 source: Freightwaves
 source_url: https://www.freightwaves.com
 author: Eric Kulisch
