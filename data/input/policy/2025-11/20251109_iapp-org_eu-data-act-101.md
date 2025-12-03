@@ -1,8 +1,8 @@
 ---
 title: EU Data Act: 101
 url: https://iapp.org/resources/article/eu-data-act-101
-published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-24T03:53:46.558627
+published_date: 2025-11-09T05:02:00
+collected_date: 2025-12-01T11:34:12.012158
 source: Iapp
 source_url: https://iapp.org
 author: Laura Pliauškaitė
@@ -71,8 +71,8 @@ Moderated discussion on digital regulation, risk and responsibility. Co-hosted b
 The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [Privacy. Security. Risk.\
 P.S.R. focuses on the intersection of privacy, AI governance, digital responsibility and technology. Register today for the San Diego event.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
 Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Asia Forum: Privacy \| AI governance \| Cybersecurity law\
-The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Data Protection Congress\
-Meet us in Brussels to learn about the latest in privacy, AI governance and cybersecurity law.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
+The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Congress: Privacy \| AI governance \| Cybersecurity law\
+Learn about the latest privacy and artificial intelligence topics from European leaders, experts, academics and regulators.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
 Get a U.K. perspective on global developments and learn how the U.K. plays a key role in integration and implementation.](https://iapp.org/conference/iapp-data-protection-intensive-uk/) [Speak at an IAPP event\
 View our open calls and submission instructions.](https://iapp.org/conference/speak-at-an-iapp-conference/) [Sponsor an event\
 Increase visibility for your organization — check out sponsorship opportunities today.](https://iapp.org/conference/sponsoring)

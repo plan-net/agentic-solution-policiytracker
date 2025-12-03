@@ -2,6 +2,8 @@
 Exa.ai news collector for political monitoring.
 """
 
+from __future__ import annotations
+
 import asyncio
 import os
 from datetime import datetime, timedelta

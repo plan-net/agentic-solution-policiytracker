@@ -2,6 +2,8 @@
 Apify news collector for political monitoring.
 """
 
+from __future__ import annotations
+
 import os
 from datetime import datetime, timedelta
 from typing import Any, Optional

@@ -2,6 +2,8 @@
 Transform news articles to markdown format with metadata.
 """
 
+from __future__ import annotations
+
 import re
 from datetime import datetime
 from typing import Any

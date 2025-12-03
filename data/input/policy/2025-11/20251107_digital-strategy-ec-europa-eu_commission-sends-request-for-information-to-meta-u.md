@@ -2,7 +2,7 @@
 title: Commission sends request for information to Meta under the Digital Services Act
 url: https://digital-strategy.ec.europa.eu/en/node/12526/printable/pdf
 published_date: 2025-11-07T00:00:00
-collected_date: 2025-11-24T03:54:01.562915
+collected_date: 2025-12-01T11:34:35.037948
 source: Digital Strategy
 source_url: https://digital-strategy.ec.europa.eu
 description: "Commission sends request for information to

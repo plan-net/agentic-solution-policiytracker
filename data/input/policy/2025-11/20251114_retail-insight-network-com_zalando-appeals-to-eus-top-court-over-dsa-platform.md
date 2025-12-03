@@ -1,8 +1,8 @@
 ---
 title: Zalando appeals to EU’s top court over DSA platform status
 url: https://www.retail-insight-network.com/news/zalando-dsa-platform-status/
-published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:53:48.058574
+published_date: 2025-11-14T14:23:27
+collected_date: 2025-12-01T11:34:35.037902
 source: Retail Insight Network
 source_url: https://www.retail-insight-network.com
 author: Shubhendu Vimal

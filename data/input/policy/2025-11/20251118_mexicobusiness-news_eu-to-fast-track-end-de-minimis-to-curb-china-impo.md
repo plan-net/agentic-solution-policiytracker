@@ -1,8 +1,8 @@
 ---
 title: EU to Fast-Track End De Minimis to Curb China Imports
 url: https://mexicobusiness.news/ecommerce/news/eu-fast-track-end-de-minimis-curb-china-imports
-published_date: 2025-11-18T03:54:03.980000
-collected_date: 2025-11-24T03:54:04.689680
+published_date: 2025-11-18T14:10:53
+collected_date: 2025-12-01T11:34:50.871535
 source: Mexicobusiness
 source_url: https://mexicobusiness.news
 description: - [Entrepreneurs](https://mexicobusiness.news/entrepreneurs)

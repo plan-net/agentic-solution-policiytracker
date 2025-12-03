@@ -2,7 +2,7 @@
 title: European Commission Launches E-commerce Sector Inquiry
 url: https://crowell.com/en/insights/client-alerts/european-commission-launches-e-commerce-sector-inquiry
 published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-24T03:54:11.960323
+collected_date: 2025-12-01T11:34:58.638783
 source: Crowell
 source_url: https://crowell.com
 description: "1. [Home](https://www.crowell.com/en)

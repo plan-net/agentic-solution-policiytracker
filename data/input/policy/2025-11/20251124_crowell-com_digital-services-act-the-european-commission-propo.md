@@ -1,8 +1,8 @@
 ---
 title: Digital Services Act: The European Commission Proposes An Updated Accountability Framework For Online Services
 url: https://www.crowell.com/en/insights/client-alerts/digital-services-act-the-european-commission-proposes-an-updated-accountability-framework-for-online-services
-published_date: 2025-11-24T03:53:59.210855
-collected_date: 2025-11-24T03:53:59.211115
+published_date: 2025-11-24T00:00:00
+collected_date: 2025-12-01T11:34:25.493717
 source: Crowell
 source_url: https://www.crowell.com
 description: "1. [Home](https://www.crowell.com/en)
@@ -114,23 +114,23 @@ The DSA proposal is subject to the ordinary EU legislative procedure, meaning th
 
 [a3N0YXNAY3Jvd2VsbC5jb20=](mailto:a3N0YXNAY3Jvd2VsbC5jb20=)
 
-Client Alert \| 3 min read \| 11.21.25
+Client Alert \| 3 min read \| 11.24.25
+
+[Bipartisan State Attorneys General and Industry Leaders Launch National Task Force on Artificial Intelligence](https://www.crowell.com/en/insights/client-alerts/bipartisan-state-attorneys-general-and-industry-leaders-launch-national-task-force-on-artificial-intelligence)
+
+Utah Attorney General Derek Brown (R) and North Carolina Attorney General Jeff Jackson (D) have announced a nationwide bipartisan “AI Task Force,” in partnership with major AI developers (including OpenAI and Microsoft) and the Attorney General Alliance (AGA), a bipartisan nonprofit that serves as a forum for attorneys general around the United States to discuss and collaborate on policy and enforcement initiatives....
+
+- Client Alert \| 7 min read \| 11.24.25
+
+[Draft Executive Order Seeks to Short-Circuit AI State Regulation](https://www.crowell.com/en/insights/client-alerts/draft-executive-order-seeks-to-short-circuit-ai-state-regulation)
+
+- Client Alert \| 3 min read \| 11.21.25
 
 [A Sign of What’s to Come? Court Dismisses FCA Retaliation Complaint Based on Alleged Discriminatory Use of Federal Funding](https://www.crowell.com/en/insights/client-alerts/sign-of-whats-to-come-court-dismisses-fca-retaliation-complaint-based-on-alleged-discriminatory-use-of-federal-funding)
-
-On November 7, 2025, in Thornton v. National Academy of Sciences, No. 25-cv-2155, 2025 WL 3123732 (D.D.C. Nov. 7, 2025), the District Court for the District of Columbia dismissed a False Claims Act (FCA) retaliation complaint on the basis that the plaintiff’s allegations that he was fired after blowing the whistle on purported illegally discriminatory use of federal funding was not sufficient to support his FCA claim. This case appears to be one of the first filed, and subsequently dismissed, following Deputy Attorney General Todd Blanche’s announcement of the creation of the Civil Rights Fraud Initiative on May 19, 2025, which “strongly encourages” private individuals to file lawsuits under the FCA relating to purportedly discriminatory and illegal use of federal funding for diversity, equity, and inclusion (DEI) initiatives in violation of Executive Order 14173, Ending Illegal Discrimination and Restoring Merit-Based Opportunity (Jan. 21, 2025). In this case, the court dismissed the FCA retaliation claim and rejected the argument that an organization could violate the FCA merely by “engaging in discriminatory conduct while conducting a federally funded study.” The analysis in Thornton could be a sign of how forthcoming arguments of retaliation based on reporting allegedly fraudulent DEI activity will be analyzed in the future....
 
 - Client Alert \| 3 min read \| 11.20.25
 
 [Design Patent Application Drawings & Prosecution History Must Be Clear (Merely Translucent Won’t Suffice!)](https://www.crowell.com/en/insights/client-alerts/design-patent-application-drawings-and-prosecution-history-must-be-clear-merely-translucent-wont-suffice)
-
-- Client Alert \| 3 min read \| 11.20.25
-
-[Implications of CRISPR Dispute on Licensees](https://www.crowell.com/en/insights/client-alerts/implications-of-crispr-dispute-on-licensees)
-
-- Client Alert \| 6 min read \| 11.19.25
-
-[Buying Peace: The Importance of Releasing FCA Liability When Resolving Criminal Allegations of Fraud Against the Government](https://www.crowell.com/en/insights/client-alerts/buying-peace-the-importance-of-releasing-fca-liability-when-resolving-criminal-allegations-of-fraud-against-the-government)
 
 [View All Insights](https://www.crowell.com/en/insights?nt=62862)
 

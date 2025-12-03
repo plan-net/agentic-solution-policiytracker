@@ -1,0 +1,24 @@
+---
+title: "AfD fragt nach \"Fahnenflucht ukrainischer Staatsangehöriger\""
+url: https://www.bundestag.de/presse/hib/kurzmeldungen-1128572
+published_date: 2025-12-01T17:56:00+00:00
+collected_date: 2025-12-02T06:47:05.230689
+source: bundestag.de
+source_url: https://www.bundestag.de/presse/hib/kurzmeldungen-1128572
+author: STO
+description: Berlin: (hib/STO) 'Fahnenflucht ukrainischer Staatsangehöriger - Rückführungsfähigkeit durch deutsche Behörden' lautet der Titel einer Kleinen Anfrage der AfD-Fraktion (21/2923). Darin...
+language: de
+collection_type: website_discovery
+---
+
+# AfD fragt nach "Fahnenflucht ukrainischer Staatsangehöriger"
+
+*By STO*
+
+Berlin: (hib/STO) 'Fahnenflucht ukrainischer Staatsangehöriger - Rückführungsfähigkeit durch deutsche Behörden' lautet der Titel einer Kleinen Anfrage der AfD-Fraktion (21/2923). Darin...
+
+Berlin: (hib/STO) „Fahnenflucht ukrainischer Staatsangehöriger - Rückführungsfähigkeit durch deutsche Behörden“ lautet der Titel einer Kleinen Anfrage der AfD-Fraktion (
+
+). Darin schreibt die Fraktion, dass seit Beginn des russischen Angriffskrieges auf die Ukraine eine hohe Zahl ukrainischer Männer im wehrfähigen Alter nach Deutschland eingereist sei. Angesichts der in der Ukraine geltenden allgemeinen Wehrpflicht und Mobilmachung bestehe der „ Verdacht, dass sich unter diesen Personen auch Männer befinden könnten, die fahnenflüchtig sind“.
+
+Wissen wollen die Abgeordneten, ob die Bundesregierung Kenntnisse darüber hat, wie viele ukrainische Männer im wehrpflichtigen Alter sich derzeit in Deutschland aufhalten. Auch erkundigt sie sich danach, wie viele dieser Männer seit 2022 einen Asylantrag gestellt haben und wie dieser jeweils entschieden wurde. Ferner fragen sie unter anderem, welche rechtlichen Grundlagen „für eine Rückführung ukrainischer Männer, die sich durch Flucht ins Ausland dem Wehrdienst entzogen haben, nach geltendem deutschem und internationalem Recht“ bestehen.

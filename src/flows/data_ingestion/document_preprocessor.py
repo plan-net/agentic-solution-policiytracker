@@ -173,6 +173,51 @@ def clean_whitespace(text: str) -> str:
     return "\n".join(lines)
 
 
+def validate_document_quality(content: str) -> tuple[bool, str]:
+    """
+    Validate document quality before processing.
+
+    Checks for:
+    - Minimum content length
+    - News aggregation pages (mostly headlines)
+    - Presence of substantial paragraphs
+
+    Args:
+        content: Full document content
+
+    Returns:
+        Tuple of (is_valid, reason)
+    """
+    # Extract body without frontmatter
+    _, body = extract_frontmatter(content)
+    body = body.strip()
+
+    # Check 1: Minimum content length (at least 200 chars of actual content)
+    if len(body) < 200:
+        return False, "Document too short (less than 200 characters)"
+
+    # Check 2: Too many headlines with no content (news aggregation pages)
+    lines = [line.strip() for line in body.split("\n") if line.strip()]
+    headline_count = sum(1 for line in lines if line.startswith("#"))
+    # Content lines are non-headline lines with at least 50 characters
+    content_lines = [line for line in lines if not line.startswith("#") and len(line) > 50]
+
+    if headline_count > 10 and len(content_lines) < headline_count:
+        return False, "News aggregation page (mostly headlines, little substantive content)"
+
+    # Check 3: Check for substantial paragraphs (at least one paragraph > 100 chars)
+    paragraphs = [p.strip() for p in body.split("\n\n") if len(p.strip()) > 100]
+    if len(paragraphs) < 1:
+        return False, "No substantial paragraphs found"
+
+    # Check 4: Detect list-only content (too many short lines)
+    short_lines = [line for line in lines if 10 < len(line) < 80]
+    if len(short_lines) > 20 and len(content_lines) < 3:
+        return False, "Document is mostly short list items with no substantive content"
+
+    return True, "OK"
+
+
 def preprocess_document(content: str, enable_link_removal: bool = True) -> str:
     """
     Complete preprocessing pipeline for scraped documents.

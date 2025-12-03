@@ -1,8 +1,8 @@
 ---
 title: Zalando Turns to EU Top Court in Fight Over Online Content Rules
 url: https://www.businessoffashion.com/news/retail/zalando-turns-to-eu-top-court-in-fight-over-online-content-rules/
-published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-24T03:53:48.058508
+published_date: 2025-11-13T21:00:05
+collected_date: 2025-12-01T11:34:38.375776
 source: Businessoffashion
 source_url: https://www.businessoffashion.com
 author: Reuters
@@ -71,21 +71,21 @@ _The online fashion retailer’s legal loss supports the EU’s push to hold onl
 
 Analysis and advice from the front lines of the retail transformation.
 
-## [How Modern Brides Are Redefining ‘Something Old’](https://www.businessoffashion.com/articles/retail/vintage-archival-bridal-boom/)
+## [How Beat-Up Bags Became a Luxury Status Symbol](https://www.businessoffashion.com/articles/retail/the-rise-of-worn-in-luxury/)
 
-With the rise of vintage-focused bridal salons and large retailers like David’s Bridal reviving archival pieces, the bridal market is seeing styles from the past walk down the aisle once again.
+Bumps and scratches on a Birkin bag or Cartier watch are no longer repellent for a rising group of fashion consumers — they actually make the item more desirable.
 
-## [How to Survive Menswear’s Sameness Epidemic](https://www.businessoffashion.com/articles/retail/why-menswear-looks-the-same/)
+## [Dr. Martens Is Ready for a Reboot](https://www.businessoffashion.com/articles/retail/dr-martens-new-brand-strategy-and-london-store-to-revive-brand-after-slump/)
 
-A new transatlantic approach to minimalist tailoring and workwear has swept menswear, buoyed by the rise of buzzy upstarts from Japan, Scandinavia and the US. To outlast a current fixation on a sophisticated, pared-back look, labels are searching for ways to make their clothes stand out.
+In her first interview, new chief brand officer Carla Murphy says the brand is “in motion for its next chapter,” leading with a heritage-heavy revamp that’s on full display at its new London flagship.
 
-## [Inside Luxury Retailers’ Bare-Knuckle Fight to Win the Holidays](https://www.businessoffashion.com/articles/retail/luxury-retailers-fight-to-win-holidays/)
+## [EssilorLuxottica Thinks It Cracked the Code on Smart Glasses](https://www.businessoffashion.com/articles/retail/the-state-of-fashion-2026-report-essilorluxottica-interview-rocco-basilico/)
 
-With market leader Saks struggling and Ssense in bankruptcy, competitors from Bloomingdale’s to Mytheresa to FWRD see a rare opportunity to grab market share. They are openly courting top customers, vendors and even the employees of their struggling competitors.
+The eyewear giant and Meta are just getting started as they mount the most credible effort yet to make smart glasses a mainstream hit, EssilorLuxottica chief wearables officer Rocco Basilico says in the BoF-McKinsey State of Fashion 2026.
 
-## [At Sorel, Charting the Course for Brand Reinvention](https://www.businessoffashion.com/articles/retail/at-sorel-charting-the-course-for-brand-reinvention/)
+## [Exclusive: Kith’s Ronnie Fieg on Designing the Brand’s First London Flagship](https://www.businessoffashion.com/news/retail/kith-london-flagship-ronnie-fieg-interview/)
 
-The outdoor footwear brand is redefining its identity under new leadership, blending its purpose-driven heritage with fashion-forward collaborations for an elevated, all-seasons approach.
+The founder of the New York label discusses opening Kith’s first standalone UK store, which includes Fieg’s debut restaurant concept as the brand leans further into hospitality.
 
 [view more](https://www.businessoffashion.com/topics/retail/)
 
@@ -93,21 +93,21 @@ Latest News & Analysis
 
 Unrivalled, world class journalism across fashion, luxury and beauty industries.
 
-## [Trump’s Tariffs Have Already Rewired the Global Fashion Industry](https://www.businessoffashion.com/articles/global-markets/the-state-of-fashion-2026-report-tariffs-trade-us-market/)
+## [Why This Year’s Holiday Ads Are Going Traditional](https://www.businessoffashion.com/articles/marketing-pr/holiday-fashion-campaigns-ads-2025-traditional/)
 
-Brands and their suppliers have been forced to rapidly adjust to the new US duties, with the ripple effects set to continue into next year, according to the BoF-McKinsey State of Fashion 2026.
+Amidst the “Ralph Lauren Christmas” craze, this season, fashion brands embraced traditional holiday storytelling, while celebrity casting choices helped classic themes feel fresh and engaging for younger shoppers.
 
-## [The BoF Podcast \| Prada Group CEO Andrea Guerra on Fixing the Luxury Business Model](https://www.businessoffashion.com/podcasts/luxury/the-bof-podcast-prada-group-ceo-andrea-guerra-on-fixing-the-luxury-business-model/)
+## [How Beat-Up Bags Became a Luxury Status Symbol](https://www.businessoffashion.com/articles/retail/the-rise-of-worn-in-luxury/)
 
-The seasoned luxury executive joins Imran Amed at BoF VOICES 2025 to discuss pricing strategies and the importance of creative tension and cultural relevance.
+Bumps and scratches on a Birkin bag or Cartier watch are no longer repellent for a rising group of fashion consumers — they actually make the item more desirable.
 
-## [German Beauty Retailer Parfümerie Pieper Files for Insolvency](https://www.businessoffashion.com/news/beauty/german-beauty-retailer-parfumerie-pieper-files-for-insolvency/)
+## [Dr. Martens Is Ready for a Reboot](https://www.businessoffashion.com/articles/retail/dr-martens-new-brand-strategy-and-london-store-to-revive-brand-after-slump/)
 
-Business operations will continue as the 94-year-old beauty retail chain undergoes restructuring.
+In her first interview, new chief brand officer Carla Murphy says the brand is “in motion for its next chapter,” leading with a heritage-heavy revamp that’s on full display at its new London flagship.
 
-## [What the AI ‘Bubble’ Means for Fashion](https://www.businessoffashion.com/briefings/technology/what-the-ai-bubble-means-for-fashion/)
+## [EssilorLuxottica Thinks It Cracked the Code on Smart Glasses](https://www.businessoffashion.com/articles/retail/the-state-of-fashion-2026-report-essilorluxottica-interview-rocco-basilico/)
 
-Concerns about the scale and concentration of AI investment in the key US market have reached a boiling point. A correction could have big consequences for brands this holiday season.
+The eyewear giant and Meta are just getting started as they mount the most credible effort yet to make smart glasses a mainstream hit, EssilorLuxottica chief wearables officer Rocco Basilico says in the BoF-McKinsey State of Fashion 2026.
 
 [VIEW MORE](https://www.businessoffashion.com/latest/%20)
 

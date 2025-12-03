@@ -51,7 +51,7 @@ from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
 
 from src.flows.data_ingestion.entity_normalizer import EntityNormalizer
-from src.flows.data_ingestion.entity_registry import EntityRegistry
+from src.flows.data_ingestion.entity_registry import EntityRegistry, validate_entity_name
 
 logger = structlog.get_logger()
 
@@ -221,9 +221,12 @@ class DeduplicatingGraphitiClient:
             return result
 
         except KeyError as e:
+            # Extract the key that caused the error
+            error_key = str(e).strip("'\"")
+
             # Graphiti bug: LLM extraction sometimes produces edges with empty UUIDs
             # This causes KeyError: '' in edge_operations.py when trying to resolve edges
-            if str(e) == "''" or e.args[0] == "":
+            if error_key == "" or (e.args and e.args[0] == ""):
                 logger.warning(
                     f"Skipping episode due to Graphiti extraction bug (empty UUID in edges): {name}",
                     episode_name=name,
@@ -235,6 +238,20 @@ class DeduplicatingGraphitiClient:
                     "Graphiti LLM extraction failed: produced edges with empty node UUIDs. "
                     "This document's content format is not compatible with Graphiti's extraction model."
                 ) from e
+
+            # Handle missing episode_content (LLM output truncation)
+            elif error_key == "episode_content":
+                logger.warning(
+                    f"Skipping episode due to LLM output truncation (missing episode_content): {name}",
+                    episode_name=name,
+                    error_type="LLMOutputTruncation",
+                    message="LLM response was truncated or malformed - exceeded max output tokens",
+                )
+                raise ValueError(
+                    "Graphiti LLM extraction failed: output was truncated (exceeded max tokens). "
+                    "The document chunk may be too complex. Try reducing chunk size."
+                ) from e
+
             else:
                 # Some other KeyError - re-raise as is
                 raise
@@ -276,9 +293,24 @@ class DeduplicatingGraphitiClient:
         # Track entity resolution for this episode
         resolution_map: dict[str, EntityResolutionResult] = {}
 
+        entities_skipped = 0
+
         for entity in result.nodes:
             entity_name = entity.name
             entity_type = entity.labels[0] if entity.labels else "Entity"
+
+            # Validate entity name before processing to prevent embedding API errors
+            is_valid, reason = validate_entity_name(entity_name)
+            if not is_valid:
+                logger.warning(
+                    "Skipping invalid entity in deduplication",
+                    entity_name=entity_name,
+                    entity_type=entity_type,
+                    reason=reason,
+                    episode_name=episode_name,
+                )
+                entities_skipped += 1
+                continue
 
             # Check registry for canonical form
             canonical = await self.registry.get_canonical_entity(entity_name, entity_type)

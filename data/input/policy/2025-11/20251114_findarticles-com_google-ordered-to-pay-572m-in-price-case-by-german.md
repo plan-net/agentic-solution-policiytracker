@@ -1,8 +1,8 @@
 ---
 title: Google Ordered To Pay €572M In Price Case By German Court
 url: https://www.findarticles.com/google-ordered-to-pay-e572m-in-price-case-by-german-court/
-published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:54:22.579302
+published_date: 2025-11-14T16:17:17
+collected_date: 2025-12-01T11:35:29.680001
 source: Findarticles
 source_url: https://www.findarticles.com
 author: Gregory Zuckerman

@@ -1,8 +1,8 @@
 ---
 title: Google ordered to pay $665 million for anticompetitive practices in Germany
 url: https://www.engadget.com/big-tech/google-ordered-to-pay-665-million-for-anticompetitive-practices-in-germany-184505191.html
-published_date: 2025-11-15T00:00:00
-collected_date: 2025-11-24T03:54:22.579323
+published_date: 2025-11-15T18:45:05
+collected_date: 2025-12-01T11:35:29.680473
 source: Engadget
 source_url: https://www.engadget.com
 author: Jackson Chen

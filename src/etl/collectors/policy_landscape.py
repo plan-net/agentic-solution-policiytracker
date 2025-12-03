@@ -5,6 +5,8 @@ Specialized collector for gathering policy and regulatory documents
 using targeted search queries derived from client context.
 """
 
+from __future__ import annotations
+
 import asyncio
 import logging
 from datetime import datetime, timedelta

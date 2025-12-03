@@ -200,7 +200,29 @@ try:
                     content = f.read()
 
             # Apply preprocessing (link removal, deduplication, whitespace cleaning)
-            from src.flows.data_ingestion.document_preprocessor import preprocess_document
+            from src.flows.data_ingestion.document_preprocessor import (
+                preprocess_document,
+                validate_document_quality,
+            )
+
+            # Validate document quality before processing
+            is_valid, quality_reason = validate_document_quality(content)
+            if not is_valid:
+                logger.warning(
+                    f"Actor {self.actor_id}: Skipping low-quality document: {doc_path.name}",
+                    reason=quality_reason,
+                )
+                self.tracker.mark_failed(str(doc_path), f"Low quality: {quality_reason}")
+                return {
+                    "status": "skipped",
+                    "reason": f"low_quality: {quality_reason}",
+                    "path": str(doc_path),
+                    "file_path": str(doc_path),
+                    "actor_id": self.actor_id,
+                    "processing_time": 0.0,
+                    "entities_extracted": 0,
+                    "relationships_extracted": 0,
+                }
 
             preprocessed = preprocess_document(content, enable_link_removal=True)
 
@@ -604,6 +626,7 @@ class SimpleDocumentProcessor:
         # Apply preprocessing (link removal, deduplication, whitespace cleaning)
         from src.flows.data_ingestion.document_preprocessor import preprocess_document
 
+        # Note: Quality validation should be done in process_document() before calling this method
         return preprocess_document(content, enable_link_removal=True)
 
     async def _process_chunked_document(
@@ -894,6 +917,25 @@ class SimpleDocumentProcessor:
                     "error": error_msg,
                     "path": str(doc_path),
                     "processing_time": (datetime.now() - start_time).total_seconds(),
+                }
+
+            # Validate document quality before processing
+            from src.flows.data_ingestion.document_preprocessor import validate_document_quality
+
+            is_valid, quality_reason = validate_document_quality(content)
+            if not is_valid:
+                doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name
+                logger.warning(
+                    f"Skipping low-quality document: {doc_name}",
+                    reason=quality_reason,
+                )
+                self.tracker.mark_failed(str(doc_path), f"Low quality: {quality_reason}")
+                self.processing_stats["skipped"] += 1
+                return {
+                    "status": "skipped",
+                    "reason": f"low_quality: {quality_reason}",
+                    "path": str(doc_path),
+                    "processing_time": 0.0,
                 }
 
             # Chunk the document using hybrid strategy (ALWAYS chunk for consistency)

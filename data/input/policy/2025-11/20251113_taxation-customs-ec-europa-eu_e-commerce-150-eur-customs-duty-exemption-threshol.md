@@ -2,7 +2,7 @@
 title: E-commerce: 150 EUR customs duty exemption threshold to be removed as of 2026
 url: https://taxation-customs.ec.europa.eu/news/e-commerce-150-eur-customs-duty-exemption-threshold-be-removed-2026-2025-11-13_en
 published_date: 2025-11-13T00:00:00
-collected_date: 2025-11-24T03:53:55.195713
+collected_date: 2025-12-01T11:34:25.485842
 source: Taxation Customs
 source_url: https://taxation-customs.ec.europa.eu
 description: [Skip to main content](https://taxation-customs.ec.europa.eu/taxation-customs.ec.europa.eu#main-content)

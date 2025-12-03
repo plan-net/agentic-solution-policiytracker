@@ -5,6 +5,8 @@ Generates targeted search queries for policy landscape collection
 by parsing client context YAML and creating strategic combinations.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 from typing import Any

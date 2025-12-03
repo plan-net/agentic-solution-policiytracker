@@ -2,7 +2,7 @@
 title: EU Digital Omnibus Resetting Europes digital rulebook
 url: https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook
 published_date: 2025-11-12T00:00:00
-collected_date: 2025-11-24T03:54:14.684180
+collected_date: 2025-12-01T11:35:18.913777
 source: Twobirds
 source_url: https://www.twobirds.com
 description: "- [People](https://www.twobirds.com/en/people)
@@ -56,17 +56,17 @@ collection_type: policy_landscape
 
 [ENG](https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
 
-- [Dansk](https://www.twobirds.com/da/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Deutsch](https://www.twobirds.com/de/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [English](https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Español](https://www.twobirds.com/es/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Français](https://www.twobirds.com/fr/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Italiano](https://www.twobirds.com/it/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Polski](https://www.twobirds.com/pl/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [Suomi](https://www.twobirds.com/fi/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [한국어](https://www.twobirds.com/ko/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [中文](https://www.twobirds.com/zh/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
-- [日本語](https://www.twobirds.com/ja/insights/2025/eu-digital-omnibus-resetting-europes-digital-rulebook)
+- Dansk
+- Deutsch
+- English
+- Español
+- Français
+- Italiano
+- Polski
+- Suomi
+- 한국어
+- 中文
+- 日本語
 
 - [Home](https://www.twobirds.com/en/)
 - [Insights](https://www.twobirds.com/en/insights)
@@ -131,16 +131,16 @@ Rather than introducing new obligations, the package focuses on making current r
 
 [More Insights](https://www.twobirds.com/en/insights)
 
-## Singapore's Strategic Play: The SGX-Nasdaq Dual Listing Bridge
+## New UK Public Procurement thresholds from 1st January 2026
 
-[Read More](https://www.twobirds.com/en/insights/2025/singapore/singapore's-strategic-play-the-sgx-nasdaq-dual-listing-bridge)
+[Read More](https://www.twobirds.com/en/insights/2025/uk/new-uk-public-procurement-thresholds-from-1st-january-2026)
 
-## New Czech Cybersecurity Act is effective
+## Mergers & Acquisitions in the AI Sector – Navigating Complexities Beyond Legal Foundations
 
-[Read More](https://www.twobirds.com/en/insights/2025/czech-republic/new-czech-cybersecurity-act-is-effective)
+[Read More](https://www.twobirds.com/en/insights/2025/singapore/mergers-,-a-,-acquisitions-in-the-ai-sector-%E2%80%93-navigating-complexities-beyond-legal-foundations)
 
-## EU Digital Omnibus package: Major Changes to the Data Act Proposed
+## Countdown to Compliance: Are You Ready for 10 December?
 
-[Read More](https://www.twobirds.com/en/insights/2025/eu-digital-omnibus-package-major-changes-to-the-data-act-proposed)
+[Read More](https://www.twobirds.com/en/insights/2025/australia/countdown-to-compliance-are-you-ready-for-10-december)
 
 [More Insights](https://www.twobirds.com/en/insights)

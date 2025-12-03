@@ -1,7 +1,7 @@
 ---
 url: https://data.consilium.europa.eu/doc/document/ST-14960-2025-INIT/en/pdf
 published_date: 2025-11-05T00:00:00
-collected_date: 2025-11-16T02:36:49.606399
+collected_date: 2025-12-01T11:35:27.186239
 source: Data
 source_url: https://data.consilium.europa.eu
 author: Brina%20Sara%20LIPOVEC

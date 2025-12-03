@@ -5,6 +5,8 @@ Fetches URL content and converts to markdown format using the same
 transformer used by ETL pipelines.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional

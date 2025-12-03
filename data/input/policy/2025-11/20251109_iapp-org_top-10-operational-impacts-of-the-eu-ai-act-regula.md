@@ -1,8 +1,8 @@
 ---
 title: Top 10 operational impacts of the EU AI Act﻿ – Regulatory implementation and application alongside EU digital strategy
 url: https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application
-published_date: 2025-11-09T00:00:00
-collected_date: 2025-11-16T02:36:45.630214
+published_date: 2025-11-09T22:00:00
+collected_date: 2025-12-01T11:35:18.911724
 source: Iapp
 source_url: https://iapp.org
 author: Claude-Étienne Armingaud, CIPP/E
@@ -26,8 +26,7 @@ Breaking news, essential resources and more, sent right to your inbox.](https://
 [Overview](https://iapp.org/connect) [KnowledgeNet Chapters](https://iapp.org/connect/communities/chapters) [Sections](https://iapp.org/connect/communities/sections) [Affinity Groups](https://iapp.org/connect/communities/affinity-groups) [Volunteer](https://iapp.org/connect/volunteer) [Annual Awards](https://iapp.org/connect/annual-awards) [Career Central](https://iapp.org/connect/career-central)
 
 [Find a KnowledgeNet Chapter Near You\
-Talk privacy and network with local members at IAPP KnowledgeNet Chapter meetings, taking place worldwide.](https://iapp.org/connect/communities/chapters/) [Call for volunteers — now open\
-We are looking for IAPP members to lead the way in 2026. Apply for advisory board, KnowledgeNet chapter chair or Young Privacy Professional position by 22 Sept.](https://iapp.org/connect/call-for-volunteers/) [IAPP Job Board\
+Talk privacy and network with local members at IAPP KnowledgeNet Chapter meetings, taking place worldwide.](https://iapp.org/connect/communities/chapters/) [IAPP Job Board\
 Looking for a new challenge, or need to hire your next privacy pro? The IAPP Job Board is the answer.](https://iapp.org/connect/career-central/#career) [IAPP Calendar\
 Review a filterable list of conferences, KnowledgeNets, LinkedIn Live broadcasts, networking events, web conferences and more.](https://iapp.org/iapp-calendar/)
 
@@ -66,15 +65,15 @@ The IAPP's video library provides insights, reactions and opinions on a range of
 On this topic page, you can find the IAPP’s collection of coverage, analysis and resources covering AI connections to the privacy space.](https://iapp.org/resources/topics/artificial-intelligence-1/) [Cybersecurity Law\
 On this topic page, you can find the IAPP’s collection of coverage, analysis and resources related to cybersecurity law.](https://iapp.org/resources/topics/cybersecurity-law/)
 
-[Global Privacy Summit\
-The world's largest forum for connecting with other privacy, AI governance and digital responsibility professionals.](https://iapp.org/conference/global-privacy-summit/) [Navigate: Digital Policy Leadership Retreat\
+[Global Summit: Privacy \| AI governance \| Cybersecurity law\
+The world's largest forum for connecting with other privacy, AI governance and digital responsibility professionals.](https://iapp.org/conference/global-privacy-summit/) [Navigate: Digital Policy Leadership Summit\
 Moderated discussion on digital regulation, risk and responsibility. Co-hosted by the Berkman Klein Center for Internet & Society at Harvard University and the IAPP.](https://iapp.org/conference/navigate-leadership-retreat/) [AI Governance Global Europe\
-The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [AI Governance Global North America\
-Join us in Boston as we focus on the unique and broad array of challenges AI governance professionals face in North America.](https://iapp.org/conference/iapp-ai-governance-global-north-america/) [Privacy. Security. Risk. 2025\
-P.S.R. focuses on the intersection of privacy, AI governance, digital responsibility and technology. Register today for the San Diego event.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
-Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Canada Privacy Symposium\
-The call for speaking proposals is open. Submit your idea by 19 Oct. 2025 for a chance to speak at Symposium.](https://iapp.org/conference/iapp-canada-privacy-symposium/) [Europe Data Protection Congress\
-Meet us in Brussels to learn about the latest in privacy, AI governance and cybersecurity law.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [Speak at an IAPP event\
+The call for speaking proposals is open. Submit your idea by 9 Nov. 2025 for a chance to speak in Dublin next June.](https://iapp.org/conference/iapp-ai-governance-global-europe/) [Privacy. Security. Risk. + AI Governance Global\
+Find solutions where technology and digital responsibility meet. The 2026 call for speaking proposals is open.](https://iapp.org/conference/iapp-privacy-security-risk/) [ANZ Summit\
+Join us in Sydney for the region’s top event in privacy, AI governance and digital responsibility.](https://iapp.org/conference/iapp-anz-summit/) [Asia Forum: Privacy \| AI governance \| Cybersecurity law\
+The call for proposals is open. Submit your session idea by 15 Feb. for a chance to speak at IAPP Forum 2026.](https://iapp.org/conference/iapp-asia-privacy-forum/) [Europe Congress: Privacy \| AI governance \| Cybersecurity law\
+Learn about the latest privacy and artificial intelligence topics from European leaders, experts, academics and regulators.](https://iapp.org/conference/iapp-europe-data-protection-congress/) [UK Intensive: Privacy \| AI governance \| Cybersecurity Law\
+Get a U.K. perspective on global developments and learn how the U.K. plays a key role in integration and implementation.](https://iapp.org/conference/iapp-data-protection-intensive-uk/) [Speak at an IAPP event\
 View our open calls and submission instructions.](https://iapp.org/conference/speak-at-an-iapp-conference/) [Sponsor an event\
 Increase visibility for your organization — check out sponsorship opportunities today.](https://iapp.org/conference/sponsoring)
 
@@ -83,7 +82,7 @@ Increase visibility for your organization — check out sponsorship opportunitie
 [Become a Member\
 Start taking advantage of the many IAPP member benefits today](https://iapp.org/join) [Corporate Members\
 See our list of high-profile corporate members—and find out why you should become one, too](https://iapp.org/join/corporate) [Renew Your Membership\
-Don’t miss out for a minute—continue accessing your benefits](https://iapp.org/profile/membership)
+Don’t miss out for a minute—continue accessing your benefits](https://myiapp.org/membership)
 
 clear
 mode\_editEdit
@@ -134,16 +133,16 @@ This article is part of a series on the operational impacts of the EU AI Act. Th
 
 > **Download this series:** The Top 10 operational impacts of the EU AI Act is available in [PDF format](https://iapp.org/media/pdf/resource_center/top_10_impacts_eu_ai_act.pdf).
 
-- **[The EU digital strategy and digital decade](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#eu-digital-strategy)**
-- **[A macro view of the AI Act](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#macro-view)**
-- **[Cybersecurity](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#cybersecurity)**
-- **[Copyright](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#copyright)**
-- **[Incomplete map of requirements](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#map-of-requirements)**
+- **[The EU digital strategy and digital decade](https://iapp.org/iapp.org#eu-digital-strategy)**
+- **[A macro view of the AI Act](https://iapp.org/iapp.org#macro-view)**
+- **[Cybersecurity](https://iapp.org/iapp.org#cybersecurity)**
+- **[Copyright](https://iapp.org/iapp.org#copyright)**
+- **[Incomplete map of requirements](https://iapp.org/iapp.org#map-of-requirements)**
 
-- **[Risk of divergent interpretations](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#divergent-interpretations)**
-- **[The look ahead](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#look-ahead)**
-- **[Conclusion](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#conclusion)**
-- **[Additional resources](https://iapp.org/resources/article/top-impacts-eu-ai-act-regulatory-implementation-application#additional-resources)**
+- **[Risk of divergent interpretations](https://iapp.org/iapp.org#divergent-interpretations)**
+- **[The look ahead](https://iapp.org/iapp.org#look-ahead)**
+- **[Conclusion](https://iapp.org/iapp.org#conclusion)**
+- **[Additional resources](https://iapp.org/iapp.org#additional-resources)**
 
 Launched in 2015, the EU's [Digital Single Market Strategy](https://ec.europa.eu/commission/presscorner/api/files/attachment/8210/DSM_communication.pdf) aimed to foster the digital harmonization between the EU member states and contribute to economic growth, boosting jobs, competition, investment and innovation in the EU.
 
@@ -325,7 +324,7 @@ The full series in PDF format can be [accessed here](https://iapp.org/media/pdf/
 
 CDPO, CDPO/BR, CDPO/FR, CIPM, CIPP/A, CIPP/C, CIPP/E, CIPP/G, CIPP/US, CIPT, LGPD
 
-[Submit for CPEs](https://iapp.org/certify/cpe-submit/)
+[Submit for CPEs](https://myiapp.org/certifications/cpe-submission)
 
 ##### Related Stories
 

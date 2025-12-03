@@ -2,7 +2,7 @@
 title: German court rules Google must pay €572M for violating antitrust rules in price comparison sector
 url: https://techcrunch.com/2025/11/14/german-court-rules-google-must-pay-e572m-for-violating-antitrust-rules-in-price-comparison-sector/
 published_date: 2025-11-14T00:00:00
-collected_date: 2025-11-24T03:54:08.951646
+collected_date: 2025-12-01T11:35:29.679931
 source: Techcrunch
 source_url: https://techcrunch.com
 author: Ram Iyer
@@ -57,33 +57,33 @@ StrictlyVC concludes its 2025 series with an exclusive event featuring insights 
 
 [Register Now](https://techcrunch.com/events/strictlyvc-palo-alto/?utm_medium=ad&utm_campaign=svcpaloalto&utm_content=ticketsales&utm_source=tc&promo=tcrighttrail&display=)
 
-- ### [Hugging Face CEO says we’re in an ‘LLM bubble,’ not an AI bubble](https://techcrunch.com/2025/11/18/hugging-face-ceo-says-were-in-an-llm-bubble-not-an-ai-bubble/)
+- ### [US banks scramble to assess data theft after hackers breach financial tech firm](https://techcrunch.com/2025/11/24/us-banks-scramble-to-assess-data-theft-after-hackers-breach-financial-tech-firm/)
 
-- [Sarah Perez](https://techcrunch.com/author/sarah-perez/)
+- [Zack Whittaker](https://techcrunch.com/author/zack-whittaker/)
 
-- ### [Ramp hits $32B valuation, just 3 months after hitting $22.5B](https://techcrunch.com/2025/11/17/ramp-hits-32b-valuation-just-three-months-after-hitting-22-5b/)
-
-- [Julie Bort](https://techcrunch.com/author/julie-bort/)
-
-- ### [DoorDash confirms data breach affecting users’ phone numbers and physical addresses](https://techcrunch.com/2025/11/17/doordash-confirms-data-breach-impacting-users-phone-numbers-and-physical-addresses/)
-
-- [Lorenzo Franceschi-Bicchierai](https://techcrunch.com/author/lorenzo-franceschi-bicchierai/)
-
-- ### [Jeff Bezos reportedly returns to the trenches as co-CEO of new AI startup, Project Prometheus](https://techcrunch.com/2025/11/17/jeff-bezos-reportedly-returns-to-the-trenches-as-co-ceo-of-new-ai-startup-project-prometheus/)
-
-- [Ram Iyer](https://techcrunch.com/author/ram-iyer/)
-
-- ### [‘Buy now, pay later’ is expanding fast, and that should worry everyone](https://techcrunch.com/2025/11/16/bnpl-is-expanding-fast-and-that-should-worry-everyone/)
+- ### [How this founder’s unlikely path to Silicon Valley could become an edge in industrial tech](https://techcrunch.com/2025/11/21/how-this-founders-unlikely-path-to-silicon-valley-could-become-an-edge-in-industrial-tech/)
 
 - [Connie Loizos](https://techcrunch.com/author/connie-loizos/)
 
-- ### [Jury says Apple owes Masimo $634M for patent infringement](https://techcrunch.com/2025/11/15/jury-says-apple-owes-masimo-634m-for-patent-infringement/)
+- ### [Bret Taylor’s Sierra reaches $100M ARR in under two years](https://techcrunch.com/2025/11/21/bret-taylors-sierra-reaches-100m-arr-in-under-two-years/)
 
-- [Anthony Ha](https://techcrunch.com/author/anthony-ha/)
+- [Marina Temkin](https://techcrunch.com/author/marina-temkin/)
 
-- ### [Leaked documents shed light into how much OpenAI pays Microsoft](https://techcrunch.com/2025/11/14/leaked-documents-shed-light-into-how-much-openai-pays-microsoft/)
+- ### [Google says hackers stole data from 200 companies following Gainsight breach](https://techcrunch.com/2025/11/21/google-says-hackers-stole-data-from-200-companies-following-gainsight-breach/)
 
-- [Rebecca Bellan](https://techcrunch.com/author/rebecca-bellan/)
+- [Lorenzo Franceschi-Bicchierai](https://techcrunch.com/author/lorenzo-franceschi-bicchierai/)
+
+- ### [X begins rolling out the ‘About this account’ feature to users’ profiles](https://techcrunch.com/2025/11/21/x-begins-rolling-out-the-about-this-account-feature-to-users-profiles/)
+
+- [Sarah Perez](https://techcrunch.com/author/sarah-perez/)
+
+- ### [SpaceX’s upgraded Starship suffers explosion during testing](https://techcrunch.com/2025/11/21/spacexs-upgraded-starship-suffers-explosion-during-testing/)
+
+- [Sean O'Kane](https://techcrunch.com/author/sean-okane/)
+
+- ### [ChatGPT launches group chats globally](https://techcrunch.com/2025/11/20/chatgpt-launches-group-chats-globally/)
+
+- [Aisha Malik](https://techcrunch.com/author/aisha-malik/)
 
 Loading the next article
 

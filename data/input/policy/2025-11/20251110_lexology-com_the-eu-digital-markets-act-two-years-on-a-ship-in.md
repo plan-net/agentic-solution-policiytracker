@@ -2,7 +2,7 @@
 title: The EU Digital Markets Act Two Years on - a Ship in a Storm With Chances to Ride the Waves?
 url: https://www.lexology.com/library/detail.aspx?g=9fc2889d-a0f3-4207-a14a-24769969cc77
 published_date: 2025-11-10T00:00:00
-collected_date: 2025-11-24T03:53:46.382228
+collected_date: 2025-12-01T11:34:18.497242
 source: Lexology
 source_url: https://www.lexology.com
 author: Aymeric de Moncuit, Matthias Jannausch, Sarah Wilks
@@ -132,6 +132,18 @@ Folders shared with you
 
 - [European Commission](https://www.lexology.com/research/hubs/european-commission)
 
+### Popular articles from this firm
+
+1. ##### [Russia/Ukraine Sanctions Update - Month of October 2025\ \*](https://www.lexology.com/library/detail.aspx?g=23e2028c-1ccf-44a9-83a4-c1d70cc822be)
+
+2. ##### [EU Opens New Schengen Visa Options for Indian and Middle Eastern Nationals\ \*](https://www.lexology.com/library/detail.aspx?g=af58df04-4957-4556-8785-c9c6cda75644)
+
+3. ##### [Aménagement du régime fiscal des distributions de dividendes au sein d'un groupe\ \*](https://www.lexology.com/library/detail.aspx?g=2a597beb-b8fe-4f75-b7ce-cd7e165b7555)
+
+4. ##### [Cyber Security and Resilience (Network and Information Systems) Bill introduced to Parliament\ \*](https://www.lexology.com/library/detail.aspx?g=0534cef6-e881-4109-bea8-da684b5899fe)
+
+5. ##### [Plastic food contact materials: declaration of compliance soon to reflect compliance with new purity requirements\ \*](https://www.lexology.com/library/detail.aspx?g=c740ad78-78eb-4c6d-9233-f17e6ebf16b8)
+
 Interested in contributing?
 
 Get closer to winning business faster with Lexology's complete suite of dynamic products designed to help you unlock new opportunities with our highly engaged audience of legal professionals looking for answers.
@@ -140,11 +152,11 @@ Get closer to winning business faster with Lexology's complete suite of dynamic 
 
 ### Professional development
 
-- [AI for Managers - How to Work Smarter, Not Harder - Learn Live](https://www.lexology.com/Events/Details/23328?utmChannel=featuremodule)
+- [Cyber Threats Facing the Legal Sector - Understanding & Defending Against Evolving Risks - Learn Live](https://www.lexology.com/Events/Details/23689?utmChannel=featuremodule)
 
-MBL Seminars \| 1.5 CPD hours
+MBL Seminars \| 2 CPD hours
 Online
-25 November 2025
+25 February 2026
 
 - [Drafting AI Clauses in Commercial & Corporate Contracts: A Lawyer’s Perspective - Learn Live](https://www.lexology.com/Events/Details/23598?utmChannel=featuremodule)
 
@@ -152,30 +164,30 @@ MBL Seminars \| 1.5 CPD hours
 Online
 13 March 2026
 
-- [IP Licensing under EU & UK Competition Law - Minimising Risk & Common Pitfalls - Learn Live](https://www.lexology.com/Events/Details/21484?utmChannel=featuremodule)
+- [Navigating Parental Liability - Mastering Compliance in Competition Law - Learn Live](https://www.lexology.com/Events/Details/23008?utmChannel=featuremodule)
 
-MBL Seminars \| 1.5 CPD hours
+MBL Seminars \| 3 CPD hours
 Online
-27 November 2025
+14 May 2026
 
 [View all](https://www.lexology.com/learn/professionaldevelopment/all)
 
 ### Related practical resources PRO
 
+- Checklist [Checklist: Practical considerations prior to using AI in commercial contracts (USA)](https://www.lexology.com/pro/content/checklist-practical-considerations-prior-using-ai-in-commercial-contracts-usa)
+- Checklist [Checklist: Drafting AI use contracts with third-party tech vendors (USA)](https://www.lexology.com/pro/content/checklist-drafting-ai-use-contracts-third-party-tech-vendors-usa)
 - How-to guide [How-to guide: How to use AI to enhance Diversity, Equity and Inclusion (DEI) (USA)](https://www.lexology.com/pro/content/how-guide-how-use-ai-enhance-diversity-equity-and-inclusion-dei-usa)
-- How-to guide [How-to guide: How to use AI to improve workplace safety (USA)](https://www.lexology.com/pro/content/how-guide-how-use-ai-improve-workplace-safety-usa)
-- How-to guide [How-to guide: Corporate governance and the use of AI (USA)](https://www.lexology.com/pro/content/how-guide-corporate-governance-and-the-use-of-ai-usa)
 
 [View all](https://www.lexology.com/content/practical-resources?utm_content=widget)
 
 ### Related research hubs
 
-#### [European Commission](https://www.lexology.com/hub/european-commission)
-
 #### [Artificial intelligence](https://www.lexology.com/hub/artificial-intelligence)
+
+#### [European Commission](https://www.lexology.com/hub/european-commission)
 
 #### [European Union](https://www.lexology.com/hub/european-union)
 
-#### [Competition & Antitrust](https://www.lexology.com/hub/competition-and-antitrust)
-
 #### [IT & Data Protection](https://www.lexology.com/hub/it-and-data-protection)
+
+#### [Competition & Antitrust](https://www.lexology.com/hub/competition-and-antitrust)

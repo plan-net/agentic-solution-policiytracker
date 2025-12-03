@@ -2,6 +2,8 @@
 Azure Blob Storage implementation (mocked for future implementation).
 """
 
+from __future__ import annotations
+
 from typing import Any, Optional
 
 import structlog
