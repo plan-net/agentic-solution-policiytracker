@@ -1,6 +1,8 @@
 """LangChain tools for Graphiti knowledge graph search."""
 
 import logging
+from datetime import datetime
+from enum import Enum
 from typing import Optional, Union
 
 from graphiti_core import Graphiti
@@ -13,11 +15,47 @@ from graphiti_core.search.search_config_recipes import (
     EDGE_HYBRID_SEARCH_NODE_DISTANCE,
     NODE_HYBRID_SEARCH_RRF,
 )
+from graphiti_core.search.search_filters import (
+    ComparisonOperator,
+    DateFilter,
+    SearchFilters,
+)
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
+
+
+class TemporalFilterStrategy(str, Enum):
+    """
+    Configurable strategies for temporal filtering in Graphiti searches.
+
+    Different report types may need different temporal filtering approaches:
+    - COMPREHENSIVE: Maximize results for sparse data (weekly digest default)
+    - VALID_ONLY: Point-in-time truth queries ("what was true then")
+    - CREATED_ONLY: New information reports ("what's new in the graph")
+    - CHANGES: Track what changed during the period
+    """
+
+    COMPREHENSIVE = "comprehensive"  # All 4 fields (OR) - maximize results
+    VALID_ONLY = "valid_only"  # Only valid_at - point-in-time truth
+    CREATED_ONLY = "created_only"  # Only created_at - new information
+    CHANGES = "changes"  # valid_at + invalid_at - what changed
+
+
+# Strategy -> Fields mapping for temporal searches
+STRATEGY_FIELDS: dict[TemporalFilterStrategy, list[str]] = {
+    TemporalFilterStrategy.COMPREHENSIVE: [
+        "valid_at",
+        "invalid_at",
+        "created_at",
+        "expired_at",
+    ],
+    TemporalFilterStrategy.VALID_ONLY: ["valid_at"],
+    TemporalFilterStrategy.CREATED_ONLY: ["created_at"],
+    TemporalFilterStrategy.CHANGES: ["valid_at", "invalid_at"],
+}
 
 
 class SearchInput(BaseModel):
@@ -32,6 +70,19 @@ class SearchInput(BaseModel):
     output_format: str = Field(
         default="structured",
         description="Output format: 'structured' (JSON with graph data) or 'text' (markdown)",
+    )
+    # Temporal filtering parameters
+    date_filter_start: Optional[datetime] = Field(
+        default=None,
+        description="Start date for temporal filtering (inclusive)",
+    )
+    date_filter_end: Optional[datetime] = Field(
+        default=None,
+        description="End date for temporal filtering (inclusive)",
+    )
+    temporal_filter_strategy: str = Field(
+        default="comprehensive",
+        description="Temporal filter strategy: 'comprehensive' (all temporal fields), 'valid_only', 'created_only', or 'changes'",
     )
 
 
@@ -69,9 +120,24 @@ class GraphitiSearchTool(BaseTool):
         limit: int = 5,
         search_type: str = "comprehensive",
         output_format: str = "structured",
+        date_filter_start: Optional[datetime] = None,
+        date_filter_end: Optional[datetime] = None,
+        temporal_filter_strategy: str = "comprehensive",
         run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> Union[str, dict]:
-        """Execute the search asynchronously using advanced Graphiti search configs."""
+        """Execute the search asynchronously using advanced Graphiti search configs.
+
+        Args:
+            query: Search query for the knowledge graph
+            limit: Maximum number of results to return
+            search_type: Type of search configuration to use
+            output_format: Output format ('structured' or 'text')
+            date_filter_start: Start date for temporal filtering (inclusive)
+            date_filter_end: End date for temporal filtering (inclusive)
+            temporal_filter_strategy: Strategy for temporal filtering
+                ('comprehensive', 'valid_only', 'created_only', 'changes')
+            run_manager: LangChain callback manager
+        """
         try:
             logger.info(
                 f"Searching knowledge graph for: {query} (type: {search_type}, format: {output_format})"
@@ -80,15 +146,44 @@ class GraphitiSearchTool(BaseTool):
             # Select search configuration based on search type
             search_config = self._get_search_config(search_type)
 
-            # Use the advanced _search() method with proper configuration
-            search_results = await self.client._search(query=query, config=search_config)
-
-            # Extract facts from the search results
+            # Check if temporal filtering is requested
             results = []
-            if hasattr(search_results, "edges") and search_results.edges:
-                results.extend(search_results.edges)
-            if hasattr(search_results, "nodes") and search_results.nodes:
-                results.extend(search_results.nodes)
+            if date_filter_start and date_filter_end:
+                # Parse strategy string to enum
+                try:
+                    strategy = TemporalFilterStrategy(temporal_filter_strategy)
+                except ValueError:
+                    logger.warning(
+                        f"Invalid temporal_filter_strategy '{temporal_filter_strategy}', "
+                        "defaulting to 'comprehensive'"
+                    )
+                    strategy = TemporalFilterStrategy.COMPREHENSIVE
+
+                logger.info(
+                    f"Applying temporal filter: {date_filter_start.date()} to "
+                    f"{date_filter_end.date()} (strategy: {strategy.value})"
+                )
+
+                # Use temporal-filtered search with OR across fields
+                edges, nodes = await self._search_with_temporal_filter(
+                    query=query,
+                    start_date=date_filter_start,
+                    end_date=date_filter_end,
+                    config=search_config,
+                    strategy=strategy,
+                )
+
+                results.extend(edges)
+                results.extend(nodes)
+            else:
+                # Standard search without temporal filtering
+                search_results = await self.client._search(query=query, config=search_config)
+
+                # Extract facts from the search results
+                if hasattr(search_results, "edges") and search_results.edges:
+                    results.extend(search_results.edges)
+                if hasattr(search_results, "nodes") and search_results.nodes:
+                    results.extend(search_results.nodes)
 
             if not results:
                 if output_format == "structured":
@@ -392,6 +487,104 @@ class GraphitiSearchTool(BaseTool):
         config = search_configs.get(search_type, COMBINED_HYBRID_SEARCH_CROSS_ENCODER)
         logger.debug(f"Using search config: {config} for type: {search_type}")
         return config
+
+    async def _search_with_temporal_filter(
+        self,
+        query: str,
+        start_date: datetime,
+        end_date: datetime,
+        config,
+        strategy: TemporalFilterStrategy = TemporalFilterStrategy.COMPREHENSIVE,
+    ) -> tuple[list, list]:
+        """
+        Run searches across temporal fields based on strategy and merge results.
+
+        Graphiti's SearchFilters uses AND logic between different temporal fields.
+        To achieve OR logic (capture everything that "touched" the date range),
+        we run separate searches for each temporal field and merge the results.
+
+        Args:
+            query: Search query
+            start_date: Filter start date (inclusive)
+            end_date: Filter end date (inclusive)
+            config: Search configuration
+            strategy: Which temporal fields to search (configurable)
+
+        Returns:
+            Tuple of (edges, nodes) - deduplicated lists of results
+        """
+        # Build date range filter: start <= field <= end
+        date_range = [
+            DateFilter(
+                date=start_date, comparison_operator=ComparisonOperator.greater_than_equal
+            ),
+            DateFilter(
+                date=end_date, comparison_operator=ComparisonOperator.less_than_equal
+            ),
+        ]
+
+        # Get fields for this strategy
+        fields_to_search = STRATEGY_FIELDS.get(
+            strategy, STRATEGY_FIELDS[TemporalFilterStrategy.COMPREHENSIVE]
+        )
+
+        logger.info(
+            f"Temporal search strategy: {strategy.value}, fields: {fields_to_search}, "
+            f"date range: {start_date.date()} to {end_date.date()}"
+        )
+
+        all_edges = []
+        all_nodes = []
+        seen_edge_uuids: set[str] = set()
+        seen_node_uuids: set[str] = set()
+
+        # Search each temporal field in the strategy
+        for field_name in fields_to_search:
+            try:
+                # Build filter with only this temporal field
+                filter_kwargs = {field_name: [date_range]}
+                search_filter = SearchFilters(**filter_kwargs)
+
+                logger.debug(f"Searching with {field_name} filter...")
+
+                # Use search_ method (note: underscore version with filter support)
+                results = await self.client.search_(
+                    query=query,
+                    config=config,
+                    search_filter=search_filter,
+                )
+
+                # Deduplicate edges by UUID
+                if hasattr(results, "edges") and results.edges:
+                    for edge in results.edges:
+                        edge_uuid = str(getattr(edge, "uuid", ""))
+                        if edge_uuid and edge_uuid not in seen_edge_uuids:
+                            seen_edge_uuids.add(edge_uuid)
+                            all_edges.append(edge)
+
+                # Deduplicate nodes by UUID
+                if hasattr(results, "nodes") and results.nodes:
+                    for node in results.nodes:
+                        node_uuid = str(getattr(node, "uuid", ""))
+                        if node_uuid and node_uuid not in seen_node_uuids:
+                            seen_node_uuids.add(node_uuid)
+                            all_nodes.append(node)
+
+                logger.debug(
+                    f"  {field_name}: found {len(results.edges) if hasattr(results, 'edges') and results.edges else 0} edges, "
+                    f"{len(results.nodes) if hasattr(results, 'nodes') and results.nodes else 0} nodes"
+                )
+
+            except Exception as e:
+                logger.warning(f"Temporal search failed for {field_name}: {e}")
+                continue
+
+        logger.info(
+            f"Temporal search complete: {len(all_edges)} unique edges, "
+            f"{len(all_nodes)} unique nodes across {len(fields_to_search)} fields"
+        )
+
+        return all_edges, all_nodes
 
     def _parse_yaml_frontmatter(self, content: str) -> Optional[dict[str, str]]:
         """Parse YAML frontmatter from episode content to extract source URLs."""

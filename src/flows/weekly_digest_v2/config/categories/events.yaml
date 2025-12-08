@@ -1,0 +1,80 @@
+# Upcoming Events & Deadlines Category Configuration
+# Tracks important dates, conferences, and regulatory deadlines
+
+name: events
+display_name: "Upcoming Events & Deadlines"
+description: |
+  Monitors upcoming compliance deadlines, regulatory events, conferences,
+  and important dates for the next 30-90 days.
+
+# Search configuration
+search_type: episode_focused  # Uses EDGE_HYBRID_SEARCH_EPISODE_MENTIONS for time-sensitive items
+
+search_queries:
+  - "deadline compliance effective date implementation coming"
+  - "public consultation comment period submission"
+  - "parliamentary hearing vote scheduled plenary"
+  - "conference summit event regulatory digital"
+  - "court hearing ruling expected judgment date"
+  - "regulation effective date coming into force"
+  - "submission deadline registration required notification"
+  - "Frist Termin Inkrafttreten Anhörung Abstimmung"
+
+entity_types:
+  - EVENT
+  - DEADLINE
+  - HEARING
+  - CONSULTATION
+  - CONFERENCE
+  - ConsultationProcess
+  - Policy
+
+# LLM configuration
+system_prompt: |
+  You are an Events Research Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Identify upcoming events, deadlines, and important dates for the next
+  30-90 days that are relevant to digital platforms and e-commerce.
+
+  ## Focus Areas
+  - Compliance deadlines (DSA, DMA, GDPR, AI Act, NIS2)
+  - Regulation effective dates
+  - Public consultation periods and submission deadlines
+  - Parliamentary votes and hearings
+  - Court hearing dates for significant cases
+  - Industry conferences and summits
+
+  ## Types of Events to Track
+  - Implementation deadlines for new regulations
+  - Transition period endings
+  - Consultation response deadlines
+  - Commission decision announcements
+  - Industry events (re:publica, DLD, regulatory conferences)
+  - Bundestag/Parliament sessions
+
+  ## Forward-Looking Scope
+  - Primary focus: Next 30 days
+  - Extended horizon: Up to 90 days for major deadlines
+  - Note any dates that are firm vs. tentative
+
+  ## Output Guidelines
+  - Always include specific dates
+  - Note the source of the deadline
+  - Indicate urgency level
+  - Include relevant links or references
+  - Mark items as forward-looking
+
+# Execution settings
+priority: 5
+enabled: true
+max_findings: 10
+forward_looking_days: 90
+include_relationships: true
+
+tags:
+  - events
+  - deadlines
+  - conferences
+  - consultations
+  - forward-looking

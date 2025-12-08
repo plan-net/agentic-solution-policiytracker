@@ -19,6 +19,8 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command
 
+from src.chat.observability.langwatch_config import langwatch_config
+
 from .agents.category_researchers import (
     ComplianceResearchAgent,
     EventsResearchAgent,
@@ -49,6 +51,9 @@ class WeeklyReportProcessor:
         tracer_instance: Tracer,
         inputs: dict[str, Any],
     ):
+        # Initialize LangWatch observability
+        langwatch_config.initialize()
+
         self.tracer = tracer_instance
         self.inputs = inputs
 
@@ -297,6 +302,7 @@ class WeeklyReportProcessor:
                 "current_stage": "error",
             }
 
+    @langwatch_config.trace(name="weekly_report_workflow")
     async def run_async(self) -> str:
         """Execute the weekly report workflow asynchronously."""
         await self.tracer.markdown("## Weekly Regulatory Intelligence Digest\n")

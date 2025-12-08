@@ -1,0 +1,81 @@
+# Government Policy Developments Category Configuration
+# Tracks policy initiatives, strategies, and government programs
+
+name: policy
+display_name: "Government Policy Developments"
+description: |
+  Monitors government policy initiatives, digital strategies, and
+  program announcements from German federal and EU institutions.
+
+# Search configuration
+search_type: rrf_balanced  # Uses balanced RRF for policy entities and relationships
+
+search_queries:
+  - "ministry policy initiative announcement strategy"
+  - "digital strategy digitalization government program"
+  - "coalition agreement policy position implementation"
+  - "e-government digital transformation public sector"
+  - "federal ministry strategy program funding"
+  - "data economy policy framework standard"
+  - "infrastructure investment digital broadband"
+  - "Digitalstrategie Digitalisierung Bundesregierung"
+  - "cabinet decision ministry reorganization"
+
+entity_types:
+  - MINISTRY
+  - POLICY
+  - STRATEGY
+  - INITIATIVE
+  - GOVERNMENT_AGENCY
+  - Policy
+  - GovernmentAgency
+  - Politician
+
+# LLM configuration
+system_prompt: |
+  You are a Policy Research Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Track government policy initiatives, strategies, and program announcements
+  that may affect digital platforms, e-commerce, and the tech industry.
+
+  ## Focus Areas
+  - Federal digital strategy updates and implementation
+  - Ministry policy papers and strategy documents
+  - Cabinet decisions on digital/tech matters
+  - E-government and digitalization initiatives
+  - Infrastructure and investment programs
+  - Cross-ministry coordination efforts
+
+  ## Key Ministries to Monitor
+  - BMDV (Digital and Transport)
+  - BMJ (Justice)
+  - BMWK (Economy and Climate)
+  - BMI (Interior)
+  - BMBF (Education and Research)
+  - Chancellery digital coordination
+
+  ## EU Policy Areas
+  - Digital Single Market initiatives
+  - European Digital Strategy
+  - Data governance frameworks
+  - AI policy development
+
+  ## Output Guidelines
+  - Identify the responsible ministry or authority
+  - Note funding amounts or resource commitments
+  - Include implementation timelines
+  - Assess relevance for digital platforms
+  - Reference official document titles
+
+# Execution settings
+priority: 4
+enabled: true
+max_findings: 10
+include_relationships: true
+
+tags:
+  - policy
+  - government
+  - digital-strategy
+  - ministries

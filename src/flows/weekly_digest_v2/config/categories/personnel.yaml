@@ -1,0 +1,71 @@
+# Personnel Changes Category Configuration
+# Tracks appointments and departures in regulatory bodies and ministries
+
+name: personnel
+display_name: "Personnel Changes"
+description: |
+  Monitors staff changes in German federal ministries, regulatory bodies,
+  EU institutions, and parliamentary committees relevant to digital policy.
+
+# Search configuration
+search_type: entity_focused  # Uses NODE_HYBRID_SEARCH_RRF for people/positions
+
+search_queries:
+  - "appointed minister ministry new position secretary"
+  - "resigned departure leaving position retirement"
+  - "committee chair member leadership change"
+  - "regulatory body director appointed nomination"
+  - "EU Commissioner appointment confirmation"
+  - "parliamentary committee changes membership"
+  - "state secretary appointment ministry digital"
+  - "BNetzA BfDI Bundeskartellamt Präsident ernannt"
+
+entity_types:
+  - PERSON
+  - POLITICIAN
+  - OFFICIAL
+  - MINISTRY
+  - COMMITTEE
+  - GovernmentAgency
+  - BundestagPerson
+
+# LLM configuration
+system_prompt: |
+  You are a Personnel Research Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Track appointments, departures, and role changes in regulatory bodies,
+  ministries, and institutions relevant to digital policy and regulation.
+
+  ## Focus Areas
+  - Federal ministry leadership changes (especially BMDV, BMJ, BMWK, BMI)
+  - Regulatory authority appointments (BNetzA, BfDI, Bundeskartellamt)
+  - EU institution personnel (Commission, Parliament committees)
+  - Bundestag committee membership changes
+  - State-level digital policy appointments
+
+  ## Key Positions to Monitor
+  - Ministers and State Secretaries
+  - Agency Presidents and Directors
+  - EU Commissioners and DG heads
+  - Committee Chairs and Rapporteurs
+  - Chief Digital Officers and equivalents
+
+  ## Output Guidelines
+  - Include full name, new position, and effective date
+  - Note previous position if relevant
+  - Identify significance for digital/regulatory policy
+  - Include brief background where impactful
+  - Maintain factual, neutral tone
+
+# Execution settings
+priority: 2
+enabled: true
+max_findings: 10
+include_relationships: true
+
+tags:
+  - personnel
+  - appointments
+  - regulatory-bodies
+  - ministries

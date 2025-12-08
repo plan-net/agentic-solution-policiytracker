@@ -14,6 +14,8 @@ from jinja2 import Environment, FileSystemLoader
 from langchain_core.language_models import BaseLLM
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from src.chat.observability.langwatch_config import langwatch_config
+
 from ..models import Finding, FindingPriority, ReportCategory, ReportMetadata
 from ..prompts.category_prompts import SYNTHESIZER_SYSTEM_PROMPT
 
@@ -87,6 +89,7 @@ class ReportSynthesizerAgent:
         }
         return emojis.get(priority.lower() if isinstance(priority, str) else priority.value, "⚪")
 
+    @langwatch_config.trace(name="report_synthesis")
     async def synthesize(
         self,
         week_start: datetime,
@@ -194,6 +197,7 @@ class ReportSynthesizerAgent:
             "metadata": metadata,
         }
 
+    @langwatch_config.trace(name="llm_executive_summary")
     async def _generate_executive_summary(
         self,
         all_findings: dict[ReportCategory, list[Finding]],

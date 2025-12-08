@@ -622,3 +622,23 @@ bundestag-status:
     @echo ""
     @echo "To deploy flow: just deploy-bundestag"
     @echo "To view logs:   just ray-logs"
+
+# === Embedding Migration ===
+
+# Fix embedding dimension mismatch (1024 -> 1536)
+fix-embeddings mode="dry-run":
+    @echo "🔧 Fixing embedding dimensions (1024 -> 1536)..."
+    @if [ "{{mode}}" = "execute" ]; then \
+        uv run python scripts/fix_embedding_dimensions.py --execute; \
+    elif [ "{{mode}}" = "verify" ]; then \
+        uv run python scripts/fix_embedding_dimensions.py --verify; \
+    elif [ "{{mode}}" = "resume" ]; then \
+        uv run python scripts/fix_embedding_dimensions.py --execute --resume; \
+    else \
+        uv run python scripts/fix_embedding_dimensions.py; \
+    fi
+
+# Check embedding dimension status
+check-embeddings:
+    @echo "📊 Checking entity embedding dimensions..."
+    uv run python scripts/fix_embedding_dimensions.py --verify

@@ -1,5 +1,11 @@
 """OpenAI-compatible Ray Serve chat server for multi-agent political monitoring."""
 
+# IMPORTANT: Apply Graphiti patches BEFORE importing graphiti_core
+# This fixes the "'str' object has no attribute 'to_native'" error
+from ..utils.graphiti_patches import apply_graphiti_patches
+
+apply_graphiti_patches()
+
 import asyncio
 import logging
 import time
@@ -104,6 +110,7 @@ class ChatServer:
         if self.graphiti_client is None:
             from src.flows.shared.apisix_llm_client import (
                 AgentContext,
+                create_apisix_graphiti_embedder,
                 create_graphiti_apisix_config,
             )
 
@@ -117,15 +124,19 @@ class ChatServer:
             # Get APISIX-configured LLM client
             llm_client, note = create_graphiti_apisix_config(context)
 
-            # Initialize Graphiti with APISIX routing
+            # Get APISIX-configured embedder (must match ingestion embedder: text-embedding-3-small, 1536 dims)
+            embedder = create_apisix_graphiti_embedder()
+
+            # Initialize Graphiti with APISIX routing for BOTH LLM and embeddings
             self.graphiti_client = Graphiti(
                 settings.NEO4J_URI,
                 settings.NEO4J_USERNAME,
                 settings.NEO4J_PASSWORD,
                 llm_client=llm_client,
+                embedder=embedder,  # Critical: must match the embedder used during data ingestion
             )
             await self.graphiti_client.build_indices_and_constraints()
-            logger.info("Graphiti client initialized with APISIX routing")
+            logger.info("Graphiti client initialized with APISIX routing and matching embedder")
             logger.warning(note)  # Log Week 1 limitation
         return self.graphiti_client
 

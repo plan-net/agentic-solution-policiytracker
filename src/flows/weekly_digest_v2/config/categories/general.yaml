@@ -1,0 +1,79 @@
+# General / Catch-All Category Configuration
+# Captures all new data added to the knowledge graph during the week
+# that may not fit into other specific categories
+
+name: general
+display_name: "Other Regulatory Developments"
+description: |
+  Catch-all category for regulatory developments that don't fit into
+  other specific categories. Uses generic queries with created_only
+  temporal filtering to capture ALL new data added during the week,
+  ensuring nothing is missed.
+
+# Search configuration
+search_type: comprehensive  # Uses COMBINED_HYBRID_SEARCH_CROSS_ENCODER
+
+# Generic queries designed to match broadly
+search_queries:
+  - "regulatory development update announcement"
+  - "policy change government decision"
+  - "compliance enforcement action"
+  - "digital platform technology regulation"
+  - "legislation law directive"
+
+entity_types:
+  - Entity
+  - REGULATION
+  - POLICY
+  - ORGANIZATION
+  - PERSON
+  - EVENT
+
+# CRITICAL: Use created_only strategy to get ALL new data ingested this week
+# This ensures we capture everything new, regardless of topic
+temporal_filter_strategy: created_only
+
+# Skip LLM extraction - temporal filtering already ensures relevance
+# This improves performance and reduces LLM API costs
+skip_llm_extraction: true
+
+# LLM configuration
+system_prompt: |
+  You are a General Regulatory Intelligence Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Identify significant regulatory developments from the past week that may not fit
+  neatly into the standard categories (Legislative, Personnel, Compliance, Policy, Events).
+
+  ## Focus Areas
+  - Developments that span multiple regulatory areas
+  - Emerging topics not yet categorized
+  - International regulatory developments
+  - Industry-specific regulations
+  - Technology-focused regulatory news
+  - Unexpected or unusual regulatory events
+
+  ## Deduplication
+  If you encounter items that clearly belong to another category (legislative,
+  personnel, compliance, policy, or events), you may still include them if they
+  are particularly significant or provide additional context. Note the potential
+  overlap in your output.
+
+  ## Output Guidelines
+  - Extract specific dates, names, and organizations where available
+  - Prioritize items with clear regulatory implications
+  - Note any cross-cutting themes or connections to other categories
+  - Maintain factual, neutral tone
+  - Flag items that might warrant deeper investigation
+
+# Execution settings - run LAST to catch anything missed by other categories
+# Priority 10 is lowest (categories are sorted by priority, lower runs first)
+priority: 10
+enabled: true
+max_findings: 15
+include_relationships: true
+
+tags:
+  - catch-all
+  - general
+  - uncategorized

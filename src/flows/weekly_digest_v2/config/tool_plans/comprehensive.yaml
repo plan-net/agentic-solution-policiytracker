@@ -1,0 +1,60 @@
+# Comprehensive Tool Plan
+# Full coverage research strategy - editable for tuning output quality
+
+name: comprehensive
+description: |
+  Full coverage research strategy using multiple search types
+  and follow-up queries for thorough entity and relationship discovery.
+  Use this plan for high-quality weekly digests.
+
+# Tool sequence - executed in order per category
+tool_sequence:
+  # Primary search using category's configured search type
+  - tool_name: graphiti_search
+    search_type: from_category
+    limit: 20
+    description: "Primary search using category-specific strategy"
+    parameters:
+      output_format: structured
+    required: true
+    timeout_seconds: 30
+
+  # Entity-focused follow-up for discovered entities
+  - tool_name: graphiti_search
+    search_type: entity_focused
+    limit: 10
+    description: "Entity-focused follow-up for key entities discovered"
+    conditional: has_entities
+    parameters:
+      output_format: structured
+    required: false
+    timeout_seconds: 20
+
+  # Relationship discovery for network context
+  - tool_name: graphiti_search
+    search_type: relationship_focused
+    limit: 10
+    description: "Relationship discovery to find connections"
+    conditional: has_entities
+    parameters:
+      output_format: structured
+    required: false
+    timeout_seconds: 20
+
+# Execution settings
+parallel_execution: false
+max_concurrent: 1
+
+# Success criteria - what constitutes a successful research
+success_criteria:
+  primary: "At least 5 relevant findings per category with source citations"
+  secondary: "Entity relationships discovered for key findings"
+  minimum: "At least 1 finding with verifiable source"
+
+# Fallback
+fallback_plan: focused
+max_retries: 1
+
+# Timing estimates
+estimated_time_seconds: 45
+total_timeout_seconds: 120

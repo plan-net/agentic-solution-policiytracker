@@ -1,0 +1,38 @@
+# Focused Tool Plan
+# Fast, targeted research strategy for quick turnaround
+
+name: focused
+description: |
+  Streamlined research strategy using single search pass per category.
+  Use this plan when speed is prioritized over comprehensive coverage,
+  or as a fallback when the comprehensive plan times out.
+
+# Tool sequence - minimal for speed
+tool_sequence:
+  # Single comprehensive search with higher limit
+  - tool_name: graphiti_search
+    search_type: from_category
+    limit: 15
+    description: "Single comprehensive search pass"
+    parameters:
+      output_format: structured
+    required: true
+    timeout_seconds: 25
+
+# Execution settings
+parallel_execution: false
+max_concurrent: 1
+
+# Success criteria - relaxed for speed
+success_criteria:
+  primary: "At least 3 relevant findings per category"
+  secondary: "Basic source attribution for findings"
+  minimum: "At least 1 finding"
+
+# No fallback - this is the fallback
+fallback_plan: null
+max_retries: 0
+
+# Timing estimates
+estimated_time_seconds: 25
+total_timeout_seconds: 60

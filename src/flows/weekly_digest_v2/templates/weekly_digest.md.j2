@@ -1,0 +1,152 @@
+{# Weekly Regulatory Intelligence Digest Template #}
+{# Jinja2 template for rendering the markdown report #}
+
+{# Macro for rendering a single finding with actionable insights #}
+{% macro render_finding(finding, index) %}
+### {{ index }}. {{ finding.title }}
+
+{{ finding.priority | priority_emoji }} **Priority:** {{ finding.priority | title }}
+{% if finding.date %}
+📅 **Date:** {{ finding.date }}
+{% endif %}
+{% if finding.forward_looking %}
+🔮 **Forward-Looking**
+{% endif %}
+
+{{ finding.content }}
+
+{% if finding.impact %}
+💡 **Business Impact:** {{ finding.impact }}
+{% endif %}
+
+{% if finding.action %}
+✅ **Recommended Action:** {{ finding.action }}
+{% endif %}
+
+{% if finding.source %}
+*Source: {{ finding.source | escape_md }}*
+{% endif %}
+
+{% if finding.entities %}
+🏷️ **Related Entities:** {{ finding.entities | join(', ') }}
+{% endif %}
+
+{% endmacro %}
+
+# Weekly Regulatory Intelligence Digest
+
+**{{ week_label }}** ({{ week_start | format_date('%d %B') }} - {{ week_end | format_date('%d %B %Y') }})
+
+---
+
+## Executive Summary
+
+{{ executive_summary }}
+
+---
+
+## 1. Legislative & Regulatory Updates
+
+{% if summaries.legislative %}
+*{{ summaries.legislative }}*
+{% endif %}
+
+{% if findings_by_category.legislative %}
+{% for finding in findings_by_category.legislative[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+{% else %}
+*No legislative developments found for this week.*
+{% endif %}
+
+---
+
+## 2. Personnel Changes
+
+{% if summaries.personnel %}
+*{{ summaries.personnel }}*
+{% endif %}
+
+{% if findings_by_category.personnel %}
+{% for finding in findings_by_category.personnel[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+{% else %}
+*No personnel changes found for this week.*
+{% endif %}
+
+---
+
+## 3. Industry & Compliance Issues
+
+{% if summaries.compliance %}
+*{{ summaries.compliance }}*
+{% endif %}
+
+{% if findings_by_category.compliance %}
+{% for finding in findings_by_category.compliance[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+{% else %}
+*No compliance issues found for this week.*
+{% endif %}
+
+---
+
+## 4. Government Policy Developments
+
+{% if summaries.policy %}
+*{{ summaries.policy }}*
+{% endif %}
+
+{% if findings_by_category.policy %}
+{% for finding in findings_by_category.policy[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+{% else %}
+*No policy developments found for this week.*
+{% endif %}
+
+---
+
+## 5. Upcoming Events & Deadlines
+
+{% if summaries.events %}
+*{{ summaries.events }}*
+{% endif %}
+
+{% if findings_by_category.events %}
+{% for finding in findings_by_category.events[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+{% else %}
+*No upcoming events found for this week.*
+{% endif %}
+
+---
+
+{% if findings_by_category.general %}
+## 6. Other Regulatory Developments
+
+{% if summaries.general %}
+*{{ summaries.general }}*
+{% endif %}
+
+{% for finding in findings_by_category.general[:7] %}
+{{ render_finding(finding, loop.index) }}
+{% endfor %}
+
+---
+{% endif %}
+
+{% if graph_visualization_link %}
+## Entity Relationship Graph
+
+**[Explore the knowledge graph for this report]({{ graph_visualization_link }})**
+
+*{{ entities_count }} entities discovered across all categories.*
+
+---
+{% endif %}
+
+*Generated: {{ generated_at | format_date('%Y-%m-%d %H:%M') }} | Source: Graphiti Knowledge Graph | Version: 2.0*

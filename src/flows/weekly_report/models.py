@@ -60,7 +60,10 @@ class Finding(BaseModel):
 
 
 class CategoryResearchResult(BaseModel):
-    """Result from a category research agent."""
+    """Result from a category research agent.
+
+    Includes execution_metadata for ToolExecutionAgent-style observability.
+    """
 
     category: ReportCategory
     findings: list[Finding] = Field(default_factory=list)
@@ -69,6 +72,10 @@ class CategoryResearchResult(BaseModel):
     execution_time: float = Field(default=0.0, description="Query execution time in seconds")
     success: bool = Field(default=True)
     error: Optional[str] = Field(default=None)
+    execution_metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Structured execution metadata (search times, success rates, quality)"
+    )
 
     class Config:
         use_enum_values = True

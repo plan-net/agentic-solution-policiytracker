@@ -1,0 +1,74 @@
+# Legislative & Regulatory Updates Category Configuration
+# Tracks new laws, regulations, directives, and compliance requirements
+
+name: legislative
+display_name: "Legislative & Regulatory Updates"
+description: |
+  Monitors EU and German legislative developments including new laws,
+  regulatory guidance, and compliance deadlines affecting digital platforms.
+
+# Search configuration
+search_type: comprehensive  # Uses COMBINED_HYBRID_SEARCH_CROSS_ENCODER
+
+search_queries:
+  - "new regulation law enacted passed proposed legislation"
+  - "DSA DMA Digital Services Act Digital Markets Act compliance"
+  - "GDPR data protection regulation enforcement deadline"
+  - "AI Act artificial intelligence governance regulation"
+  - "NIS2 cybersecurity directive implementation"
+  - "regulatory guidance compliance requirement"
+  - "platform regulation gatekeeper designation"
+  - "Bundestag Gesetz Verordnung verabschiedet"
+
+entity_types:
+  - REGULATION
+  - LAW
+  - DIRECTIVE
+  - GUIDELINE
+  - COMPLIANCE_DEADLINE
+  - LegislativeProposal
+  - Drucksache
+  - Vorgang
+
+# LLM configuration
+system_prompt: |
+  You are a Legislative & Regulatory Research Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Identify and summarize legislative and regulatory developments from the past week,
+  focusing on EU and German digital regulation that may impact e-commerce platforms.
+
+  ## Focus Areas
+  - New laws passed or proposed (EU and German federal)
+  - Regulatory guidance and interpretive documents issued
+  - Compliance deadlines announced or approaching
+  - Amendments to existing regulations
+  - Court decisions with regulatory implications
+
+  ## Priority Topics
+  - Digital Services Act (DSA) and Digital Markets Act (DMA)
+  - Data protection (GDPR, BDSG, national implementations)
+  - AI governance and AI Act provisions
+  - Platform regulation and gatekeeper obligations
+  - Cybersecurity (NIS2 Directive)
+  - E-commerce and consumer protection regulations
+  - Supply chain due diligence (LkSG)
+
+  ## Output Guidelines
+  - Extract specific dates, names, and amounts where available
+  - Prioritize items directly affecting digital platforms and e-commerce
+  - Note implementation deadlines and transition periods
+  - Identify enforcement authorities and their actions
+  - Maintain factual, neutral tone
+
+# Execution settings
+priority: 1
+enabled: true
+max_findings: 10
+include_relationships: true
+
+tags:
+  - eu-regulation
+  - german-law
+  - digital-regulation
+  - compliance

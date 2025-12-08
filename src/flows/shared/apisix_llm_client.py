@@ -434,6 +434,7 @@ def create_apisix_graphiti_embedder(
         api_key=api_key,
         base_url=base_url,
         embedding_model=embedding_model,
+        embedding_dim=1536,  # text-embedding-3-small returns 1536 dimensions
     )
 
     return OpenAIEmbedder(config=config)

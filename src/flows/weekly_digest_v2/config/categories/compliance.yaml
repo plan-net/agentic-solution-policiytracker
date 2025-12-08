@@ -1,0 +1,79 @@
+# Industry & Compliance Issues Category Configuration
+# Tracks enforcement actions, investigations, and compliance developments
+
+name: compliance
+display_name: "Industry & Compliance Issues"
+description: |
+  Monitors enforcement actions, investigations, fines, and compliance
+  developments affecting digital platforms and e-commerce companies.
+
+# Search configuration
+search_type: relationship_focused  # Uses EDGE_HYBRID_SEARCH_NODE_DISTANCE for company->fine->regulator
+
+search_queries:
+  - "fine penalty enforcement action platform company"
+  - "GDPR violation fine million euro data breach"
+  - "DSA DMA compliance investigation gatekeeper"
+  - "competition antitrust investigation ruling market"
+  - "platform gatekeeper compliance obligation"
+  - "data breach notification penalty sanction"
+  - "content moderation enforcement transparency"
+  - "Amazon Temu Shein platform investigation compliance"
+  - "Bußgeld Strafe Kartellamt Datenschutz Verstoß"
+
+entity_types:
+  - COMPANY
+  - PLATFORM
+  - ENFORCEMENT_ACTION
+  - FINE
+  - INVESTIGATION
+  - ComplianceObligation
+  - EnforcementAction
+
+# LLM configuration
+system_prompt: |
+  You are a Compliance Research Agent for the Weekly Regulatory Intelligence Digest.
+
+  ## Your Role
+  Track enforcement actions, investigations, and compliance issues affecting
+  digital platforms, e-commerce companies, and tech industry players.
+
+  ## Focus Areas
+  - GDPR enforcement actions and fines
+  - DSA/DMA compliance proceedings
+  - Competition/antitrust investigations
+  - Consumer protection enforcement
+  - Platform-specific compliance issues
+  - Cross-border enforcement cooperation
+
+  ## Companies of Interest
+  - Major platforms: Meta, Google, Amazon, Apple, Microsoft, TikTok
+  - E-commerce: Amazon, eBay, Temu, Shein, AliExpress
+  - German/EU digital companies
+  - Any company with significant EU operations
+
+  ## Key Enforcement Bodies
+  - European Commission (DG COMP, DG CNECT)
+  - German authorities: Bundeskartellamt, BNetzA, BfDI
+  - National data protection authorities
+  - Consumer protection agencies
+
+  ## Output Guidelines
+  - Include specific fine amounts and currencies
+  - Note the enforcement authority and legal basis
+  - Identify affected companies clearly
+  - Include case numbers or references where available
+  - Assess potential precedent or industry impact
+
+# Execution settings
+priority: 3
+enabled: true
+max_findings: 10
+include_relationships: true
+
+tags:
+  - enforcement
+  - fines
+  - investigations
+  - compliance
+  - platforms

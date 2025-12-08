@@ -1,0 +1,47 @@
+# Weekly Regulatory Intelligence Digest v2 Configuration
+# Master configuration for the weekly digest report generation
+
+report_type: weekly
+version: "2.0.0"
+
+# Input handling
+input_type: week_selector
+date_resolution_strategy: iso_week
+
+# Categories to research (in priority order)
+# Each file is loaded from config/categories/
+categories:
+  - legislative.yaml
+  - personnel.yaml
+  - compliance.yaml
+  - policy.yaml
+  - events.yaml
+  - general.yaml   # Catch-all for all new data (runs last with created_only filter)
+
+# Execution strategy
+# sequential: Run categories one after another (more reliable)
+# parallel: Run categories concurrently (faster but more resource-intensive)
+category_execution: sequential
+
+# Output configuration
+output_format: markdown
+template_name: weekly_digest.md.j2
+
+# Tool planning
+# Tool plan files are loaded from config/tool_plans/
+default_tool_plan: comprehensive
+fallback_tool_plan: focused
+
+# Visualization
+include_graph_visualization: true
+graph_visualization_url: http://localhost:5173
+
+# Observability
+trace_name: weekly_digest_v2_workflow
+enable_langwatch: true
+
+# Limits
+max_findings_per_category: 10
+max_total_findings: 50
+search_result_limit: 20
+llm_timeout_seconds: 30

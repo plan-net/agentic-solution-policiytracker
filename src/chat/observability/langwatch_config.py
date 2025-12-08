@@ -58,26 +58,94 @@ class LangWatchConfig:
             return False
 
     def trace(self, name: str, metadata: Optional[dict[str, Any]] = None) -> Callable:
-        """Decorator for tracing functions with LangWatch."""
-        if not self.enabled or not self._initialized:
-            # Passthrough decorator if not enabled
-            def decorator(func: Callable) -> Callable:
-                return func
+        """Decorator for tracing functions with LangWatch.
 
-            return decorator
+        Note: This decorator defers the initialization check to runtime,
+        allowing decorators to be applied at import time before initialize() is called.
+        """
+        import functools
+
+        def decorator(func: Callable) -> Callable:
+            @functools.wraps(func)
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                # Check initialization at runtime, not decoration time
+                if not self.enabled or not self._initialized:
+                    return await func(*args, **kwargs)
+
+                try:
+                    import langwatch
+
+                    # Use langwatch.trace as a context manager for async functions
+                    with langwatch.trace(name=name, metadata=metadata or {}):
+                        return await func(*args, **kwargs)
+                except Exception as e:
+                    logger.warning(f"LangWatch trace failed for {name}: {e}")
+                    return await func(*args, **kwargs)
+
+            @functools.wraps(func)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+                # Check initialization at runtime, not decoration time
+                if not self.enabled or not self._initialized:
+                    return func(*args, **kwargs)
+
+                try:
+                    import langwatch
+
+                    # Use langwatch.trace as a context manager for sync functions
+                    with langwatch.trace(name=name, metadata=metadata or {}):
+                        return func(*args, **kwargs)
+                except Exception as e:
+                    logger.warning(f"LangWatch trace failed for {name}: {e}")
+                    return func(*args, **kwargs)
+
+            # Return appropriate wrapper based on function type
+            import asyncio
+            if asyncio.iscoroutinefunction(func):
+                return async_wrapper
+            return sync_wrapper
+
+        return decorator
+
+    def capture_tool_execution(
+        self,
+        tool_name: str,
+        tool_input: dict[str, Any],
+        tool_output: Any,
+        execution_time: float,
+        success: bool = True,
+        error: Optional[str] = None,
+    ) -> None:
+        """Capture a tool execution as a LangWatch span.
+
+        Use this to explicitly log tool executions with full metadata.
+        """
+        if not self.enabled or not self._initialized:
+            return
 
         try:
             import langwatch
 
-            return langwatch.trace(name=name, metadata=metadata or {})
+            # Create span with tool metadata
+            with langwatch.trace(
+                name=f"tool:{tool_name}",
+                metadata={
+                    "tool_name": tool_name,
+                    "tool_input": tool_input,
+                    "execution_time_seconds": execution_time,
+                    "success": success,
+                    "error": error,
+                },
+            ) as span:
+                # Set span attributes for better visibility
+                if hasattr(span, "set_attribute"):
+                    span.set_attribute("tool.name", tool_name)
+                    span.set_attribute("tool.success", success)
+                    span.set_attribute("tool.execution_time", execution_time)
+                    if error:
+                        span.set_attribute("tool.error", error)
+
         except Exception as e:
-            logger.warning(f"LangWatch trace decorator failed: {e}")
-
-            # Return passthrough decorator on error
-            def decorator(func: Callable) -> Callable:
-                return func
-
-            return decorator
+            logger.warning(f"Failed to capture tool execution for {tool_name}: {e}")
 
 
 # Global configuration instance
