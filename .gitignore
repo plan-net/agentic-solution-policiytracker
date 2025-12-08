@@ -140,6 +140,7 @@ env/
 
 # Local configuration overrides (including config.yaml with secrets)
 config.yaml
+config.yaml.template
 config.local.yaml
 config.development.yaml
 config.production.yaml
