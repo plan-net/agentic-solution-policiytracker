@@ -385,7 +385,7 @@ class ChatContextTracker:
                         node = GraphNode(
                             id=record["uuid"],
                             name=record.get("name", f"Entity-{record['uuid'][:8]}"),
-                            type=record["labels"][0] if record["labels"] else "Unknown",
+                            type=self._get_primary_label(record["labels"] or []),
                             properties=sanitized_props,
                         )
                         nodes.append(node)
@@ -451,6 +451,49 @@ class ChatContextTracker:
 
         logger.warning(f"📈 Returning {len(relationships)} relationships")
         return relationships
+
+    def _get_primary_label(self, labels: list[str]) -> str:
+        """Select the most specific label, ignoring generic 'Entity' when possible.
+
+        Args:
+            labels: List of Neo4j node labels
+
+        Returns:
+            The most specific/meaningful label for display and coloring
+        """
+        if not labels:
+            return "Unknown"
+
+        # Priority order: specific types first (from Neo4j .grass style file)
+        priority_labels = [
+            # Core types
+            "Policy", "Regulation", "Document", "Person", "Company",
+            # Government & Political
+            "GovernmentAgency", "LegislativeBody", "LegislativeProposal",
+            "Politician", "PoliticalParty", "Committee", "Vote", "Jurisdiction",
+            # Legal & Compliance
+            "LegalFramework", "ComplianceObligation", "EnforcementAction",
+            "TechnicalStandard", "ConsultationProcess",
+            # Business & Industry
+            "Industry", "Market", "LobbyGroup", "BusinessActivity", "Exception",
+            # German Parliament (Bundestag)
+            "Drucksache", "Sachgebiet", "Deskriptor", "Vorgang", "BundestagPerson",
+            "Fraktion", "BundestagFraktion", "Wahlperiode", "Plenarprotokoll",
+            "Vorgangsposition", "Aktivitaet", "DrucksachePage",
+            # Other types
+            "ChatSession", "Community", "EntityAlias", "CanonicalEntity", "Episodic",
+        ]
+
+        # Check for priority labels first
+        for priority_label in priority_labels:
+            if priority_label in labels:
+                return priority_label
+
+        # Filter out generic labels
+        specific_labels = [label for label in labels if label not in ("Entity", "Node")]
+
+        # Return first specific label, or first label if all are generic
+        return specific_labels[0] if specific_labels else labels[0]
 
     def _sanitize_neo4j_properties(self, props: dict) -> dict:
         """Convert Neo4j native types (DateTime, Duration, Point, etc.) to JSON-serializable Python types."""

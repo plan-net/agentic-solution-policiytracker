@@ -1,0 +1,16 @@
+# Graph Context Retrieval MCP Server Dependencies
+
+# MCP Protocol
+mcp>=0.9.0
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn>=0.24.0
+starlette>=0.32.0
+pydantic>=2.0.0
+
+# Neo4j
+neo4j>=5.0.0
+
+# Utilities
+python-dotenv>=1.0.0

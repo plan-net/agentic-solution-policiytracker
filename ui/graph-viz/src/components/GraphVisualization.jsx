@@ -4,12 +4,63 @@ import ForceGraph3D from 'react-force-graph-3d'
 import SpriteText from 'three-spritetext'
 import * as THREE from 'three'
 
+// Node colors from Neo4j Browser style (.grass file)
 const NODE_COLORS = {
-  Policy: '#3b82f6',      // Blue
-  Organization: '#10b981', // Green
-  Person: '#f59e0b',       // Orange
-  Event: '#ef4444',        // Red
-  Entity: '#6366f1'        // Indigo (fallback)
+  // Core entity types
+  Entity: '#c99286',
+  Policy: '#aad3fa',
+  Regulation: '#d0bfe1',
+  Document: '#5bfff7',
+  Person: '#abaa86',
+  Company: '#ffbfb5',
+
+  // Government & Political
+  GovernmentAgency: '#00e3cf',
+  LegislativeBody: '#8fd2ff',
+  LegislativeProposal: '#ffa511',
+  Politician: '#97ad86',
+  PoliticalParty: '#bea978',
+  Committee: '#9cc992',
+  Vote: '#81b1ff',
+  Jurisdiction: '#8da0d4',
+
+  // Legal & Compliance
+  LegalFramework: '#6aafb3',
+  ComplianceObligation: '#03ffc4',
+  EnforcementAction: '#f9ae6d',
+  TechnicalStandard: '#98c598',
+  ConsultationProcess: '#7bbfdc',
+
+  // Business & Industry
+  Industry: '#d294bc',
+  Market: '#ff96b9',
+  LobbyGroup: '#9cd28d',
+  BusinessActivity: '#a8afd1',
+  Exception: '#c487ce',
+
+  // German Parliament (Bundestag)
+  Drucksache: '#3cc5f2',
+  Sachgebiet: '#21ebbd',
+  Deskriptor: '#61dbff',
+  Vorgang: '#fae353',
+  BundestagPerson: '#ff8d64',
+  Fraktion: '#5dd759',
+  BundestagFraktion: '#87fd92',
+  Wahlperiode: '#1946f6',
+  Plenarprotokoll: '#f7a9cb',
+  Vorgangsposition: '#b3a784',
+  Aktivitaet: '#a7a884',
+  DrucksachePage: '#ffc4f4',
+
+  // Other types
+  ChatSession: '#7fddbf',
+  Community: '#7cc2ff',
+  EntityAlias: '#ffd0d3',
+  CanonicalEntity: '#ff657b',
+  Episodic: '#3fa5f5',
+
+  // Fallback for unknown types
+  Unknown: '#888888'
 }
 
 function GraphVisualization({ graphData, is3D = false, onNodeClick = null, height = 600 }) {

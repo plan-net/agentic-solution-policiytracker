@@ -1,0 +1,2855 @@
+node.Entity {
+  color: #c99286;
+  size: 25px;
+}
+
+node.ChatSession {
+  color: #7fddbf;
+  size: 25px;
+}
+
+node.ConsultationProcess {
+  color: #7bbfdc;
+  size: 25px;
+}
+
+node.Vote {
+  color: #81b1ff;
+  size: 25px;
+}
+
+node.EnforcementAction {
+  color: #f9ae6d;
+  size: 25px;
+}
+
+node.Policy {
+  color: #aad3fa;
+  size: 25px;
+}
+
+node.TechnicalStandard {
+  color: #98c598;
+  size: 25px;
+}
+
+node.ComplianceObligation {
+  color: #03ffc4;
+  size: 25px;
+}
+
+node.LegalFramework {
+  color: #6aafb3;
+  size: 25px;
+}
+
+node.LegislativeProposal {
+  color: #ffa511;
+  size: 25px;
+}
+
+node.LegislativeBody {
+  color: #8fd2ff;
+  size: 25px;
+}
+
+node.Document {
+  color: #5bfff7;
+  size: 25px;
+}
+
+node.Regulation {
+  color: #d0bfe1;
+  size: 25px;
+}
+
+node.Committee {
+  color: #9cc992;
+  size: 25px;
+}
+
+node.PoliticalParty {
+  color: #bea978;
+  size: 25px;
+}
+
+node.Politician {
+  color: #97ad86;
+  size: 25px;
+}
+
+node.GovernmentAgency {
+  color: #00e3cf;
+  size: 25px;
+}
+
+node.Jurisdiction {
+  color: #8da0d4;
+  size: 25px;
+}
+
+node.Industry {
+  color: #d294bc;
+  size: 25px;
+}
+
+node.LobbyGroup {
+  color: #9cd28d;
+  size: 25px;
+}
+
+node.Company {
+  color: #ffbfb5;
+  size: 25px;
+  caption: "{company_name}";
+}
+
+node.Person {
+  color: #abaa86;
+  size: 25px;
+}
+
+node.Community {
+  color: #7cc2ff;
+  size: 25px;
+}
+
+node.EntityAlias {
+  color: #ffd0d3;
+  size: 25px;
+}
+
+node.CanonicalEntity {
+  color: #ff657b;
+  size: 25px;
+}
+
+node.Drucksache {
+  color: #3cc5f2;
+  size: 25px;
+  caption: "{name}";
+}
+
+node.Sachgebiet {
+  color: #21ebbd;
+  size: 25px;
+}
+
+node.Deskriptor {
+  color: #61dbff;
+  size: 25px;
+}
+
+node.Vorgang {
+  color: #fae353;
+  size: 25px;
+  caption: "{name}";
+}
+
+node.BundestagPerson {
+  color: #ff8d64;
+  size: 25px;
+}
+
+node.Fraktion {
+  color: #5dd759;
+  size: 25px;
+}
+
+node.Wahlperiode {
+  color: #1946f6;
+  size: 25px;
+}
+
+node.Episodic {
+  color: #3fa5f5;
+  size: 25px;
+}
+
+node.BusinessActivity {
+  color: #a8afd1;
+  size: 25px;
+}
+
+node.Exception {
+  color: #c487ce;
+  size: 25px;
+}
+
+node.Market {
+  color: #ff96b9;
+  size: 25px;
+}
+
+node.Plenarprotokoll {
+  color: #f7a9cb;
+  size: 25px;
+}
+
+node.Vorgangsposition {
+  color: #b3a784;
+  size: 25px;
+}
+
+node.Aktivitaet {
+  color: #a7a884;
+  size: 25px;
+}
+
+node.BundestagFraktion {
+  color: #87fd92;
+  size: 25px;
+}
+
+node.DrucksachePage {
+  color: #ffc4f4;
+  size: 25px;
+}
+
+relationship.ACCEPTS_CONCESSIONS_FROM {
+  width: 1px;
+}
+
+relationship.ADOPTS {
+  width: 1px;
+}
+
+relationship.ADVISES {
+  width: 1px;
+}
+
+relationship.ADVOCATES_FOR {
+  width: 1px;
+}
+
+relationship.AFFECTS {
+  width: 1px;
+}
+
+relationship.AMENDS {
+  width: 1px;
+}
+
+relationship.ASSERTS_SOVEREIGN_RIGHT_TO_REGULATE {
+  width: 1px;
+}
+
+relationship.AUTHORED_BY {
+  width: 1px;
+}
+
+relationship.COMPETES_IN {
+  width: 1px;
+}
+
+relationship.CONFLICTS_WITH {
+  width: 1px;
+}
+
+relationship.DELAYED {
+  width: 1px;
+}
+
+relationship.DELEGATES_TO {
+  width: 1px;
+}
+
+relationship.DISCUSS_WITH {
+  width: 1px;
+}
+
+relationship.ENDS_ANTITRUST_PROBE_AGAINST {
+  width: 1px;
+}
+
+relationship.ENFORCES {
+  width: 1px;
+}
+
+relationship.FINES {
+  width: 1px;
+}
+
+relationship.FOUNDED_BY {
+  width: 1px;
+}
+
+relationship.HARMONIZES_WITH {
+  width: 1px;
+}
+
+relationship.HAS_MEMBER {
+  width: 1px;
+}
+
+relationship.IMPLEMENTS {
+  width: 1px;
+}
+
+relationship.INFLUENCES {
+  width: 1px;
+}
+
+relationship.INVESTS_IN {
+  width: 1px;
+}
+
+relationship.LEADS {
+  width: 1px;
+}
+
+relationship.LED_FUNDING_ROUND {
+  width: 1px;
+}
+
+relationship.LOBBIES_AGAINST {
+  width: 1px;
+}
+
+relationship.LOBBIES_FOR {
+  width: 1px;
+}
+
+relationship.MENTIONS {
+  width: 1px;
+}
+
+relationship.MONITORS {
+  width: 1px;
+}
+
+relationship.OPERATES_IN {
+  width: 1px;
+}
+
+relationship.PARTNERS_WITH {
+  width: 1px;
+}
+
+relationship.PRECEDES {
+  width: 1px;
+}
+
+relationship.PROPOSES {
+  width: 1px;
+}
+
+relationship.PUBLISHES {
+  width: 1px;
+}
+
+relationship.RATIFIES {
+  width: 1px;
+}
+
+relationship.REFERENCES {
+  width: 1px;
+}
+
+relationship.REJECTS_CLAIMS_BY {
+  width: 1px;
+}
+
+relationship.RELATES_TO {
+  width: 1px;
+}
+
+relationship.REPRESENTS {
+  width: 1px;
+}
+
+relationship.REQUIRES_COMPLIANCE {
+  width: 1px;
+}
+
+relationship.SUBJECT_TO {
+  width: 1px;
+}
+
+relationship.SUPERSEDES {
+  width: 1px;
+}
+
+relationship.SUPPORTED_BY {
+  width: 1px;
+}
+
+relationship.SUPPORTS {
+  width: 1px;
+}
+
+relationship.TRIGGERS {
+  width: 1px;
+}
+
+relationship.IMPOSES {
+  width: 1px;
+}
+
+relationship.CRITICIZES {
+  width: 1px;
+}
+
+relationship.ACQUIRES {
+  width: 1px;
+}
+
+relationship.RECEIVES {
+  width: 1px;
+}
+
+relationship.HAS_POSITION {
+  width: 1px;
+}
+
+relationship.PLANS_TO_USE {
+  width: 1px;
+}
+
+relationship.ANNOUNCED_USE_OF_DATA {
+  width: 1px;
+}
+
+relationship.ANNOUNCED_DELAY {
+  width: 1px;
+}
+
+relationship.PLANS_TO_USE_DATA {
+  width: 1px;
+}
+
+relationship.TAKES_ACTION_AGAINST {
+  width: 1px;
+}
+
+relationship.THREATENS_LAWSUIT {
+  width: 1px;
+}
+
+relationship.FILED_COMPLAINTS {
+  width: 1px;
+}
+
+relationship.AFFILIATED_WITH {
+  width: 1px;
+}
+
+relationship.INCLUDES {
+  width: 1px;
+}
+
+relationship.MEMBER_OF {
+  width: 1px;
+}
+
+relationship.INFRINGEMENT_AGAINST {
+  width: 1px;
+}
+
+relationship.INVESTIGATES {
+  width: 1px;
+}
+
+relationship.REQUESTS_COMPLIANCE {
+  width: 1px;
+}
+
+relationship.DECIDES_ON {
+  width: 1px;
+}
+
+relationship.EXAMINES {
+  width: 1px;
+}
+
+relationship.AMENDS_PROPOSAL {
+  width: 1px;
+}
+
+relationship.ACCUSES {
+  width: 1px;
+}
+
+relationship.SEEKS_FEEDBACK_ON {
+  width: 1px;
+}
+
+relationship.PARENT_COMPANY_OF {
+  width: 1px;
+}
+
+relationship.NOTIFIED {
+  width: 1px;
+}
+
+relationship.REQUESTED {
+  width: 1px;
+}
+
+relationship.VIOLATED {
+  width: 1px;
+}
+
+relationship.THREATENS {
+  width: 1px;
+}
+
+relationship.OPENED_INQUIRY {
+  width: 1px;
+}
+
+relationship.SUBMITS_TO {
+  width: 1px;
+}
+
+relationship.APPEALS {
+  width: 1px;
+}
+
+relationship.JUDGE {
+  width: 1px;
+}
+
+relationship.SUBMITS_COMMITMENTS {
+  width: 1px;
+}
+
+relationship.HARMED_COMPETITION {
+  width: 1px;
+}
+
+relationship.HAS_STOPPED_SELLING {
+  width: 1px;
+}
+
+relationship.SUPPLIES {
+  width: 1px;
+}
+
+relationship.CONTRIBUTES {
+  width: 1px;
+}
+
+relationship.DEPLOYS {
+  width: 1px;
+}
+
+relationship.INTRODUCES {
+  width: 1px;
+}
+
+relationship.REQUESTS_CEASE_AND_DESIST {
+  width: 1px;
+}
+
+relationship.COLLABORATES_WITH {
+  width: 1px;
+}
+
+relationship.SECURED_FUNDING {
+  width: 1px;
+}
+
+relationship.SUPERCEDES {
+  width: 1px;
+}
+
+relationship.FOCUSES_ON {
+  width: 1px;
+}
+
+relationship.INVITES_FEEDBACK {
+  width: 1px;
+}
+
+relationship.ASSESSING {
+  width: 1px;
+}
+
+relationship.EVALUATES {
+  width: 1px;
+}
+
+relationship.SPEAKS_TO {
+  width: 1px;
+}
+
+relationship.SUPERVISES {
+  width: 1px;
+}
+
+relationship.SPEAKS_FOR {
+  width: 1px;
+}
+
+relationship.PUBLISHED_BY {
+  width: 1px;
+}
+
+relationship.RAISES {
+  width: 1px;
+}
+
+relationship.PARTICIPATES_IN {
+  width: 1px;
+}
+
+relationship.LAUNCHES_INQUIRY {
+  width: 1px;
+}
+
+relationship.SIGN_AGREEMENT {
+  width: 1px;
+}
+
+relationship.BREACHES {
+  width: 1px;
+}
+
+relationship.WORKS_WITH {
+  width: 1px;
+}
+
+relationship.SUES {
+  width: 1px;
+}
+
+relationship.RECOGNIZED_BY {
+  width: 1px;
+}
+
+relationship.ATTRACTS {
+  width: 1px;
+}
+
+relationship.LOSSES {
+  width: 1px;
+}
+
+relationship.USES {
+  width: 1px;
+}
+
+relationship.PROVIDES {
+  width: 1px;
+}
+
+relationship.INFRINGES {
+  width: 1px;
+}
+
+relationship.COMMITTED_TO {
+  width: 1px;
+}
+
+relationship.SPOKESPERSON {
+  width: 1px;
+}
+
+relationship.CLASSIFIED_AS {
+  width: 1px;
+}
+
+relationship.IN_JURISDICTION {
+  width: 1px;
+}
+
+relationship.RAISED {
+  width: 1px;
+}
+
+relationship.USES_DATA_FOR_TRAINING {
+  width: 1px;
+}
+
+relationship.THREATENS_WITH_LAWSUIT {
+  width: 1px;
+}
+
+relationship.CHARGED_WITH {
+  width: 1px;
+}
+
+relationship.VIOLATES {
+  width: 1px;
+}
+
+relationship.PARENT_COMPANY {
+  width: 1px;
+}
+
+relationship.COMMENTS_ON {
+  width: 1px;
+}
+
+relationship.INFRINGES_ON {
+  width: 1px;
+}
+
+relationship.OPENED_FORMAL_PROCEEDINGS {
+  width: 1px;
+}
+
+relationship.LAUNCHES {
+  width: 1px;
+}
+
+relationship.FINED {
+  width: 1px;
+}
+
+relationship.INFRINGES_AGAINST {
+  width: 1px;
+}
+
+relationship.DESIGNATED_AS {
+  width: 1px;
+}
+
+relationship.OPENED_INVESTIGATIONS {
+  width: 1px;
+}
+
+relationship.PROVIDES_INFORMATION_ON {
+  width: 1px;
+}
+
+relationship.SURVEYED_BY {
+  width: 1px;
+}
+
+relationship.RESEARCHES {
+  width: 1px;
+}
+
+relationship.TRANSPOSES {
+  width: 1px;
+}
+
+relationship.EXPERIENCES {
+  width: 1px;
+}
+
+relationship.LINKED_TO {
+  width: 1px;
+}
+
+relationship.FACES {
+  width: 1px;
+}
+
+relationship.COOPERATES_ON {
+  width: 1px;
+}
+
+relationship.RULED_ON {
+  width: 1px;
+}
+
+relationship.UPHOLDS {
+  width: 1px;
+}
+
+relationship.FILES {
+  width: 1px;
+}
+
+relationship.SUGGESTS {
+  width: 1px;
+}
+
+relationship.OFFERS {
+  width: 1px;
+}
+
+relationship.EXPORTS {
+  width: 1px;
+}
+
+relationship.SUSPENDS_OPERATIONS_FOR {
+  width: 1px;
+}
+
+relationship.SEIZES {
+  width: 1px;
+}
+
+relationship.FACILITATES {
+  width: 1px;
+}
+
+relationship.CONFIRMS {
+  width: 1px;
+}
+
+relationship.DENIES {
+  width: 1px;
+}
+
+relationship.HAS_CLIENT {
+  width: 1px;
+}
+
+relationship.RECOMMENDS {
+  width: 1px;
+}
+
+relationship.HAS_HALTED {
+  width: 1px;
+}
+
+relationship.INVITES_VIEWS {
+  width: 1px;
+}
+
+relationship.FILED_COMPLAINT {
+  width: 1px;
+}
+
+relationship.ALLEGES_ABUSE {
+  width: 1px;
+}
+
+relationship.HALTED_PLANS {
+  width: 1px;
+}
+
+relationship.REJECTS {
+  width: 1px;
+}
+
+relationship.DENIES_DATA_EXPORT {
+  width: 1px;
+}
+
+relationship.APPOINTS {
+  width: 1px;
+}
+
+relationship.CONSIDERS_FURTHER_ACTION {
+  width: 1px;
+}
+
+relationship.EXPERT_STATEMENT {
+  width: 1px;
+}
+
+relationship.FOUND_GUILTY_OF {
+  width: 1px;
+}
+
+relationship.SIGNIFICANT_ANTITRUST_RULING_AGAINST {
+  width: 1px;
+}
+
+relationship.RULED {
+  width: 1px;
+}
+
+relationship.PROHIBITED {
+  width: 1px;
+}
+
+relationship.ORDERED {
+  width: 1px;
+}
+
+relationship.PROVIDES_INFORMATION_ABOUT {
+  width: 1px;
+}
+
+relationship.DISCONTINUES {
+  width: 1px;
+}
+
+relationship.INTEGRATES {
+  width: 1px;
+}
+
+relationship.PROVIDES_INFORMATION {
+  width: 1px;
+}
+
+relationship.ACCEPTS_COMMITMENTS {
+  width: 1px;
+}
+
+relationship.BREACHED_OBLIGATION {
+  width: 1px;
+}
+
+relationship.UNDER_INVESTIGATION {
+  width: 1px;
+}
+
+relationship.CHECKS {
+  width: 1px;
+}
+
+relationship.EXPECTS {
+  width: 1px;
+}
+
+relationship.EXEMPTS {
+  width: 1px;
+}
+
+relationship.PASSED {
+  width: 1px;
+}
+
+relationship.BACKED_BY {
+  width: 1px;
+}
+
+relationship.LOCATED_IN {
+  width: 1px;
+}
+
+relationship.RANKS {
+  width: 1px;
+}
+
+relationship.IMPROVES {
+  width: 1px;
+}
+
+relationship.INCREASES {
+  width: 1px;
+}
+
+relationship.HAS_EARNINGS {
+  width: 1px;
+}
+
+relationship.BEATS_ESTIMATE {
+  width: 1px;
+}
+
+relationship.UNDERPERFORMS {
+  width: 1px;
+}
+
+relationship.BEATS {
+  width: 1px;
+}
+
+relationship.POSTS {
+  width: 1px;
+}
+
+relationship.ENDORSED_BY {
+  width: 1px;
+}
+
+relationship.PUBLISHES_ARTICLE_ON {
+  width: 1px;
+}
+
+relationship.ACQUIRED {
+  width: 1px;
+}
+
+relationship.CLOSED_HIGHER {
+  width: 1px;
+}
+
+relationship.PLANS_TO_RESCIND {
+  width: 1px;
+}
+
+relationship.CONFIRMED_BY {
+  width: 1px;
+}
+
+relationship.ROSE {
+  width: 1px;
+}
+
+relationship.ACKNOWLEDGED {
+  width: 1px;
+}
+
+relationship.DECREASED {
+  width: 1px;
+}
+
+relationship.PROVIDES_RESEARCH_FOR {
+  width: 1px;
+}
+
+relationship.PROVIDES_RESEARCH {
+  width: 1px;
+}
+
+relationship.GROWS {
+  width: 1px;
+}
+
+relationship.RESPONDS_TO {
+  width: 1px;
+}
+
+relationship.BELONGS_TO {
+  width: 1px;
+}
+
+relationship.HAS_RANK {
+  width: 1px;
+}
+
+relationship.HAS_INDUSTRY_RANK {
+  width: 1px;
+}
+
+relationship.PARTNERED_WITH {
+  width: 1px;
+}
+
+relationship.SHOWCASED_AT {
+  width: 1px;
+}
+
+relationship.FOUNDED {
+  width: 1px;
+}
+
+relationship.COVERS {
+  width: 1px;
+}
+
+relationship.OPPOSES {
+  width: 1px;
+}
+
+relationship.ANNOUNCED_SUPPORT_FOR {
+  width: 1px;
+}
+
+relationship.DEVELOPS {
+  width: 1px;
+}
+
+relationship.REPORTED {
+  width: 1px;
+}
+
+relationship.OWNS {
+  width: 1px;
+}
+
+relationship.HAS_EXPIRED_SSL_CERTIFICATE {
+  width: 1px;
+}
+
+relationship.IS_SAFE_DOMAIN {
+  width: 1px;
+}
+
+relationship.REGISTERED {
+  width: 1px;
+}
+
+relationship.HAS_NAMESERVER {
+  width: 1px;
+}
+
+relationship.SELLS {
+  width: 1px;
+}
+
+relationship.ISSUED_BY {
+  width: 1px;
+}
+
+relationship.REDEEMED_AT {
+  width: 1px;
+}
+
+relationship.LIMITED_TO {
+  width: 1px;
+}
+
+relationship.ACTIVATED_WITHIN {
+  width: 1px;
+}
+
+relationship.REFUNDED_TO {
+  width: 1px;
+}
+
+relationship.OFFERS_DISCOUNT {
+  width: 1px;
+}
+
+relationship.OCCASIONALLY_OFFERS_DISCOUNTS {
+  width: 1px;
+}
+
+relationship.OCCASIONALLY_OFFERS {
+  width: 1px;
+}
+
+relationship.SHARES {
+  width: 1px;
+}
+
+relationship.STARTS {
+  width: 1px;
+}
+
+relationship.PROMOTES {
+  width: 1px;
+}
+
+relationship.HAS_CLEARANCE_SALES {
+  width: 1px;
+}
+
+relationship.HOSTS {
+  width: 1px;
+}
+
+relationship.OFFERS_DISCOUNTS {
+  width: 1px;
+}
+
+relationship.UPDATED {
+  width: 1px;
+}
+
+relationship.EXPIRES_ON {
+  width: 1px;
+}
+
+relationship.SAVES {
+  width: 1px;
+}
+
+relationship.HAS_PRODUCTS_FOR_SALE {
+  width: 1px;
+}
+
+relationship.PROPOSED {
+  width: 1px;
+}
+
+relationship.OFFERS_DISCOUNT_CODES {
+  width: 1px;
+}
+
+relationship.HAS_COUPON {
+  width: 1px;
+}
+
+relationship.HAS_ACTIVE_COUPONS {
+  width: 1px;
+}
+
+relationship.SAVES_MEMBERS {
+  width: 1px;
+}
+
+relationship.PUBLISHED {
+  width: 1px;
+}
+
+relationship.NAMES {
+  width: 1px;
+}
+
+relationship.SURPASSES {
+  width: 1px;
+}
+
+relationship.HAS_ESTIMATE {
+  width: 1px;
+}
+
+relationship.CLOSED {
+  width: 1px;
+}
+
+relationship.HIGHLIGHTS {
+  width: 1px;
+}
+
+relationship.BEAT {
+  width: 1px;
+}
+
+relationship.ENABLES {
+  width: 1px;
+}
+
+relationship.DELIVERS_PRODUCTS_THROUGH {
+  width: 1px;
+}
+
+relationship.ACCEPTS_PAYMENT_METHOD {
+  width: 1px;
+}
+
+relationship.PAYMENT_METHOD_FOR {
+  width: 1px;
+}
+
+relationship.PREDICTS {
+  width: 1px;
+}
+
+relationship.FORECASTS {
+  width: 1px;
+}
+
+relationship.ASSESSMENT {
+  width: 1px;
+}
+
+relationship.INCREASED {
+  width: 1px;
+}
+
+relationship.PLUNGED {
+  width: 1px;
+}
+
+relationship.SOURCE_OF {
+  width: 1px;
+}
+
+relationship.BRANDS {
+  width: 1px;
+}
+
+relationship.NOMINATES {
+  width: 1px;
+}
+
+relationship.BEAT_ESTIMATE {
+  width: 1px;
+}
+
+relationship.PUBLISHED_ON {
+  width: 1px;
+}
+
+relationship.ADDED_CUSTOMERS {
+  width: 1px;
+}
+
+relationship.LISTED_ON {
+  width: 1px;
+}
+
+relationship.GREW_YEAR_OVER_YEAR {
+  width: 1px;
+}
+
+relationship.INTERESTS_IN {
+  width: 1px;
+}
+
+relationship.EMPLOYS {
+  width: 1px;
+}
+
+relationship.GENERATES_REVENUE {
+  width: 1px;
+}
+
+relationship.EXPANDS {
+  width: 1px;
+}
+
+relationship.MANAGES {
+  width: 1px;
+}
+
+relationship.HAS_ACTIVE_OFFERS {
+  width: 1px;
+}
+
+relationship.SPONSORED_BY {
+  width: 1px;
+}
+
+relationship.PRESENTED_BY {
+  width: 1px;
+}
+
+relationship.CURATES {
+  width: 1px;
+}
+
+relationship.RECALLS {
+  width: 1px;
+}
+
+relationship.INVOLVED_IN {
+  width: 1px;
+}
+
+relationship.BECOMES {
+  width: 1px;
+}
+
+relationship.SPEAKS_BEFORE {
+  width: 1px;
+}
+
+relationship.REPORTS_EARNINGS {
+  width: 1px;
+}
+
+relationship.BUYS {
+  width: 1px;
+}
+
+relationship.DESIGNED_FOR {
+  width: 1px;
+}
+
+relationship.MISSES {
+  width: 1px;
+}
+
+relationship.FOLLOWS {
+  width: 1px;
+}
+
+relationship.APPOINTED {
+  width: 1px;
+}
+
+relationship.BURDENED_WITH {
+  width: 1px;
+}
+
+relationship.WATCHED_BY {
+  width: 1px;
+}
+
+relationship.PRESENTS_AT {
+  width: 1px;
+}
+
+relationship.STRENGTHENS {
+  width: 1px;
+}
+
+relationship.REVENUES_RISE_Y/Y {
+  width: 1px;
+}
+
+relationship.REVENUES_RISE {
+  width: 1px;
+}
+
+relationship.BEAT_ESTIMATES {
+  width: 1px;
+}
+
+relationship.AUTHORED {
+  width: 1px;
+}
+
+relationship.ACHIEVED_COMPLIANCE {
+  width: 1px;
+}
+
+relationship.AVAILABLE_VIA {
+  width: 1px;
+}
+
+relationship.INTEGRATES_WITH {
+  width: 1px;
+}
+
+relationship.PARTICIPATED_IN {
+  width: 1px;
+}
+
+relationship.HOSTED_BY {
+  width: 1px;
+}
+
+relationship.REGAINS_COMPLIANCE {
+  width: 1px;
+}
+
+relationship.RETIRES {
+  width: 1px;
+}
+
+relationship.PRESENTS {
+  width: 1px;
+}
+
+relationship.RENEWAL {
+  width: 1px;
+}
+
+relationship.REDUCES {
+  width: 1px;
+}
+
+relationship.ADJUSTS {
+  width: 1px;
+}
+
+relationship.SCHEDULED_TO_REPORT {
+  width: 1px;
+}
+
+relationship.NOTIFIED_WHEN_COMPROMISED {
+  width: 1px;
+}
+
+relationship.CHILD_SAFETY_IS_VERY_GOOD {
+  width: 1px;
+}
+
+relationship.REPUTATION_CALCULATED {
+  width: 1px;
+}
+
+relationship.NOT_FOUND_FOR_INAPPROPRIATE_CONTENT {
+  width: 1px;
+}
+
+relationship.ASSESSES_SECURITY_THREATS {
+  width: 1px;
+}
+
+relationship.NOT_DETECTED_FOR_MATURE_CONTENT {
+  width: 1px;
+}
+
+relationship.PHISHING_NOT_DETECTED {
+  width: 1px;
+}
+
+relationship.UNWANTED_SOFTWARE_NOT_FOUND {
+  width: 1px;
+}
+
+relationship.HARMFUL_APPLICATIONS_NOT_FOUND {
+  width: 1px;
+}
+
+relationship.DEPLOYED {
+  width: 1px;
+}
+
+relationship.EXPANDED {
+  width: 1px;
+}
+
+relationship.HAS_STAKE_IN {
+  width: 1px;
+}
+
+relationship.HOLDS {
+  width: 1px;
+}
+
+relationship.BENEFITS_FROM {
+  width: 1px;
+}
+
+relationship.OUTPERFORMS {
+  width: 1px;
+}
+
+relationship.ANNOUNCES {
+  width: 1px;
+}
+
+relationship.REPORTS {
+  width: 1px;
+}
+
+relationship.RECOGNIZED_AS {
+  width: 1px;
+}
+
+relationship.IDENTITY {
+  width: 1px;
+}
+
+relationship.PRODUCES {
+  width: 1px;
+}
+
+relationship.TRADED {
+  width: 1px;
+}
+
+relationship.FAILURE_TO_PROVIDE_GUIDANCE {
+  width: 1px;
+}
+
+relationship.UNDER_PRESSURE {
+  width: 1px;
+}
+
+relationship.ON_SALE_AT {
+  width: 1px;
+}
+
+relationship.HAS_FEATURE {
+  width: 1px;
+}
+
+relationship.SHOWCASES {
+  width: 1px;
+}
+
+relationship.TRADEMARKS {
+  width: 1px;
+}
+
+relationship.SOLD {
+  width: 1px;
+}
+
+relationship.SEES_DECLINE_IN {
+  width: 1px;
+}
+
+relationship.REVIEWED {
+  width: 1px;
+}
+
+relationship.DESIGNED_BY {
+  width: 1px;
+}
+
+relationship.FEATURES {
+  width: 1px;
+}
+
+relationship.EXPECTED_TO_REPORT {
+  width: 1px;
+}
+
+relationship.SCHEDULED_TO_RELEASE {
+  width: 1px;
+}
+
+relationship.DELIVERED_NEGATIVE_EARNINGS_SURPRISE {
+  width: 1px;
+}
+
+relationship.IMPACTED_BY {
+  width: 1px;
+}
+
+relationship.HAS_EBIT {
+  width: 1px;
+}
+
+relationship.HAS_EBIT_TARGET {
+  width: 1px;
+}
+
+relationship.HAS_EBIT_MARGIN {
+  width: 1px;
+}
+
+relationship.HAS_PRICE {
+  width: 1px;
+}
+
+relationship.UPCOMING_TRAINING_EVENTS {
+  width: 1px;
+}
+
+relationship.REPORTS_ON {
+  width: 1px;
+}
+
+relationship.RESTATES_RATING {
+  width: 1px;
+}
+
+relationship.PERFORMS_AT {
+  width: 1px;
+}
+
+relationship.CELEBRATES {
+  width: 1px;
+}
+
+relationship.VALID_FOR {
+  width: 1px;
+}
+
+relationship.PROVIDES_DISCOUNTS {
+  width: 1px;
+}
+
+relationship.USES_DISCOUNT_COUPON {
+  width: 1px;
+}
+
+relationship.HAS_DISCOUNTS {
+  width: 1px;
+}
+
+relationship.DISCOUNTS {
+  width: 1px;
+}
+
+relationship.PAYMENT_METHOD {
+  width: 1px;
+}
+
+relationship.USES_DISCOUNT_CODE {
+  width: 1px;
+}
+
+relationship.ADDS_TO_BAG {
+  width: 1px;
+}
+
+relationship.GO_TO_CHECKOUT {
+  width: 1px;
+}
+
+relationship.ADDS_VOUCHER {
+  width: 1px;
+}
+
+relationship.REDEEMS_DISCOUNT {
+  width: 1px;
+}
+
+relationship.SUBSCRIBES_TO {
+  width: 1px;
+}
+
+relationship.ISSUES_SSL_CERTIFICATE {
+  width: 1px;
+}
+
+relationship.REGISTRAR {
+  width: 1px;
+}
+
+relationship.VALIDATES {
+  width: 1px;
+}
+
+relationship.TARGETS {
+  width: 1px;
+}
+
+relationship.EXPIRES {
+  width: 1px;
+}
+
+relationship.HAS_AUDIENCE_GEOGRAPHY {
+  width: 1px;
+}
+
+relationship.HAS_PAGEVIEWS {
+  width: 1px;
+}
+
+relationship.HAS_GLOBAL_RANK {
+  width: 1px;
+}
+
+relationship.HAS_PAGEVIEWS_RANK {
+  width: 1px;
+}
+
+relationship.HAS_REACH_RANK {
+  width: 1px;
+}
+
+relationship.WRITES_REVIEW {
+  width: 1px;
+}
+
+relationship.CONTINUES {
+  width: 1px;
+}
+
+relationship.RATES {
+  width: 1px;
+}
+
+relationship.HAS_MOBILE_APP {
+  width: 1px;
+}
+
+relationship.DELIVERS_PRODUCTS {
+  width: 1px;
+}
+
+relationship.HAS_CONTACT_METHOD {
+  width: 1px;
+}
+
+relationship.HAS_SPECIAL_EVENT {
+  width: 1px;
+}
+
+relationship.HAS_CONTACT_DETAILS {
+  width: 1px;
+}
+
+relationship.HAS_DISCOUNT {
+  width: 1px;
+}
+
+relationship.HAS_ADDITIONAL_DISCOUNT_CODE {
+  width: 1px;
+}
+
+relationship.HAS_COUPONS {
+  width: 1px;
+}
+
+relationship.SELLS_PRODUCTS {
+  width: 1px;
+}
+
+relationship.PROVIDES_MOBILE_APP {
+  width: 1px;
+}
+
+relationship.OPERATES_ON_PLATFORM {
+  width: 1px;
+}
+
+relationship.USES_CODE {
+  width: 1px;
+}
+
+relationship.PURCHASES {
+  width: 1px;
+}
+
+relationship.SOLD_AT {
+  width: 1px;
+}
+
+relationship.CONTACTS {
+  width: 1px;
+}
+
+relationship.HAS_TRAFFIC_DISTRIBUTION {
+  width: 1px;
+}
+
+relationship.HAS_POPULARITY {
+  width: 1px;
+}
+
+relationship.PROVIDES_COST_EFFECTIVE_SHOPPING {
+  width: 1px;
+}
+
+relationship.OFFERS_COUPON {
+  width: 1px;
+}
+
+relationship.OFFERS_PROMOTIONAL_CODE {
+  width: 1px;
+}
+
+relationship.ACTIVE_ON {
+  width: 1px;
+}
+
+relationship.HAS_COUPON_CODE {
+  width: 1px;
+}
+
+relationship.HOLDS_PROMOTION {
+  width: 1px;
+}
+
+relationship.DEDICATED_TO {
+  width: 1px;
+}
+
+relationship.OFFERS_DISCOUNTS_ON {
+  width: 1px;
+}
+
+relationship.OFFERS_PROMO_CODE {
+  width: 1px;
+}
+
+relationship.FINDS {
+  width: 1px;
+}
+
+relationship.CANNOT_USE_MORE_THAN_ONE_RABATTKODE_SIMULTANEOUSLY {
+  width: 1px;
+}
+
+relationship.CAN_USE_FIRST_ORDER_RABATTKODE_WITH_ANOTHER {
+  width: 1px;
+}
+
+relationship.HAS_EXCEPTIONS {
+  width: 1px;
+}
+
+relationship.USES_PROMOTIONAL_CODE {
+  width: 1px;
+}
+
+relationship.INVITES {
+  width: 1px;
+}
+
+relationship.PUBLISHED_IN {
+  width: 1px;
+}
+
+relationship.BEHANDELT {
+  width: 1px;
+}
+
+relationship.PREDOMINANT_PACKAGING_MATERIAL {
+  width: 1px;
+}
+
+relationship.ISSUES {
+  width: 1px;
+}
+
+relationship.DELIVERS_PRODUCTS_VIA {
+  width: 1px;
+}
+
+relationship.USES_COUPON {
+  width: 1px;
+}
+
+relationship.OFFERS_PROMOTIONAL_CONTENT {
+  width: 1px;
+}
+
+relationship.PROVIDES_NEWSLETTER {
+  width: 1px;
+}
+
+relationship.WRITTEN_IN {
+  width: 1px;
+}
+
+relationship.ONLINE_BESTELLEN {
+  width: 1px;
+}
+
+relationship.PREVIOUSLY_SOLD_AT {
+  width: 1px;
+}
+
+relationship.WORKS_AS {
+  width: 1px;
+}
+
+relationship.NOTIFIES {
+  width: 1px;
+}
+
+relationship.ASSESSES {
+  width: 1px;
+}
+
+relationship.CALCULATES {
+  width: 1px;
+}
+
+relationship.HAS_HISTORICAL_RISE {
+  width: 1px;
+}
+
+relationship.HAS_HISTORICAL_ACCURACY {
+  width: 1px;
+}
+
+relationship.CURRENT_SHARE_PRICE {
+  width: 1px;
+}
+
+relationship.HAS_SCORE {
+  width: 1px;
+}
+
+relationship.TRADING_PERCENTILE {
+  width: 1px;
+}
+
+relationship.EXPIRES_IN {
+  width: 1px;
+}
+
+relationship.HAS_OFFER {
+  width: 1px;
+}
+
+relationship.ADDS {
+  width: 1px;
+}
+
+relationship.CLICKS_ON {
+  width: 1px;
+}
+
+relationship.SEES {
+  width: 1px;
+}
+
+relationship.ENTERS {
+  width: 1px;
+}
+
+relationship.OFFERS_FREE_RETURNS {
+  width: 1px;
+}
+
+relationship.GIVES {
+  width: 1px;
+}
+
+relationship.HAS_CONDITION {
+  width: 1px;
+}
+
+relationship.CAN_USE {
+  width: 1px;
+}
+
+relationship.INFORMS {
+  width: 1px;
+}
+
+relationship.EXCLUDES {
+  width: 1px;
+}
+
+relationship.HAS_HISTORICAL_PERFORMANCE {
+  width: 1px;
+}
+
+relationship.IS_PUBLICLY_TRADED {
+  width: 1px;
+}
+
+relationship.HAS_STOCK_PRICE {
+  width: 1px;
+}
+
+relationship.UPDATED_TODAY {
+  width: 1px;
+}
+
+relationship.ALLOWS {
+  width: 1px;
+}
+
+relationship.OFFERS_FREE_SHIPPING {
+  width: 1px;
+}
+
+relationship.HAS_MINIMUM_ORDER_AMOUNT {
+  width: 1px;
+}
+
+relationship.OFFERS_FREE_SHIPPING_TO_PLUS_MEMBERS {
+  width: 1px;
+}
+
+relationship.PROVIDES_DELIVERY_TIME_ESTIMATE {
+  width: 1px;
+}
+
+relationship.DELIVERS_WITHIN {
+  width: 1px;
+}
+
+relationship.CANNOT_USE_MORE_THAN_ONE_RABATTKODE {
+  width: 1px;
+}
+
+relationship.EXCEPTION_TO_RULE {
+  width: 1px;
+}
+
+relationship.CAN_USE_MULTIPLE_RABATTKODER {
+  width: 1px;
+}
+
+relationship.USES_CODE_PROMOTION {
+  width: 1px;
+}
+
+relationship.WORKS_AT {
+  width: 1px;
+}
+
+relationship.SHOP_AT {
+  width: 1px;
+}
+
+relationship.PROVIDES_BROKERAGE_SERVICES {
+  width: 1px;
+}
+
+relationship.CLOSING_PRICE_ON {
+  width: 1px;
+}
+
+relationship.EXCLUSIVE_TO {
+  width: 1px;
+}
+
+relationship.VALID_FROM {
+  width: 1px;
+}
+
+relationship.GENIETEN_VAN {
+  width: 1px;
+}
+
+relationship.NICHT_ZUGELASSEN {
+  width: 1px;
+}
+
+relationship.REQUESTS {
+  width: 1px;
+}
+
+relationship.TAKES_NOTE_OF {
+  width: 1px;
+}
+
+relationship.GENEHMIGT {
+  width: 1px;
+}
+
+relationship.REQUESTS_INFORMATION {
+  width: 1px;
+}
+
+relationship.EXPRESSION_OF_CONCERN {
+  width: 1px;
+}
+
+relationship.TAKES_NOTICE_OF {
+  width: 1px;
+}
+
+relationship.ZURÜCKGEZOGEN {
+  width: 1px;
+}
+
+relationship.REMEMBERS {
+  width: 1px;
+}
+
+relationship.WELCOMES {
+  width: 1px;
+}
+
+relationship.REQUESTS_REPORT {
+  width: 1px;
+}
+
+relationship.NOTES {
+  width: 1px;
+}
+
+relationship.DEFINES {
+  width: 1px;
+}
+
+relationship.ASSESS {
+  width: 1px;
+}
+
+relationship.REVIEW {
+  width: 1px;
+}
+
+relationship.ASSESSMENT_OF {
+  width: 1px;
+}
+
+relationship.DRAWS_UP {
+  width: 1px;
+}
+
+relationship.IS_PACKAGING {
+  width: 1px;
+}
+
+relationship.IS_NOT_PACKAGING {
+  width: 1px;
+}
+
+relationship.DESCRIBES {
+  width: 1px;
+}
+
+relationship.SUBSTITUTES {
+  width: 1px;
+}
+
+relationship.PACKAGING_WASTE_DISPOSED {
+  width: 1px;
+}
+
+relationship.PACKAGING_WASTE_RECOVERED {
+  width: 1px;
+}
+
+relationship.PACKAGING_MADE_AVAILABLE_ON_TERRITORY {
+  width: 1px;
+}
+
+relationship.PACKAGING_WASTE_GENERATION {
+  width: 1px;
+}
+
+relationship.PACKAGING_WASTE_RECYCLED {
+  width: 1px;
+}
+
+relationship.TARGET_SET_OUT {
+  width: 1px;
+}
+
+relationship.HAS_SEASON_SWITCH_DATE {
+  width: 1px;
+}
+
+relationship.MAINTAINED_BY {
+  width: 1px;
+}
+
+relationship.HAS_TRAFFIC_ESTIMATE {
+  width: 1px;
+}
+
+relationship.IS_MOBILE_FRIENDLY {
+  width: 1px;
+}
+
+relationship.REVOLUTIONIZES {
+  width: 1px;
+}
+
+relationship.SOLD_BY {
+  width: 1px;
+}
+
+relationship.SOURCES {
+  width: 1px;
+}
+
+relationship.DELIVERS {
+  width: 1px;
+}
+
+relationship.RAISES_PRICE_TARGET {
+  width: 1px;
+}
+
+relationship.RAISED_PRICE_TARGET {
+  width: 1px;
+}
+
+relationship.HAS_SELL_RATING {
+  width: 1px;
+}
+
+relationship.CURRENT_PRICE {
+  width: 1px;
+}
+
+relationship.RELEASES {
+  width: 1px;
+}
+
+relationship.HAS_VERSION {
+  width: 1px;
+}
+
+relationship.PROVIDES_EXTRA_SAVINGS {
+  width: 1px;
+}
+
+relationship.HAS_DISCOUNT_CODES {
+  width: 1px;
+}
+
+relationship.STATUS {
+  width: 1px;
+}
+
+relationship.AVAILABLE_FROM {
+  width: 1px;
+}
+
+relationship.IS_AT_THE_FOREFRONT_OF {
+  width: 1px;
+}
+
+relationship.AIMS_TO {
+  width: 1px;
+}
+
+relationship.CONNECTS {
+  width: 1px;
+}
+
+relationship.HARNESS_DATA {
+  width: 1px;
+}
+
+relationship.USES_AI {
+  width: 1px;
+}
+
+relationship.LEVERAGES_MACHINE_LEARNING {
+  width: 1px;
+}
+
+relationship.EXPIRED {
+  width: 1px;
+}
+
+relationship.COMPLETES {
+  width: 1px;
+}
+
+relationship.ACCEPTS_PAYMENT_METHODS {
+  width: 1px;
+}
+
+relationship.PROVIDES_FREE_SHIPPING {
+  width: 1px;
+}
+
+relationship.ENCOURAGES {
+  width: 1px;
+}
+
+relationship.SHARES_CONTENT {
+  width: 1px;
+}
+
+relationship.IDENTIFIES {
+  width: 1px;
+}
+
+relationship.DISPLAYS {
+  width: 1px;
+}
+
+relationship.TRADES_ON {
+  width: 1px;
+}
+
+relationship.IDENTIFIED_BY {
+  width: 1px;
+}
+
+relationship.OFFER_COUPONS_ON {
+  width: 1px;
+}
+
+relationship.HAS_PRODUCT {
+  width: 1px;
+}
+
+relationship.CANNOT_USE_MULTIPLE_COUPONS {
+  width: 1px;
+}
+
+relationship.CAN_USE_FIRST_ORDER_COUPON_WITH_OTHER_COUPON {
+  width: 1px;
+}
+
+relationship.OFFER_CODES {
+  width: 1px;
+}
+
+relationship.KNOWN_FOR {
+  width: 1px;
+}
+
+relationship.HAS_OFFER_EXPIRATION {
+  width: 1px;
+}
+
+relationship.RABATTKODE_IKKE_FUNGERT {
+  width: 1px;
+}
+
+relationship.HAS_RETURN_PERIOD {
+  width: 1px;
+}
+
+relationship.LAST_UPDATED {
+  width: 1px;
+}
+
+relationship.CAN_BE_REVIEWED {
+  width: 1px;
+}
+
+relationship.HAS_USER_BASE {
+  width: 1px;
+}
+
+relationship.SSL_CERTIFICATE_ISSUER {
+  width: 1px;
+}
+
+relationship.SSL_VALID_FROM {
+  width: 1px;
+}
+
+relationship.SSL_EXPIRATION {
+  width: 1px;
+}
+
+relationship.RELIES_ON {
+  width: 1px;
+}
+
+relationship.OVERVIEW_OF {
+  width: 1px;
+}
+
+relationship.CHALLENGES_IN_THE_PROBLEM_SPACE {
+  width: 1px;
+}
+
+relationship.MISSION_OF {
+  width: 1px;
+}
+
+relationship.DATA_SOURCES_UTILIZED {
+  width: 1px;
+}
+
+relationship.ALGORITHMS_IN_PRODUCTION {
+  width: 1px;
+}
+
+relationship.COMPLIES_WITH {
+  width: 1px;
+}
+
+relationship.RETURN_COMPARISON {
+  width: 1px;
+}
+
+relationship.SENDS {
+  width: 1px;
+}
+
+relationship.TRAFFIC_ESTIMATE {
+  width: 1px;
+}
+
+relationship.GLOBAL_RANK {
+  width: 1px;
+}
+
+relationship.SSL_CERTIFICATE_STATUS {
+  width: 1px;
+}
+
+relationship.MOBILE_FRIENDLY_TEST {
+  width: 1px;
+}
+
+relationship.PAGEVIEWS_PER_USER {
+  width: 1px;
+}
+
+relationship.SUBDOMAIN_TRAFFIC {
+  width: 1px;
+}
+
+relationship.SUBDOMAIN_VIEWS_PER_USER {
+  width: 1px;
+}
+
+relationship.SUBDOMAIN_REACH {
+  width: 1px;
+}
+
+relationship.GLOBAL_RANK_DELTA {
+  width: 1px;
+}
+
+relationship.PAGEVIEWS_RANK_DELTA {
+  width: 1px;
+}
+
+relationship.REACH_RANK_DELTA {
+  width: 1px;
+}
+
+relationship.HAS_ROE {
+  width: 1px;
+}
+
+relationship.BEAT_EPS_ESTIMATE {
+  width: 1px;
+}
+
+relationship.IS_WRITTEN_IN {
+  width: 1px;
+}
+
+relationship.IS_SAFE {
+  width: 1px;
+}
+
+relationship.HAS_TRAFFIC_VOLUME {
+  width: 1px;
+}
+
+relationship.HAS_VALUE {
+  width: 1px;
+}
+
+relationship.IS_OPTIMIZED_FOR {
+  width: 1px;
+}
+
+relationship.VALID_UNTIL {
+  width: 1px;
+}
+
+relationship.USES_COUPONS {
+  width: 1px;
+}
+
+relationship.RUNS_CAMPAIGNS {
+  width: 1px;
+}
+
+relationship.MOTIVATES_CUSTOMERS {
+  width: 1px;
+}
+
+relationship.DNSSEC {
+  width: 1px;
+}
+
+relationship.NAMESERVERS {
+  width: 1px;
+}
+
+relationship.A_RECORD {
+  width: 1px;
+}
+
+relationship.MX_RECORD {
+  width: 1px;
+}
+
+relationship.NS_RECORD {
+  width: 1px;
+}
+
+relationship.TXT_RECORD {
+  width: 1px;
+}
+
+relationship.MEISTGELESENE_ARTIKEL {
+  width: 1px;
+}
+
+relationship.AVERAGE_PRICE_TARGET {
+  width: 1px;
+}
+
+relationship.HIGHEST_PRICE_TARGET {
+  width: 1px;
+}
+
+relationship.LOWEST_PRICE_TARGET {
+  width: 1px;
+}
+
+relationship.IS_MEMBER_OF {
+  width: 1px;
+}
+
+relationship.LAST_PRICE {
+  width: 1px;
+}
+
+relationship.OFFERS_FREE_RETURN {
+  width: 1px;
+}
+
+relationship.ACTIVATES {
+  width: 1px;
+}
+
+relationship.HAS_SALES {
+  width: 1px;
+}
+
+relationship.OPTIMIZES {
+  width: 1px;
+}
+
+relationship.REDEEMS {
+  width: 1px;
+}
+
+relationship.HAS_ACCOUNT {
+  width: 1px;
+}
+
+relationship.CONVERTS_TO {
+  width: 1px;
+}
+
+relationship.MEETS {
+  width: 1px;
+}
+
+relationship.BASIC_ARTICLES_ARE_CONVERTED_INTO_SEASONAL_ARTICLES {
+  width: 1px;
+}
+
+relationship.COLLECTS_DATA_FROM {
+  width: 1px;
+}
+
+relationship.DOES_NOT_INTEGRATE_WITH {
+  width: 1px;
+}
+
+relationship.SIGNIFIES {
+  width: 1px;
+}
+
+relationship.INDICATES {
+  width: 1px;
+}
+
+relationship.ICE_CREAM_TRENDS {
+  width: 1px;
+}
+
+relationship.CONCERNS {
+  width: 1px;
+}
+
+relationship.INNOVATES {
+  width: 1px;
+}
+
+relationship.PREFER {
+  width: 1px;
+}
+
+relationship.SHOWS {
+  width: 1px;
+}
+
+relationship.TEND_TO {
+  width: 1px;
+}
+
+relationship.FACES_CHALLENGE {
+  width: 1px;
+}
+
+relationship.REGULARLY_USED_BY {
+  width: 1px;
+}
+
+relationship.EXPANDS_TARGET_GROUP {
+  width: 1px;
+}
+
+relationship.COMPETES_WITH {
+  width: 1px;
+}
+
+relationship.VERIFIED {
+  width: 1px;
+}
+
+relationship.DEDUCTS {
+  width: 1px;
+}
+
+relationship.PROVIDES_DISCOUNT {
+  width: 1px;
+}
+
+relationship.APPLIES_TO {
+  width: 1px;
+}
+
+relationship.ADDS_TO {
+  width: 1px;
+}
+
+relationship.OFFERS_PAYMENT_METHOD {
+  width: 1px;
+}
+
+relationship.AIMS_TO_ENHANCE {
+  width: 1px;
+}
+
+relationship.UNVEILS {
+  width: 1px;
+}
+
+relationship.BET_ON {
+  width: 1px;
+}
+
+relationship.GRATIS {
+  width: 1px;
+}
+
+relationship.PERCENTAGE_CHANGE {
+  width: 1px;
+}
+
+relationship.KEEPS_RATING {
+  width: 1px;
+}
+
+relationship.HAS_HOLD_RATING {
+  width: 1px;
+}
+
+relationship.GETS_RATING {
+  width: 1px;
+}
+
+relationship.HAS_BUY_RATING {
+  width: 1px;
+}
+
+relationship.RECEIVES_RATING {
+  width: 1px;
+}
+
+relationship.REITERATED_RATING {
+  width: 1px;
+}
+
+relationship.GENERATED_PROFIT {
+  width: 1px;
+}
+
+relationship.REITERATED {
+  width: 1px;
+}
+
+relationship.HAS_MARKET_CAP {
+  width: 1px;
+}
+
+relationship.HAS_CURRENT_PRICE {
+  width: 1px;
+}
+
+relationship.INCORPORATES {
+  width: 1px;
+}
+
+relationship.UTILIZES {
+  width: 1px;
+}
+
+relationship.PROVIDES_FEEDBACK {
+  width: 1px;
+}
+
+relationship.ENHANCES {
+  width: 1px;
+}
+
+relationship.USES_COOKIES {
+  width: 1px;
+}
+
+relationship.PART_OF_TRANSPARENCY_FRAMEWORK {
+  width: 1px;
+}
+
+relationship.HAS_EXPIRATION_DATE {
+  width: 1px;
+}
+
+relationship.BREAKS_EVEN_DESPITE {
+  width: 1px;
+}
+
+relationship.RTECH_CONTACT {
+  width: 1px;
+}
+
+relationship.ORG_ABUSE_CONTACT {
+  width: 1px;
+}
+
+relationship.ORG_TECH_CONTACT {
+  width: 1px;
+}
+
+relationship.ESTIMATES {
+  width: 1px;
+}
+
+relationship.OFFERS_OPPORTUNITY_TO {
+  width: 1px;
+}
+
+relationship.HAS {
+  width: 1px;
+}
+
+relationship.REVOLUTIONIZED {
+  width: 1px;
+}
+
+relationship.STREAMLINES {
+  width: 1px;
+}
+
+relationship.DISCOUNT_ON {
+  width: 1px;
+}
+
+relationship.OUTLET_FOR {
+  width: 1px;
+}
+
+relationship.SALE_ON {
+  width: 1px;
+}
+
+relationship.ON_PROMOTION {
+  width: 1px;
+}
+
+relationship.HAS_SSL_CERTIFICATE {
+  width: 1px;
+}
+
+relationship.OFFERS_DISCOUNT_ON {
+  width: 1px;
+}
+
+relationship.REDUCES_VISIBILITY {
+  width: 1px;
+}
+
+relationship.DEACTIVATES {
+  width: 1px;
+}
+
+relationship.CONVERTED_TO {
+  width: 1px;
+}
+
+relationship.PROVIDES_DISCOUNTS_FOR {
+  width: 1px;
+}
+
+relationship.RESULTS_IN {
+  width: 1px;
+}
+
+relationship.RELEASE_DATE {
+  width: 1px;
+}
+
+relationship.AWARDS {
+  width: 1px;
+}
+
+relationship.REQUIRES {
+  width: 1px;
+}
+
+relationship.TRUSTS {
+  width: 1px;
+}
+
+relationship.SERVED_IN {
+  width: 1px;
+}
+
+relationship.ACTIVE_IN {
+  width: 1px;
+}
+
+relationship.SUCCESSOR_OF {
+  width: 1px;
+}
+
+relationship.TAGGED_WITH {
+  width: 1px;
+}
+
+relationship.SUBJECT_AREA {
+  width: 1px;
+}
+
+relationship.DOCUMENT_FOR {
+  width: 1px;
+}
+
+relationship.HAS_PAGE {
+  width: 1px;
+}
+
+relationship.NEXT_PAGE {
+  width: 1px;
+}
+
+relationship.PERFORMED_BY {
+  width: 1px;
+}
+
+relationship.RELATED_TO_VORGANG {
+  width: 1px;
+}
+
+relationship.REFERENCES_DOCUMENT {
+  width: 1px;
+}
+
+relationship.IN_WAHLPERIODE {
+  width: 1px;
+}
+
+relationship.REFERENCES_VORGANG {
+  width: 1px;
+}
+
+relationship.ALIAS_OF {
+  width: 1px;
+}

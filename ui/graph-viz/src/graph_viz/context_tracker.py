@@ -178,9 +178,9 @@ class ChatContextTracker:
                             node = GraphNode(
                                 id=node_id,
                                 name=node_data.get("name", node_id[:8]),
-                                type=list(node_data.labels)[0]
-                                if node_data.labels
-                                else "Entity",
+                                type=self._get_primary_label(
+                                    list(node_data.labels) if node_data.labels else []
+                                ),
                                 properties=dict(node_data.items()),
                                 val=1,
                             )
@@ -196,9 +196,9 @@ class ChatContextTracker:
                             node = GraphNode(
                                 id=node_id,
                                 name=node_data.get("name", node_id[:8]),
-                                type=list(node_data.labels)[0]
-                                if node_data.labels
-                                else "Entity",
+                                type=self._get_primary_label(
+                                    list(node_data.labels) if node_data.labels else []
+                                ),
                                 properties=dict(node_data.items()),
                                 val=1,
                             )
@@ -225,6 +225,49 @@ class ChatContextTracker:
             raise
 
         return nodes, edges
+
+    def _get_primary_label(self, labels: list[str]) -> str:
+        """Select the most specific label, ignoring generic 'Entity' when possible.
+
+        Args:
+            labels: List of Neo4j node labels
+
+        Returns:
+            The most specific/meaningful label for display and coloring
+        """
+        if not labels:
+            return "Unknown"
+
+        # Priority order: specific types first (from Neo4j .grass style file)
+        priority_labels = [
+            # Core types
+            "Policy", "Regulation", "Document", "Person", "Company",
+            # Government & Political
+            "GovernmentAgency", "LegislativeBody", "LegislativeProposal",
+            "Politician", "PoliticalParty", "Committee", "Vote", "Jurisdiction",
+            # Legal & Compliance
+            "LegalFramework", "ComplianceObligation", "EnforcementAction",
+            "TechnicalStandard", "ConsultationProcess",
+            # Business & Industry
+            "Industry", "Market", "LobbyGroup", "BusinessActivity", "Exception",
+            # German Parliament (Bundestag)
+            "Drucksache", "Sachgebiet", "Deskriptor", "Vorgang", "BundestagPerson",
+            "Fraktion", "BundestagFraktion", "Wahlperiode", "Plenarprotokoll",
+            "Vorgangsposition", "Aktivitaet", "DrucksachePage",
+            # Other types
+            "ChatSession", "Community", "EntityAlias", "CanonicalEntity", "Episodic",
+        ]
+
+        # Check for priority labels first
+        for priority_label in priority_labels:
+            if priority_label in labels:
+                return priority_label
+
+        # Filter out generic labels
+        specific_labels = [label for label in labels if label not in ("Entity", "Node")]
+
+        # Return first specific label, or first label if all are generic
+        return specific_labels[0] if specific_labels else labels[0]
 
     def clear_expired_contexts(self):
         """Remove expired contexts from cache."""
