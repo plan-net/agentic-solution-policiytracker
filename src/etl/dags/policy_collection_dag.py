@@ -197,7 +197,11 @@ def mark_policy_initialization_complete(**context) -> dict[str, Any]:
         # Mark as initialized if this was an initialization run
         if collection_result.get("is_initialization", False):
             tracker = ETLInitializationTracker()
-            tracker.mark_initialized("policy_landscape")
+            tracker.mark_initialized(
+                collector_type="policy_landscape",
+                initialization_days=collection_result.get("collection_days", 30),
+                articles_collected=collection_result.get("documents_saved", 0),
+            )
 
             logger.info("✅ Policy collection initialization completed and marked")
 

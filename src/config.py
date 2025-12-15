@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -118,7 +118,7 @@ class Settings(BaseSettings):
     )
 
     @property
-    def dimension_weights(self) -> dict[str, float]:
+    def dimension_weights(self) -> Dict[str, float]:
         return {
             "direct_impact": self.DIRECT_IMPACT_WEIGHT,
             "industry_relevance": self.INDUSTRY_RELEVANCE_WEIGHT,
