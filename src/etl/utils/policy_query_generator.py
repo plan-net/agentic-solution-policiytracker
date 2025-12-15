@@ -44,12 +44,25 @@ class PolicyQueryGenerator:
         """
         queries = []
 
-        # Core markets and industries for context
-        markets = self.context_data.get("primary_markets", [])
+        # Core markets and industries for context (support both old and new structure)
+        markets_data = self.context_data.get("markets", {})
+        markets = self.context_data.get("primary_markets", []) or markets_data.get("primary", [])
+
+        industry_data = self.context_data.get("industry", {})
         industries = self.context_data.get("core_industries", [])
+        if not industries:
+            # Build from new structure
+            primary_industry = industry_data.get("primary", "")
+            secondary_industries = industry_data.get("secondary", [])
+            industries = ([primary_industry] if primary_industry else []) + secondary_industries
 
         # Generate queries for each topic pattern (limited)
+        # Support both old topic_patterns and new regulatory_relevance structure
         topic_patterns = self.context_data.get("topic_patterns", {})
+
+        if not topic_patterns:
+            # Build topic_patterns from new regulatory_relevance structure
+            topic_patterns = self._build_topic_patterns_from_regulatory_relevance()
 
         for category, terms in topic_patterns.items():
             category_queries = self._generate_category_queries(category, terms, markets, industries)
@@ -66,6 +79,33 @@ class PolicyQueryGenerator:
 
         logger.info(f"Generated {len(queries)} policy search queries")
         return queries
+
+    def _build_topic_patterns_from_regulatory_relevance(self) -> dict[str, list[str]]:
+        """Build topic_patterns dict from new regulatory_relevance structure."""
+        topic_patterns = {}
+        regulatory_relevance = self.context_data.get("regulatory_relevance", {})
+
+        # Process high_relevance, medium_relevance, and monitor sections
+        for relevance_level in ["high_relevance", "medium_relevance", "monitor"]:
+            areas = regulatory_relevance.get(relevance_level, [])
+            for area_info in areas:
+                if isinstance(area_info, dict):
+                    area_name = area_info.get("area", "").lower().replace(" ", "-")
+                    watch_for = area_info.get("watch_for", [])
+                    if area_name and watch_for:
+                        topic_patterns[area_name] = watch_for
+
+        # If still empty, create default patterns
+        if not topic_patterns:
+            topic_patterns = {
+                "data-protection": ["GDPR", "data protection", "privacy regulation"],
+                "ecommerce-regulation": ["e-commerce", "digital services", "online marketplace"],
+                "consumer-protection": ["consumer rights", "consumer protection", "online retail"],
+                "platform-regulation": ["platform regulation", "digital markets", "gatekeeper"],
+            }
+            logger.warning("Using default topic patterns - regulatory_relevance not found in client context")
+
+        return topic_patterns
 
     def _generate_category_queries(
         self, category: str, terms: list[str], markets: list[str], industries: list[str]
@@ -129,7 +169,13 @@ class PolicyQueryGenerator:
             "digital transformation",
         ]
 
-        relevant_themes = [t for t in strategic_themes if t in priority_themes]
+        # If no strategic_themes defined, use priority_themes directly
+        if not strategic_themes:
+            relevant_themes = priority_themes
+        else:
+            relevant_themes = [t for t in strategic_themes if t in priority_themes]
+            if not relevant_themes:
+                relevant_themes = priority_themes  # Fallback
 
         for theme in relevant_themes[:3]:  # Top 3 themes
             for market in markets[:2]:  # Top 2 markets
