@@ -1,109 +1,244 @@
-# Sample client context for Political Monitoring Agent
-# Replace with your organization's specific terms and themes
+# Client Context for Political Monitoring Agent
+# Version: 2
+# Note: This file is currently for a single client. Future consideration needed 
+# for multi-client architecture (e.g., clients/zalando.yaml, clients/stadtwien.yaml)
+
+# =============================================================================
+# CLIENT IDENTITY
+# =============================================================================
 
 company_terms:
   - zalando
 
-core_industries:
-  - e-commerce
-  - online retail
-  - fashion
-  - apparel
-  - marketplace
-  - digital commerce
+industry:
+  primary: "E-commerce / Online Retail"
+  secondary:
+    - fashion retail
+    - marketplace operator
+    - digital platform
+    - apparel
 
-primary_markets:
-  - european union
-  - eu
-  - germany
-  - poland
-  - france
-  - italy
-  - spain
-  - belgium
-  - netherlands
-  - austria
-  - czech republic
+# =============================================================================
+# BUSINESS MODEL UNDERSTANDING
+# Help the agent understand HOW this client operates (not just keywords)
+# =============================================================================
 
-secondary_markets:
-  - uk
-  - switzerland
-  - sweden
-  - denmark
-  - finland
-  - norway
+business_model:
+  description: "Online marketplace connecting consumers with fashion brands, operating B2C sales and enabling third-party sellers across EU markets"
+  
+  key_activities:
+    - "Operates online marketplace with third-party sellers"
+    - "Direct B2C sales of fashion and apparel"
+    - "Offers payment options including deferred payment / buy-now-pay-later"
+    - "Cross-border shipping within EU"
+    - "Uses algorithms for product recommendations and personalization"
+    - "Processes customer data for marketing and operations"
+    - "Sources and ships products from various origins including third countries"
 
-strategic_themes:
-  - digital transformation
-  - sustainability
-  - customer experience
-  - data privacy
-  - supply chain
-  - logistics
-  - payment systems
-  - mobile commerce
-  - artificial intelligence
-  - automation
+# =============================================================================
+# REGULATORY RELEVANCE AREAS
+# Defined by business activity, not specific law names
+# Agent should identify relevant regulations in these areas
+# =============================================================================
 
-topic_patterns:
-  data-protection:
-    - gdpr
-    - data privacy
-    - personal information
-    - data protection
-    - privacy policy
-    - data processing
-    - consent management
+regulatory_relevance:
+  
+  high_relevance:
+    # These areas directly affect core business operations
     
-  compliance:
-    - regulatory compliance
-    - legal requirement
-    - enforcement action
-    - compliance obligation
-    - regulatory framework
-    - legal framework
-    
-  ecommerce-regulation:
-    - digital services act
-    - dsa
-    - digital markets act
-    - dma
-    - online platform
-    - marketplace regulation
-    - consumer protection
-    
-  sustainability:
-    - esg
-    - environmental
-    - carbon footprint
-    - circular economy
-    - sustainable fashion
-    - green logistics
-    - climate change
-    
-  competition:
-    - antitrust
-    - competition law
-    - market dominance
-    - monopoly
-    - merger control
+    - area: "Platform and marketplace regulation"
+      why: "Core business is operating an online marketplace"
+      watch_for:
+        - "Obligations for online platforms and marketplaces"
+        - "Liability for third-party seller content and products"
+        - "Transparency requirements for platforms"
+        - "Enforcement actions against similar platforms"
+      
+    - area: "Consumer protection in e-commerce"
+      why: "B2C sales are core business"
+      watch_for:
+        - "Online consumer rights and returns"
+        - "Pricing transparency and dark patterns"
+        - "Consumer credit and payment regulations"
+        - "Buy-now-pay-later and deferred payment rules"
+        - "Consumer redress and dispute resolution"
+      
+    - area: "Product safety and market surveillance"
+      why: "Liability exposure for products sold through platform"
+      watch_for:
+        - "Product safety requirements for online sales"
+        - "Marketplace liability for unsafe products"
+        - "Import controls and customs for e-commerce"
+        - "Third-country seller compliance"
+        - "CE marking and conformity"
+      
+    - area: "Data protection and privacy"
+      why: "Extensive customer data processing for operations and marketing"
+      watch_for:
+        - "Data protection enforcement trends"
+        - "Cross-border data transfers"
+        - "Marketing and consent requirements"
+        - "Customer profiling and personalization rules"
+        
+    - area: "Payment services regulation"
+      why: "Offers payment options as part of checkout"
+      watch_for:
+        - "Payment service regulations"
+        - "Consumer credit requirements"
+        - "Credit checks and affordability assessments"
+        - "Payment provider obligations"
 
-direct_impact_keywords:
-  - must comply
-  - required to
-  - obligation
-  - penalty
-  - enforcement
-  - violation
-  - breach
-  - non-compliance
-  - legal action
-  - investigation
+  medium_relevance:
+    # These areas affect operations but less directly
+    
+    - area: "Competition and antitrust"
+      why: "Market position and platform practices may attract scrutiny"
+      watch_for:
+        - "Platform competition enforcement"
+        - "Self-preferencing and fairness rules"
+        - "Merger and acquisition rules"
+        
+    - area: "Cybersecurity requirements"
+      why: "Digital infrastructure and customer data require security"
+      watch_for:
+        - "Cybersecurity obligations for digital businesses"
+        - "Incident reporting requirements"
+        - "Critical infrastructure designations"
+        
+    - area: "Algorithmic and AI regulation"
+      why: "Uses algorithms for recommendations and decisions"
+      watch_for:
+        - "AI transparency and explainability"
+        - "Algorithmic fairness requirements"
+        - "Automated decision-making rules"
+        
+    - area: "Cross-border trade within EU"
+      why: "Ships across EU member states"
+      watch_for:
+        - "Geoblocking and price discrimination"
+        - "Cross-border consumer protection"
+        - "VAT and customs for e-commerce"
 
-exclusion_terms:
-  - sports
-  - automotive
-  - real estate
-  - agriculture
-  - mining
-  - oil and gas
+  monitor:
+    # Track for potential future relevance
+    
+    - area: "Sustainability and environmental regulation"
+      why: "Fashion industry increasingly subject to sustainability rules"
+      watch_for:
+        - "Textile-specific environmental rules"
+        - "Green claims and greenwashing"
+        - "Circular economy requirements"
+        - "Supply chain due diligence"
+        
+    - area: "Employment and gig economy"
+      why: "Logistics and delivery workforce"
+      watch_for:
+        - "Platform worker classification"
+        - "Gig economy regulation"
+
+# =============================================================================
+# COMPETITIVE CONTEXT
+# Not keywords, but principle: actions against similar businesses matter
+# =============================================================================
+
+competitive_awareness:
+  principle: "Enforcement against or regulatory treatment of similar platforms may set precedents"
+  
+  similar_businesses:
+    - "Other EU e-commerce platforms and marketplaces"
+    - "Fashion retail platforms"
+    - "Companies offering BNPL/deferred payment"
+    
+  third_country_platforms:
+    relevance: "Regulatory treatment creates competitive context"
+    examples:
+      - "Low-cost platforms shipping from third countries"
+      - "Enforcement for product safety or customs compliance"
+      - "Level playing field measures"
+
+# =============================================================================
+# GEOGRAPHIC SCOPE
+# =============================================================================
+
+markets:
+  primary:
+    - germany
+    - european union
+  secondary:
+    - poland
+    - france
+    - italy
+    - spain
+    - netherlands
+    - austria
+    - belgium
+    - czech republic
+  monitoring_only:
+    - uk
+    - switzerland
+    - sweden
+    - denmark
+    - finland
+    - norway
+
+geographic_priority:
+  principle: "German implementation of EU law is highest priority, followed by EU-level developments, then other member states"
+
+# =============================================================================
+# IMPACT ASSESSMENT
+# Help agent gauge urgency and relevance
+# =============================================================================
+
+impact_indicators:
+  
+  high_impact_signals:
+    - "Creates new compliance obligation"
+    - "Enforcement action or penalty"
+    - "Deadline or implementation date"
+    - "Directly mentions platforms, marketplaces, or e-commerce"
+    - "Affects payment services or consumer credit"
+    - "Product safety enforcement"
+    
+  medium_impact_signals:
+    - "Proposal or draft legislation"
+    - "Consultation or public comment period"
+    - "Enforcement against similar business"
+    - "Political statement signaling future action"
+    
+  context_signals:
+    - "Ministry or agency reorganization affecting digital/consumer policy"
+    - "Political priorities or coalition dynamics"
+    - "EU-level negotiations or positions"
+
+# =============================================================================
+# EXCLUSIONS
+# Defined by principle, not just keyword lists
+# =============================================================================
+
+exclusions:
+  principles:
+    - "Regulation of industries with no connection to retail, digital, or consumer markets"
+    - "Pure B2B industrial regulation"
+    - "Sector-specific rules for unrelated industries"
+    
+  industries:
+    - sports
+    - automotive manufacturing
+    - real estate
+    - agriculture
+    - mining
+    - oil and gas
+    - heavy industry
+    - pharmaceuticals (unless related to product sales)
+    - banking (unless related to payment/credit for purchases)
+    - defense and military
+
+# =============================================================================
+# NOTES FOR FUTURE
+# =============================================================================
+
+# TODO: Multi-client architecture
+# - How to name files: client_[name].yaml or [name].yaml in clients/ folder?
+# - How to switch active client context?
+# - Shared vs. client-specific regulatory areas?
+# - Client-specific personas needed?
