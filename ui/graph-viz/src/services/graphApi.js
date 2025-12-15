@@ -32,13 +32,22 @@ export const graphApi = {
   },
 
   /**
-   * Execute a predefined schema query
+   * Execute a predefined schema query with optional parameters
    * @param {string} queryName - Name of the schema query
+   * @param {Object} parameters - Optional query parameters (e.g., { limit: 100, days_back: 30 })
    */
-  async executeSchemaQuery(queryName) {
+  async executeSchemaQuery(queryName, parameters = null) {
     try {
-      const response = await axios.get(`${API_BASE}/schema-query/${queryName}`);
-      return { success: true, data: response.data };
+      // Use POST if parameters provided, GET otherwise
+      if (parameters && Object.keys(parameters).length > 0) {
+        const response = await axios.post(`${API_BASE}/schema-query/${queryName}`, {
+          parameters
+        });
+        return { success: true, data: response.data };
+      } else {
+        const response = await axios.get(`${API_BASE}/schema-query/${queryName}`);
+        return { success: true, data: response.data };
+      }
     } catch (error) {
       return { success: false, error: error.message };
     }

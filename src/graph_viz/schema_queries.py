@@ -1,134 +1,553 @@
-"""Predefined schema queries for political monitoring knowledge graph."""
+"""Business-focused schema queries for political monitoring knowledge graph.
 
+Queries are designed for Zalando's regulatory monitoring needs as an EU e-commerce platform:
+- Platform and marketplace regulation (DSA, DMA, P2B)
+- Consumer protection (BNPL, returns, pricing)
+- Data protection (GDPR, transfers, profiling)
+- Product safety (marketplace liability, CE marking)
+- AI/Algorithm regulation (recommendations, automated decisions)
+"""
 
-from .models import SchemaQuery
+from .models import QueryParameter, SchemaQuery
 
-# Predefined schema queries for exploration
-SCHEMA_QUERIES: dict[str, SchemaQuery] = {
-    "policy_landscape": SchemaQuery(
-        name="Policy Landscape",
-        description="Overview of policy entities and their relationships in the knowledge graph",
-        cypher="""
-            MATCH (p)-[r]-(e)
-            RETURN p, r, e
-            LIMIT 50
-        """,
-        category="policy",
-    ),
-    "organization_network": SchemaQuery(
-        name="Organization Network",
-        description="Network of organizations and how they relate to each other",
-        cypher="""
-            MATCH (o:Entity)-[r]-(t:Entity)
-            WHERE (o.name CONTAINS 'Inc' OR o.name CONTAINS 'Corp' OR o.name CONTAINS 'Ltd'
-                   OR o.name CONTAINS 'AG' OR o.name CONTAINS 'GmbH')
-            RETURN o, r, t
-            LIMIT 50
-        """,
-        category="organization",
-    ),
-    "recent_relationships": SchemaQuery(
-        name="Recent Relationships",
-        description="Most recently created relationships in the knowledge graph",
-        cypher="""
-            MATCH (a:Entity)-[r]-(b:Entity)
-            WHERE r.created_at IS NOT NULL
-            RETURN a, r, b
-            ORDER BY r.created_at DESC
-            LIMIT 50
-        """,
-        category="temporal",
-    ),
-    "high_degree_entities": SchemaQuery(
-        name="Most Connected Entities",
-        description="Entities with the highest number of relationships (central nodes)",
-        cypher="""
-            MATCH (e:Entity)-[r]-()
-            WITH e, count(r) as degree
-            WHERE degree > 3
-            ORDER BY degree DESC
-            LIMIT 20
-            MATCH (e)-[r]-(n:Entity)
-            RETURN e, r, n
-            LIMIT 100
-        """,
-        category="network",
-    ),
-    "policy_clusters": SchemaQuery(
-        name="Major Policy Clusters",
-        description="Key policy entities (GDPR, DSA, AI Act) and their relationship networks",
+# =============================================================================
+# CATEGORY 1: POLICY ANALYSIS
+# =============================================================================
+
+POLICY_QUERIES: dict[str, SchemaQuery] = {
+    "platform_regulation": SchemaQuery(
+        name="Platform Regulation Landscape",
+        description="Track DSA, DMA, and P2B regulations affecting online marketplaces and platforms",
         cypher="""
             MATCH (p:Entity)-[r]-(e:Entity)
-            WHERE p.name CONTAINS 'GDPR' OR p.name CONTAINS 'DSA'
-                  OR p.name CONTAINS 'AI Act' OR p.name CONTAINS 'DMA'
+            WHERE p.name =~ '(?i).*(DSA|Digital Services Act|DMA|Digital Markets Act|P2B|Platform.to.Business|online platform|marketplace regulation).*'
+               OR e.name =~ '(?i).*(DSA|Digital Services Act|DMA|Digital Markets Act|P2B|Platform.to.Business|online platform|marketplace regulation).*'
             RETURN p, r, e
-            LIMIT 100
+            LIMIT $limit
         """,
         category="policy",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
     ),
-    "company_impact": SchemaQuery(
-        name="Company Impact Network",
-        description="How major companies (Meta, Google, Amazon, Apple) are affected by policies",
+    "consumer_protection": SchemaQuery(
+        name="Consumer Protection Regulations",
+        description="B2C consumer rights: BNPL, returns, refunds, pricing transparency, dark patterns, geoblocking",
         cypher="""
-            MATCH (c:Entity)-[r]-(p:Entity)
-            WHERE (c.name CONTAINS 'Meta' OR c.name CONTAINS 'Google'
-                   OR c.name CONTAINS 'Amazon' OR c.name CONTAINS 'Apple')
-            RETURN c, r, p
-            LIMIT 100
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(consumer protection|consumer rights|BNPL|buy.now.pay.later|consumer credit|returns|refund|pricing|dark pattern|geoblocking|distance selling|unfair commercial).*'
+               OR e.name =~ '(?i).*(consumer protection|consumer rights|BNPL|buy.now.pay.later|consumer credit|returns|refund|pricing|dark pattern|geoblocking|distance selling|unfair commercial).*'
+            RETURN p, r, e
+            LIMIT $limit
         """,
-        category="organization",
+        category="policy",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
     ),
-    "influence_network": SchemaQuery(
-        name="Influence Network",
-        description="Entities connected by influence and affects relationships",
+    "data_protection": SchemaQuery(
+        name="Data Protection & Privacy",
+        description="GDPR, data transfers, marketing consent, profiling, and privacy regulations",
         cypher="""
-            MATCH (a:Entity)-[r]-(b:Entity)
-            WHERE type(r) CONTAINS 'AFFECT' OR type(r) CONTAINS 'INFLUENC'
-            RETURN a, r, b
-            LIMIT 75
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(GDPR|data protection|privacy|consent|profiling|data transfer|Schrems|marketing|personal data|DPA|EDPB).*'
+               OR e.name =~ '(?i).*(GDPR|data protection|privacy|consent|profiling|data transfer|Schrems|marketing|personal data|DPA|EDPB).*'
+            RETURN p, r, e
+            LIMIT $limit
         """,
-        category="network",
+        category="policy",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
     ),
-    "entity_timeline": SchemaQuery(
-        name="Temporal Entity Evolution",
-        description="Entities and relationships created over time",
+    "product_safety": SchemaQuery(
+        name="Product Safety & Market Surveillance",
+        description="Marketplace liability for unsafe products, CE marking, imports, recalls",
         cypher="""
-            MATCH (e:Entity)
-            WHERE e.created_at IS NOT NULL
-            WITH e
-            ORDER BY e.created_at DESC
-            LIMIT 30
-            MATCH (e)-[r]-(n:Entity)
-            RETURN e, r, n
-            LIMIT 100
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(product safety|market surveillance|CE marking|unsafe product|recall|import control|customs|conformity|GPSR|product liability).*'
+               OR e.name =~ '(?i).*(product safety|market surveillance|CE marking|unsafe product|recall|import control|customs|conformity|GPSR|product liability).*'
+            RETURN p, r, e
+            LIMIT $limit
         """,
-        category="temporal",
+        category="policy",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
     ),
-    "community_detection": SchemaQuery(
-        name="Dense Subgraphs",
-        description="Identify densely connected communities in the graph",
+    "ai_algorithm_regulation": SchemaQuery(
+        name="AI & Algorithm Regulation",
+        description="AI Act, recommendation algorithms, automated decision-making, algorithmic fairness",
         cypher="""
-            MATCH (e:Entity)-[r1]-(n1:Entity)-[r2]-(n2:Entity)-[r3]-(e)
-            WHERE id(e) < id(n1) AND id(n1) < id(n2)
-            RETURN e, r1, n1, r2, n2, r3
-            LIMIT 50
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(AI Act|artificial intelligence|algorithm|automated decision|recommendation system|machine learning|algorithmic|transparency).*'
+               OR e.name =~ '(?i).*(AI Act|artificial intelligence|algorithm|automated decision|recommendation system|machine learning|algorithmic|transparency).*'
+            RETURN p, r, e
+            LIMIT $limit
         """,
-        category="network",
-    ),
-    "full_graph_sample": SchemaQuery(
-        name="Full Graph Sample",
-        description="Random sample of the entire knowledge graph structure",
-        cypher="""
-            MATCH (n:Entity)-[r]-(m:Entity)
-            RETURN n, r, m
-            LIMIT 100
-        """,
-        category="general",
+        category="policy",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
     ),
 }
 
+# =============================================================================
+# CATEGORY 2: ORGANIZATIONS
+# =============================================================================
 
-def get_schema_query(query_name: str) -> SchemaQuery:
+ORGANIZATION_QUERIES: dict[str, SchemaQuery] = {
+    "ecommerce_competitors": SchemaQuery(
+        name="E-commerce Platform Competitors",
+        description="Track similar platforms for regulatory precedents and competitive intelligence",
+        cypher="""
+            MATCH (c:Entity)-[r]-(p:Entity)
+            WHERE c.name =~ '(?i).*(Amazon|eBay|AliExpress|Shein|Temu|Otto|AboutYou|ASOS|Wish|Alibaba|JD\\.com|Rakuten|Etsy|Wayfair).*'
+            RETURN c, r, p
+            LIMIT $limit
+        """,
+        category="organization",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "german_regulators": SchemaQuery(
+        name="German Regulatory Bodies",
+        description="German authorities: BKartA, BNetzA, BfDI, Verbraucherzentrale, ministries",
+        cypher="""
+            MATCH (a:Entity)-[r]-(e:Entity)
+            WHERE a.name =~ '(?i).*(Bundeskartellamt|BKartA|BNetzA|BfDI|Verbraucherzentrale|BMAS|BMJ|BMWK|Bundestag|Bundesrat|Bundesministerium).*'
+               OR a.name =~ '(?i).*(Federal Cartel Office|Federal Network Agency|Data Protection Commissioner|German).*'
+            RETURN a, r, e
+            LIMIT $limit
+        """,
+        category="organization",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "eu_institutions": SchemaQuery(
+        name="EU Institutions & Policy Actors",
+        description="European Commission, Parliament, Council, DGs, and key EU bodies",
+        cypher="""
+            MATCH (i:Entity)-[r]-(e:Entity)
+            WHERE i.name =~ '(?i).*(European Commission|EU Commission|European Parliament|Council of the EU|DG CONNECT|DG JUST|DG GROW|DG COMP|EDPB|ENISA|Europarl|CJEU|Court of Justice).*'
+            RETURN i, r, e
+            LIMIT $limit
+        """,
+        category="organization",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "payment_fintech": SchemaQuery(
+        name="Payment & Fintech Actors",
+        description="BNPL providers, payment services, fintech regulators (BaFin, EBA, PSD2)",
+        cypher="""
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(Klarna|PayPal|AfterPay|Clearpay|Affirm|BaFin|EBA|PSD2|payment service|fintech|Stripe|Adyen).*'
+               OR e.name =~ '(?i).*(Klarna|PayPal|AfterPay|Clearpay|Affirm|BaFin|EBA|PSD2|payment service|fintech|Stripe|Adyen).*'
+            RETURN p, r, e
+            LIMIT $limit
+        """,
+        category="organization",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "industry_associations": SchemaQuery(
+        name="Industry Associations & Trade Bodies",
+        description="Trade associations representing e-commerce and consumer interests",
+        cypher="""
+            MATCH (a:Entity)-[r]-(e:Entity)
+            WHERE a.name =~ '(?i).*(EuroCommerce|Ecommerce Europe|BEVH|HDE|Digital Europe|BEUC|consumer association|trade association|industry group|lobby).*'
+               OR e.name =~ '(?i).*(EuroCommerce|Ecommerce Europe|BEVH|HDE|Digital Europe|BEUC|consumer association|trade association|industry group|lobby).*'
+            RETURN a, r, e
+            LIMIT $limit
+        """,
+        category="organization",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+}
+
+# =============================================================================
+# CATEGORY 3: NETWORK ANALYSIS
+# =============================================================================
+
+NETWORK_QUERIES: dict[str, SchemaQuery] = {
+    "influence_network": SchemaQuery(
+        name="Influence Networks on Platform Policy",
+        description="Who influences platform/e-commerce policy? Track lobbying and advocacy relationships",
+        cypher="""
+            MATCH (a:Entity)-[r]-(b:Entity)
+            WHERE (type(r) CONTAINS 'INFLUENCE' OR type(r) CONTAINS 'LOBBY'
+                   OR type(r) CONTAINS 'AFFECT' OR type(r) CONTAINS 'ADVOCATE')
+              AND (a.name =~ '(?i).*(platform|e-commerce|marketplace|digital service|online).*'
+                   OR b.name =~ '(?i).*(platform|e-commerce|marketplace|digital service|online).*')
+            RETURN a, r, b
+            LIMIT $limit
+        """,
+        category="network",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=75,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "enforcement_network": SchemaQuery(
+        name="Enforcement Action Network",
+        description="Track penalties, fines, and enforcement actions against platforms and e-commerce",
+        cypher="""
+            MATCH (e:Entity)-[r]-(t:Entity)
+            WHERE type(r) CONTAINS 'ENFORCE' OR type(r) CONTAINS 'FINE'
+                  OR type(r) CONTAINS 'PENALT' OR type(r) CONTAINS 'SANCTION'
+                  OR type(r) CONTAINS 'INVESTIGATE'
+               OR e.name =~ '(?i).*(enforcement|fine|penalty|sanction|investigation|infringement).*'
+               OR t.name =~ '(?i).*(enforcement|fine|penalty|sanction|investigation|infringement).*'
+            RETURN e, r, t
+            LIMIT $limit
+        """,
+        category="network",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "compliance_chains": SchemaQuery(
+        name="Compliance Obligation Chains",
+        description="Trace compliance requirements from regulations through implementation",
+        cypher="""
+            MATCH (r:Entity)-[rel]-(c:Entity)
+            WHERE r.name =~ '(?i).*(DSA|DMA|GDPR|AI Act|Product Safety|PSD2|NIS2).*'
+              AND (type(rel) CONTAINS 'REQUIRE' OR type(rel) CONTAINS 'OBLIGAT'
+                   OR type(rel) CONTAINS 'IMPLEMENT' OR type(rel) CONTAINS 'COMPLY'
+                   OR type(rel) CONTAINS 'AFFECT')
+            RETURN r, rel, c
+            LIMIT $limit
+        """,
+        category="network",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=75,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "cross_border_regulation": SchemaQuery(
+        name="Cross-Border Regulatory Connections",
+        description="EU vs member state implementation: Germany, France, Poland, Italy, Spain",
+        cypher="""
+            MATCH (eu:Entity)-[r]-(nat:Entity)
+            WHERE (eu.name =~ '(?i).*(European|EU |Directive|Regulation).*')
+              AND (nat.name =~ '(?i).*(Germany|German|Bundestag|France|French|Poland|Polish|Italy|Italian|Spain|Spanish|Austria|Austrian|Netherlands|Dutch|Belgium|Czech).*')
+            RETURN eu, r, nat
+            LIMIT $limit
+        """,
+        category="network",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=75,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "high_impact_hubs": SchemaQuery(
+        name="High-Impact Entity Hubs",
+        description="Find most connected entities - central nodes in the regulatory network",
+        cypher="""
+            MATCH (e:Entity)-[r]-()
+            WITH e, count(r) as degree
+            WHERE degree > $min_degree
+            ORDER BY degree DESC
+            LIMIT $top_n
+            MATCH (e)-[r]-(n:Entity)
+            RETURN e, r, n
+            LIMIT $limit
+        """,
+        category="network",
+        parameters=[
+            QueryParameter(
+                name="min_degree",
+                param_type="integer",
+                default=3,
+                description="Minimum connections",
+                min_value=1,
+                max_value=20,
+            ),
+            QueryParameter(
+                name="top_n",
+                param_type="integer",
+                default=20,
+                description="Top N hubs",
+                min_value=5,
+                max_value=50,
+            ),
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=100,
+                description="Maximum results",
+                min_value=20,
+                max_value=300,
+            ),
+        ],
+    ),
+}
+
+# =============================================================================
+# CATEGORY 4: TEMPORAL EVOLUTION
+# =============================================================================
+
+TEMPORAL_QUERIES: dict[str, SchemaQuery] = {
+    "recent_developments": SchemaQuery(
+        name="Recent Policy Developments",
+        description="New entities and relationships added in the past N days",
+        cypher="""
+            MATCH (e:Entity)-[r]-(n:Entity)
+            WHERE e.created_at > datetime() - duration({days: $days_back})
+               OR r.created_at > datetime() - duration({days: $days_back})
+            RETURN e, r, n
+            ORDER BY coalesce(e.created_at, r.created_at) DESC
+            LIMIT $limit
+        """,
+        category="temporal",
+        parameters=[
+            QueryParameter(
+                name="days_back",
+                param_type="integer",
+                default=30,
+                description="Days to look back",
+                min_value=7,
+                max_value=365,
+            ),
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            ),
+        ],
+    ),
+    "policy_timeline": SchemaQuery(
+        name="Policy Implementation Timeline",
+        description="Track implementation dates and deadlines for key regulations",
+        cypher="""
+            MATCH (p:Entity)-[r]-(e:Entity)
+            WHERE p.name =~ '(?i).*(DSA|DMA|AI Act|GDPR|Digital|NIS2|DORA|Product Safety).*'
+            RETURN p, r, e
+            ORDER BY p.created_at DESC
+            LIMIT $limit
+        """,
+        category="temporal",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "regulatory_changes": SchemaQuery(
+        name="Regulatory Change Sequence",
+        description="Track amendments, supersessions, and updates to regulations",
+        cypher="""
+            MATCH (old:Entity)-[r]->(new:Entity)
+            WHERE type(r) CONTAINS 'SUPERSEDE' OR type(r) CONTAINS 'AMEND'
+                  OR type(r) CONTAINS 'REPLACE' OR type(r) CONTAINS 'UPDATE'
+                  OR type(r) CONTAINS 'REPEAL'
+            RETURN old, r, new
+            ORDER BY new.created_at DESC
+            LIMIT $limit
+        """,
+        category="temporal",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+    "emerging_areas": SchemaQuery(
+        name="Emerging Policy Areas",
+        description="Recently added entities that may signal new regulatory focus areas",
+        cypher="""
+            MATCH (e:Entity)
+            WHERE e.created_at > datetime() - duration({days: $days_back})
+            WITH e
+            ORDER BY e.created_at DESC
+            LIMIT $top_n
+            MATCH (e)-[r]-(n:Entity)
+            RETURN e, r, n
+            LIMIT $limit
+        """,
+        category="temporal",
+        parameters=[
+            QueryParameter(
+                name="days_back",
+                param_type="integer",
+                default=60,
+                description="Days to look back",
+                min_value=14,
+                max_value=365,
+            ),
+            QueryParameter(
+                name="top_n",
+                param_type="integer",
+                default=30,
+                description="Top N newest entities",
+                min_value=10,
+                max_value=100,
+            ),
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=100,
+                description="Maximum results",
+                min_value=20,
+                max_value=300,
+            ),
+        ],
+    ),
+    "legislative_tracking": SchemaQuery(
+        name="Legislative Process Tracking",
+        description="Track proposals through legislative stages: submission, examination, voting, adoption",
+        cypher="""
+            MATCH (proposal:Entity)-[r]-(stage:Entity)
+            WHERE type(r) CONTAINS 'SUBMIT' OR type(r) CONTAINS 'EXAMINE'
+                  OR type(r) CONTAINS 'VOTE' OR type(r) CONTAINS 'ADOPT'
+                  OR type(r) CONTAINS 'AMEND' OR type(r) CONTAINS 'BECOME'
+               OR proposal.name =~ '(?i).*(proposal|draft|bill|directive|regulation|Entwurf|Gesetzentwurf).*'
+            RETURN proposal, r, stage
+            ORDER BY proposal.created_at DESC
+            LIMIT $limit
+        """,
+        category="temporal",
+        parameters=[
+            QueryParameter(
+                name="limit",
+                param_type="integer",
+                default=50,
+                description="Maximum results",
+                min_value=10,
+                max_value=200,
+            )
+        ],
+    ),
+}
+
+# =============================================================================
+# COMBINED QUERIES DICTIONARY
+# =============================================================================
+
+SCHEMA_QUERIES: dict[str, SchemaQuery] = {
+    **POLICY_QUERIES,
+    **ORGANIZATION_QUERIES,
+    **NETWORK_QUERIES,
+    **TEMPORAL_QUERIES,
+}
+
+
+def get_schema_query(query_name: str) -> SchemaQuery | None:
     """Get a schema query by name or display name."""
     # Try direct lookup first (by key)
     if query_name in SCHEMA_QUERIES:
@@ -155,3 +574,11 @@ def get_queries_by_category(category: str) -> list[SchemaQuery]:
 def get_categories() -> list[str]:
     """Get all unique query categories."""
     return list(set(q.category for q in SCHEMA_QUERIES.values()))
+
+
+def get_default_parameters(query_name: str) -> dict[str, any]:
+    """Get default parameter values for a query."""
+    query = get_schema_query(query_name)
+    if not query:
+        return {}
+    return {param.name: param.default for param in query.parameters}

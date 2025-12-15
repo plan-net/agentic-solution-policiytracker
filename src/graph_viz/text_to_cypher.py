@@ -56,11 +56,12 @@ class TextToCypherService:
         "ALTER",
     }
 
-    def __init__(self, neo4j_uri: str, neo4j_user: str, neo4j_password: str, openai_api_key: str):
+    def __init__(self, neo4j_uri: str, neo4j_user: str, neo4j_password: str, openai_api_key: str, database: str = "neo4j"):
         """Initialize the text-to-Cypher service."""
         self.neo4j_uri = neo4j_uri
         self.neo4j_user = neo4j_user
         self.neo4j_password = neo4j_password
+        self.database = database
 
         # Initialize Neo4j graph for LangChain with enhanced_schema disabled to reduce context
         # Note: Neo4jGraph calls refresh_schema() in __init__, which queries the database
@@ -70,6 +71,7 @@ class TextToCypherService:
                 url=neo4j_uri,
                 username=neo4j_user,
                 password=neo4j_password,
+                database=database,
                 enhanced_schema=False,  # Disable to reduce context size
                 sanitize=True,
             )
@@ -82,12 +84,14 @@ class TextToCypherService:
 
             # Import GraphDatabase for manual initialization
             from neo4j import GraphDatabase
+            from langchain_community.graphs.graph_store import GraphStore
 
-            # Create a minimal compatible graph object
-            class MinimalNeo4jGraph:
-                def __init__(self, uri, username, password):
+            # Create a minimal compatible graph object that inherits from GraphStore
+            class MinimalNeo4jGraph(GraphStore):
+                def __init__(self, uri, username, password, database="neo4j"):
                     self.driver = GraphDatabase.driver(uri, auth=(username, password))
-                    self.schema = (
+                    self._database = database
+                    self._schema_str = (
                         "Node properties:\n"
                         "Policy {name: STRING, status: STRING, jurisdiction: STRING}\n"
                         "Politician {name: STRING, party: STRING}\n"
@@ -101,7 +105,7 @@ class TextToCypherService:
                         "(:Politician)-[:AUTHORED_BY]->(:Policy)\n"
                         "(:News)-[:RELATED_TO]->(:Policy)"
                     )
-                    self.structured_schema = {
+                    self._structured_schema = {
                         "node_props": {
                             "Policy": [
                                 {"property": "name", "type": "STRING"},
@@ -135,20 +139,63 @@ class TextToCypherService:
                     }
 
                 def query(self, cypher_query, params=None):
-                    with self.driver.session() as session:
+                    with self.driver.session(database=self._database) as session:
                         result = session.run(cypher_query, params or {})
-                        return result.data()
+                        data = result.data()
+                        # Filter out embedding fields to avoid context limit issues
+                        return self._filter_embeddings(data)
+
+                def _filter_embeddings(self, data):
+                    """Remove embedding fields from query results to reduce context size."""
+                    if not data:
+                        return data
+                    filtered = []
+                    for record in data:
+                        filtered_record = {}
+                        for key, value in record.items():
+                            if isinstance(value, dict):
+                                # Filter out embedding fields from node properties
+                                filtered_record[key] = {
+                                    k: self._sanitize_value(v) for k, v in value.items()
+                                    if not k.endswith('_embedding') and k != 'embedding'
+                                }
+                            else:
+                                filtered_record[key] = self._sanitize_value(value)
+                        filtered.append(filtered_record)
+                    return filtered
+
+                def _sanitize_value(self, value):
+                    """Convert Neo4j types to JSON-serializable types."""
+                    if hasattr(value, 'isoformat'):
+                        # Neo4j DateTime or Python datetime
+                        return value.isoformat()
+                    return value
 
                 @property
-                def get_structured_schema(self):
-                    """Return structured schema as a property."""
-                    return self.structured_schema
+                def schema(self) -> str:
+                    """Return schema as a string."""
+                    return self._schema_str
 
-                def refresh_schema(self):
+                @property
+                def get_schema(self) -> str:
+                    """Return schema as a string (alias for schema)."""
+                    return self._schema_str
+
+                @property
+                def structured_schema(self) -> dict:
+                    """Return structured schema as a dict."""
+                    return self._structured_schema
+
+                @property
+                def get_structured_schema(self) -> dict:
+                    """Return structured schema as a dict (alias for structured_schema)."""
+                    return self._structured_schema
+
+                def refresh_schema(self) -> None:
                     # No-op - we use manual schema
                     pass
 
-            self.graph = MinimalNeo4jGraph(neo4j_uri, neo4j_user, neo4j_password)
+            self.graph = MinimalNeo4jGraph(neo4j_uri, neo4j_user, neo4j_password, database)
             logger.info("Initialized Neo4j graph with minimal manual schema")
 
         # Initialize LLM

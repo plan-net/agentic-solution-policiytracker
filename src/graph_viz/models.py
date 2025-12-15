@@ -1,6 +1,6 @@
 """Pydantic models for graph visualization API."""
 
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field, model_serializer
 
@@ -109,16 +109,40 @@ class TextToCypherResponse(BaseModel):
     error: Optional[str] = Field(default=None, description="Error message if query failed")
 
 
+class QueryParameter(BaseModel):
+    """Definition of a query parameter for the UI to render appropriate input controls."""
+
+    name: str = Field(..., description="Parameter name (used in Cypher query as $name)")
+    param_type: Literal["string", "integer", "float", "boolean"] = Field(
+        ..., description="Parameter data type"
+    )
+    default: Any = Field(..., description="Default value for the parameter")
+    description: str = Field(..., description="Human-readable description for UI label")
+    required: bool = Field(default=False, description="Whether the parameter is required")
+    min_value: Optional[float] = Field(default=None, description="Minimum value for numeric types")
+    max_value: Optional[float] = Field(default=None, description="Maximum value for numeric types")
+
+
 class SchemaQuery(BaseModel):
     """Predefined schema query definition."""
 
     name: str = Field(..., description="Query display name")
     description: str = Field(..., description="Query description")
-    cypher: str = Field(..., description="Cypher query template")
+    cypher: str = Field(..., description="Cypher query template with $param placeholders")
     category: str = Field(
         ..., description="Query category (policy, organization, temporal, network)"
     )
-    parameters: dict[str, Any] = Field(default_factory=dict, description="Query parameters")
+    parameters: list[QueryParameter] = Field(
+        default_factory=list, description="List of query parameters with their definitions"
+    )
+
+
+class SchemaQueryRequest(BaseModel):
+    """Request to execute a schema query with parameters."""
+
+    parameters: dict[str, Any] = Field(
+        default_factory=dict, description="Parameter values to substitute in the query"
+    )
 
 
 class SchemaQueryResponse(BaseModel):

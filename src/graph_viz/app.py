@@ -19,11 +19,12 @@ from .models import (
     GraphNode,
     HealthResponse,
     SchemaQuery,
+    SchemaQueryRequest,
     SchemaQueryResponse,
     TextToCypherRequest,
     TextToCypherResponse,
 )
-from .schema_queries import get_schema_query, list_schema_queries
+from .schema_queries import get_default_parameters, get_schema_query, list_schema_queries
 from .text_to_cypher import TextToCypherService
 
 logger = logging.getLogger(__name__)
@@ -78,6 +79,7 @@ class GraphVizServer:
                 neo4j_user=settings.NEO4J_USERNAME,
                 neo4j_password=settings.NEO4J_PASSWORD,
                 openai_api_key=openai_key,
+                database=settings.NEO4J_DATABASE,
             )
             logger.info("Text-to-Cypher service initialized")
         return self.text_to_cypher_service
@@ -129,17 +131,66 @@ class GraphVizServer:
         return list_schema_queries()
 
     @app.get("/api/graph/schema-query/{query_name}")
-    async def execute_schema_query(self, query_name: str) -> SchemaQueryResponse:
-        """Execute a predefined schema query."""
+    async def execute_schema_query_get(self, query_name: str) -> SchemaQueryResponse:
+        """Execute a predefined schema query with default parameters (GET method)."""
+        return await self._execute_schema_query_with_params(query_name, {})
+
+    @app.post("/api/graph/schema-query/{query_name}")
+    async def execute_schema_query_post(
+        self, query_name: str, request: SchemaQueryRequest
+    ) -> SchemaQueryResponse:
+        """Execute a predefined schema query with custom parameters (POST method)."""
+        return await self._execute_schema_query_with_params(query_name, request.parameters)
+
+    async def _execute_schema_query_with_params(
+        self, query_name: str, user_params: dict
+    ) -> SchemaQueryResponse:
+        """Execute a schema query with merged default and user parameters."""
         query_def = get_schema_query(query_name)
         if not query_def:
             raise HTTPException(status_code=404, detail=f"Schema query '{query_name}' not found")
+
+        # Get default parameters and merge with user-provided ones
+        params = get_default_parameters(query_name)
+        params.update(user_params)
+
+        # Validate parameter types and ranges
+        for param_def in query_def.parameters:
+            if param_def.name in params:
+                value = params[param_def.name]
+                # Type validation
+                if param_def.param_type == "integer":
+                    try:
+                        params[param_def.name] = int(value)
+                    except (ValueError, TypeError):
+                        params[param_def.name] = param_def.default
+                    # Range validation
+                    if param_def.min_value is not None:
+                        params[param_def.name] = max(
+                            int(param_def.min_value), params[param_def.name]
+                        )
+                    if param_def.max_value is not None:
+                        params[param_def.name] = min(
+                            int(param_def.max_value), params[param_def.name]
+                        )
+                elif param_def.param_type == "float":
+                    try:
+                        params[param_def.name] = float(value)
+                    except (ValueError, TypeError):
+                        params[param_def.name] = param_def.default
+                elif param_def.param_type == "boolean":
+                    if isinstance(value, str):
+                        params[param_def.name] = value.lower() in ("true", "1", "yes")
+                    else:
+                        params[param_def.name] = bool(value)
 
         start_time = time.time()
 
         try:
             driver = await self._get_neo4j_driver()
-            nodes, links = await self._execute_cypher_query(query_def.cypher, driver)
+            nodes, links = await self._execute_cypher_query_with_params(
+                query_def.cypher, driver, params
+            )
 
             execution_time = time.time() - start_time
 
@@ -152,6 +203,7 @@ class GraphVizServer:
                     "node_count": len(nodes),
                     "edge_count": len(links),
                     "query_name": query_name,
+                    "parameters_used": params,
                 },
             )
 
@@ -232,16 +284,17 @@ class GraphVizServer:
         else:
             return obj
 
-    async def _execute_cypher_query(
-        self, cypher: str, driver
+    async def _execute_cypher_query_with_params(
+        self, cypher: str, driver, params: dict | None = None
     ) -> tuple[list[GraphNode], list[GraphEdge]]:
-        """Execute a Cypher query and convert results to graph format."""
+        """Execute a Cypher query with parameters and convert results to graph format."""
         nodes_dict = {}
         links = []
+        params = params or {}
 
         try:
             async with driver.session(database=settings.NEO4J_DATABASE) as session:
-                result = await session.run(cypher)
+                result = await session.run(cypher, params)
                 records = await result.data()
 
                 for record in records:
