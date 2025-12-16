@@ -166,15 +166,15 @@ def apply_graphiti_patches():
             )
 
         def patched_get_entity_node_from_record(record: Any) -> EntityNode:
-            """Patched version that handles string datetime values."""
+            """Patched version that handles string datetime values and None summaries."""
             entity_node = EntityNode(
                 uuid=record["uuid"],
                 name=record["name"],
                 group_id=record["group_id"],
                 labels=record["labels"],
                 created_at=_safe_parse_datetime(record["created_at"]),
-                summary=record["summary"],
-                attributes=record["attributes"],
+                summary=record["summary"] or "",  # Handle None summary
+                attributes=record["attributes"] or {},  # Handle None attributes
             )
 
             entity_node.attributes.pop("uuid", None)
