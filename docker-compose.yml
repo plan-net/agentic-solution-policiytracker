@@ -239,6 +239,8 @@ services:
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
       - APIFY_API_TOKEN=${APIFY_API_TOKEN}
       - EXA_API_KEY=${EXA_API_KEY}
+      - DPA_API_KEY=${DPA_API_KEY}
+      - NEWS_COLLECTOR=${NEWS_COLLECTOR:-exa_direct}
       - _PIP_ADDITIONAL_REQUIREMENTS=apify-client==1.6.4 pyyaml==6.0.1 aiofiles==23.2.1 structlog==24.1.0 azure-storage-blob==12.19.0 requests==2.31.0 aiohttp==3.9.1 exa-py==1.0.9 beautifulsoup4==4.12.3 readability-lxml==0.8.1 pydantic-settings==2.1.0
       - PYTHONPATH=/opt/airflow:/opt/airflow/src
     volumes:
@@ -270,6 +272,8 @@ services:
       - AIRFLOW__CORE__LOAD_EXAMPLES=false
       - APIFY_API_TOKEN=${APIFY_API_TOKEN}
       - EXA_API_KEY=${EXA_API_KEY}
+      - DPA_API_KEY=${DPA_API_KEY}
+      - NEWS_COLLECTOR=${NEWS_COLLECTOR:-exa_direct}
       - _PIP_ADDITIONAL_REQUIREMENTS=apify-client==1.6.4 pyyaml==6.0.1 aiofiles==23.2.1 structlog==24.1.0 azure-storage-blob==12.19.0 requests==2.31.0 aiohttp==3.9.1 exa-py==1.0.9 beautifulsoup4==4.12.3 readability-lxml==0.8.1 pydantic-settings==2.1.0
       - PYTHONPATH=/opt/airflow:/opt/airflow/src
     volumes:

@@ -10,6 +10,7 @@ from typing import Union
 import structlog
 
 from .apify_news import ApifyNewsCollector
+from .dpa_news import DPANewsCollector
 from .exa_direct import ExaDirectCollector
 from .exa_news import ExaNewsCollector
 
@@ -18,12 +19,12 @@ logger = structlog.get_logger()
 
 def create_news_collector(
     collector_type: str = None,
-) -> Union[ApifyNewsCollector, ExaNewsCollector, ExaDirectCollector]:
+) -> Union[ApifyNewsCollector, DPANewsCollector, ExaNewsCollector, ExaDirectCollector]:
     """
     Create a news collector based on configuration.
 
     Args:
-        collector_type: Type of collector ("apify", "exa", or "exa_direct").
+        collector_type: Type of collector ("apify", "dpa", "exa", or "exa_direct").
                        If None, uses NEWS_COLLECTOR environment variable.
 
     Returns:
@@ -66,9 +67,18 @@ def create_news_collector(
             logger.error(f"Failed to create Exa direct collector: {e}")
             raise ValueError(f"Exa direct collector configuration error: {e}")
 
+    elif collector_type == "dpa":
+        try:
+            collector = DPANewsCollector()
+            logger.info("Created DPA news collector")
+            return collector
+        except ValueError as e:
+            logger.error(f"Failed to create DPA collector: {e}")
+            raise ValueError(f"DPA collector configuration error: {e}")
+
     else:
         raise ValueError(
-            f"Unsupported collector type: {collector_type}. Supported types: 'apify', 'exa', 'exa_direct'"
+            f"Unsupported collector type: {collector_type}. Supported types: 'apify', 'dpa', 'exa', 'exa_direct'"
         )
 
 
@@ -89,6 +99,10 @@ def get_available_collectors() -> list[str]:
     if os.getenv("EXA_API_KEY"):
         available.append("exa")
         available.append("exa_direct")
+
+    # Check DPA
+    if os.getenv("DPA_API_KEY"):
+        available.append("dpa")
 
     return available
 

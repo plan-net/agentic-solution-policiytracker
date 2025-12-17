@@ -33,6 +33,13 @@ try:
 except ImportError:
     pass
 
+try:
+    from .dpa_news import DPANewsCollector
+
+    _collectors["DPANewsCollector"] = DPANewsCollector
+except ImportError:
+    pass
+
 # Factory functions should always be available
 try:
     from .factory import create_news_collector, get_available_collectors, validate_collector_config
