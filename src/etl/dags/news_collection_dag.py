@@ -17,7 +17,11 @@ from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.dates import days_ago
 
-from src.etl.collectors.factory import create_news_collector, get_available_collectors
+from src.etl.collectors.factory import (
+    create_news_collector,
+    get_available_collectors,
+    get_enabled_collectors,
+)
 from src.etl.storage import get_storage
 from src.etl.transformers.markdown_transformer import MarkdownTransformer
 from src.etl.utils.config_loader import ClientConfigLoader
@@ -50,38 +54,50 @@ def load_client_config(**context):
     config_loader = ClientConfigLoader()
     company_name = config_loader.get_primary_company_name()
     available_collectors = get_available_collectors()
-    collector_type = os.getenv("NEWS_COLLECTOR", "exa_direct").lower()
 
-    # Validate collector availability
-    if collector_type not in available_collectors:
-        if available_collectors:
-            collector_type = available_collectors[0]
-            print(
-                f"Configured collector '{os.getenv('NEWS_COLLECTOR')}' not available. Using '{collector_type}'"
-            )
-        else:
-            raise ValueError("No news collectors available. Please configure API keys.")
+    # Get enabled collectors (supports multi-collector via NEWS_COLLECTORS env var)
+    enabled_collectors = get_enabled_collectors()
 
-    # Initialize tracker and determine collection scope
+    if not enabled_collectors:
+        raise ValueError("No news collectors available. Please configure API keys.")
+
+    # Initialize tracker and determine collection scope per collector
     tracker = ETLInitializationTracker(storage_type="local")
-    days_back = tracker.get_collection_days(collector_type)
-    is_initialization = not tracker.is_initialized(collector_type)
+
+    # Determine days_back based on initialization status
+    # Use the maximum days needed across all enabled collectors
+    collector_days = {}
+    any_initialization = False
+    for collector_type in enabled_collectors:
+        days = tracker.get_collection_days(collector_type)
+        is_init = not tracker.is_initialized(collector_type)
+        collector_days[collector_type] = {"days_back": days, "is_initialization": is_init}
+        if is_init:
+            any_initialization = True
+
+    # Use max days_back across all collectors
+    max_days_back = max(info["days_back"] for info in collector_days.values())
 
     # Store in XCom for next tasks
     context["task_instance"].xcom_push(key="company_name", value=company_name)
     context["task_instance"].xcom_push(
         key="search_queries", value=config_loader.get_search_queries()
     )
-    context["task_instance"].xcom_push(key="collector_type", value=collector_type)
+    context["task_instance"].xcom_push(key="enabled_collectors", value=enabled_collectors)
+    context["task_instance"].xcom_push(key="collector_days", value=collector_days)
     context["task_instance"].xcom_push(key="available_collectors", value=available_collectors)
-    context["task_instance"].xcom_push(key="days_back", value=days_back)
-    context["task_instance"].xcom_push(key="is_initialization", value=is_initialization)
+    context["task_instance"].xcom_push(key="days_back", value=max_days_back)
+    context["task_instance"].xcom_push(key="is_initialization", value=any_initialization)
+
+    # For backwards compatibility
+    context["task_instance"].xcom_push(key="collector_type", value=enabled_collectors[0])
 
     print(f"Loaded client config. Primary company: {company_name}")
-    print(f"Using collector: {collector_type}")
+    print(f"Enabled collectors: {enabled_collectors}")
     print(f"Available collectors: {available_collectors}")
+    print(f"Collector settings: {collector_days}")
     print(
-        f"Collection mode: {'INITIALIZATION' if is_initialization else 'DAILY'} ({days_back} days back)"
+        f"Collection mode: {'INITIALIZATION' if any_initialization else 'DAILY'} (max {max_days_back} days back)"
     )
 
     return True
@@ -94,26 +110,78 @@ async def collect_news_async(company_name: str, collector_type: str, days_back: 
     return articles
 
 
+async def collect_from_all_collectors(
+    company_name: str, enabled_collectors: list[str], days_back: int
+) -> tuple[list[dict], dict[str, int]]:
+    """Collect news from all enabled collectors sequentially."""
+    all_articles = []
+    collector_stats = {}
+
+    for collector_type in enabled_collectors:
+        try:
+            print(f"Collecting from {collector_type}...")
+            collector = create_news_collector(collector_type)
+            articles = await collector.collect_news(
+                query=company_name, days_back=days_back, max_items=100
+            )
+            # Tag articles with collector source
+            for article in articles:
+                article["_collector_type"] = collector_type
+            all_articles.extend(articles)
+            collector_stats[collector_type] = len(articles)
+            print(f"  ✓ Collected {len(articles)} articles from {collector_type}")
+        except Exception as e:
+            print(f"  ✗ Failed to collect from {collector_type}: {e}")
+            collector_stats[collector_type] = 0
+            # Continue with other collectors
+
+    return all_articles, collector_stats
+
+
 def collect_news_data(**context):
-    """Collect news articles using configured collector."""
+    """Collect news articles using all enabled collectors."""
     company_name = context["task_instance"].xcom_pull(key="company_name")
-    collector_type = context["task_instance"].xcom_pull(key="collector_type")
+    enabled_collectors = context["task_instance"].xcom_pull(key="enabled_collectors")
     days_back = context["task_instance"].xcom_pull(key="days_back")
     is_initialization = context["task_instance"].xcom_pull(key="is_initialization")
 
-    # Run async collector with determined days_back
-    articles = asyncio.run(collect_news_async(company_name, collector_type, days_back))
+    # For backwards compatibility, fall back to single collector if needed
+    if not enabled_collectors:
+        collector_type = context["task_instance"].xcom_pull(key="collector_type")
+        enabled_collectors = [collector_type] if collector_type else []
+
+    if not enabled_collectors:
+        print("No collectors enabled!")
+        context["task_instance"].xcom_push(key="articles", value=[])
+        context["task_instance"].xcom_push(key="collector_stats", value={})
+        return 0
+
+    # Run async collection from all collectors
+    articles, collector_stats = asyncio.run(
+        collect_from_all_collectors(company_name, enabled_collectors, days_back)
+    )
 
     # Store in XCom
     context["task_instance"].xcom_push(key="articles", value=articles)
-    context["task_instance"].xcom_push(key="collector_used", value=collector_type)
+    context["task_instance"].xcom_push(key="collector_stats", value=collector_stats)
+    context["task_instance"].xcom_push(key="collectors_used", value=enabled_collectors)
     context["task_instance"].xcom_push(key="days_back_used", value=days_back)
     context["task_instance"].xcom_push(key="was_initialization", value=is_initialization)
 
+    # For backwards compatibility
+    context["task_instance"].xcom_push(key="collector_used", value=enabled_collectors[0])
+
     mode = "INITIALIZATION" if is_initialization else "DAILY"
-    print(
-        f"Collected {len(articles)} articles for {company_name} using {collector_type} ({mode}: {days_back} days)"
-    )
+    print(f"\n{'='*50}")
+    print(f"Collection Summary ({mode}: {days_back} days)")
+    print(f"{'='*50}")
+    print(f"Company: {company_name}")
+    print(f"Collectors used: {enabled_collectors}")
+    for collector, count in collector_stats.items():
+        print(f"  - {collector}: {count} articles")
+    print(f"Total collected: {len(articles)} articles")
+    print(f"{'='*50}\n")
+
     return len(articles)
 
 
@@ -199,23 +267,36 @@ def transform_to_markdown(**context):
 
 
 def mark_initialization_complete(**context):
-    """Mark initialization as complete if this was an initialization run."""
-    collector_used = context["task_instance"].xcom_pull(key="collector_used")
+    """Mark initialization as complete for all collectors that were initializing."""
+    collectors_used = context["task_instance"].xcom_pull(key="collectors_used") or []
+    collector_days = context["task_instance"].xcom_pull(key="collector_days") or {}
+    collector_stats = context["task_instance"].xcom_pull(key="collector_stats") or {}
     was_initialization = context["task_instance"].xcom_pull(key="was_initialization")
     days_back_used = context["task_instance"].xcom_pull(key="days_back_used")
-    articles = context["task_instance"].xcom_pull(key="articles") or []
     saved_count = context["task_instance"].xcom_pull(key="saved_count") or 0
+
+    # For backwards compatibility
+    if not collectors_used:
+        collector_used = context["task_instance"].xcom_pull(key="collector_used")
+        collectors_used = [collector_used] if collector_used else []
 
     if was_initialization:
         tracker = ETLInitializationTracker(storage_type="local")
-        tracker.mark_initialized(
-            collector_type=collector_used,
-            initialization_days=days_back_used,
-            articles_collected=saved_count,  # Use saved count, not total collected
-        )
-        print(
-            f"✅ Marked {collector_used} as initialized with {saved_count} articles from {days_back_used} days"
-        )
+
+        for collector_type in collectors_used:
+            collector_info = collector_days.get(collector_type, {})
+            if collector_info.get("is_initialization", False):
+                articles_from_collector = collector_stats.get(collector_type, 0)
+                tracker.mark_initialized(
+                    collector_type=collector_type,
+                    initialization_days=collector_info.get("days_back", days_back_used),
+                    articles_collected=articles_from_collector,
+                )
+                print(
+                    f"✅ Marked {collector_type} as initialized with {articles_from_collector} articles"
+                )
+            else:
+                print(f"ℹ️  {collector_type} was already initialized, skipping")
     else:
         print("ℹ️  Regular daily collection, no initialization marking needed")
 
@@ -244,7 +325,8 @@ def check_auto_trigger(**context):
 def generate_summary(**context):
     """Generate summary of the collection run."""
     company_name = context["task_instance"].xcom_pull(key="company_name")
-    collector_used = context["task_instance"].xcom_pull(key="collector_used")
+    collectors_used = context["task_instance"].xcom_pull(key="collectors_used") or []
+    collector_stats = context["task_instance"].xcom_pull(key="collector_stats") or {}
     available_collectors = context["task_instance"].xcom_pull(key="available_collectors") or []
     was_initialization = context["task_instance"].xcom_pull(key="was_initialization")
     days_back_used = context["task_instance"].xcom_pull(key="days_back_used")
@@ -252,20 +334,38 @@ def generate_summary(**context):
     saved_count = context["task_instance"].xcom_pull(key="saved_count") or 0
     failed_count = context["task_instance"].xcom_pull(key="failed_count") or 0
 
+    # For backwards compatibility
+    if not collectors_used:
+        collector_used = context["task_instance"].xcom_pull(key="collector_used")
+        collectors_used = [collector_used] if collector_used else []
+
     mode = "INITIALIZATION" if was_initialization else "DAILY"
 
+    # Build collector stats string
+    collector_stats_str = ""
+    for collector in collectors_used:
+        count = collector_stats.get(collector, 0)
+        collector_stats_str += f"\n  - {collector}: {count} articles"
+
     summary = f"""
+{'='*60}
 News Collection Summary
-======================
+{'='*60}
 Company: {company_name}
-Collector Used: {collector_used}
 Collection Mode: {mode} ({days_back_used} days back)
-Available Collectors: {', '.join(available_collectors)}
-Articles Collected: {len(articles)}
-Articles Saved: {saved_count}
-Articles Failed: {failed_count}
-Duplicates Skipped: {len(articles) - saved_count - failed_count}
 Run Date: {context['ds']}
+
+Collectors Used: {', '.join(collectors_used)}
+Available Collectors: {', '.join(available_collectors)}
+
+Collector Stats:{collector_stats_str}
+
+Results:
+  - Total Collected: {len(articles)}
+  - Articles Saved: {saved_count}
+  - Articles Failed: {failed_count}
+  - Duplicates Skipped: {len(articles) - saved_count - failed_count}
+{'='*60}
 """
 
     print(summary)

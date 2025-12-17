@@ -122,3 +122,37 @@ def validate_collector_config(collector_type: str = None) -> bool:
         return True
     except ValueError:
         return False
+
+
+def get_enabled_collectors() -> list[str]:
+    """
+    Get list of collectors to run based on configuration.
+
+    Supports multi-collector mode via NEWS_COLLECTORS env var (comma-separated).
+    Falls back to single NEWS_COLLECTOR for backwards compatibility.
+
+    Returns:
+        List of collector names to run in order
+    """
+    # Check for multi-collector config
+    collectors_str = os.getenv("NEWS_COLLECTORS", "")
+    if collectors_str:
+        requested = [c.strip().lower() for c in collectors_str.split(",") if c.strip()]
+    else:
+        # Fall back to single collector
+        single = os.getenv("NEWS_COLLECTOR", "exa_direct").lower()
+        requested = [single]
+
+    # Filter to only available collectors (have API keys)
+    available = get_available_collectors()
+    enabled = [c for c in requested if c in available]
+
+    if not enabled:
+        logger.warning(f"No collectors available from requested: {requested}. Available: {available}")
+        # Fall back to first available
+        if available:
+            enabled = [available[0]]
+            logger.info(f"Falling back to first available collector: {enabled[0]}")
+
+    logger.info(f"Enabled collectors: {enabled}")
+    return enabled

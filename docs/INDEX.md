@@ -62,6 +62,10 @@
 ### `/mcp/` - MCP Integration
 - Model Context Protocol integration documentation
 
+### `/etl/` - ETL & Data Collection
+- **DPA_NEWS_COLLECTOR.md** - DPA (Deutsche Presse-Agentur) news collector integration guide
+- **MULTI_COLLECTOR_DAG.md** - Multi-collector news DAG (running DPA + EXA together)
+
 ## 📄 Root Documentation
 
 - **README.md** - Project overview and getting started
@@ -92,7 +96,11 @@
 2. ✅ [Phase 2 Implementation Summary](phase2_implementation_summary.md) - Complete guide with Neo4j optimization
 3. [Phase 2 Architecture Plan](deduplication_phase2_plan.md) - Detailed architecture and roadmap
 
+### ETL & Data Collection
+1. [DPA News Collector](etl/DPA_NEWS_COLLECTOR.md) - German news agency API integration
+2. [Multi-Collector DAG](etl/MULTI_COLLECTOR_DAG.md) - Running multiple collectors (DPA + EXA) together
+
 ---
 
-**Last Updated**: 2025-11-25
+**Last Updated**: 2025-12-17
 **Project**: Political Monitoring Agent v0.2.0

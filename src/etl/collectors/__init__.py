@@ -42,7 +42,12 @@ except ImportError:
 
 # Factory functions should always be available
 try:
-    from .factory import create_news_collector, get_available_collectors, validate_collector_config
+    from .factory import (
+        create_news_collector,
+        get_available_collectors,
+        get_enabled_collectors,
+        validate_collector_config,
+    )
 
     _factory_available = True
 except ImportError:
@@ -52,7 +57,12 @@ except ImportError:
 __all__ = list(_collectors.keys())
 if _factory_available:
     __all__.extend(
-        ["create_news_collector", "get_available_collectors", "validate_collector_config"]
+        [
+            "create_news_collector",
+            "get_available_collectors",
+            "get_enabled_collectors",
+            "validate_collector_config",
+        ]
     )
 
 # Add to module namespace
@@ -62,6 +72,7 @@ if _factory_available:
         {
             "create_news_collector": create_news_collector,
             "get_available_collectors": get_available_collectors,
+            "get_enabled_collectors": get_enabled_collectors,
             "validate_collector_config": validate_collector_config,
         }
     )
