@@ -69,6 +69,17 @@ from typing import Optional
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+# Load .env file if it exists
+_env_loaded = False
+try:
+    from dotenv import load_dotenv
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+        _env_loaded = True
+except ImportError:
+    pass  # dotenv not installed, rely on environment variables
+
 
 def log(message: str, flush: bool = True):
     """Print with timestamp and immediate flush."""
@@ -252,12 +263,33 @@ def run_gds_community_detection(
     log(f"Relationship types: {relationship_types}")
     log(f"Min community size: {min_community_size}")
     log(f"Summarize: {summarize or summarize_only}")
+
+    # Check for API key if summarization is requested
+    if summarize or summarize_only:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if api_key:
+            log(f"OpenAI API Key: ✓ Found ({len(api_key)} chars)")
+        else:
+            log("OpenAI API Key: ⚠️  NOT FOUND - summarization will be skipped!")
+            log("   Set OPENAI_API_KEY in .env or environment")
+        if _env_loaded:
+            log(f".env file: ✓ Loaded from {env_path}")
+        else:
+            log(".env file: Not loaded (dotenv not installed or file not found)")
     log("")
 
-    driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
+    # Configure driver with longer timeouts for heavy GDS operations
+    driver = GraphDatabase.driver(
+        NEO4J_URI,
+        auth=(NEO4J_USER, NEO4J_PASSWORD),
+        connection_timeout=300,  # 5 minutes for connection
+        max_connection_lifetime=3600,  # 1 hour max lifetime
+        connection_acquisition_timeout=300,  # 5 minutes to acquire connection
+    )
 
     try:
-        with driver.session() as session:
+        # Use longer default timeout for session (10 minutes for heavy GDS ops)
+        with driver.session(default_access_mode="WRITE") as session:
             # Skip clustering if summarize_only
             if not summarize_only:
                 # Step 1: Check GDS version
@@ -352,48 +384,77 @@ def run_gds_community_detection(
                 else:
                     log("   ✓ No old communities to delete")
 
-                # Step 7: Write community IDs to entities and create Community nodes
+                # Step 7: Write community IDs to entities using stream + batch approach
+                # (avoids timeout issues with gds.leiden.write on large graphs)
+                log("")
+                log("📝 Writing community assignments to entities...")
+                log("   (Using stream + batch approach for large graphs)")
+
+                # First, stream results and collect node-to-community mappings
+                stream_result = session.run("""
+                    CALL gds.leiden.stream('community_graph', {
+                        maxLevels: 10,
+                        gamma: 1.0,
+                        theta: 0.01
+                    })
+                    YIELD nodeId, communityId
+                    RETURN gds.util.asNode(nodeId).uuid as uuid, communityId
+                """)
+
+                # Collect all mappings
+                mappings = [(r["uuid"], r["communityId"]) for r in stream_result]
+                unique_communities = set(cid for _, cid in mappings)
+                log(f"   ✓ Streamed {len(mappings)} node assignments across {len(unique_communities)} communities")
+
+                # Write in batches to avoid timeout
+                batch_size = 1000
+                total_written = 0
+
+                for i in range(0, len(mappings), batch_size):
+                    batch = mappings[i:i + batch_size]
+
+                    def write_batch(tx, batch_data):
+                        tx.run("""
+                            UNWIND $batch as item
+                            MATCH (e:Entity {uuid: item[0]})
+                            SET e.communityId = item[1]
+                        """, batch=batch_data)
+                        return len(batch_data)
+
+                    written = session.execute_write(write_batch, batch)
+                    total_written += written
+
+                    if (i + batch_size) % 5000 == 0 or i + batch_size >= len(mappings):
+                        log(f"   ... wrote {total_written}/{len(mappings)} assignments")
+
+                log(f"   ✓ Wrote community IDs to {total_written} entities")
+
+                # Create Community nodes for large communities
                 log("")
                 log("📝 Creating Community nodes...")
 
-                # Write community assignments back to entities
-                write_query = """
-                CALL gds.leiden.write('community_graph', {
-                    writeProperty: 'communityId',
-                    maxLevels: 10,
-                    gamma: 1.0,
-                    theta: 0.01
-                })
-                YIELD communityCount, modularity
-                RETURN communityCount, modularity
-                """
-                result = session.run(write_query)
-                record = result.single()
-                modularity = record['modularity']
-                log(f"   ✓ Wrote community IDs to {record['communityCount']} communities")
-                log(f"   ✓ Modularity score: {modularity:.4f}")
+                def create_communities(tx, min_size):
+                    result = tx.run("""
+                        MATCH (e:Entity)
+                        WHERE e.communityId IS NOT NULL
+                        WITH e.communityId as communityId, collect(e) as members
+                        WHERE size(members) >= $min_size
+                        CREATE (c:Community {
+                            uuid: randomUUID(),
+                            communityId: communityId,
+                            name: 'Community ' + toString(communityId),
+                            member_count: size(members),
+                            created_at: datetime(),
+                            group_id: head(members).group_id
+                        })
+                        WITH c, members
+                        UNWIND members as member
+                        CREATE (member)-[:MEMBER_OF]->(c)
+                        RETURN count(DISTINCT c) as communities_created
+                    """, min_size=min_size)
+                    return result.single()["communities_created"]
 
-                # Create Community nodes for large communities
-                create_community_query = """
-                MATCH (e:Entity)
-                WHERE e.communityId IS NOT NULL
-                WITH e.communityId as communityId, collect(e) as members
-                WHERE size(members) >= $min_size
-                CREATE (c:Community {
-                    uuid: randomUUID(),
-                    communityId: communityId,
-                    name: 'Community ' + toString(communityId),
-                    member_count: size(members),
-                    created_at: datetime(),
-                    group_id: head(members).group_id
-                })
-                WITH c, members
-                UNWIND members as member
-                CREATE (member)-[:MEMBER_OF]->(c)
-                RETURN count(DISTINCT c) as communities_created
-                """
-                result = session.run(create_community_query, min_size=min_community_size)
-                created = result.single()["communities_created"]
+                created = session.execute_write(create_communities, min_community_size)
                 log(f"   ✓ Created {created} Community nodes")
 
                 # Clean up graph projection
@@ -654,18 +715,37 @@ async def generate_community_summaries(
                 embeddings = await embed_texts(client, [community_name])
                 name_embedding = embeddings[0] if embeddings else None
 
-                # Update Community node
-                session.run("""
-                    MATCH (c:Community {uuid: $uuid})
-                    SET c.name = $name,
-                        c.summary = $summary,
-                        c.name_embedding = $embedding
-                """,
-                    uuid=community_uuid,
-                    name=community_name,
-                    summary=community_summary,
-                    embedding=name_embedding
+                # Update Community node using execute_write for explicit transaction
+                log(f"      Saving to Neo4j...")
+
+                def update_community(tx, uuid, name, summary, embedding):
+                    result = tx.run("""
+                        MATCH (c:Community {uuid: $uuid})
+                        SET c.name = $name,
+                            c.summary = $summary,
+                            c.name_embedding = $embedding
+                        RETURN c.uuid as uuid
+                    """,
+                        uuid=uuid,
+                        name=name,
+                        summary=summary,
+                        embedding=embedding
+                    )
+                    record = result.single()
+                    return record["uuid"] if record else None
+
+                # Use execute_write for explicit transaction commit
+                updated_uuid = session.execute_write(
+                    update_community,
+                    community_uuid,
+                    community_name,
+                    community_summary,
+                    name_embedding
                 )
+
+                if updated_uuid is None:
+                    log(f"      ⚠️  Community {community_uuid} not found for update")
+                    continue
 
                 log(f"      ✓ {community_name[:60]}...")
 
