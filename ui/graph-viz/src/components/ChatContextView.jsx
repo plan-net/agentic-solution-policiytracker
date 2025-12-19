@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { graphApi } from '../services/graphApi'
 import GraphVisualization from './GraphVisualization'
 
-function ChatContextView({ initialSessionId = null }) {
+function ChatContextView({ initialSessionId = null, initialIs3D = false }) {
   const [sessionId, setSessionId] = useState(initialSessionId || '')
   const [queryText, setQueryText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -247,7 +247,7 @@ function ChatContextView({ initialSessionId = null }) {
               <h3 className="text-lg font-semibold text-gray-200 mb-4">
                 Graph Visualization
               </h3>
-              <GraphVisualization graphData={result.graphData} />
+              <GraphVisualization graphData={result.graphData} is3D={initialIs3D} />
 
               {/* Entity List */}
               <div className="mt-6 pt-6 border-t border-gray-700">

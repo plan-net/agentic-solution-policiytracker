@@ -531,7 +531,8 @@ class MCPExecutor:
         query = """
         MATCH (n:Entity)-[r]->(m:Entity)
         WHERE toLower(n.name) CONTAINS toLower($name)
-        RETURN n.name AS source, type(r) AS relationship, m.name AS target, r.fact AS fact
+        RETURN n.name AS source, n.uuid AS source_uuid, type(r) AS relationship,
+               m.name AS target, m.uuid AS target_uuid, r.fact AS fact
         LIMIT $limit
         """
         

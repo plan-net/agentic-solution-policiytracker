@@ -190,8 +190,9 @@ async def handle_search(query: str) -> list[TextContent]:
     if result['retrieved_context']['entities']:
         output.append(f"## Entities ({result['metadata']['total_entities']})")
         for entity in result['retrieved_context']['entities'][:10]:
+            uuid_str = f" [UUID: {entity['uuid']}]" if entity.get('uuid') else ""
             summary = f" - {entity['summary'][:100]}..." if entity.get('summary') and len(entity['summary']) > 100 else (f" - {entity['summary']}" if entity.get('summary') else "")
-            output.append(f"- **{entity['name']}** ({entity['type']}){summary}")
+            output.append(f"- **{entity['name']}** ({entity['type']}){uuid_str}{summary}")
         output.append("")
     
     if result['retrieved_context']['relationships']:
@@ -265,10 +266,12 @@ async def handle_relationships(entity_name: str, max_results: int) -> list[TextC
         return [TextContent(type="text", text=f"No relationships found for: {entity_name}")]
     
     output = [f"## Relationships for {entity_name}", ""]
-    
+
     for rel in relationships:
         fact_text = f"\n  > {rel['fact']}" if rel.get('fact') else ""
-        output.append(f"- **{rel['source']}** --[{rel['relationship']}]--> **{rel['target']}**{fact_text}")
+        source_uuid = f" [UUID: {rel['source_uuid']}]" if rel.get('source_uuid') else ""
+        target_uuid = f" [UUID: {rel['target_uuid']}]" if rel.get('target_uuid') else ""
+        output.append(f"- **{rel['source']}**{source_uuid} --[{rel['relationship']}]--> **{rel['target']}**{target_uuid}{fact_text}")
     
     return [TextContent(type="text", text="\n".join(output))]
 

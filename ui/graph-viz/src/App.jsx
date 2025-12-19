@@ -147,7 +147,7 @@ function App() {
 
         {activeTab === 'schema' && <SchemaExplorer />}
         {activeTab === 'text-to-cypher' && <TextToCypherView />}
-        {activeTab === 'chat-context' && <ChatContextView initialSessionId={urlParams.session_id} />}
+        {activeTab === 'chat-context' && <ChatContextView initialSessionId={urlParams.session_id} initialIs3D={urlParams.mode === '3d'} />}
       </main>
 
       {/* Footer */}

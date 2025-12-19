@@ -67,10 +67,16 @@ class ChatContextTracker:
     def _extract_entities_from_dict(self, data: dict, context: dict) -> None:
         """Recursively extract entity UUIDs from nested dictionary."""
         for key, value in data.items():
-            # Look for UUID fields
+            # Look for UUID fields (single UUID)
             if key in ["uuid", "entity_uuid", "source_uuid", "target_uuid", "node_uuid"]:
                 if isinstance(value, str):
                     context["entity_uuids"].add(value)
+
+            # Look for UUID array fields (from parsed tool results)
+            elif key == "entity_uuids" and isinstance(value, list):
+                for uuid_val in value:
+                    if isinstance(uuid_val, str):
+                        context["entity_uuids"].add(uuid_val)
 
             # Look for entity objects
             elif key == "entity" and isinstance(value, dict):
@@ -157,7 +163,11 @@ class ChatContextTracker:
             logger.error(f"❌ FAILED to persist context to Neo4j: {e}", exc_info=True)
 
     async def _load_context_from_neo4j(self, session_id: str) -> Optional[dict]:
-        """Load chat context from Neo4j."""
+        """Load chat context from Neo4j.
+
+        Note: TTL is not enforced when loading from Neo4j to allow viewing
+        historical session context. TTL only applies to in-memory cache.
+        """
         try:
             import json
 
@@ -165,14 +175,12 @@ class ChatContextTracker:
                 result = await session.run(
                     """
                     MATCH (s:ChatSession {session_id: $session_id})
-                    WHERE datetime() < datetime(s.created_at) + duration({minutes: $ttl_minutes})
                     RETURN s.created_at as created_at,
                            s.entity_uuids as entity_uuids,
                            s.tools_used_json as tools_used_json,
                            s.query_text as query_text
                     """,
                     session_id=session_id,
-                    ttl_minutes=self.ttl.total_seconds() / 60,
                 )
 
                 record = await result.single()
@@ -234,6 +242,8 @@ class ChatContextTracker:
                 f"Loaded context from Neo4j: {context is not None}, entities: {len(context.get('entity_uuids', [])) if context else 0}"
             )
             if context:
+                # Mark as loaded from Neo4j so TTL check is skipped for historical sessions
+                context["_loaded_from_neo4j"] = True
                 self.context_cache[session_id] = context
             else:
                 return {
@@ -247,8 +257,10 @@ class ChatContextTracker:
 
         context = self.context_cache[session_id]
 
-        # Check if context is expired
-        if datetime.now(UTC) - context["created_at"] > self.ttl:
+        # Check if context is expired (only for in-memory cache, not for persisted sessions)
+        # Historical sessions loaded from Neo4j should always be viewable
+        is_historical = context.get("_loaded_from_neo4j", False)
+        if not is_historical and datetime.now(UTC) - context["created_at"] > self.ttl:
             del self.context_cache[session_id]
             return {
                 "nodes": [],

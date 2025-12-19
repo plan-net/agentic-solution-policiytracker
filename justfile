@@ -77,6 +77,8 @@ status:
     @echo ""
     @echo "  📡 API Endpoints:"
     @echo "  🗨️  Chat API:       http://localhost:8001/v1/chat/completions"
+    @echo "  🤖 Claude Agent:   http://localhost:8001/claude-agent/v1/chat/completions"
+    @echo "  📊 Graph Viz:      http://localhost:8001/graph-viz/api/graph/chat-context"
     @echo "  📝 Data Ingestion: http://localhost:8001/data-ingestion"
     @echo "  🔄 ETL Health:     http://localhost:8080/health"
     @echo "  🌐 LLM Gateway:    http://localhost:9080/v1/* (via APISIX)"
@@ -330,6 +332,53 @@ check-plenarprotokoll-sync:
 sync-plenarprotokolle-dry:
     @echo "👀 Performing Plenarprotokoll dry run..."
     uv run python -c "import asyncio; from src.skills.bundestag_plenarprotokoll_manager import BundestagPlenarprotokollManager; import json; result = asyncio.run(BundestagPlenarprotokollManager(use_mock_dip=True).sync_all_plenarprotokolle(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# === Claude Agent (PolicyTracker) ===
+
+# Deploy Claude Agent only
+deploy-claude-agent:
+    @echo "📦 Deploying Claude Agent..."
+    just sync-config
+    uv run --active serve deploy config.yaml --app claude-agent
+    @echo "✅ Claude Agent deployed at http://localhost:8001/claude-agent"
+
+# Test Claude Agent health
+claude-agent-health:
+    @echo "🏥 Checking Claude Agent health..."
+    @curl -s http://localhost:8001/claude-agent/health | python -m json.tool || echo "❌ Claude Agent not accessible"
+
+# Test Claude Agent chat (non-streaming)
+test-claude-agent:
+    @echo "🧪 Testing Claude Agent chat API..."
+    curl -X POST http://localhost:8001/claude-agent/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{"model": "claude-policytracker", "messages": [{"role": "user", "content": "What is the EU AI Act?"}]}'
+
+# Test Claude Agent chat (streaming)
+test-claude-agent-stream:
+    @echo "🧪 Testing Claude Agent streaming chat API..."
+    curl -X POST http://localhost:8001/claude-agent/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{"model": "claude-policytracker", "messages": [{"role": "user", "content": "What is the EU AI Act?"}], "stream": true}'
+
+# Test Claude Agent with custom session ID
+test-claude-session session_id="test-session-001":
+    @echo "🧪 Testing Claude Agent with session ID: {{session_id}}"
+    curl -X POST http://localhost:8001/claude-agent/v1/chat/completions \
+      -H "Content-Type: application/json" \
+      -d '{"model": "claude-policytracker", "messages": [{"role": "user", "content": "Tell me about GDPR"}], "session_id": "{{session_id}}"}'
+
+# Get graph context for a session (use with graph-viz server)
+get-session-graph session_id:
+    @echo "📊 Getting graph context for session: {{session_id}}"
+    curl -X POST http://localhost:8001/graph-viz/api/graph/chat-context \
+      -H "Content-Type: application/json" \
+      -d '{"session_id": "{{session_id}}"}'
+
+# List Claude Agent models
+claude-agent-models:
+    @echo "📋 Listing Claude Agent models..."
+    @curl -s http://localhost:8001/claude-agent/v1/models | python -m json.tool || echo "❌ Claude Agent not accessible"
 
 # === Development ===
 

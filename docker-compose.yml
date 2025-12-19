@@ -299,19 +299,20 @@ services:
     environment:
       # Disable authentication for development
       - WEBUI_AUTH=false
-      # Configure our political monitoring agent as default
-      - OPENAI_API_BASE_URL=http://host.docker.internal:8001/chat
-      - OPENAI_API_KEY=dummy-key-not-required
+      # Configure OpenAI-compatible endpoints
+      # Claude Agent is at /claude-agent, Graph Viz is at /graph-viz
+      - OPENAI_API_BASE_URLS=http://host.docker.internal:8001/claude-agent/v1
+      - OPENAI_API_KEYS=dummy-key-not-used
       # Disable Ollama since we're using custom API
       - OLLAMA_BASE_URL=""
-      # Set default model
-      - DEFAULT_MODELS=political-monitoring-agent
+      # Set default model (must match model name in claude agent server)
+      - DEFAULT_MODELS=claude-policytracker
       # UI customization
-      - WEBUI_NAME="Political Monitoring Chat"
+      - WEBUI_NAME="PolicyTracker Chat"
       - WEBUI_URL=http://localhost:3000
       # Performance and streaming optimizations
       - ENABLE_REALTIME_CHAT_SAVE=false
-      # Try to enable streaming by default (if supported)
+      # Enable streaming
       - DEFAULT_STREAMING=true
       - STREAMING_ENABLED=true
     extra_hosts:
