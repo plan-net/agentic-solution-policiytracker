@@ -205,7 +205,7 @@ class ClaudeAgentServer:
             response_text, final_session_id = await agent.query(user_message, session_id)
 
             # Append session info footer for graph visualization
-            graph_viz_url = f"http://localhost:5173/?session={final_session_id}&view=context&mode=3d"
+            graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
             session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}`\n🔗 [View Graph Context]({graph_viz_url})"
 
             return ChatCompletionResponse(
@@ -281,7 +281,7 @@ class ClaudeAgentServer:
                     yield f"data: {response.model_dump_json()}\n\n"
 
             # Send session footer before final chunk
-            graph_viz_url = f"http://localhost:5173/?session={final_session_id}&view=context&mode=3d"
+            graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
             session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}`\n🔗 [View Graph Context]({graph_viz_url})"
 
             footer_response = StreamResponse(

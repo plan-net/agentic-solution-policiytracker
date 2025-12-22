@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +12,21 @@ from ray import serve
 
 from src.config import settings
 
+from .chat_sessions import (
+    ChatSessionDetail,
+    ChatSessionService,
+    ChatSessionSummary,
+    ChatSessionWithMessages,
+)
+from .reports import (
+    CreateReportRequest,
+    ReportDetail,
+    ReportsService,
+    ReportStatus,
+    ReportSummary,
+    ReportType,
+    UpdateReportRequest,
+)
 from .context_tracker import ChatContextTracker
 from .models import (
     ChatContextRequest,
@@ -55,6 +71,8 @@ class GraphVizServer:
         self.neo4j_driver = None
         self.text_to_cypher_service = None
         self.context_tracker = None
+        self.chat_session_service = None
+        self.reports_service = None
         logger.info("GraphVizServer initialized")
 
     async def _get_neo4j_driver(self):
@@ -91,6 +109,22 @@ class GraphVizServer:
             self.context_tracker = ChatContextTracker(driver=driver, ttl_minutes=60)
             logger.info("Context tracker initialized")
         return self.context_tracker
+
+    async def _get_chat_session_service(self):
+        """Lazy initialization of chat session service."""
+        if self.chat_session_service is None:
+            driver = await self._get_neo4j_driver()
+            self.chat_session_service = ChatSessionService(driver=driver)
+            logger.info("Chat session service initialized")
+        return self.chat_session_service
+
+    async def _get_reports_service(self):
+        """Lazy initialization of reports service."""
+        if self.reports_service is None:
+            driver = await self._get_neo4j_driver()
+            self.reports_service = ReportsService(driver=driver)
+            logger.info("Reports service initialized")
+        return self.reports_service
 
     @app.get("/api/graph/health")
     async def health_check(self) -> HealthResponse:
@@ -271,6 +305,195 @@ class GraphVizServer:
                     "error_type": type(e).__name__,
                 },
             )
+
+    # ============== Chat Session Endpoints ==============
+
+    @app.get("/api/chat/sessions")
+    async def list_chat_sessions(self, limit: int = 50) -> list[ChatSessionSummary]:
+        """List recent chat sessions."""
+        try:
+            service = await self._get_chat_session_service()
+            return await service.list_sessions(limit=limit)
+        except Exception as e:
+            logger.error(f"Error listing chat sessions: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/chat/sessions/{session_id}")
+    async def get_chat_session(self, session_id: str) -> ChatSessionDetail:
+        """Get details of a specific chat session."""
+        try:
+            service = await self._get_chat_session_service()
+            session = await service.get_session(session_id)
+            if not session:
+                raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+            return session
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error getting chat session {session_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/chat/sessions/{session_id}/messages")
+    async def get_chat_session_messages(self, session_id: str) -> ChatSessionWithMessages:
+        """Get a chat session with all messages."""
+        try:
+            service = await self._get_chat_session_service()
+            session = await service.get_session(session_id)
+            if not session:
+                raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+
+            messages = await service.get_session_messages(session_id)
+
+            return ChatSessionWithMessages(
+                session_id=session.session_id,
+                title=session.title,
+                created_at=session.created_at,
+                last_updated=session.last_updated,
+                messages=messages,
+                entity_count=len(session.entity_uuids),
+            )
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error getting chat session messages {session_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.delete("/api/chat/sessions/{session_id}")
+    async def delete_chat_session(self, session_id: str) -> dict:
+        """Delete a chat session."""
+        try:
+            service = await self._get_chat_session_service()
+            deleted = await service.delete_session(session_id)
+            if not deleted:
+                raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+            return {"status": "deleted", "session_id": session_id}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error deleting chat session {session_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.patch("/api/chat/sessions/{session_id}/title")
+    async def update_chat_session_title(self, session_id: str, title: str) -> dict:
+        """Update the title of a chat session."""
+        try:
+            service = await self._get_chat_session_service()
+            updated = await service.update_session_title(session_id, title)
+            if not updated:
+                raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+            return {"status": "updated", "session_id": session_id, "title": title}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error updating chat session title {session_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ============== Reports Endpoints ==============
+
+    @app.get("/api/reports")
+    async def list_reports(
+        self,
+        limit: int = 50,
+        status: Optional[str] = None,
+        report_type: Optional[str] = None
+    ) -> list[ReportSummary]:
+        """List reports with optional filters."""
+        try:
+            service = await self._get_reports_service()
+
+            # Convert string params to enums if provided
+            status_enum = ReportStatus(status) if status else None
+            type_enum = ReportType(report_type) if report_type else None
+
+            return await service.list_reports(
+                limit=limit,
+                status=status_enum,
+                report_type=type_enum
+            )
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=f"Invalid filter value: {e}")
+        except Exception as e:
+            logger.error(f"Error listing reports: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/reports/{report_id}")
+    async def get_report(self, report_id: str) -> ReportDetail:
+        """Get details of a specific report."""
+        try:
+            service = await self._get_reports_service()
+            report = await service.get_report(report_id)
+            if not report:
+                raise HTTPException(status_code=404, detail=f"Report {report_id} not found")
+            return report
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error getting report {report_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/reports")
+    async def create_report(self, request: CreateReportRequest) -> ReportDetail:
+        """Create a new report."""
+        try:
+            service = await self._get_reports_service()
+            report = await service.create_report(request)
+            if not report:
+                raise HTTPException(status_code=500, detail="Failed to create report")
+            return report
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error creating report: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.patch("/api/reports/{report_id}")
+    async def update_report(
+        self,
+        report_id: str,
+        request: UpdateReportRequest
+    ) -> ReportDetail:
+        """Update a report."""
+        try:
+            service = await self._get_reports_service()
+            report = await service.update_report(report_id, request)
+            if not report:
+                raise HTTPException(status_code=404, detail=f"Report {report_id} not found")
+            return report
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error updating report {report_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.delete("/api/reports/{report_id}")
+    async def delete_report(self, report_id: str) -> dict:
+        """Delete a report."""
+        try:
+            service = await self._get_reports_service()
+            deleted = await service.delete_report(report_id)
+            if not deleted:
+                raise HTTPException(status_code=404, detail=f"Report {report_id} not found")
+            return {"status": "deleted", "report_id": report_id}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error deleting report {report_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/reports/{report_id}/generate")
+    async def generate_report(self, report_id: str) -> dict:
+        """Start generating a report."""
+        try:
+            service = await self._get_reports_service()
+            started = await service.generate_report(report_id)
+            if not started:
+                raise HTTPException(status_code=404, detail=f"Report {report_id} not found")
+            return {"status": "generating", "report_id": report_id}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error generating report {report_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
 
     def _deep_sanitize(self, obj):
         """Recursively sanitize any object to remove Neo4j types."""

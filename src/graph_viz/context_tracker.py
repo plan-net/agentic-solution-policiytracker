@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 from neo4j import AsyncDriver
 
+from src.config import settings
 from .models import GraphEdge, GraphNode
 
 logger = logging.getLogger(__name__)
@@ -135,11 +136,13 @@ class ChatContextTracker:
         try:
             import json
 
-            async with self.driver.session() as session:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
                 # Convert set to list for JSON serialization
                 entity_uuids_list = list(context["entity_uuids"])
                 # Convert tools_used to JSON string (Neo4j can't store nested maps)
                 tools_used_json = json.dumps(context["tools_used"])
+                # Convert messages to JSON string
+                messages_json = json.dumps(context.get("messages", []))
 
                 await session.run(
                     """
@@ -147,6 +150,7 @@ class ChatContextTracker:
                     SET s.created_at = datetime($created_at),
                         s.entity_uuids = $entity_uuids,
                         s.tools_used_json = $tools_used_json,
+                        s.messages_json = $messages_json,
                         s.query_text = $query_text,
                         s.last_updated = datetime()
                     """,
@@ -154,6 +158,7 @@ class ChatContextTracker:
                     created_at=context["created_at"].isoformat(),
                     entity_uuids=entity_uuids_list,
                     tools_used_json=tools_used_json,
+                    messages_json=messages_json,
                     query_text=context.get("query_text"),
                 )
                 logger.warning(
@@ -161,6 +166,39 @@ class ChatContextTracker:
                 )
         except Exception as e:
             logger.error(f"❌ FAILED to persist context to Neo4j: {e}", exc_info=True)
+
+    async def store_message(self, session_id: str, role: str, content: str) -> None:
+        """Store a chat message for a session.
+
+        Args:
+            session_id: Chat session ID
+            role: Message role ('user' or 'assistant')
+            content: Message content
+        """
+        # Ensure context exists
+        if session_id not in self.context_cache:
+            self.context_cache[session_id] = {
+                "created_at": datetime.now(UTC),
+                "entity_uuids": set(),
+                "relationship_data": [],
+                "tools_used": [],
+                "query_text": None,
+                "messages": [],
+            }
+
+        # Add messages list if not present
+        if "messages" not in self.context_cache[session_id]:
+            self.context_cache[session_id]["messages"] = []
+
+        # Add message
+        self.context_cache[session_id]["messages"].append({
+            "role": role,
+            "content": content,
+            "timestamp": datetime.now(UTC).isoformat(),
+        })
+
+        # Persist to Neo4j
+        await self._persist_context_to_neo4j(session_id, self.context_cache[session_id])
 
     async def _load_context_from_neo4j(self, session_id: str) -> Optional[dict]:
         """Load chat context from Neo4j.
@@ -171,13 +209,14 @@ class ChatContextTracker:
         try:
             import json
 
-            async with self.driver.session() as session:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
                 result = await session.run(
                     """
                     MATCH (s:ChatSession {session_id: $session_id})
                     RETURN s.created_at as created_at,
                            s.entity_uuids as entity_uuids,
                            s.tools_used_json as tools_used_json,
+                           s.messages_json as messages_json,
                            s.query_text as query_text
                     """,
                     session_id=session_id,
@@ -193,6 +232,16 @@ class ChatContextTracker:
                         except json.JSONDecodeError:
                             logger.warning(
                                 f"Failed to parse tools_used_json for session {session_id}"
+                            )
+
+                    # Parse messages from JSON
+                    messages = []
+                    if record["messages_json"]:
+                        try:
+                            messages = json.loads(record["messages_json"])
+                        except json.JSONDecodeError:
+                            logger.warning(
+                                f"Failed to parse messages_json for session {session_id}"
                             )
 
                     # Convert Neo4j datetime to Python datetime
@@ -213,6 +262,7 @@ class ChatContextTracker:
                         else set(),
                         "relationship_data": [],  # Not persisted separately
                         "tools_used": tools_used,
+                        "messages": messages,
                         "query_text": record["query_text"],
                     }
                 return None
@@ -347,7 +397,7 @@ class ChatContextTracker:
 
         try:
             logger.warning(f"🔍 Fetching entities for {len(entity_uuids)} UUIDs")
-            async with self.driver.session() as session:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
                 # Batch fetch entities - try multiple labels since we don't know the exact label
                 query = """
                     MATCH (e)
@@ -422,7 +472,7 @@ class ChatContextTracker:
 
         try:
             logger.warning(f"🔗 Fetching relationships between {len(entity_uuids)} entities")
-            async with self.driver.session() as session:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
                 # Query relationships where both source and target are in our entity list
                 query = """
                     MATCH (e1)-[r]->(e2)

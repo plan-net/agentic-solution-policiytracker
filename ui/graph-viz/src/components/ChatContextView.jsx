@@ -13,12 +13,13 @@ function ChatContextView({ initialSessionId = null, initialIs3D = false }) {
   // Auto-load if initialSessionId is provided via URL
   useEffect(() => {
     if (initialSessionId) {
-      loadChatContext()
+      loadChatContext(initialSessionId)
     }
   }, [initialSessionId])
 
-  const loadChatContext = async () => {
-    if (!sessionId.trim()) {
+  const loadChatContext = async (overrideSessionId = null) => {
+    const sessionToLoad = overrideSessionId || sessionId
+    if (!sessionToLoad.trim()) {
       setError('Please enter a session ID')
       return
     }
@@ -29,7 +30,7 @@ function ChatContextView({ initialSessionId = null, initialIs3D = false }) {
 
     try {
       const response = await graphApi.getChatContext(
-        sessionId.trim(),
+        sessionToLoad.trim(),
         queryText.trim() || null
       )
 

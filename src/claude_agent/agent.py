@@ -209,18 +209,95 @@ class PolicyTrackerAgent:
         logger.debug(f"Extracted {len(uuids)} UUIDs from tool result")
         return uuids
 
-    def _parse_tool_result_for_tracking(self, tool_name: str, result_text: str) -> dict:
+    def _extract_entity_names_from_result(self, result_text: str) -> set[str]:
+        """Extract entity names from MCP search results.
+
+        The MCP server returns formatted markdown with entity names like:
+        - **EntityName** (Entity, Type) - Description...
+        """
+        entity_names = set()
+
+        # Pattern to match "- **EntityName** (Entity, Type)" format from search results
+        # Matches text between ** and ** that follows a bullet point
+        entity_pattern = r'- \*\*([^*]+)\*\* \([^)]+\)'
+        matches = re.findall(entity_pattern, result_text)
+        entity_names.update(matches)
+
+        # Also match simpler patterns like "**EntityName**" without type info
+        simple_pattern = r'\*\*([A-Za-z][A-Za-z0-9_ -]{2,})\*\*'
+        simple_matches = re.findall(simple_pattern, result_text)
+        # Filter out common markdown headers and generic terms
+        skip_terms = {'Query Analysis', 'Intent', 'Entities', 'Strategy', 'Confidence', 'Type', 'UUID', 'Summary'}
+        for name in simple_matches:
+            if name not in skip_terms and len(name) > 2:
+                entity_names.add(name)
+
+        logger.debug(f"Extracted {len(entity_names)} entity names from tool result")
+        return entity_names
+
+    async def _lookup_entity_uuids_by_name(self, entity_names: set[str]) -> set[str]:
+        """Look up entity UUIDs from Neo4j by entity name.
+
+        Args:
+            entity_names: Set of entity names to look up
+
+        Returns:
+            Set of UUIDs found for the given names
+        """
+        if not entity_names:
+            return set()
+
+        uuids = set()
+        try:
+            driver = await self._get_neo4j_driver()
+            async with driver.session(database=settings.NEO4J_DATABASE) as session:
+                # Query for entities by name (case-insensitive match)
+                query = """
+                    MATCH (e)
+                    WHERE e.name IN $names OR toLower(e.name) IN $lower_names
+                    RETURN e.uuid as uuid
+                """
+                names_list = list(entity_names)
+                lower_names_list = [n.lower() for n in names_list]
+
+                result = await session.run(
+                    query,
+                    {"names": names_list, "lower_names": lower_names_list}
+                )
+                records = await result.data()
+
+                for record in records:
+                    if record.get("uuid"):
+                        uuids.add(record["uuid"])
+
+                logger.info(f"Looked up {len(uuids)} UUIDs for {len(entity_names)} entity names")
+
+        except Exception as e:
+            logger.error(f"Error looking up entity UUIDs: {e}", exc_info=True)
+
+        return uuids
+
+    async def _parse_tool_result_for_tracking(self, tool_name: str, result_text: str) -> dict:
         """Parse tool result into a structured format for context tracking.
 
         Since MCP returns markdown text, we extract what we can.
+        For search results that don't include UUIDs, we look up entity names in Neo4j.
         """
         parsed = {
             "tool_name": tool_name,
             "raw_text": result_text[:2000],  # Truncate for storage
         }
 
-        # Extract UUIDs
+        # First try to extract UUIDs directly
         uuids = self._extract_uuids_from_result(result_text)
+
+        # If no UUIDs found, extract entity names and look them up
+        if not uuids:
+            entity_names = self._extract_entity_names_from_result(result_text)
+            if entity_names:
+                logger.info(f"No UUIDs in result, looking up {len(entity_names)} entity names: {list(entity_names)[:5]}...")
+                uuids = await self._lookup_entity_uuids_by_name(entity_names)
+
         if uuids:
             parsed["entity_uuids"] = list(uuids)
 
@@ -269,6 +346,9 @@ class PolicyTrackerAgent:
 
         messages = [{"role": "user", "content": user_message}]
 
+        # Store user message
+        await context_tracker.store_message(session_id, "user", user_message)
+
         while True:
             # Call Claude with the current messages
             response = await self.client.messages.create(
@@ -290,8 +370,8 @@ class PolicyTrackerAgent:
                         # Execute the tool
                         result = await self._execute_tool(block.name, block.input)
 
-                        # Parse result for context tracking
-                        parsed_result = self._parse_tool_result_for_tracking(block.name, result)
+                        # Parse result for context tracking (async to lookup UUIDs by name)
+                        parsed_result = await self._parse_tool_result_for_tracking(block.name, result)
 
                         # Track tool execution for graph visualization
                         await context_tracker.track_tool_execution(
@@ -319,6 +399,9 @@ class PolicyTrackerAgent:
                         text_parts.append(block.text)
 
                 response_text = "\n".join(text_parts)
+
+                # Store assistant response
+                await context_tracker.store_message(session_id, "assistant", response_text)
 
                 # Final persistence of context
                 logger.info(f"Session {session_id} completed with {len(context_tracker.context_cache.get(session_id, {}).get('entity_uuids', []))} entities tracked")
@@ -363,6 +446,12 @@ class PolicyTrackerAgent:
 
         messages = [{"role": "user", "content": user_message}]
 
+        # Store user message
+        await context_tracker.store_message(session_id, "user", user_message)
+
+        # Accumulate full response for storage
+        full_response = ""
+
         while True:
             # Stream the response from Claude
             current_tool_use = None
@@ -388,6 +477,7 @@ class PolicyTrackerAgent:
 
                     elif event.type == "content_block_delta":
                         if hasattr(event.delta, "text"):
+                            full_response += event.delta.text
                             yield event.delta.text, ""
                         elif hasattr(event.delta, "partial_json"):
                             if current_tool_use:
@@ -416,8 +506,8 @@ class PolicyTrackerAgent:
                     yield f"\n\n*Using {tool['name']}...*\n", ""
                     result = await self._execute_tool(tool["name"], tool["input"])
 
-                    # Parse result for context tracking
-                    parsed_result = self._parse_tool_result_for_tracking(tool["name"], result)
+                    # Parse result for context tracking (async to lookup UUIDs by name)
+                    parsed_result = await self._parse_tool_result_for_tracking(tool["name"], result)
 
                     # Track tool execution
                     await context_tracker.track_tool_execution(
@@ -438,7 +528,9 @@ class PolicyTrackerAgent:
                 tool_uses = []
 
             else:
-                # Done - yield final empty chunk with session ID
+                # Done - store the assistant response and yield final chunk
+                if full_response:
+                    await context_tracker.store_message(session_id, "assistant", full_response)
                 logger.info(f"Streaming session {session_id} completed")
                 yield "", session_id
                 break
