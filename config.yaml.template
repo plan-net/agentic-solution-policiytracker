@@ -1,6 +1,6 @@
 # Political Monitoring Agent - Ray Serve Configuration
 # This template is safe to commit - real values come from .env
-# Active applications: graph-viz, claude-agent
+# Active applications: graph-viz, claude-agent, weekly-report-sdk
 
 proxy_location: EveryNode
 http_options:
@@ -45,6 +45,27 @@ applications:
 - name: claude-agent
   route_prefix: /claude-agent
   import_path: src.claude_agent.server:app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USERNAME: ${NEO4J_USERNAME}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: ${NEO4J_DATABASE}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+  ray_actor_options:
+    num_cpus: 2
+    memory: 4000000000
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 2
+    target_num_ongoing_requests_per_replica: 5
+
+# Weekly Report SDK: Claude Agent SDK-based Weekly Report Generation
+- name: weekly-report-sdk
+  route_prefix: /weekly-report-sdk
+  import_path: src.flows.weekly_report_sdk.app:fast_app
   runtime_env:
     env_vars:
       PYTHONPATH: .

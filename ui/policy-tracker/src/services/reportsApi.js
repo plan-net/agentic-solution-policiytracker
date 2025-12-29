@@ -26,6 +26,14 @@ export const ReportType = {
 }
 
 /**
+ * Claude model enum
+ */
+export const ClaudeModel = {
+  SONNET_4: 'claude-sonnet-4-20250514',
+  OPUS_4: 'claude-opus-4-20250514',
+}
+
+/**
  * Get list of reports
  * @param {Object} options - Query options
  * @param {number} options.limit - Maximum number of reports to return
@@ -67,6 +75,8 @@ export async function getReport(reportId) {
  * @param {string} data.report_type - Report type (weekly, daily, deep_dive, spotlight)
  * @param {string} data.date_range_start - Start date (YYYY-MM-DD)
  * @param {string} data.date_range_end - End date (YYYY-MM-DD)
+ * @param {string} data.claude_model - Claude model to use (claude-sonnet-4-20250514, claude-opus-4-20250514)
+ * @param {boolean} data.include_events - Whether to include forward-looking events
  * @param {Object} data.options - Additional options
  * @returns {Promise<{success: boolean, data?: Object, error?: string}>}
  */
@@ -129,6 +139,7 @@ export async function generateReport(reportId) {
 export default {
   ReportStatus,
   ReportType,
+  ClaudeModel,
   listReports,
   getReport,
   createReport,

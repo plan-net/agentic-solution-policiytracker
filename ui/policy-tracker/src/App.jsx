@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import ChatPage from './pages/ChatPage'
 import ChatContextPage from './pages/ChatContextPage'
 import WeeklyReportsPage from './pages/WeeklyReportsPage'
+import ReportDetailPage from './pages/ReportDetailPage'
 import AssessmentsPage from './pages/AssessmentsPage'
 import AssessmentDetailPage from './pages/AssessmentDetailPage'
 import KnowledgeGraphPage from './pages/KnowledgeGraphPage'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/chat/:sessionId" element={<ChatPage />} />
           <Route path="/chat-context" element={<ChatContextPage />} />
           <Route path="/reports" element={<WeeklyReportsPage />} />
+          <Route path="/reports/:reportId" element={<ReportDetailPage />} />
           <Route path="/assessments" element={<AssessmentsPage />} />
           <Route path="/assessments/:id" element={<AssessmentDetailPage />} />
           <Route path="/knowledge-graph" element={<KnowledgeGraphPage />} />

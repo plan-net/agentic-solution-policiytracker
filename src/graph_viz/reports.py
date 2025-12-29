@@ -1,5 +1,6 @@
 """Weekly reports management for the Policy Tracker UI."""
 
+import asyncio
 import json
 import logging
 import uuid
@@ -60,6 +61,12 @@ class ReportDetail(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+class ClaudeModel(str, Enum):
+    """Available Claude models for report generation."""
+    SONNET_4 = "claude-sonnet-4-20250514"
+    OPUS_4 = "claude-opus-4-20250514"
+
+
 class CreateReportRequest(BaseModel):
     """Request to create a new report."""
 
@@ -67,6 +74,8 @@ class CreateReportRequest(BaseModel):
     report_type: ReportType = ReportType.WEEKLY
     date_range_start: Optional[str] = None
     date_range_end: Optional[str] = None
+    claude_model: ClaudeModel = ClaudeModel.SONNET_4
+    include_events: bool = True
     options: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -276,9 +285,23 @@ class ReportsService:
 
         Returns:
             Created report details or None on error
+
+        Raises:
+            Exception: Re-raised from Neo4j errors for proper error handling
         """
         report_id = self._generate_report_id()
-        now = datetime.now().isoformat()
+
+        # Merge model options into metadata
+        metadata = {
+            **request.options,
+            "claude_model": request.claude_model.value,
+            "include_events": request.include_events,
+        }
+
+        logger.info(
+            f"Creating report {report_id}: title={request.title}, "
+            f"type={request.report_type}, dates={request.date_range_start} to {request.date_range_end}"
+        )
 
         try:
             async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
@@ -305,7 +328,7 @@ class ReportsService:
                     status=ReportStatus.PENDING.value,
                     date_range_start=request.date_range_start,
                     date_range_end=request.date_range_end,
-                    metadata_json=json.dumps(request.options),
+                    metadata_json=json.dumps(metadata),
                 )
 
                 logger.info(f"Created report {report_id}: {request.title}")
@@ -315,7 +338,8 @@ class ReportsService:
 
         except Exception as e:
             logger.error(f"Error creating report: {e}", exc_info=True)
-            return None
+            # Re-raise to let the API endpoint handle it properly
+            raise
 
     async def update_report(
         self,
@@ -403,10 +427,10 @@ class ReportsService:
             return False
 
     async def generate_report(self, report_id: str) -> bool:
-        """Start generating a report (placeholder for future integration).
+        """Start generating a report via the weekly_report_sdk flow.
 
-        This will eventually trigger the weekly_digest_v2 flow.
-        For now, it just sets the status to 'working'.
+        Triggers the Claude Agent SDK-based report generation flow
+        by calling the Kodosumi endpoint via HTTP.
 
         Args:
             report_id: The report ID to generate
@@ -415,6 +439,12 @@ class ReportsService:
             True if started successfully
         """
         try:
+            # Get the report to retrieve its configuration
+            report = await self.get_report(report_id)
+            if not report:
+                logger.error(f"Report {report_id} not found")
+                return False
+
             # Update status to working
             update_result = await self.update_report(
                 report_id,
@@ -424,12 +454,129 @@ class ReportsService:
             if not update_result:
                 return False
 
-            # TODO: Trigger actual report generation flow
-            # This would integrate with the weekly_digest_v2 flow
-            logger.info(f"Report generation started for {report_id}")
+            # Extract configuration from report metadata
+            claude_model = report.metadata.get("claude_model", "claude-sonnet-4-20250514")
+            include_events = report.metadata.get("include_events", True)
+
+            # Build week input from date range
+            week_input = ""
+            if report.date_range_start:
+                week_input = report.date_range_start  # Use start date as the Monday
+
+            logger.info(
+                f"Triggering weekly_report_sdk for report {report_id} "
+                f"with model={claude_model}, week={week_input}"
+            )
+
+            # Trigger the weekly_report_sdk flow asynchronously
+            asyncio.create_task(
+                self._trigger_report_generation(
+                    report_id=report_id,
+                    week_input=week_input,
+                    claude_model=claude_model,
+                    include_events=include_events,
+                )
+            )
 
             return True
 
         except Exception as e:
             logger.error(f"Error starting report generation {report_id}: {e}", exc_info=True)
+            # Mark report as failed
+            await self.update_report(
+                report_id,
+                UpdateReportRequest(status=ReportStatus.FAILED)
+            )
             return False
+
+    async def _trigger_report_generation(
+        self,
+        report_id: str,
+        week_input: str,
+        claude_model: str,
+        include_events: bool,
+    ):
+        """Generate the weekly report using WeeklyReportAgent directly.
+
+        This runs as a background task to avoid blocking the API response.
+        Unlike the HTTP approach, this directly invokes the agent for reliability.
+
+        Args:
+            report_id: The report ID being generated
+            week_input: Week input (date or KW format)
+            claude_model: Claude model to use
+            include_events: Whether to include events section
+        """
+        try:
+            # Import here to avoid circular imports
+            from src.flows.weekly_digest_v2.date_resolver import DateResolver
+            from src.flows.weekly_report_sdk.agent import WeeklyReportAgent
+
+            logger.info(
+                f"Starting report generation for {report_id} "
+                f"with model={claude_model}, week={week_input}, include_events={include_events}"
+            )
+
+            # Resolve dates
+            resolver = DateResolver()
+            resolved = resolver.resolve(week_input)
+            week_start = resolved["week_start"]
+            week_end = resolved["week_end"]
+            week_label = resolved["week_label"]
+
+            logger.info(f"Resolved dates: {week_label} ({week_start} to {week_end})")
+
+            # Initialize the agent
+            agent = WeeklyReportAgent(
+                model=claude_model,
+                max_turns=30,
+            )
+
+            try:
+                # Generate the report
+                result = await agent.generate_report(
+                    week_start=week_start,
+                    week_end=week_end,
+                    week_label=week_label,
+                    include_events=include_events,
+                )
+
+                report_content = result["report_content"]
+                metadata = result["metadata"]
+                tool_calls = result["tool_calls"]
+
+                logger.info(
+                    f"Report generated: {len(report_content)} chars, "
+                    f"{metadata.get('turns', 0)} turns, {len(tool_calls)} tool calls"
+                )
+
+                # Update the report with content and mark as complete
+                await self.update_report(
+                    report_id,
+                    UpdateReportRequest(
+                        content=report_content,
+                        status=ReportStatus.COMPLETE,
+                        sections=[
+                            {
+                                "type": "metadata",
+                                "model": claude_model,
+                                "turns": metadata.get("turns", 0),
+                                "tool_calls_count": len(tool_calls),
+                                "generated_at": metadata.get("generated_at"),
+                            }
+                        ],
+                    ),
+                )
+
+                logger.info(f"Report {report_id} completed successfully")
+
+            finally:
+                # Cleanup agent resources
+                await agent.close()
+
+        except Exception as e:
+            logger.error(f"Error generating report {report_id}: {e}", exc_info=True)
+            await self.update_report(
+                report_id,
+                UpdateReportRequest(status=ReportStatus.FAILED)
+            )

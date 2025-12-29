@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Calendar, FileText, Loader2 } from 'lucide-react'
+import { X, Calendar, FileText, Loader2, Cpu } from 'lucide-react'
 
 const reportTypes = [
   {
@@ -24,11 +24,28 @@ const reportTypes = [
   },
 ]
 
+const claudeModels = [
+  {
+    id: 'claude-sonnet-4-20250514',
+    label: 'Claude Sonnet 4',
+    description: 'Fast & cost-effective (Recommended)',
+    recommended: true,
+  },
+  {
+    id: 'claude-opus-4-20250514',
+    label: 'Claude Opus 4',
+    description: 'Higher quality reasoning (Slower)',
+    recommended: false,
+  },
+]
+
 function GenerateReportModal({ isOpen, onClose, onSubmit, isLoading = false }) {
   const [title, setTitle] = useState('')
   const [reportType, setReportType] = useState('weekly')
   const [dateRangeStart, setDateRangeStart] = useState('')
   const [dateRangeEnd, setDateRangeEnd] = useState('')
+  const [claudeModel, setClaudeModel] = useState('claude-sonnet-4-20250514')
+  const [includeEvents, setIncludeEvents] = useState(true)
 
   // Set default dates based on report type
   const setDefaultDates = (type) => {
@@ -73,6 +90,8 @@ function GenerateReportModal({ isOpen, onClose, onSubmit, isLoading = false }) {
       report_type: reportType,
       date_range_start: dateRangeStart || null,
       date_range_end: dateRangeEnd || null,
+      claude_model: claudeModel,
+      include_events: includeEvents,
       options: {},
     })
   }
@@ -83,6 +102,8 @@ function GenerateReportModal({ isOpen, onClose, onSubmit, isLoading = false }) {
     setReportType('weekly')
     setDateRangeStart('')
     setDateRangeEnd('')
+    setClaudeModel('claude-sonnet-4-20250514')
+    setIncludeEvents(true)
     onClose()
   }
 
@@ -182,6 +203,54 @@ function GenerateReportModal({ isOpen, onClose, onSubmit, isLoading = false }) {
                 className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:border-accent-primary focus:ring-1 focus:ring-accent-primary focus:outline-none"
               />
             </div>
+          </div>
+
+          {/* Claude Model Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Cpu size={14} className="inline mr-1" />
+              AI Model
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {claudeModels.map((model) => (
+                <button
+                  key={model.id}
+                  type="button"
+                  onClick={() => setClaudeModel(model.id)}
+                  className={`
+                    p-3 rounded-lg border-2 text-left transition-all
+                    ${claudeModel === model.id
+                      ? 'border-accent-primary bg-accent-primary/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                    }
+                  `}
+                >
+                  <div className={`font-medium ${claudeModel === model.id ? 'text-accent-primary' : 'text-gray-900'}`}>
+                    {model.label}
+                    {model.recommended && (
+                      <span className="ml-1 text-xs text-green-600 font-normal">★</span>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-0.5">
+                    {model.description}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Include Events Checkbox */}
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="includeEvents"
+              checked={includeEvents}
+              onChange={(e) => setIncludeEvents(e.target.checked)}
+              className="w-4 h-4 text-accent-primary border-gray-300 rounded focus:ring-accent-primary"
+            />
+            <label htmlFor="includeEvents" className="text-sm text-gray-700">
+              Include forward-looking events (next 30-90 days)
+            </label>
           </div>
 
           {/* Actions */}

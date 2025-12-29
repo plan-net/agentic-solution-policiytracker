@@ -19,6 +19,7 @@ from .chat_sessions import (
     ChatSessionWithMessages,
 )
 from .reports import (
+    ClaudeModel,
     CreateReportRequest,
     ReportDetail,
     ReportsService,

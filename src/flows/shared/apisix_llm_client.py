@@ -15,6 +15,7 @@ Workaround: We're documenting this for Week 2 implementation of custom Graphiti 
 import os
 from typing import Optional
 
+from anthropic import AsyncAnthropic
 from langchain_openai import ChatOpenAI
 from openai import AsyncOpenAI, OpenAI
 
@@ -438,3 +439,68 @@ def create_apisix_graphiti_embedder(
     )
 
     return OpenAIEmbedder(config=config)
+
+
+def create_apisix_anthropic_client(
+    agent_context: Optional[AgentContext] = None,
+    api_key: Optional[str] = None,
+    use_apisix: Optional[bool] = None,
+    **kwargs,
+) -> AsyncAnthropic:
+    """
+    Create an AsyncAnthropic client, optionally routing through APISIX.
+
+    This function creates an Anthropic client that can route through the APISIX
+    gateway for cost tracking, or connect directly to Anthropic's API.
+
+    Args:
+        agent_context: Optional agent context for cost tracking headers
+        api_key: Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
+        use_apisix: Whether to route through APISIX. Defaults to checking
+                    USE_APISIX_FOR_ANTHROPIC env var, then False.
+        **kwargs: Additional AsyncAnthropic arguments
+
+    Returns:
+        AsyncAnthropic instance
+
+    Example:
+        >>> context = AgentContext(
+        ...     agent_type="kodosumi_flow",
+        ...     agent_name="weekly_report_agent",
+        ...     flow_name="weekly_report_sdk"
+        ... )
+        >>> client = create_apisix_anthropic_client(context)
+        >>> response = await client.messages.create(
+        ...     model="claude-sonnet-4-20250514",
+        ...     max_tokens=8192,
+        ...     messages=[{"role": "user", "content": "Generate a report"}]
+        ... )
+    """
+    api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise ValueError("ANTHROPIC_API_KEY environment variable not set")
+
+    # Determine whether to use APISIX
+    if use_apisix is None:
+        use_apisix = os.getenv("USE_APISIX_FOR_ANTHROPIC", "false").lower() == "true"
+
+    # Get agent context headers if provided
+    default_headers = agent_context.to_headers() if agent_context else {}
+
+    if use_apisix:
+        # Route through APISIX gateway
+        # NOTE: APISIX must have Anthropic route configured at /v1/messages
+        base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+        return AsyncAnthropic(
+            api_key=api_key,
+            base_url=base_url,
+            default_headers=default_headers,
+            **kwargs,
+        )
+    else:
+        # Connect directly to Anthropic API
+        return AsyncAnthropic(
+            api_key=api_key,
+            default_headers=default_headers,
+            **kwargs,
+        )
