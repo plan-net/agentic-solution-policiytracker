@@ -27,6 +27,16 @@ from .reports import (
     ReportType,
     UpdateReportRequest,
 )
+from .assessments import (
+    AssessmentDetail,
+    AssessmentsService,
+    AssessmentStatus,
+    AssessmentSummary,
+    AssessmentType,
+    ChatMessageRequest,
+    CreateAssessmentRequest,
+    UpdateAssessmentRequest,
+)
 from .context_tracker import ChatContextTracker
 from .models import (
     ChatContextRequest,
@@ -73,6 +83,7 @@ class GraphVizServer:
         self.context_tracker = None
         self.chat_session_service = None
         self.reports_service = None
+        self.assessments_service = None
         logger.info("GraphVizServer initialized")
 
     async def _get_neo4j_driver(self):
@@ -125,6 +136,14 @@ class GraphVizServer:
             self.reports_service = ReportsService(driver=driver)
             logger.info("Reports service initialized")
         return self.reports_service
+
+    async def _get_assessments_service(self):
+        """Lazy initialization of assessments service."""
+        if self.assessments_service is None:
+            driver = await self._get_neo4j_driver()
+            self.assessments_service = AssessmentsService(driver=driver)
+            logger.info("Assessments service initialized")
+        return self.assessments_service
 
     @app.get("/api/graph/health")
     async def health_check(self) -> HealthResponse:
@@ -493,6 +512,128 @@ class GraphVizServer:
             raise
         except Exception as e:
             logger.error(f"Error generating report {report_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ============== Assessments Endpoints ==============
+
+    @app.get("/api/assessments")
+    async def list_assessments(
+        self,
+        limit: int = 50,
+        status: Optional[str] = None,
+        assessment_type: Optional[str] = None
+    ) -> list[AssessmentSummary]:
+        """List assessments with optional filters."""
+        try:
+            service = await self._get_assessments_service()
+
+            # Convert string params to enums if provided
+            status_enum = AssessmentStatus(status) if status else None
+            type_enum = AssessmentType(assessment_type) if assessment_type else None
+
+            return await service.list_assessments(
+                limit=limit,
+                status=status_enum,
+                assessment_type=type_enum
+            )
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=f"Invalid filter value: {e}")
+        except Exception as e:
+            logger.error(f"Error listing assessments: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/assessments/{assessment_id}")
+    async def get_assessment(self, assessment_id: str) -> AssessmentDetail:
+        """Get details of a specific assessment."""
+        try:
+            service = await self._get_assessments_service()
+            assessment = await service.get_assessment(assessment_id)
+            if not assessment:
+                raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
+            return assessment
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error getting assessment {assessment_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/assessments")
+    async def create_assessment(self, request: CreateAssessmentRequest) -> AssessmentDetail:
+        """Create a new assessment."""
+        try:
+            service = await self._get_assessments_service()
+            assessment = await service.create_assessment(request)
+            if not assessment:
+                raise HTTPException(status_code=500, detail="Failed to create assessment")
+            return assessment
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error creating assessment: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.patch("/api/assessments/{assessment_id}")
+    async def update_assessment(
+        self,
+        assessment_id: str,
+        request: UpdateAssessmentRequest
+    ) -> AssessmentDetail:
+        """Update an assessment."""
+        try:
+            service = await self._get_assessments_service()
+            assessment = await service.update_assessment(assessment_id, request)
+            if not assessment:
+                raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
+            return assessment
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error updating assessment {assessment_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.delete("/api/assessments/{assessment_id}")
+    async def delete_assessment(self, assessment_id: str) -> dict:
+        """Delete an assessment."""
+        try:
+            service = await self._get_assessments_service()
+            deleted = await service.delete_assessment(assessment_id)
+            if not deleted:
+                raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
+            return {"status": "deleted", "assessment_id": assessment_id}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error deleting assessment {assessment_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/assessments/{assessment_id}/run")
+    async def run_assessment(self, assessment_id: str) -> dict:
+        """Start running an assessment."""
+        try:
+            service = await self._get_assessments_service()
+            started = await service.run_assessment(assessment_id)
+            if not started:
+                raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
+            return {"status": "running", "assessment_id": assessment_id}
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error running assessment {assessment_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/assessments/{assessment_id}/chat")
+    async def assessment_chat(self, assessment_id: str, request: ChatMessageRequest) -> dict:
+        """Send a follow-up chat message for an assessment."""
+        try:
+            service = await self._get_assessments_service()
+            result = await service.process_chat_followup(assessment_id, request)
+            if not result:
+                raise HTTPException(status_code=404, detail=f"Assessment {assessment_id} not found")
+            return result
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error processing chat for assessment {assessment_id}: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=str(e))
 
     def _deep_sanitize(self, obj):
