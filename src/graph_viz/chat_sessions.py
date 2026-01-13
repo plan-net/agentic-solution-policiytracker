@@ -42,6 +42,23 @@ class ChatMessage(BaseModel):
     timestamp: str
 
 
+class SubmitFeedbackRequest(BaseModel):
+    """Request to submit feedback for a message."""
+
+    message_index: int  # Index of the message in the messages array
+    rating: str  # "positive" or "negative"
+    comment: Optional[str] = None
+
+
+class FeedbackEntry(BaseModel):
+    """Feedback entry for a message."""
+
+    message_index: int
+    rating: str  # "positive" or "negative"
+    comment: Optional[str] = None
+    timestamp: str
+
+
 class ChatSessionWithMessages(BaseModel):
     """Chat session with full message history."""
 
@@ -50,6 +67,7 @@ class ChatSessionWithMessages(BaseModel):
     created_at: str
     last_updated: str
     messages: list[ChatMessage] = Field(default_factory=list)
+    feedback: list[FeedbackEntry] = Field(default_factory=list)
     entity_count: int = 0
 
 
@@ -80,7 +98,8 @@ class ChatSessionService:
                            s.created_at AS created_at,
                            s.last_updated AS last_updated,
                            s.entity_uuids AS entity_uuids,
-                           s.tools_used_json AS tools_used_json
+                           s.tools_used_json AS tools_used_json,
+                           s.query_text AS query_text
                     ORDER BY s.last_updated DESC
                     LIMIT $limit
                     """,
@@ -118,7 +137,9 @@ class ChatSessionService:
                     title = record.get("title")
                     if not title and tools_used:
                         # Try to extract a meaningful title from tool usage
-                        title = f"Chat with {len(entity_uuids)} entities"
+                        # title = f"Chat with {len(entity_uuids)} entities"
+                        # new title from user's chat query
+                        title = record.get("query_text") 
                     if not title:
                         title = "Untitled conversation"
 
@@ -369,4 +390,145 @@ class ChatSessionService:
 
         except Exception as e:
             logger.error(f"Error getting messages for session {session_id}: {e}", exc_info=True)
+            return []
+
+    async def submit_message_feedback(
+        self,
+        session_id: str,
+        message_index: int,
+        rating: str,
+        comment: Optional[str] = None
+    ) -> bool:
+        """Submit feedback for a specific message in a chat session.
+
+        Feedback is stored as a separate JSON property (feedback_json) on the ChatSession node,
+        keeping it separate from the actual message content.
+
+        Args:
+            session_id: The session ID
+            message_index: Index of the message in the messages array
+            rating: Feedback rating ("positive" or "negative")
+            comment: Optional feedback comment
+
+        Returns:
+            True if feedback was stored successfully, False otherwise
+        """
+        import json
+
+        if rating not in ("positive", "negative"):
+            logger.error(f"Invalid feedback rating: {rating}")
+            return False
+
+        try:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
+                # Create feedback entry
+                feedback_entry = {
+                    "message_index": message_index,
+                    "rating": rating,
+                    "comment": comment,
+                    "timestamp": datetime.now().isoformat()
+                }
+
+                # First, check if session exists and get existing feedback
+                result = await session.run(
+                    """
+                    MATCH (s:ChatSession {session_id: $session_id})
+                    RETURN s.feedback_json AS feedback_json
+                    """,
+                    session_id=session_id
+                )
+
+                record = await result.single()
+
+                if record:
+                    # Session exists - append to existing feedback
+                    feedback_json = record.get("feedback_json") or "[]"
+                    try:
+                        feedback_list = json.loads(feedback_json)
+                    except json.JSONDecodeError:
+                        feedback_list = []
+
+                    # Check if feedback already exists for this message index
+                    existing_idx = next(
+                        (i for i, f in enumerate(feedback_list) if f.get("message_index") == message_index),
+                        None
+                    )
+                    if existing_idx is not None:
+                        # Update existing feedback
+                        feedback_list[existing_idx] = feedback_entry
+                    else:
+                        # Add new feedback
+                        feedback_list.append(feedback_entry)
+
+                    # Store back
+                    await session.run(
+                        """
+                        MATCH (s:ChatSession {session_id: $session_id})
+                        SET s.feedback_json = $feedback_json,
+                            s.last_updated = datetime()
+                        """,
+                        session_id=session_id,
+                        feedback_json=json.dumps(feedback_list)
+                    )
+                else:
+                    # Session doesn't exist - create it with feedback
+                    logger.warning(f"Session {session_id} not found in Neo4j, creating with feedback")
+
+                    await session.run(
+                        """
+                        MERGE (s:ChatSession {session_id: $session_id})
+                        ON CREATE SET
+                            s.created_at = datetime(),
+                            s.last_updated = datetime(),
+                            s.messages_json = '[]',
+                            s.feedback_json = $feedback_json
+                        ON MATCH SET
+                            s.feedback_json = $feedback_json,
+                            s.last_updated = datetime()
+                        """,
+                        session_id=session_id,
+                        feedback_json=json.dumps([feedback_entry])
+                    )
+
+                logger.info(f"Feedback stored for session {session_id}, message {message_index}: {rating}")
+                return True
+
+        except Exception as e:
+            logger.error(f"Error storing feedback for session {session_id}: {e}", exc_info=True)
+            return False
+
+    async def get_session_feedback(self, session_id: str) -> list[dict]:
+        """Get all feedback entries for a chat session.
+
+        Args:
+            session_id: The session ID
+
+        Returns:
+            List of feedback entries
+        """
+        import json
+
+        try:
+            async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
+                result = await session.run(
+                    """
+                    MATCH (s:ChatSession {session_id: $session_id})
+                    RETURN s.feedback_json AS feedback_json
+                    """,
+                    session_id=session_id
+                )
+
+                record = await result.single()
+
+                if not record:
+                    return []
+
+                feedback_json = record.get("feedback_json") or "[]"
+                try:
+                    return json.loads(feedback_json)
+                except json.JSONDecodeError:
+                    return []
+
+        except Exception as e:
+            logger.error(f"Error getting feedback for session {session_id}: {e}", exc_info=True)
             return []

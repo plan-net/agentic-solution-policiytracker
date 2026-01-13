@@ -1,8 +1,62 @@
-import { User, Bot, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { useState } from 'react'
+import { User, Bot, ThumbsUp, ThumbsDown, Send } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 
-function ChatMessage({ role, content, isStreaming = false }) {
+function ChatMessage({
+  role,
+  content,
+  isStreaming = false,
+  messageIndex,
+  feedback,
+  onFeedback,
+}) {
   const isUser = role === 'user'
+  const [showCommentBox, setShowCommentBox] = useState(false)
+  const [comment, setComment] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleThumbsUp = async () => {
+    if (feedback || isSubmitting) return
+    setIsSubmitting(true)
+    await onFeedback?.(messageIndex, 'positive', null)
+    setIsSubmitting(false)
+  }
+
+  const handleThumbsDown = () => {
+    if (feedback || isSubmitting) return
+    setShowCommentBox(true)
+  }
+
+  const handleSubmitNegativeFeedback = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+    await onFeedback?.(messageIndex, 'negative', comment || null)
+    setShowCommentBox(false)
+    setIsSubmitting(false)
+  }
+
+  const getThumbsUpClass = () => {
+    if (feedback === 'positive') {
+      return 'p-1 text-green-500 cursor-default'
+    }
+    if (feedback === 'negative') {
+      return 'p-1 text-gray-300 cursor-default'
+    }
+    return 'p-1 text-gray-400 hover:text-green-500 transition-colors cursor-pointer'
+  }
+
+  const getThumbsDownClass = () => {
+    if (feedback === 'negative') {
+      return 'p-1 text-red-500 cursor-default'
+    }
+    if (feedback === 'positive') {
+      return 'p-1 text-gray-300 cursor-default'
+    }
+    if (showCommentBox) {
+      return 'p-1 text-red-500 cursor-default'
+    }
+    return 'p-1 text-gray-400 hover:text-red-500 transition-colors cursor-pointer'
+  }
 
   return (
     <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
@@ -45,13 +99,55 @@ function ChatMessage({ role, content, isStreaming = false }) {
 
         {/* Feedback buttons for assistant messages */}
         {!isUser && !isStreaming && content && (
-          <div className="flex items-center gap-2 mt-2">
-            <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
-              <ThumbsUp size={14} />
-            </button>
-            <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
-              <ThumbsDown size={14} />
-            </button>
+          <div className="mt-2">
+            <div className="flex items-center gap-2">
+              <button
+                className={getThumbsUpClass()}
+                onClick={handleThumbsUp}
+                disabled={!!feedback || isSubmitting}
+                title={feedback ? 'Feedback submitted' : 'Helpful'}
+              >
+                <ThumbsUp size={14} fill={feedback === 'positive' ? 'currentColor' : 'none'} />
+              </button>
+              <button
+                className={getThumbsDownClass()}
+                onClick={handleThumbsDown}
+                disabled={!!feedback || isSubmitting}
+                title={feedback ? 'Feedback submitted' : 'Not helpful'}
+              >
+                <ThumbsDown
+                  size={14}
+                  fill={feedback === 'negative' || showCommentBox ? 'currentColor' : 'none'}
+                />
+              </button>
+            </div>
+
+            {/* Comment box for negative feedback */}
+            {showCommentBox && !feedback && (
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="What went wrong? (optional)"
+                  className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmitNegativeFeedback()
+                    }
+                  }}
+                  disabled={isSubmitting}
+                />
+                <button
+                  onClick={handleSubmitNegativeFeedback}
+                  disabled={isSubmitting}
+                  className="px-3 py-1.5 bg-accent-primary text-white text-sm rounded-lg hover:bg-accent-primary/90 transition-colors disabled:opacity-50 flex items-center gap-1"
+                >
+                  <Send size={12} />
+                  Submit
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -849,20 +849,26 @@ wheels = [
 
 [[package]]
 name = "graphiti-core"
-version = "0.12.0rc1"
+version = "0.25.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "diskcache" },
     { name = "neo4j" },
     { name = "numpy" },
     { name = "openai" },
+    { name = "posthog" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "tenacity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/88/96b03b9d980ef3a2fb4050454a24b34440aee9829df0019fa6d9aada948f/graphiti_core-0.12.0rc1.tar.gz", hash = "sha256:f261574384360b0263a8fe08e1dec02263c109a5fb058edb3953010c8c89cdf2", size = 73371, upload-time = "2025-05-23T20:07:50.108Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c1/6c/081a06ef36d68530acd18d3a99eaa1394fd111a38883d412d152034aee9f/graphiti_core-0.25.3.tar.gz", hash = "sha256:1d33902687c4c8361e08d4cb8cb36fa19b160bea79e223b4fde6536a292d49d2", size = 6636192, upload-time = "2026-01-07T21:38:38.719Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2b/69/99892216afba643c7598132aaff29ca448751da0843ba5f1a7266791a380/graphiti_core-0.12.0rc1-py3-none-any.whl", hash = "sha256:3a7a696968ca6586d447f93243fe05ae24773d0000ad2dc2aaa90dee7c49a39e", size = 112710, upload-time = "2025-05-23T20:07:48.416Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/d3/8fb40be09930fe07676a3a2396745cb8ff14f5774ae53f2cd0035c02baec/graphiti_core-0.25.3-py3-none-any.whl", hash = "sha256:2f639485e737363d1fc78ee75c3ad58316be7b1f0f5bafd256776fea433022a1", size = 184192, upload-time = "2026-01-07T21:38:36.451Z" },
+]
+
+[package.optional-dependencies]
+anthropic = [
+    { name = "anthropic" },
 ]
 
 [[package]]
@@ -1935,7 +1941,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.82.0"
+version = "1.109.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1947,9 +1953,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/19/6b09bb3132f7e1a7a2291fd46fb33659bbccca041f863abd682e14ba86d7/openai-1.82.0.tar.gz", hash = "sha256:b0a009b9a58662d598d07e91e4219ab4b1e3d8ba2db3f173896a92b9b874d1a7", size = 461092, upload-time = "2025-05-22T20:08:07.282Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/a1/a303104dc55fc546a3f6914c842d3da471c64eec92043aef8f652eb6c524/openai-1.109.1.tar.gz", hash = "sha256:d173ed8dbca665892a6db099b4a2dfac624f94d20a93f46eb0b56aae940ed869", size = 564133, upload-time = "2025-09-24T13:00:53.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/4b/a59464ee5f77822a81ee069b4021163a0174940a92685efc3cf8b4c443a3/openai-1.82.0-py3-none-any.whl", hash = "sha256:8c40647fea1816516cb3de5189775b30b5f4812777e40b8768f361f232b61b30", size = 720412, upload-time = "2025-05-22T20:08:05.637Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/2a/7dd3d207ec669cacc1f186fd856a0f61dbc255d24f6fdc1a6715d6051b0f/openai-1.109.1-py3-none-any.whl", hash = "sha256:6bcaf57086cf59159b8e27447e4e7dd019db5d29a438072fbd49c290c7e65315", size = 948627, upload-time = "2025-09-24T13:00:50.754Z" },
 ]
 
 [[package]]
@@ -2108,6 +2114,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/04/ed/9c65cd209407fd807fa05be03ee30f159bdac8d59e7ea16a8fe5a1601222/opentelemetry_instrumentation-0.59b0.tar.gz", hash = "sha256:6010f0faaacdaf7c4dff8aac84e226d23437b331dcda7e70367f6d73a7db1adc", size = 31544, upload-time = "2025-10-16T08:39:31.959Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/10/f5/7a40ff3f62bfe715dad2f633d7f1174ba1a7dd74254c15b2558b3401262a/opentelemetry_instrumentation-0.59b0-py3-none-any.whl", hash = "sha256:44082cc8fe56b0186e87ee8f7c17c327c4c2ce93bdbe86496e600985d74368ee", size = 33020, upload-time = "2025-10-16T08:38:31.463Z" },
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-anthropic"
+version = "0.50.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-semantic-conventions" },
+    { name = "opentelemetry-semantic-conventions-ai" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/3e/a1101d8f79ad69666963598c52071b24336c309de4ed6d6f38e73142350c/opentelemetry_instrumentation_anthropic-0.50.1.tar.gz", hash = "sha256:d2c1a589d48bc056eb8424204a2a8b219854629278f851e9e7d4d18b8b788203", size = 14927, upload-time = "2025-12-16T08:26:53.058Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/db/31/5ff0ec511c2f98d3f983a3942bd71d2bfcc9b0e122c9327bdf20895b9edd/opentelemetry_instrumentation_anthropic-0.50.1-py3-none-any.whl", hash = "sha256:d5c12497c01a10ba34412805cb6d970fbdb5fc5d2f73f95ac387df99d2c9e813", size = 18458, upload-time = "2025-12-16T08:26:15.927Z" },
 ]
 
 [[package]]
@@ -2284,7 +2305,7 @@ dependencies = [
     { name = "certifi" },
     { name = "exa-py" },
     { name = "fastapi" },
-    { name = "graphiti-core" },
+    { name = "graphiti-core", extra = ["anthropic"] },
     { name = "httpx" },
     { name = "jinja2" },
     { name = "kodosumi" },
@@ -2305,6 +2326,8 @@ dependencies = [
     { name = "numpy" },
     { name = "openinference-instrumentation-langchain" },
     { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-http" },
+    { name = "opentelemetry-instrumentation-anthropic" },
     { name = "opentelemetry-sdk" },
     { name = "prometheus-client" },
     { name = "pydantic" },
@@ -2364,7 +2387,7 @@ requires-dist = [
     { name = "exa-py", specifier = ">=1.9.0" },
     { name = "faker", marker = "extra == 'test'", specifier = "==20.1.0" },
     { name = "fastapi", specifier = "==0.115.12" },
-    { name = "graphiti-core", specifier = "==0.12.0rc1" },
+    { name = "graphiti-core", extras = ["anthropic"], specifier = ">=0.25.3" },
     { name = "httpx", specifier = ">=0.27.0" },
     { name = "jinja2", specifier = "==3.1.2" },
     { name = "kodosumi", specifier = "==0.9.2" },
@@ -2386,6 +2409,8 @@ requires-dist = [
     { name = "numpy", specifier = "==1.26.2" },
     { name = "openinference-instrumentation-langchain", specifier = ">=0.1.0" },
     { name = "opentelemetry-api", specifier = ">=1.20.0" },
+    { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.20.0" },
+    { name = "opentelemetry-instrumentation-anthropic", specifier = ">=0.33.0" },
     { name = "opentelemetry-sdk", specifier = ">=1.20.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==3.5.0" },
     { name = "prometheus-client", specifier = "==0.19.0" },
@@ -2437,6 +2462,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/bd/d0/8ce6a9912a6f1077710ebc46a6aa9a79a64a06b69d2d6b4ccefc9765ce8f/polyfactory-2.21.0.tar.gz", hash = "sha256:a6d8dba91b2515d744cc014b5be48835633f7ccb72519a68f8801759e5b1737a", size = 246314, upload-time = "2025-04-18T10:19:33.852Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e0/ba/c148fba517a0aaccfc4fca5e61bf2a051e084a417403e930dc615886d4e6/polyfactory-2.21.0-py3-none-any.whl", hash = "sha256:9483b764756c8622313d99f375889b1c0d92f09affb05742d7bcfa2b5198d8c5", size = 60875, upload-time = "2025-04-18T10:19:31.881Z" },
+]
+
+[[package]]
+name = "posthog"
+version = "7.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backoff" },
+    { name = "distro" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+    { name = "six" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/98/3b/866af11cb12e9d35feffcd480d4ebf31f87b2164926b9c670cbdafabc814/posthog-7.5.1.tar.gz", hash = "sha256:d8a8165b3d47465023ea2f919982a34890e2dda76402ec47d6c68424b2534a55", size = 145244, upload-time = "2026-01-08T21:18:39.266Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1f/03/ba011712ce9d07fe87dcfb72474c388d960e6d0c4f2262d2ae11fd27f0c5/posthog-7.5.1-py3-none-any.whl", hash = "sha256:fd3431ce32c9bbfb1e3775e3633c32ee589c052b0054fafe5ed9e4b17c1969d3", size = 167555, upload-time = "2026-01-08T21:18:37.437Z" },
 ]
 
 [[package]]

@@ -25,6 +25,7 @@ from src.flows.data_ingestion.logging_config import configure_logging
 configure_logging()
 
 from graphiti_core import Graphiti
+from graphiti_core.driver.neo4j_driver import Neo4jDriver
 from graphiti_core.nodes import EpisodeType
 
 from src.flows.data_ingestion.deduplicating_graphiti_client import (
@@ -128,7 +129,7 @@ try:
                 from src.flows.shared.apisix_llm_client import (
                     AgentContext,
                     create_apisix_graphiti_embedder,
-                    create_graphiti_apisix_config,
+                    create_graphiti_llm_client,
                 )
 
                 # Create agent context for cost tracking
@@ -138,21 +139,28 @@ try:
                     flow_name="data_ingestion",
                 )
 
-                # Get APISIX-configured LLM client
-                llm_client, note = create_graphiti_apisix_config(context)
+                # Get LLM client based on GRAPHITI_LLM_PROVIDER (OpenAI or Anthropic)
+                llm_client, note = create_graphiti_llm_client(context)
 
                 # Get APISIX-configured embedder for embedding cost tracking
                 embedder = create_apisix_graphiti_embedder()
 
-                # Initialize base Graphiti client with APISIX routing for BOTH LLM and embeddings
-                self.graphiti_client = Graphiti(
-                    NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD,
-                    llm_client=llm_client,
-                    embedder=embedder,  # Route embeddings through APISIX for cost tracking
+                # Create Neo4jDriver with the correct database name
+                # This is required because Graphiti defaults to 'neo4j' database
+                neo4j_driver = Neo4jDriver(
+                    uri=NEO4J_URI,
+                    user=NEO4J_USER,
+                    password=NEO4J_PASSWORD,
+                    database=NEO4J_DATABASE,  # Use politicalmonitoring.v3 instead of default 'neo4j'
                 )
 
-                # Configure database to use politicalmonitoring.v3 instead of default
-                self.graphiti_client.database = NEO4J_DATABASE
+                # Initialize base Graphiti client with custom driver and APISIX routing
+                self.graphiti_client = Graphiti(
+                    llm_client=llm_client,
+                    embedder=embedder,  # Route embeddings through APISIX for cost tracking
+                    graph_driver=neo4j_driver,  # Use our custom driver with correct database
+                )
+
                 logger.info(
                     f"Actor {self.actor_id}: Configured Graphiti to use database: {NEO4J_DATABASE}"
                 )
@@ -173,15 +181,15 @@ try:
                         enable_alias_registration=True,
                     )
                     logger.info(
-                        f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing and Phase 2 deduplication"
+                        f"Actor {self.actor_id}: Graphiti client initialized with Phase 2 deduplication. {note}"
                     )
                 else:
                     # Use base Graphiti client directly without deduplication wrapper
                     self.dedupe_client = self.graphiti_client
                     logger.info(
-                        f"Actor {self.actor_id}: Graphiti client initialized with APISIX routing (deduplication DISABLED)"
+                        f"Actor {self.actor_id}: Graphiti client initialized (deduplication DISABLED). {note}"
                     )
-                logger.warning(note)  # Log the Week 1 limitation
+                logger.info(note)  # Log the LLM provider info
                 return True
             except Exception as e:
                 logger.error(f"Actor {self.actor_id}: Failed to initialize: {e}")

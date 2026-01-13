@@ -74,6 +74,15 @@ class Settings(BaseSettings):
     LANGWATCH_ENDPOINT: str = Field(
         default="http://localhost:5560", description="LangWatch server endpoint"
     )
+    # LangWatch OpenTelemetry Configuration (for native Anthropic SDK)
+    LANGWATCH_OTLP_ENDPOINT: Optional[str] = Field(
+        default=None,
+        description="LangWatch OTLP endpoint (defaults to {LANGWATCH_ENDPOINT}/api/otel/v1/traces)",
+    )
+    ENABLE_ANTHROPIC_INSTRUMENTATION: bool = Field(
+        default=True,
+        description="Enable OpenTelemetry instrumentation for native Anthropic SDK",
+    )
 
     # Neo4j GraphRAG Configuration
     NEO4J_URI: str = Field(default="bolt://localhost:7687", description="Neo4j database URI")
@@ -164,6 +173,16 @@ class GraphRAGSettings(BaseSettings):
     # MCP Server Configuration
     GRAPHITI_MCP_HOST: str = Field(default="localhost", description="Graphiti MCP server host")
     GRAPHITI_MCP_PORT: int = Field(default=8000, description="Graphiti MCP server port")
+
+    # Graphiti LLM Provider Configuration
+    GRAPHITI_LLM_PROVIDER: str = Field(
+        default="openai",
+        description="LLM provider for Graphiti entity extraction: 'openai' or 'anthropic'",
+    )
+    GRAPHITI_ANTHROPIC_MODEL: str = Field(
+        default="claude-sonnet-4-5-latest",
+        description="Anthropic model for Graphiti entity extraction (Claude Sonnet 4.5)",
+    )
 
     # Embedding Configuration
     GRAPHRAG_EMBEDDING_PROVIDER: str = Field(

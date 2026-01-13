@@ -46,7 +46,7 @@ dependencies = [
     "langchain-community>=0.3.0",
     "langfuse==2.36.1",
     # GraphRAG & Knowledge Graphs
-    "graphiti-core==0.12.0rc1",
+    "graphiti-core[anthropic]>=0.25.3",
     # Output Generation
     "jinja2==3.1.2",
     "tabulate==0.9.0",
@@ -64,6 +64,8 @@ dependencies = [
     "langwatch>=0.5.0",
     "opentelemetry-api>=1.20.0",
     "opentelemetry-sdk>=1.20.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.20.0",
+    "opentelemetry-instrumentation-anthropic>=0.33.0",
     "openinference-instrumentation-langchain>=0.1.0",
     # Graph Database & GraphRAG (v0.2.0)
     "neo4j>=5.20.0",

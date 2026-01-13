@@ -15,6 +15,7 @@ from typing import AsyncGenerator, Optional
 from anthropic import AsyncAnthropic
 from neo4j import AsyncGraphDatabase
 
+from src.chat.observability.langwatch_config import langwatch_config
 from src.config import settings
 from src.graph_viz.context_tracker import ChatContextTracker
 
@@ -157,6 +158,10 @@ class PolicyTrackerAgent:
         self._neo4j_driver = None
         self._context_tracker = None
 
+        # Initialize LangWatch in manual mode - we use @langwatch_config.trace() decorator
+        # to create a single trace per session (not per API call)
+        langwatch_config.initialize(instrumentation_mode="manual")
+
     async def _get_neo4j_driver(self):
         """Lazy initialization of Neo4j driver."""
         if self._neo4j_driver is None:
@@ -179,12 +184,57 @@ class PolicyTrackerAgent:
         """Generate a unique session ID."""
         return f"claude_{uuid.uuid4().hex[:16]}"
 
-    async def _execute_tool(self, tool_name: str, tool_input: dict) -> str:
-        """Execute a tool call via the MCP server."""
+    async def _execute_tool(
+        self,
+        tool_name: str,
+        tool_input: dict,
+        tool_use_id: str = "",
+        turn_number: int = 0,
+        session_id: str = "",
+    ) -> str:
+        """Execute a tool call via the MCP server with full observability.
+
+        Captures complete tool input and output for troubleshooting.
+        Uses langwatch_config.capture_tool_call_with_response() to add events to current span.
+        """
+        import time
+
+        start_time = time.time()
         logger.info(f"Executing tool: {tool_name} with input: {tool_input}")
-        result = await self.mcp_client.call_tool(tool_name, tool_input)
-        logger.info(f"Tool result: {result[:200]}...")
-        return result
+
+        try:
+            result = await self.mcp_client.call_tool(tool_name, tool_input)
+            execution_time = time.time() - start_time
+
+            # Capture tool call in session collector (synchronous)
+            langwatch_config.capture_tool_call_with_response(
+                tool_name=tool_name,
+                tool_use_id=tool_use_id,
+                tool_input=tool_input,
+                tool_output=result,
+                execution_time=execution_time,
+                success=True,
+                turn_number=turn_number,
+                session_id=session_id,
+            )
+
+            logger.info(f"Tool result: {result[:200]}...")
+            return result
+        except Exception as e:
+            execution_time = time.time() - start_time
+            # Capture failed tool call in session collector (synchronous)
+            langwatch_config.capture_tool_call_with_response(
+                tool_name=tool_name,
+                tool_use_id=tool_use_id,
+                tool_input=tool_input,
+                tool_output=None,
+                execution_time=execution_time,
+                success=False,
+                error=str(e),
+                turn_number=turn_number,
+                session_id=session_id,
+            )
+            raise
 
     def _extract_uuids_from_result(self, result_text: str) -> set[str]:
         """Extract entity UUIDs from MCP tool result text.
@@ -303,6 +353,10 @@ class PolicyTrackerAgent:
 
         return parsed
 
+    @langwatch_config.trace(
+        name="policy_tracker_query",
+        metadata={"agent": "PolicyTrackerAgent"},
+    )
     async def query(
         self,
         user_message: str,
@@ -329,6 +383,11 @@ class PolicyTrackerAgent:
         if not session_id:
             session_id = self._generate_session_id()
 
+        # Set thread_id for LangWatch trace grouping
+        langwatch_config.set_thread_id(session_id)
+        # Initialize session collector and store user query
+        langwatch_config.set_session_query(session_id, user_message)
+
         # Get context tracker
         context_tracker = await self._get_context_tracker()
 
@@ -349,7 +408,10 @@ class PolicyTrackerAgent:
         # Store user message
         await context_tracker.store_message(session_id, "user", user_message)
 
+        turn_number = 0
         while True:
+            turn_number += 1
+
             # Call Claude with the current messages
             response = await self.client.messages.create(
                 model=self.model,
@@ -357,6 +419,24 @@ class PolicyTrackerAgent:
                 system=SYSTEM_PROMPT,
                 tools=TOOLS,
                 messages=messages,
+            )
+
+            # Collect tool call info for metadata
+            tool_calls_in_turn = []
+            if response.stop_reason == "tool_use":
+                for block in response.content:
+                    if block.type == "tool_use":
+                        tool_calls_in_turn.append({"name": block.name, "id": block.id})
+
+            # Capture turn in session collector (synchronous)
+            langwatch_config.capture_agentic_turn(
+                turn_number=turn_number,
+                session_id=session_id,
+                stop_reason=response.stop_reason,
+                tool_calls=tool_calls_in_turn,
+                input_tokens=response.usage.input_tokens,
+                output_tokens=response.usage.output_tokens,
+                model=self.model,
             )
 
             # Check if we need to handle tool use
@@ -367,8 +447,14 @@ class PolicyTrackerAgent:
 
                 for block in assistant_content:
                     if block.type == "tool_use":
-                        # Execute the tool
-                        result = await self._execute_tool(block.name, block.input)
+                        # Execute the tool with full observability context
+                        result = await self._execute_tool(
+                            tool_name=block.name,
+                            tool_input=block.input,
+                            tool_use_id=block.id,
+                            turn_number=turn_number,
+                            session_id=session_id,
+                        )
 
                         # Parse result for context tracking (async to lookup UUIDs by name)
                         parsed_result = await self._parse_tool_result_for_tracking(block.name, result)
@@ -403,11 +489,34 @@ class PolicyTrackerAgent:
                 # Store assistant response
                 await context_tracker.store_message(session_id, "assistant", response_text)
 
+                # Finalize session and update LangWatch trace with structured data
+                langwatch_config.set_session_response(session_id, response_text)
+                session_data = langwatch_config.finalize_session(session_id)
+                logger.info(f"Session data collected: {len(session_data.get('turns', []))} turns, {len(session_data.get('tool_calls', []))} tool calls")
+                if session_data:
+                    self._update_trace_with_session_data(session_data)
+
                 # Final persistence of context
                 logger.info(f"Session {session_id} completed with {len(context_tracker.context_cache.get(session_id, {}).get('entity_uuids', []))} entities tracked")
 
                 return response_text, session_id
 
+    def _update_trace_with_session_data(self, session_data: dict) -> None:
+        """Update the current LangWatch trace with collected session data.
+
+        Uses REST API directly to send traces (more reliable than OTEL SDK).
+        """
+        # Use REST API directly - this is the reliable method
+        success = langwatch_config.send_trace_via_rest_api(session_data)
+        if success:
+            logger.info(f"Trace sent via REST API for session: {session_data.get('session_id')}")
+        else:
+            logger.warning(f"Failed to send trace via REST API for session: {session_data.get('session_id')}")
+
+    @langwatch_config.trace(
+        name="policy_tracker_stream_query",
+        metadata={"agent": "PolicyTrackerAgent"},
+    )
     async def stream_query(
         self,
         user_message: str,
@@ -428,6 +537,11 @@ class PolicyTrackerAgent:
         # Generate or use provided session ID
         if not session_id:
             session_id = self._generate_session_id()
+
+        # Set thread_id for LangWatch trace grouping
+        langwatch_config.set_thread_id(session_id)
+        # Initialize session collector and store user query
+        langwatch_config.set_session_query(session_id, user_message)
 
         # Get context tracker
         context_tracker = await self._get_context_tracker()
@@ -451,8 +565,11 @@ class PolicyTrackerAgent:
 
         # Accumulate full response for storage
         full_response = ""
+        turn_number = 0
 
         while True:
+            turn_number += 1
+
             # Stream the response from Claude
             current_tool_use = None
             tool_uses = []
@@ -498,13 +615,31 @@ class PolicyTrackerAgent:
                 # Get the final message
                 final_message = await stream.get_final_message()
 
+            # Capture turn in session collector (synchronous)
+            tool_calls_in_turn = [{"name": t["name"], "id": t["id"]} for t in tool_uses]
+            langwatch_config.capture_agentic_turn(
+                turn_number=turn_number,
+                session_id=session_id,
+                stop_reason=final_message.stop_reason,
+                tool_calls=tool_calls_in_turn,
+                input_tokens=final_message.usage.input_tokens,
+                output_tokens=final_message.usage.output_tokens,
+                model=self.model,
+            )
+
             # Check if we need to handle tool use
             if final_message.stop_reason == "tool_use" and tool_uses:
                 # Execute tools and continue the loop
                 tool_results = []
                 for tool in tool_uses:
                     yield f"\n\n*Using {tool['name']}...*\n", ""
-                    result = await self._execute_tool(tool["name"], tool["input"])
+                    result = await self._execute_tool(
+                        tool_name=tool["name"],
+                        tool_input=tool["input"],
+                        tool_use_id=tool["id"],
+                        turn_number=turn_number,
+                        session_id=session_id,
+                    )
 
                     # Parse result for context tracking (async to lookup UUIDs by name)
                     parsed_result = await self._parse_tool_result_for_tracking(tool["name"], result)
@@ -531,6 +666,13 @@ class PolicyTrackerAgent:
                 # Done - store the assistant response and yield final chunk
                 if full_response:
                     await context_tracker.store_message(session_id, "assistant", full_response)
+
+                # Finalize session and update LangWatch trace with structured data
+                langwatch_config.set_session_response(session_id, full_response)
+                session_data = langwatch_config.finalize_session(session_id)
+                if session_data:
+                    self._update_trace_with_session_data(session_data)
+
                 logger.info(f"Streaming session {session_id} completed")
                 yield "", session_id
                 break

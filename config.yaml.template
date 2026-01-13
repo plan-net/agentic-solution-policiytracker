@@ -50,7 +50,7 @@ applications:
       PYTHONPATH: .
       LOG_LEVEL: INFO
       NEO4J_URI: ${NEO4J_URI}
-      NEO4J_USERNAME: ${NEO4J_USERNAME}
+      NEO4J_USERNAME: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       NEO4J_DATABASE: ${NEO4J_DATABASE}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
@@ -83,34 +83,38 @@ applications:
     max_replicas: 2
     target_num_ongoing_requests_per_replica: 5
 
+# Flow 1B: Bulk Auto-Delta Document Processing
+- name: flow1b-bulk-auto
+  route_prefix: /data-ingestion-bulk-auto
+  import_path: src.flows.data_ingestion_bulk_auto.app:bulk_auto_app
+  runtime_env:
+    env_vars:
+      PYTHONPATH: .
+      LOG_LEVEL: INFO
+      NEO4J_URI: ${NEO4J_URI}
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+      NEO4J_DATABASE: ${NEO4J_DATABASE}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      # Graphiti LLM Provider Configuration
+      GRAPHITI_LLM_PROVIDER: ${GRAPHITI_LLM_PROVIDER}
+      GRAPHITI_ANTHROPIC_MODEL: ${GRAPHITI_ANTHROPIC_MODEL}
+      USE_APISIX_FOR_ANTHROPIC: ${USE_APISIX_FOR_ANTHROPIC}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://localhost:3001
+  ray_actor_options:
+    num_cpus: 3
+    memory: 3000000000
+  autoscaling_config:
+    min_replicas: 1
+    max_replicas: 3
+    target_num_ongoing_requests_per_replica: 1
+
 # =============================================================================
 # DISABLED APPLICATIONS (uncomment to enable)
 # =============================================================================
-
-# Flow 1B: Bulk Auto-Delta Document Processing
-# - name: flow1b-bulk-auto
-#   route_prefix: /data-ingestion-bulk-auto
-#   import_path: src.flows.data_ingestion_bulk_auto.app:bulk_auto_app
-#   runtime_env:
-#     env_vars:
-#       PYTHONPATH: .
-#       LOG_LEVEL: INFO
-#       NEO4J_URI: ${NEO4J_URI}
-#       NEO4J_USERNAME: ${NEO4J_USERNAME}
-#       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-#       NEO4J_DATABASE: ${NEO4J_DATABASE}
-#       OPENAI_API_KEY: ${OPENAI_API_KEY}
-#       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-#       LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
-#       LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
-#       LANGFUSE_HOST: http://localhost:3001
-#   ray_actor_options:
-#     num_cpus: 3
-#     memory: 3000000000
-#   autoscaling_config:
-#     min_replicas: 1
-#     max_replicas: 3
-#     target_num_ongoing_requests_per_replica: 1
 
 # Flow 1D: Raw Document Auto-Conversion + Graphiti Processing
 # - name: flow1d-raw-converter

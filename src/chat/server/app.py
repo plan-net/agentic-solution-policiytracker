@@ -467,6 +467,16 @@ class ChatServer:
 
             logger.info(f"Streaming complete for session: {session_id}")
 
+            # Persist messages to Neo4j for feedback tracking
+            try:
+                context_tracker = await self._get_context_tracker()
+                await context_tracker.store_message(session_id, "user", user_message)
+                if final_response:
+                    await context_tracker.store_message(session_id, "assistant", final_response)
+                logger.info(f"Messages persisted to Neo4j for session: {session_id}")
+            except Exception as persist_error:
+                logger.warning(f"Failed to persist messages to Neo4j: {persist_error}")
+
             # Send final chunk
             final_chunk = StreamResponse(
                 id=chat_id,

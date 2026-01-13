@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Search, RefreshCw, Plus, Minus, Maximize2, ChevronDown } from 'lucide-react'
+import { Search, RefreshCw, Plus, Minus, Maximize2, ChevronDown, Share2, Database } from 'lucide-react'
 import GraphVisualization from '../components/graph/GraphVisualization'
 import EntityLegend from '../components/graph/EntityLegend'
 import EntityTable from '../components/graph/EntityTable'
+import SchemaExplorer from '../components/graph/SchemaExplorer'
 import { graphApi } from '../services/graphApi'
 import { useUIStore } from '../stores/uiStore'
 
@@ -51,6 +52,7 @@ const mockTableData = [
 
 function KnowledgeGraphPage() {
   const { openSlideOutPanel } = useUIStore()
+  const [activeTab, setActiveTab] = useState('visualization')
   const [searchQuery, setSearchQuery] = useState('')
   const [graphData, setGraphData] = useState(mockGraphData)
   const [tableData, setTableData] = useState(mockTableData)
@@ -167,71 +169,108 @@ function KnowledgeGraphPage() {
       {/* Header */}
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Knowledge Graph</h1>
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search for an Entity..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          className="w-full pl-11 pr-4 py-3 bg-white border border-content-border rounded-xl focus:border-accent-primary focus:ring-1 focus:ring-accent-primary focus:outline-none"
-        />
+      {/* Tab Navigation */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setActiveTab('visualization')}
+          className={`
+            px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2
+            ${activeTab === 'visualization'
+              ? 'bg-accent-primary text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }
+          `}
+        >
+          <Share2 size={16} />
+          Graph Visualization
+        </button>
+        <button
+          onClick={() => setActiveTab('schema')}
+          className={`
+            px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2
+            ${activeTab === 'schema'
+              ? 'bg-accent-primary text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }
+          `}
+        >
+          <Database size={16} />
+          Schema Explorer
+        </button>
       </div>
 
-      {/* Graph Visualization Container */}
-      <div className="bg-white rounded-xl border border-content-border overflow-hidden mb-6">
-        {/* Legend */}
-        <EntityLegend
-          categories={categories}
-          selectedCategories={selectedCategories}
-          onToggle={handleCategoryToggle}
-        />
+      {/* Tab Content */}
+      {activeTab === 'visualization' ? (
+        <>
+          {/* Search */}
+          <div className="relative mb-6">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search for an Entity..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="w-full pl-11 pr-4 py-3 bg-white border border-content-border rounded-xl focus:border-accent-primary focus:ring-1 focus:ring-accent-primary focus:outline-none"
+            />
+          </div>
 
-        {/* Graph Canvas */}
-        <div className="relative" style={{ height: '500px' }}>
-          {isLoading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-              <div className="flex items-center gap-2 text-gray-500">
-                <RefreshCw size={20} className="animate-spin" />
-                Loading graph...
+          {/* Graph Visualization Container */}
+          <div className="bg-white rounded-xl border border-content-border overflow-hidden mb-6">
+            {/* Legend */}
+            <EntityLegend
+              categories={categories}
+              selectedCategories={selectedCategories}
+              onToggle={handleCategoryToggle}
+            />
+
+            {/* Graph Canvas */}
+            <div className="relative" style={{ height: '500px' }}>
+              {isLoading ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <RefreshCw size={20} className="animate-spin" />
+                    Loading graph...
+                  </div>
+                </div>
+              ) : (
+                <GraphVisualization
+                  graphData={filteredGraphData}
+                  onNodeClick={handleNodeClick}
+                  height={500}
+                />
+              )}
+
+              {/* Zoom Controls */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2">
+                <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
+                  <Plus size={16} />
+                </button>
+                <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
+                  <Minus size={16} />
+                </button>
+                <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2 8h12M8 2v12" />
+                  </svg>
+                </button>
+                <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
+                  <Maximize2 size={16} />
+                </button>
               </div>
             </div>
-          ) : (
-            <GraphVisualization
-              graphData={filteredGraphData}
-              onNodeClick={handleNodeClick}
-              height={500}
-            />
-          )}
-
-          {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-2">
-            <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
-              <Plus size={16} />
-            </button>
-            <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
-              <Minus size={16} />
-            </button>
-            <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 8h12M8 2v12" />
-              </svg>
-            </button>
-            <button className="p-2 bg-white border border-content-border rounded-lg hover:bg-gray-50 shadow-sm">
-              <Maximize2 size={16} />
-            </button>
           </div>
-        </div>
-      </div>
 
-      {/* Entity Table */}
-      <EntityTable
-        data={tableData}
-        onRefresh={handleRefresh}
-        isLoading={isLoading}
-      />
+          {/* Entity Table */}
+          <EntityTable
+            data={tableData}
+            onRefresh={handleRefresh}
+            isLoading={isLoading}
+          />
+        </>
+      ) : (
+        <SchemaExplorer />
+      )}
     </div>
   )
 }

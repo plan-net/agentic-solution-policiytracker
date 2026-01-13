@@ -20,6 +20,7 @@ function ChatContainer({ sessionId, onSessionCreated }) {
     graphSessionId,
     sessionId: currentSessionId,
     clearMessages,
+    submitFeedback,
   } = useStreamingChat(sessionId)
 
   // Auto-scroll to bottom when new messages arrive
@@ -116,6 +117,9 @@ function ChatContainer({ sessionId, onSessionCreated }) {
                 role={message.role}
                 content={message.content}
                 isStreaming={isStreaming && index === messages.length - 1 && message.role === 'assistant'}
+                messageIndex={index}
+                feedback={message.feedback}
+                onFeedback={submitFeedback}
               />
             ))}
             <div ref={messagesEndRef} />

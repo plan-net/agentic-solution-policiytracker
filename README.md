@@ -30,14 +30,20 @@ just setup && just services-up
 just dev
 
 # 3. Access
-# → Chat Interface: http://localhost:3000
-# → Admin Panel: http://localhost:3370 (admin/admin)  
+# → React UI: http://localhost:5173 (NEW - Modern web interface)
+# → Claude Agent API: http://localhost:8000 (NEW - AI chat backend)
+# → Admin Panel: http://localhost:3370 (admin/admin)
 # → ETL Dashboard: http://localhost:8080 (admin/admin)
 ```
 
-**Test immediately**: Upload sample documents from `data/input/examples/` via the web interface.
+**Test immediately**:
+- Open the React UI and explore the interactive knowledge graph
+- Try the AI chat interface powered by Claude Agent SDK
+- Generate a weekly report using the new SDK-based flow
 
 > 📖 **New to the system?** Start with the [User Guide](docs/USER_GUIDE.md) for step-by-step instructions.
+>
+> 🆕 **What's new in v0.2.0?** See [New Features Guide](docs/NEW_FEATURES_V0.2.0.md) for detailed documentation.
 
 ## 🏗️ Architecture Overview
 
@@ -72,6 +78,12 @@ graph TB
 ```
 
 ## 📂 Component Documentation
+
+### **New in v0.2.0**
+- **[New Features Overview](docs/NEW_FEATURES_V0.2.0.md)** - Complete guide to v0.2.0 additions
+- **[React UI](ui/policy-tracker/README.md)** - Modern web interface with 3D graph visualization
+- **[Claude Agent SDK](src/claude_agent/README.md)** - OpenAI-compatible conversational agent
+- **[Weekly Report SDK](src/flows/weekly_report_sdk/)** - Claude-powered weekly intelligence reports
 
 ### **Core Systems**
 - **[ETL Pipeline](src/etl/README.md)** - Automated data collection with Airflow, collectors, and storage

@@ -17,6 +17,7 @@ from .chat_sessions import (
     ChatSessionService,
     ChatSessionSummary,
     ChatSessionWithMessages,
+    SubmitFeedbackRequest,
 )
 from .reports import (
     ClaudeModel,
@@ -355,7 +356,7 @@ class GraphVizServer:
 
     @app.get("/api/chat/sessions/{session_id}/messages")
     async def get_chat_session_messages(self, session_id: str) -> ChatSessionWithMessages:
-        """Get a chat session with all messages."""
+        """Get a chat session with all messages and feedback."""
         try:
             service = await self._get_chat_session_service()
             session = await service.get_session(session_id)
@@ -363,6 +364,7 @@ class GraphVizServer:
                 raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
 
             messages = await service.get_session_messages(session_id)
+            feedback = await service.get_session_feedback(session_id)
 
             return ChatSessionWithMessages(
                 session_id=session.session_id,
@@ -370,6 +372,7 @@ class GraphVizServer:
                 created_at=session.created_at,
                 last_updated=session.last_updated,
                 messages=messages,
+                feedback=feedback,
                 entity_count=len(session.entity_uuids),
             )
         except HTTPException:
@@ -406,6 +409,36 @@ class GraphVizServer:
             raise
         except Exception as e:
             logger.error(f"Error updating chat session title {session_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/api/chat/sessions/{session_id}/feedback")
+    async def submit_message_feedback(
+        self, session_id: str, request: SubmitFeedbackRequest
+    ) -> dict:
+        """Submit feedback for a specific message in a chat session."""
+        try:
+            service = await self._get_chat_session_service()
+            success = await service.submit_message_feedback(
+                session_id=session_id,
+                message_index=request.message_index,
+                rating=request.rating,
+                comment=request.comment
+            )
+            if not success:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Failed to submit feedback. Session or message not found."
+                )
+            return {
+                "status": "success",
+                "session_id": session_id,
+                "message_index": request.message_index,
+                "rating": request.rating
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error submitting feedback for session {session_id}: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail=str(e))
 
     # ============== Reports Endpoints ==============

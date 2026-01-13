@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { getSessionMessages, streamChatMessage } from '../services/chatApi'
+import { submitFeedback as submitFeedbackApi } from '../services/feedbackApi'
 
 export function useStreamingChat(initialSessionId = null) {
   const [messages, setMessages] = useState([])
@@ -39,11 +40,24 @@ export function useStreamingChat(initialSessionId = null) {
       const result = await getSessionMessages(initialSessionId)
 
       if (result.success && result.data) {
+        // Build a map of feedback by message index
+        const feedbackMap = {}
+        if (result.data.feedback) {
+          result.data.feedback.forEach((fb) => {
+            feedbackMap[fb.message_index] = {
+              rating: fb.rating,
+              comment: fb.comment,
+            }
+          })
+        }
+
         // Convert messages to the format expected by the UI
         const loadedMessages = result.data.messages.map((msg, index) => ({
           id: `${msg.role}_${index}_${Date.now()}`,
           role: msg.role,
           content: msg.content,
+          feedback: feedbackMap[index]?.rating || null,
+          feedbackComment: feedbackMap[index]?.comment || null,
         }))
         setMessages(loadedMessages)
         setSessionId(initialSessionId)
@@ -157,6 +171,35 @@ export function useStreamingChat(initialSessionId = null) {
     createdSessionRef.current = null
   }, [])
 
+  const submitFeedback = useCallback(async (messageIndex, rating, comment) => {
+    if (!sessionId) {
+      console.error('Cannot submit feedback: no session ID')
+      return false
+    }
+
+    const result = await submitFeedbackApi({
+      sessionId,
+      messageIndex,
+      rating,
+      comment,
+    })
+
+    if (result.success) {
+      // Update local message state with feedback
+      setMessages((prev) =>
+        prev.map((msg, index) =>
+          index === messageIndex
+            ? { ...msg, feedback: rating, feedbackComment: comment }
+            : msg
+        )
+      )
+      return true
+    } else {
+      console.error('Failed to submit feedback:', result.error)
+      return false
+    }
+  }, [sessionId])
+
   return {
     messages,
     isStreaming,
@@ -168,6 +211,7 @@ export function useStreamingChat(initialSessionId = null) {
     cancelStream,
     clearMessages,
     setMessages,
+    submitFeedback,
   }
 }
 

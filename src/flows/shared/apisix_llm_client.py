@@ -504,3 +504,132 @@ def create_apisix_anthropic_client(
             default_headers=default_headers,
             **kwargs,
         )
+
+
+def create_graphiti_anthropic_config(
+    agent_context: AgentContext,
+    model: str = "claude-sonnet-4-5-latest",
+    temperature: float = 0.1,
+    max_tokens: int = 16000,
+):
+    """
+    Create Graphiti-compatible Anthropic client with optional APISIX routing.
+
+    This function creates an AnthropicClient from graphiti_core that can route
+    through the APISIX gateway for cost tracking.
+
+    Note: Graphiti's AnthropicClient does NOT pass base_url from LLMConfig to
+    AsyncAnthropic. To enable APISIX routing, we create our own AsyncAnthropic
+    client with base_url and pass it via the client parameter.
+
+    Args:
+        agent_context: Agent context for cost tracking headers
+        model: Anthropic model name (default: claude-sonnet-4-5-latest)
+        temperature: LLM temperature (default: 0.1 for deterministic extraction)
+        max_tokens: Maximum tokens for response (default: 16000 for entity extraction)
+
+    Returns:
+        Tuple of (AnthropicClient, info_message)
+
+    Example:
+        >>> context = AgentContext(
+        ...     agent_type="kodosumi_flow",
+        ...     agent_name="graphiti_document_processor",
+        ...     flow_name="data_ingestion"
+        ... )
+        >>> llm_client, note = create_graphiti_anthropic_config(context)
+        >>> graphiti = Graphiti(
+        ...     neo4j_uri, neo4j_user, neo4j_password,
+        ...     llm_client=llm_client
+        ... )
+    """
+    from graphiti_core.llm_client.anthropic_client import AnthropicClient
+    from graphiti_core.llm_client.config import LLMConfig
+
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise ValueError("ANTHROPIC_API_KEY environment variable not set")
+
+    # Check if APISIX routing is enabled
+    use_apisix = os.getenv("USE_APISIX_FOR_ANTHROPIC", "false").lower() == "true"
+
+    # Create LLMConfig for Graphiti
+    config = LLMConfig(
+        api_key=api_key,
+        model=model,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+
+    # Create AsyncAnthropic client with APISIX routing if enabled
+    if use_apisix:
+        base_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+        default_headers = agent_context.to_headers() if agent_context else {}
+        anthropic_client = AsyncAnthropic(
+            api_key=api_key,
+            base_url=base_url,
+            default_headers=default_headers,
+            max_retries=1,
+        )
+    else:
+        anthropic_client = AsyncAnthropic(
+            api_key=api_key,
+            max_retries=1,
+        )
+
+    # Create Graphiti AnthropicClient with our custom AsyncAnthropic client
+    llm_client = AnthropicClient(config=config, cache=False, client=anthropic_client)
+
+    note = f"Using Anthropic ({model}) via {'APISIX' if use_apisix else 'direct API'}"
+    return llm_client, note
+
+
+def create_graphiti_llm_client(
+    agent_context: AgentContext,
+    temperature: float = 0.1,
+    max_tokens: int = 16000,
+):
+    """
+    Create Graphiti LLM client based on GRAPHITI_LLM_PROVIDER environment variable.
+
+    This factory function selects the appropriate LLM client (OpenAI or Anthropic)
+    based on the GRAPHITI_LLM_PROVIDER configuration setting.
+
+    Args:
+        agent_context: Agent context for cost tracking headers
+        temperature: LLM temperature (default: 0.1 for deterministic extraction)
+        max_tokens: Maximum tokens for response (default: 16000 for entity extraction)
+
+    Returns:
+        Tuple of (LLMClient, info_message)
+
+    Example:
+        >>> context = AgentContext(
+        ...     agent_type="kodosumi_flow",
+        ...     agent_name="graphiti_document_processor",
+        ...     flow_name="data_ingestion"
+        ... )
+        >>> llm_client, note = create_graphiti_llm_client(context)
+        >>> graphiti = Graphiti(
+        ...     neo4j_uri, neo4j_user, neo4j_password,
+        ...     llm_client=llm_client
+        ... )
+    """
+    from src.config import graphrag_settings
+
+    provider = graphrag_settings.GRAPHITI_LLM_PROVIDER.lower()
+
+    if provider == "anthropic":
+        model = graphrag_settings.GRAPHITI_ANTHROPIC_MODEL
+        return create_graphiti_anthropic_config(
+            agent_context, model=model, temperature=temperature, max_tokens=max_tokens
+        )
+    elif provider == "openai":
+        model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        return create_graphiti_apisix_config(
+            agent_context, model=model, temperature=temperature, max_tokens=max_tokens
+        )
+    else:
+        raise ValueError(
+            f"Unknown GRAPHITI_LLM_PROVIDER: {provider}. Use 'openai' or 'anthropic'"
+        )
