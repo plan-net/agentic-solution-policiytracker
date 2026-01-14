@@ -34,7 +34,30 @@ For v0.2.0, we're using MCP servers to interact with Graphiti and Neo4j, avoidin
 
 ## MCP Server Usage
 
-### Graphiti MCP Server
+### Graph Retrieval MCP Server
+**Purpose**: Knowledge graph search and retrieval with hybrid semantic search
+**Port**: 8003 (SSE transport)
+**Location**: `src/mcp/graph_retrieval/server.py`
+
+**Key Operations**:
+- `search_knowledge_graph` - Search entities, relationships, and source documents
+- `search_documents` - Semantic search over episodic nodes (source documents)
+- `analyze_query` - Understand query intent before searching
+- `get_entity_info` - Get detailed information about a specific entity
+- `find_relationships` - Explore connections between entities
+- `graph_statistics` - Get knowledge graph statistics
+
+**Hybrid Search Architecture** (v0.2.1):
+The MCP server now supports hybrid search combining:
+1. **BM25 fulltext search** - Keyword-based matching on content and names
+2. **Vector similarity search** - Semantic search using embeddings (1536-dim, cosine)
+
+Score fusion weights:
+- Entity search: 0.4 * keyword + 0.6 * vector
+- Relationship search: 0.3 * keyword + 0.7 * vector
+- Episode search: 0.3 * BM25 + 0.7 * vector
+
+### Graphiti MCP Server (Legacy)
 **Purpose**: Temporal knowledge graph operations
 **Port**: 8000 (SSE transport)
 
@@ -223,4 +246,149 @@ episode_id = await graphiti_client.add_episode(
     content=read_file(file_path)
 )
 entities = await graphiti_client.extract_entities(episode_id)
+```
+
+## Episode Semantic Search (v0.2.1)
+
+### Overview
+Episodic nodes contain the chunked source documents used to build the knowledge graph. These nodes now support semantic search via content embeddings, enabling retrieval of relevant source passages alongside entities and relationships.
+
+### Architecture
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Graph Retrieval MCP Server                    │
+├─────────────────────────────────────────────────────────────────┤
+│  search_knowledge_graph()                                        │
+│    ├── _search_entities_hybrid()   (keyword + vector)           │
+│    ├── _search_relationships_hybrid() (keyword + vector)        │
+│    └── _search_episodes()          (BM25 + vector)              │
+│                                                                  │
+│  search_documents()  ──────────────► _search_episodes()         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Database Indexes
+```sql
+-- Vector index for semantic search on episode content
+CREATE VECTOR INDEX episodic_content_embedding_index IF NOT EXISTS
+FOR (ep:Episodic) ON (ep.content_embedding)
+OPTIONS {indexConfig: {
+    `vector.dimensions`: 1536,
+    `vector.similarity_function`: 'cosine'
+}}
+
+-- Fulltext index for BM25 search
+CREATE FULLTEXT INDEX episodic_content_fulltext IF NOT EXISTS
+FOR (ep:Episodic) ON EACH [ep.content, ep.name]
+```
+
+### Episode Embedding Management
+**File**: `src/graphrag/episode_embedding_manager.py`
+
+```python
+from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
+
+# Initialize manager
+manager = EpisodeEmbeddingManager()
+
+# Add embedding to existing episode
+await manager.add_content_embedding(episode_uuid, content)
+
+# Check embedding coverage
+stats = await manager.get_embedding_stats()
+# Returns: {total_episodes, episodes_with_embeddings, coverage_percentage}
+
+# Find episodes without embeddings (for backfill)
+episodes = await manager.get_episodes_without_embeddings(limit=100)
+```
+
+### Backfill Script
+**File**: `scripts/backfill_episode_embeddings.py`
+
+```bash
+# Dry run to estimate cost
+just backfill-episodes-dry
+
+# Full backfill with default batch size (50)
+just backfill-episodes
+
+# Custom batch size
+just backfill-episodes 100
+
+# Backfill limited episodes (testing)
+just backfill-episodes-test 50
+
+# Check embedding coverage
+just check-episode-embeddings
+```
+
+**Cost Estimate**:
+- Initial backfill: ~$0.19 (7,611 episodes, ~9.5M tokens)
+- Ongoing: ~$0.50/month (~173 new episodes/day)
+- Model: text-embedding-3-small at $0.02/1M tokens
+
+### MCP Tool Usage
+
+**search_documents** - Direct semantic search over source documents:
+```python
+# Via Claude agent
+result = await mcp_client.call_tool("search_documents", {
+    "query": "GDPR compliance requirements for data processors",
+    "limit": 5
+})
+# Returns: List of episodic nodes with content previews and relevance scores
+```
+
+**search_knowledge_graph** - Unified search (entities + relationships + documents):
+```python
+# Now automatically includes source documents in results
+result = await mcp_client.call_tool("search_knowledge_graph", {
+    "query": "EU AI Act enforcement mechanisms"
+})
+# Returns: entities, relationships, AND source_documents
+```
+
+### Integration with Document Processor
+New episodes automatically receive embeddings during ingestion:
+
+```python
+# In document_processor.py
+from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
+
+embedding_manager = EpisodeEmbeddingManager()
+
+# After adding episode via Graphiti
+episode_uuid = result.episode.uuid
+await embedding_manager.add_content_embedding(episode_uuid, chunk_text)
+```
+
+### Hybrid Search Query Pattern
+```cypher
+-- Example: Hybrid BM25 + Vector search on episodes
+CALL {
+    // BM25 fulltext search
+    CALL db.index.fulltext.queryNodes('episodic_content_fulltext', $query)
+    YIELD node, score AS bm25_score
+    RETURN node, bm25_score, 0.0 AS vector_score
+    LIMIT $limit
+
+    UNION ALL
+
+    // Vector similarity search
+    MATCH (ep:Episodic)
+    WHERE ep.content_embedding IS NOT NULL
+    WITH ep, vector.similarity.cosine(ep.content_embedding, $embedding) AS vec_score
+    WHERE vec_score > 0.3
+    RETURN ep AS node, 0.0 AS bm25_score, vec_score AS vector_score
+    ORDER BY vec_score DESC
+    LIMIT $limit
+}
+WITH node, max(bm25_score) AS bm25, max(vector_score) AS vector
+WITH node,
+     CASE WHEN bm25 > 0 AND vector > 0 THEN (0.3 * bm25 + 0.7 * vector)
+          WHEN vector > 0 THEN vector
+          ELSE bm25 END AS combined_score
+ORDER BY combined_score DESC
+LIMIT $limit
+RETURN node.uuid, node.name, node.content, combined_score
 ```

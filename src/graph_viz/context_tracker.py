@@ -360,7 +360,16 @@ class ChatContextTracker:
     async def _build_graph_from_context(
         self, context: dict
     ) -> tuple[list[GraphNode], list[GraphEdge]]:
-        """Build graph nodes and edges from tracked context."""
+        """Build graph nodes and edges from tracked context.
+
+        This method now fetches:
+        1. All tracked entities
+        2. Relationships between tracked entities
+        3. Neighboring entities (1-hop) connected to tracked entities
+        4. Relationships to those neighbors
+
+        This provides a more complete view of the context used to answer the query.
+        """
         entity_uuids = list(context["entity_uuids"])
 
         if not entity_uuids:
@@ -368,6 +377,7 @@ class ChatContextTracker:
 
         # Fetch entity details from Neo4j
         nodes = await self._fetch_entities(entity_uuids)
+        nodes_dict = {node.id: node for node in nodes}
 
         # Build edges from tracked relationships (from tool results)
         links = []
@@ -381,15 +391,39 @@ class ChatContextTracker:
                 )
             )
 
-        # Also fetch relationships between entities from Neo4j
-        neo4j_relationships = await self._fetch_relationships(entity_uuids)
+        # Fetch relationships AND neighboring entities from Neo4j
+        # This includes both internal relationships and connections to neighbors
+        neo4j_relationships, neighbor_nodes = await self._fetch_relationships_with_neighbors(entity_uuids)
         links.extend(neo4j_relationships)
 
+        # Add neighbor nodes that aren't already in our nodes dict
+        for node in neighbor_nodes:
+            if node.id not in nodes_dict:
+                nodes_dict[node.id] = node
+
+        final_nodes = list(nodes_dict.values())
+        final_node_ids = set(nodes_dict.keys())
+
+        # Final validation: filter out any links where source or target node doesn't exist
+        # This ensures the UI gets only valid links that can be rendered
+        original_link_count = len(links)
+        links = [
+            link for link in links
+            if link.source in final_node_ids and link.target in final_node_ids
+        ]
+
+        filtered_count = original_link_count - len(links)
+        if filtered_count > 0:
+            logger.warning(
+                f"⚠️ Final filter removed {filtered_count} links with missing node endpoints"
+            )
+
         logger.warning(
-            f"📊 Built graph: {len(nodes)} nodes, {len(links)} links ({len(neo4j_relationships)} from Neo4j)"
+            f"📊 Built graph: {len(final_nodes)} nodes ({len(nodes)} tracked + {len(neighbor_nodes)} neighbors), "
+            f"{len(links)} links ({len(neo4j_relationships)} from Neo4j, {filtered_count} filtered)"
         )
 
-        return nodes, links
+        return final_nodes, links
 
     async def _fetch_entities(self, entity_uuids: list[str]) -> list[GraphNode]:
         """Fetch entity details from Neo4j by UUIDs."""
@@ -463,33 +497,66 @@ class ChatContextTracker:
         logger.warning(f"📈 Returning {len(nodes)} nodes from _fetch_entities")
         return nodes
 
-    async def _fetch_relationships(self, entity_uuids: list[str]) -> list[GraphEdge]:
-        """Fetch relationships between tracked entities from Neo4j."""
+    async def _fetch_relationships_with_neighbors(
+        self, entity_uuids: list[str]
+    ) -> tuple[list[GraphEdge], list[GraphNode]]:
+        """Fetch relationships and neighboring entities from Neo4j.
+
+        This method fetches:
+        1. Relationships between tracked entities (internal connections)
+        2. Relationships from tracked entities to their neighbors (outgoing)
+        3. Relationships from neighbors to tracked entities (incoming)
+        4. The neighboring entity nodes themselves
+
+        This provides a more complete graph visualization showing the context
+        used to answer queries, including connected entities.
+
+        Args:
+            entity_uuids: List of tracked entity UUIDs
+
+        Returns:
+            Tuple of (relationships, neighbor_nodes)
+        """
         relationships = []
+        neighbor_nodes = []
 
         if not entity_uuids:
-            return relationships
+            return relationships, neighbor_nodes
 
         try:
-            logger.warning(f"🔗 Fetching relationships between {len(entity_uuids)} entities")
+            logger.warning(f"🔗 Fetching relationships and neighbors for {len(entity_uuids)} entities")
             async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
-                # Query relationships where both source and target are in our entity list
-                query = """
+                # Query 1: Get all relationships where at least one end is in our entity list
+                # This captures both internal connections and connections to neighbors
+                rel_query = """
                     MATCH (e1)-[r]->(e2)
-                    WHERE e1.uuid IN $uuids AND e2.uuid IN $uuids
+                    WHERE e1.uuid IN $uuids OR e2.uuid IN $uuids
                     RETURN e1.uuid AS source_uuid,
                            e2.uuid AS target_uuid,
                            type(r) AS rel_type,
                            properties(r) AS rel_props
-                    LIMIT 100
+                    LIMIT 200
                 """
-                result = await session.run(query, {"uuids": entity_uuids})
+                result = await session.run(rel_query, {"uuids": entity_uuids})
                 records = await result.data()
 
-                logger.warning(f"📊 Query returned {len(records)} relationships")
+                logger.warning(f"📊 Relationship query returned {len(records)} relationships")
+
+                # Collect neighbor UUIDs (entities connected but not in our tracked list)
+                neighbor_uuids = set()
+                entity_uuids_set = set(entity_uuids)
 
                 for record in records:
                     try:
+                        source_uuid = record["source_uuid"]
+                        target_uuid = record["target_uuid"]
+
+                        # Track neighbor UUIDs
+                        if source_uuid not in entity_uuids_set:
+                            neighbor_uuids.add(source_uuid)
+                        if target_uuid not in entity_uuids_set:
+                            neighbor_uuids.add(target_uuid)
+
                         # Sanitize relationship properties
                         props = record.get("rel_props", {})
                         sanitized_props = (
@@ -499,8 +566,8 @@ class ChatContextTracker:
                         )
 
                         edge = GraphEdge(
-                            source=record["source_uuid"],
-                            target=record["target_uuid"],
+                            source=source_uuid,
+                            target=target_uuid,
                             type=record["rel_type"],
                             properties=sanitized_props,
                         )
@@ -508,11 +575,48 @@ class ChatContextTracker:
                     except Exception as edge_error:
                         logger.error(f"❌ Error creating GraphEdge: {edge_error}, record: {record}")
 
+                # Fetch neighbor entity details if any were found
+                if neighbor_uuids:
+                    logger.warning(f"🏠 Found {len(neighbor_uuids)} neighbor entities, fetching details...")
+                    neighbor_nodes = await self._fetch_entities(list(neighbor_uuids))
+                    logger.warning(f"✅ Fetched {len(neighbor_nodes)} neighbor nodes")
+
+                    # Filter relationships to only include those where both endpoints have nodes
+                    # This handles cases where some neighbor nodes couldn't be fetched
+                    fetched_neighbor_ids = {n.id for n in neighbor_nodes}
+                    all_valid_ids = entity_uuids_set | fetched_neighbor_ids
+
+                    original_count = len(relationships)
+                    relationships = [
+                        r for r in relationships
+                        if r.source in all_valid_ids and r.target in all_valid_ids
+                    ]
+
+                    if len(relationships) != original_count:
+                        logger.warning(
+                            f"⚠️ Filtered {original_count - len(relationships)} relationships "
+                            f"with missing node endpoints ({len(relationships)} remaining)"
+                        )
+
         except Exception as e:
             logger.error(f"❌ Error fetching relationships from Neo4j: {e}", exc_info=True)
 
-        logger.warning(f"📈 Returning {len(relationships)} relationships")
-        return relationships
+        logger.warning(f"📈 Returning {len(relationships)} relationships and {len(neighbor_nodes)} neighbors")
+        return relationships, neighbor_nodes
+
+    async def _fetch_relationships(self, entity_uuids: list[str]) -> list[GraphEdge]:
+        """Fetch relationships between tracked entities from Neo4j.
+
+        Note: This method is kept for backward compatibility but
+        _fetch_relationships_with_neighbors is preferred for more complete graphs.
+        """
+        relationships, _ = await self._fetch_relationships_with_neighbors(entity_uuids)
+        # Filter to only include relationships where both ends are in our list
+        entity_uuids_set = set(entity_uuids)
+        return [
+            r for r in relationships
+            if r.source in entity_uuids_set and r.target in entity_uuids_set
+        ]
 
     def _get_primary_label(self, labels: list[str]) -> str:
         """Select the most specific label, ignoring generic 'Entity' when possible.

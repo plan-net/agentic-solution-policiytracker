@@ -116,12 +116,28 @@ Flow 2: Client News (Daily)
 
 ## Storage Patterns
 
+### Neo4j Database Indexes (v0.2.1)
+```
+Entity Indexes:
+  ├── entity_uuid_unique       (Unique constraint on Entity.uuid)
+  ├── entity_group_id_index    (Index on Entity.group_id)
+  ├── entity_name_index        (Index on Entity.name)
+  └── entity_name_embedding    (Vector index, 1536 dims, cosine)
+
+Episodic Indexes:
+  ├── episodic_uuid_unique             (Unique constraint on Episodic.uuid)
+  ├── episodic_group_id_index          (Index on Episodic.group_id)
+  ├── episodic_content_embedding_index (Vector index, 1536 dims, cosine)
+  └── episodic_content_fulltext        (Fulltext index on content + name)
+```
+
 ### Document Processing Pipeline
 ```
 Input: data/input/policy/2025-05/document.md
 Process: Graphiti temporal knowledge graph
-Output: Neo4j entities + relationships
-Query: Chat interface with 15 tools
+         + Episode embedding generation (text-embedding-3-small)
+Output: Neo4j entities + relationships + embedded episodes
+Query: Chat interface with 6 MCP tools (hybrid search)
 ```
 
 ### Azure Storage Integration
@@ -133,11 +149,19 @@ Containers: input-documents, reports, checkpoints, contexts
 
 ## Integration Patterns
 
-### Knowledge Graph Tools (15 total)
-- **Entity Tools**: Details, relationships, timeline, search
-- **Network Tools**: Traversal, centrality, paths, communities  
-- **Temporal Tools**: Changes, timeline, comparison
-- **Search Tools**: Semantic, reranking, exploration
+### Knowledge Graph Tools (6 MCP tools)
+- **search_knowledge_graph**: Unified hybrid search (entities + relationships + documents)
+- **search_documents**: Semantic search over episodic nodes (source documents)
+- **analyze_query**: Query intent analysis before searching
+- **get_entity_info**: Detailed information about specific entities
+- **find_relationships**: Explore connections between entities
+- **graph_statistics**: Knowledge graph statistics and metrics
+
+### Claude Agent Tools (src/claude_agent/agent.py)
+The PolicyTrackerAgent has access to all 6 MCP tools above, with:
+- Streaming and non-streaming query modes
+- Tool execution with full observability (LangWatch)
+- Context tracking for graph visualization
 
 ### LLM Observability
 - **Langfuse Integration**: Prompt management + tracing
@@ -184,15 +208,23 @@ async def test_policy_collection():
 - Don't use fixed routing instead of Command handoffs
 - Don't dump raw JSON state in reasoning
 
-## v0.2.0 Success Metrics
+## v0.2.1 Success Metrics
 
 ### Architecture Health
-- **Services Running**: 8 Docker services + Ray + chat server
+- **Services Running**: 8 Docker services + Ray + chat server + MCP server
 - **API Response**: <2s for chat queries, <30s for document processing
-- **Knowledge Graph**: >1000 entities, >5000 relationships
+- **Knowledge Graph**: >1000 entities, >5000 relationships, >7000 episodes
 - **ETL Pipeline**: Daily news collection, weekly policy updates
+- **Episode Embedding Coverage**: >95% episodes with content embeddings
 
-### User Experience  
-- **Chat Interface**: Natural language queries with tool recommendations
+### User Experience
+- **Chat Interface**: Natural language queries with 6 MCP tools
+- **Semantic Search**: Hybrid BM25 + vector search for improved retrieval
 - **Document Processing**: Batch upload via Kodosumi with progress tracking
 - **Data Quality**: >90% entity extraction accuracy, <5% duplicate documents
+
+### Search Capabilities (v0.2.1)
+- **Hybrid Entity Search**: keyword + vector similarity (0.4/0.6 weighting)
+- **Hybrid Relationship Search**: keyword + vector on fact_embedding (0.3/0.7)
+- **Hybrid Episode Search**: BM25 fulltext + vector on content (0.3/0.7)
+- **Fallback Strategy**: Graceful degradation to keyword-only if embeddings unavailable

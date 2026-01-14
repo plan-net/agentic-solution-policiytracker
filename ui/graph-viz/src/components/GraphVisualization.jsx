@@ -83,9 +83,34 @@ function GraphVisualization({ graphData, is3D = false, onNodeClick = null, heigh
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Filter nodes based on search
+  // Filter nodes based on search and validate links
   const filteredData = useCallback(() => {
-    if (!searchTerm) return graphData
+    // First, get all valid node IDs from the graph data
+    const allNodeIds = new Set(graphData.nodes.map(n => n.id))
+
+    // Filter links to only include those where both source and target exist in nodes
+    // This prevents react-force-graph from silently dropping links with missing endpoints
+    const validLinks = graphData.links.filter(link => {
+      const sourceId = link.source.id || link.source
+      const targetId = link.target.id || link.target
+      const isValid = allNodeIds.has(sourceId) && allNodeIds.has(targetId)
+      if (!isValid) {
+        console.warn(`Orphaned link filtered out: ${sourceId} -> ${targetId} (missing node)`)
+      }
+      return isValid
+    })
+
+    // Log if any links were filtered out
+    if (validLinks.length !== graphData.links.length) {
+      console.warn(`Filtered ${graphData.links.length - validLinks.length} orphaned links (${validLinks.length} valid of ${graphData.links.length} total)`)
+    }
+
+    if (!searchTerm) {
+      return {
+        nodes: graphData.nodes,
+        links: validLinks
+      }
+    }
 
     const term = searchTerm.toLowerCase()
     const matchingNodes = graphData.nodes.filter(node =>
@@ -94,8 +119,8 @@ function GraphVisualization({ graphData, is3D = false, onNodeClick = null, heigh
     )
     const matchingNodeIds = new Set(matchingNodes.map(n => n.id))
 
-    // Include links connected to matching nodes
-    const matchingLinks = graphData.links.filter(link =>
+    // Include links connected to matching nodes (already validated)
+    const matchingLinks = validLinks.filter(link =>
       matchingNodeIds.has(link.source.id || link.source) ||
       matchingNodeIds.has(link.target.id || link.target)
     )

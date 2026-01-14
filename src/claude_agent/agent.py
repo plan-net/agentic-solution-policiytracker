@@ -24,7 +24,8 @@ from .mcp_client import MCPClient
 logger = logging.getLogger(__name__)
 
 # Default MCP server URL - can be overridden via MCP_SERVER_URL env var
-DEFAULT_MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "https://gp-retr-mcp-polmo.kodosumi.io/sse")
+# DEFAULT_MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "https://gp-retr-mcp-polmo.kodosumi.io/sse")
+DEFAULT_MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://localhost:8003/sse")
 
 # System prompt for the policy tracker agent
 SYSTEM_PROMPT = """You are a Political Monitoring Assistant with access to a knowledge graph containing information about EU regulations, policies, politicians, organizations, and legislative activities.
@@ -37,13 +38,15 @@ Your knowledge graph contains information about:
 
 Available Tools:
 1. search_knowledge_graph - Use this for general queries about regulations, policies, or entities
-2. analyze_query - Use this to understand complex queries before searching
-3. get_entity_info - Use this to get detailed information about a specific entity
-4. find_relationships - Use this to explore connections between entities
-5. graph_statistics - Use this to understand the scope of available data
+2. search_documents - Use this to search source documents (episodic nodes) using semantic similarity
+3. analyze_query - Use this to understand complex queries before searching
+4. get_entity_info - Use this to get detailed information about a specific entity
+5. find_relationships - Use this to explore connections between entities
+6. graph_statistics - Use this to understand the scope of available data
 
 Best Practices:
 - For simple factual questions, use search_knowledge_graph directly
+- For finding specific passages or quotes from source documents, use search_documents
 - For complex questions, first use analyze_query to understand the query structure
 - When asked about relationships, use find_relationships
 - When asked for specific entity details, use get_entity_info
@@ -121,6 +124,25 @@ TOOLS = [
             "type": "object",
             "properties": {},
             "required": []
+        }
+    },
+    {
+        "name": "search_documents",
+        "description": "Search source documents (episodic nodes) in the knowledge graph using semantic similarity. Use this to find specific passages, quotes, or content from the original source documents that were used to build the knowledge graph.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search query to find relevant source documents"
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of documents to return",
+                    "default": 5
+                }
+            },
+            "required": ["query"]
         }
     }
 ]

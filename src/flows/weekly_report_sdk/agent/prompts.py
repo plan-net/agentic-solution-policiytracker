@@ -4,7 +4,8 @@ Reuses the same MCP tools as the PolicyTrackerAgent for knowledge graph access.
 """
 
 # Remote MCP Server URL (same as PolicyTrackerAgent)
-DEFAULT_MCP_SERVER_URL = "https://gp-retr-mcp-polmo.kodosumi.io/sse"
+# DEFAULT_MCP_SERVER_URL = "https://gp-retr-mcp-polmo.kodosumi.io/sse"
+DEFAULT_MCP_SERVER_URL = "http://localhost:8003/sse"
 
 # Tool definitions - same 5 tools as PolicyTrackerAgent
 TOOLS = [

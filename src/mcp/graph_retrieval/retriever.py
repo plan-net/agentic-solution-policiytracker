@@ -371,11 +371,12 @@ class ToolPlanner:
 
 class MCPExecutor:
     """Executes tools via MCP/Graphiti connection."""
-    
+
     def __init__(self, config: Neo4jConfig):
         self.config = config
         self.driver = None
         self.tools: dict = {}
+        self._embedder = None
     
     async def initialize(self):
         """Initialize Neo4j driver."""
@@ -438,6 +439,8 @@ class MCPExecutor:
             return await self._traverse_from_entity(params)
         elif tool_name == "find_similar_entities":
             return await self._find_similar_entities(params)
+        elif tool_name == "search_episodes":
+            return await self._search_episodes(params)
         else:
             logger.warning(f"Unknown tool: {tool_name}")
             return None
@@ -447,62 +450,273 @@ class MCPExecutor:
         return self.driver.session(database=self.config.database)
     
     async def _search(self, params: dict) -> dict:
-        """Execute hybrid search using direct Cypher queries."""
+        """Execute hybrid search using keyword + vector similarity.
+
+        This method combines keyword-based CONTAINS matching with semantic
+        vector similarity for improved retrieval quality. The hybrid approach
+        finds results that match either by exact keywords or by meaning.
+
+        Args:
+            params: Dict with 'query' (str), optional 'limit' (int, default 10)
+
+        Returns:
+            Dict with 'nodes' (entities), 'edges' (relationships), 'episodes'
+        """
         query_text = params["query"]
         limit = params.get("limit", 10)
-        
-        # Search entities
-        entity_query = """
-        MATCH (n:Entity)
-        WHERE toLower(n.name) CONTAINS toLower($query)
-           OR toLower(n.summary) CONTAINS toLower($query)
-        RETURN n.uuid AS uuid, n.name AS name, n.summary AS summary, labels(n) AS labels
-        ORDER BY CASE WHEN toLower(n.name) CONTAINS toLower($query) THEN 0 ELSE 1 END
-        LIMIT $limit
+
+        # Get query embedding for vector search
+        query_embedding = None
+        embedder = await self._get_embedder()
+        if embedder:
+            try:
+                query_embedding = await embedder.create(input_data=[query_text])
+                logger.info(f"Generated query embedding for hybrid search: {query_text[:50]}...")
+            except Exception as e:
+                logger.warning(f"Could not generate query embedding, falling back to keyword-only: {e}")
+
+        # Execute hybrid searches
+        nodes = await self._search_entities_hybrid(query_text, query_embedding, limit)
+        edges = await self._search_relationships_hybrid(query_text, query_embedding, limit)
+
+        # Also search episodes (source documents) - already uses hybrid search
+        episode_results = await self._search_episodes({"query": query_text, "limit": 5})
+        episodes = episode_results.get("episodes", [])
+
+        return {"edges": edges, "nodes": nodes, "episodes": episodes}
+
+    async def _search_entities_hybrid(
+        self, query_text: str, query_embedding: list | None, limit: int
+    ) -> list[dict]:
+        """Search entities with hybrid keyword + vector similarity.
+
+        Combines:
+        1. Keyword search on name and summary (CONTAINS)
+        2. Vector similarity search on name_embedding
+
+        Score fusion: 0.4 * keyword + 0.6 * vector (favors semantic similarity)
+
+        Args:
+            query_text: The search query string
+            query_embedding: Pre-computed query embedding (or None for keyword-only)
+            limit: Maximum number of results
+
+        Returns:
+            List of entity dicts with uuid, name, summary, labels, score
         """
-        
-        # Search relationships/facts
-        edge_query = """
-        MATCH (a:Entity)-[r]->(b:Entity)
-        WHERE toLower(r.fact) CONTAINS toLower($query)
-           OR toLower(a.name) CONTAINS toLower($query)
-           OR toLower(b.name) CONTAINS toLower($query)
-        RETURN r.uuid AS uuid, r.fact AS fact, type(r) AS relationship_type,
-               a.uuid AS source_uuid, b.uuid AS target_uuid,
-               a.name AS source_name, b.name AS target_name
-        LIMIT $limit
-        """
-        
         nodes = []
+
+        if query_embedding:
+            # Hybrid search: keyword + vector
+            query = """
+            CALL {
+                // Keyword search on name and summary
+                MATCH (n:Entity)
+                WHERE toLower(n.name) CONTAINS toLower($query)
+                   OR toLower(n.summary) CONTAINS toLower($query)
+                WITH n, CASE WHEN toLower(n.name) CONTAINS toLower($query) THEN 1.0 ELSE 0.5 END AS keyword_score
+                RETURN n, keyword_score, 0.0 AS vector_score
+                LIMIT $limit
+
+                UNION ALL
+
+                // Vector similarity search on name_embedding
+                MATCH (n:Entity)
+                WHERE n.name_embedding IS NOT NULL
+                WITH n, vector.similarity.cosine(n.name_embedding, $embedding) AS vec_score
+                WHERE vec_score > 0.3
+                RETURN n, 0.0 AS keyword_score, vec_score AS vector_score
+                ORDER BY vec_score DESC
+                LIMIT $limit
+            }
+            WITH n, max(keyword_score) AS kw, max(vector_score) AS vec
+            WITH n,
+                 CASE WHEN kw > 0 AND vec > 0 THEN (0.4 * kw + 0.6 * vec)
+                      WHEN vec > 0 THEN vec
+                      ELSE kw END AS combined_score
+            ORDER BY combined_score DESC
+            LIMIT $limit
+            RETURN n.uuid AS uuid, n.name AS name, n.summary AS summary,
+                   labels(n) AS labels, combined_score AS score
+            """
+            params = {"query": query_text, "embedding": query_embedding, "limit": limit}
+        else:
+            # Fallback: keyword-only (original behavior)
+            query = """
+            MATCH (n:Entity)
+            WHERE toLower(n.name) CONTAINS toLower($query)
+               OR toLower(n.summary) CONTAINS toLower($query)
+            RETURN n.uuid AS uuid, n.name AS name, n.summary AS summary,
+                   labels(n) AS labels, 1.0 AS score
+            ORDER BY CASE WHEN toLower(n.name) CONTAINS toLower($query) THEN 0 ELSE 1 END
+            LIMIT $limit
+            """
+            params = {"query": query_text, "limit": limit}
+
+        try:
+            async with await self._get_session() as session:
+                result = await session.run(query, params)
+                records = await result.data()
+
+                for r in records:
+                    nodes.append({
+                        "uuid": r["uuid"],
+                        "name": r["name"],
+                        "summary": r.get("summary", ""),
+                        "labels": r.get("labels", []),
+                        "score": r.get("score", 0)
+                    })
+
+            logger.info(f"Entity hybrid search found {len(nodes)} results for: {query_text[:50]}...")
+
+        except Exception as e:
+            logger.warning(f"Hybrid entity search failed, trying keyword fallback: {e}")
+            # Fallback to simple keyword search
+            fallback_query = """
+            MATCH (n:Entity)
+            WHERE toLower(n.name) CONTAINS toLower($query)
+               OR toLower(n.summary) CONTAINS toLower($query)
+            RETURN n.uuid AS uuid, n.name AS name, n.summary AS summary, labels(n) AS labels
+            ORDER BY CASE WHEN toLower(n.name) CONTAINS toLower($query) THEN 0 ELSE 1 END
+            LIMIT $limit
+            """
+            async with await self._get_session() as session:
+                result = await session.run(fallback_query, {"query": query_text, "limit": limit})
+                records = await result.data()
+
+                for r in records:
+                    nodes.append({
+                        "uuid": r["uuid"],
+                        "name": r["name"],
+                        "summary": r.get("summary", ""),
+                        "labels": r.get("labels", [])
+                    })
+
+        return nodes
+
+    async def _search_relationships_hybrid(
+        self, query_text: str, query_embedding: list | None, limit: int
+    ) -> list[dict]:
+        """Search relationships with hybrid keyword + vector on fact_embedding.
+
+        Combines:
+        1. Keyword search on fact text and entity names (CONTAINS)
+        2. Vector similarity search on fact_embedding
+
+        Score fusion: 0.3 * keyword + 0.7 * vector (facts benefit from semantics)
+
+        Note: Neo4j doesn't support vector indexes on relationships directly,
+        so we use inline vector.similarity.cosine() which scans relationships.
+
+        Args:
+            query_text: The search query string
+            query_embedding: Pre-computed query embedding (or None for keyword-only)
+            limit: Maximum number of results
+
+        Returns:
+            List of relationship dicts with fact, relationship_type, source/target info
+        """
         edges = []
-        
-        async with await self._get_session() as session:
-            # Get entities
-            result = await session.run(entity_query, {"query": query_text, "limit": limit})
-            node_records = await result.data()
-            for r in node_records:
-                nodes.append({
-                    "uuid": r["uuid"],
-                    "name": r["name"],
-                    "summary": r.get("summary", ""),
-                    "labels": r.get("labels", [])
-                })
-            
-            # Get relationships
-            result = await session.run(edge_query, {"query": query_text, "limit": limit})
-            edge_records = await result.data()
-            for r in edge_records:
-                edges.append({
-                    "uuid": r["uuid"],
-                    "fact": r["fact"],
-                    "relationship_type": r["relationship_type"],
-                    "source_uuid": r["source_uuid"],
-                    "target_uuid": r["target_uuid"],
-                    "source_name": r.get("source_name", ""),
-                    "target_name": r.get("target_name", "")
-                })
-        
-        return {"edges": edges, "nodes": nodes}
+
+        if query_embedding:
+            # Hybrid search: keyword + vector on fact_embedding
+            query = """
+            CALL {
+                // Keyword search on fact text and entity names
+                MATCH (a:Entity)-[r]->(b:Entity)
+                WHERE toLower(r.fact) CONTAINS toLower($query)
+                   OR toLower(a.name) CONTAINS toLower($query)
+                   OR toLower(b.name) CONTAINS toLower($query)
+                RETURN r, a, b, 1.0 AS keyword_score, 0.0 AS vector_score
+                LIMIT $limit
+
+                UNION ALL
+
+                // Vector similarity search on fact_embedding
+                MATCH (a:Entity)-[r]->(b:Entity)
+                WHERE r.fact_embedding IS NOT NULL
+                WITH r, a, b, vector.similarity.cosine(r.fact_embedding, $embedding) AS vec_score
+                WHERE vec_score > 0.3
+                RETURN r, a, b, 0.0 AS keyword_score, vec_score AS vector_score
+                ORDER BY vec_score DESC
+                LIMIT $limit
+            }
+            WITH r, a, b, max(keyword_score) AS kw, max(vector_score) AS vec
+            WITH r, a, b,
+                 CASE WHEN kw > 0 AND vec > 0 THEN (0.3 * kw + 0.7 * vec)
+                      WHEN vec > 0 THEN vec
+                      ELSE kw END AS combined_score
+            ORDER BY combined_score DESC
+            LIMIT $limit
+            RETURN r.uuid AS uuid, r.fact AS fact, type(r) AS relationship_type,
+                   a.uuid AS source_uuid, b.uuid AS target_uuid,
+                   a.name AS source_name, b.name AS target_name,
+                   combined_score AS score
+            """
+            params = {"query": query_text, "embedding": query_embedding, "limit": limit}
+        else:
+            # Fallback: keyword-only (original behavior)
+            query = """
+            MATCH (a:Entity)-[r]->(b:Entity)
+            WHERE toLower(r.fact) CONTAINS toLower($query)
+               OR toLower(a.name) CONTAINS toLower($query)
+               OR toLower(b.name) CONTAINS toLower($query)
+            RETURN r.uuid AS uuid, r.fact AS fact, type(r) AS relationship_type,
+                   a.uuid AS source_uuid, b.uuid AS target_uuid,
+                   a.name AS source_name, b.name AS target_name,
+                   1.0 AS score
+            LIMIT $limit
+            """
+            params = {"query": query_text, "limit": limit}
+
+        try:
+            async with await self._get_session() as session:
+                result = await session.run(query, params)
+                records = await result.data()
+
+                for r in records:
+                    edges.append({
+                        "uuid": r["uuid"],
+                        "fact": r["fact"],
+                        "relationship_type": r["relationship_type"],
+                        "source_uuid": r["source_uuid"],
+                        "target_uuid": r["target_uuid"],
+                        "source_name": r.get("source_name", ""),
+                        "target_name": r.get("target_name", ""),
+                        "score": r.get("score", 0)
+                    })
+
+            logger.info(f"Relationship hybrid search found {len(edges)} results for: {query_text[:50]}...")
+
+        except Exception as e:
+            logger.warning(f"Hybrid relationship search failed, trying keyword fallback: {e}")
+            # Fallback to simple keyword search
+            fallback_query = """
+            MATCH (a:Entity)-[r]->(b:Entity)
+            WHERE toLower(r.fact) CONTAINS toLower($query)
+               OR toLower(a.name) CONTAINS toLower($query)
+               OR toLower(b.name) CONTAINS toLower($query)
+            RETURN r.uuid AS uuid, r.fact AS fact, type(r) AS relationship_type,
+                   a.uuid AS source_uuid, b.uuid AS target_uuid,
+                   a.name AS source_name, b.name AS target_name
+            LIMIT $limit
+            """
+            async with await self._get_session() as session:
+                result = await session.run(fallback_query, {"query": query_text, "limit": limit})
+                records = await result.data()
+
+                for r in records:
+                    edges.append({
+                        "uuid": r["uuid"],
+                        "fact": r["fact"],
+                        "relationship_type": r["relationship_type"],
+                        "source_uuid": r["source_uuid"],
+                        "target_uuid": r["target_uuid"],
+                        "source_name": r.get("source_name", ""),
+                        "target_name": r.get("target_name", "")
+                    })
+
+        return edges
     
     async def _get_entity_details(self, params: dict) -> dict:
         """Get entity details by name."""
@@ -648,6 +862,164 @@ class MCPExecutor:
             records = await result.data()
             return {"similar_entities": records}
 
+    async def _get_embedder(self):
+        """Get or create embedder with APISIX routing for cost tracking."""
+        if self._embedder is None:
+            try:
+                from src.flows.shared.apisix_llm_client import create_apisix_graphiti_embedder
+                self._embedder = create_apisix_graphiti_embedder(
+                    embedding_model="text-embedding-3-small"
+                )
+            except Exception as e:
+                logger.warning(f"Could not create APISIX embedder: {e}")
+                self._embedder = None
+        return self._embedder
+
+    async def _search_episodes(self, params: dict) -> dict:
+        """
+        Search Episodic nodes with hybrid BM25 fulltext + vector similarity.
+
+        This method enables semantic search over document chunks (episodes),
+        combining keyword-based BM25 search with vector similarity for
+        improved retrieval quality.
+
+        Args:
+            params: Dict with 'query' (str), optional 'limit' (int, default 5)
+
+        Returns:
+            Dict with 'episodes' list containing matching episodic nodes
+        """
+        query_text = params["query"]
+        limit = params.get("limit", 5)
+
+        # Try to get query embedding for vector search
+        query_embedding = None
+        embedder = await self._get_embedder()
+        if embedder:
+            try:
+                query_embedding = await embedder.create(input_data=[query_text])
+            except Exception as e:
+                logger.warning(f"Could not generate query embedding: {e}")
+
+        # Build query based on whether we have embeddings
+        if query_embedding:
+            # Hybrid search: BM25 + vector similarity with RRF-style combination
+            query = """
+            CALL {
+                // BM25 fulltext search on episodic content
+                CALL db.index.fulltext.queryNodes('episodic_content_fulltext', $query)
+                YIELD node, score
+                WITH node, score AS bm25_score
+                RETURN node, bm25_score, 0.0 AS vector_score, 'bm25' AS source
+                LIMIT $limit
+
+                UNION ALL
+
+                // Vector similarity search on content embeddings
+                MATCH (ep:Episodic)
+                WHERE ep.content_embedding IS NOT NULL
+                WITH ep, vector.similarity.cosine(ep.content_embedding, $embedding) AS vec_score
+                WHERE vec_score > 0.3
+                RETURN ep AS node, 0.0 AS bm25_score, vec_score AS vector_score, 'vector' AS source
+                ORDER BY vec_score DESC
+                LIMIT $limit
+            }
+            WITH node, max(bm25_score) AS bm25, max(vector_score) AS vector
+            WITH node,
+                 CASE WHEN bm25 > 0 AND vector > 0 THEN (0.3 * bm25 + 0.7 * vector)
+                      WHEN vector > 0 THEN vector
+                      ELSE bm25 END AS combined_score
+            ORDER BY combined_score DESC
+            LIMIT $limit
+            RETURN node.uuid AS uuid,
+                   node.name AS name,
+                   node.content AS content,
+                   node.source_description AS source_description,
+                   node.valid_at AS valid_at,
+                   node.created_at AS created_at,
+                   combined_score AS score
+            """
+            query_params = {
+                "query": query_text,
+                "embedding": query_embedding,
+                "limit": limit
+            }
+        else:
+            # Fallback: BM25-only search if embeddings unavailable
+            query = """
+            CALL db.index.fulltext.queryNodes('episodic_content_fulltext', $query)
+            YIELD node, score
+            RETURN node.uuid AS uuid,
+                   node.name AS name,
+                   node.content AS content,
+                   node.source_description AS source_description,
+                   node.valid_at AS valid_at,
+                   node.created_at AS created_at,
+                   score
+            ORDER BY score DESC
+            LIMIT $limit
+            """
+            query_params = {"query": query_text, "limit": limit}
+
+        episodes = []
+        try:
+            async with await self._get_session() as session:
+                result = await session.run(query, query_params)
+                records = await result.data()
+
+                for r in records:
+                    content = r.get("content", "")
+                    # Truncate content for response
+                    content_preview = content[:500] + "..." if len(content) > 500 else content
+
+                    episodes.append({
+                        "uuid": r["uuid"],
+                        "name": r.get("name", ""),
+                        "content": content_preview,
+                        "source_description": r.get("source_description", ""),
+                        "valid_at": str(r.get("valid_at", "")),
+                        "created_at": str(r.get("created_at", "")),
+                        "score": r.get("score", 0)
+                    })
+
+            logger.info(f"Episode search found {len(episodes)} results for: {query_text[:50]}...")
+
+        except Exception as e:
+            # If fulltext index doesn't exist yet, fall back to simple keyword search
+            logger.warning(f"Fulltext search failed, trying keyword fallback: {e}")
+            fallback_query = """
+            MATCH (ep:Episodic)
+            WHERE toLower(ep.content) CONTAINS toLower($query)
+               OR toLower(ep.name) CONTAINS toLower($query)
+            RETURN ep.uuid AS uuid,
+                   ep.name AS name,
+                   ep.content AS content,
+                   ep.source_description AS source_description,
+                   ep.valid_at AS valid_at,
+                   ep.created_at AS created_at,
+                   1.0 AS score
+            LIMIT $limit
+            """
+            async with await self._get_session() as session:
+                result = await session.run(fallback_query, {"query": query_text, "limit": limit})
+                records = await result.data()
+
+                for r in records:
+                    content = r.get("content", "")
+                    content_preview = content[:500] + "..." if len(content) > 500 else content
+
+                    episodes.append({
+                        "uuid": r["uuid"],
+                        "name": r.get("name", ""),
+                        "content": content_preview,
+                        "source_description": r.get("source_description", ""),
+                        "valid_at": str(r.get("valid_at", "")),
+                        "created_at": str(r.get("created_at", "")),
+                        "score": r.get("score", 0)
+                    })
+
+        return {"episodes": episodes}
+
 
 # =============================================================================
 # Context Builder
@@ -779,7 +1151,19 @@ class ContextBuilder:
                     "summary": data.get("summary", ""),
                     "uuid": data.get("uuid")
                 })
-        
+
+            # Extract episodes as source documents
+            if "episodes" in data:
+                for ep in data["episodes"]:
+                    sources.append({
+                        "name": ep.get("name", ""),
+                        "content_preview": ep.get("content", "")[:200] + "..." if len(ep.get("content", "")) > 200 else ep.get("content", ""),
+                        "source_description": ep.get("source_description", ""),
+                        "date": ep.get("valid_at", "") or ep.get("created_at", ""),
+                        "score": ep.get("score", 0),
+                        "uuid": ep.get("uuid", "")
+                    })
+
         # Deduplicate entities
         seen_entities = set()
         unique_entities = []

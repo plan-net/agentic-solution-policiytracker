@@ -44,6 +44,7 @@ from src.graphrag.political_schema_v5 import (
 from src.graphrag.political_schema_v5 import (
     ENTITY_TYPE_REGISTRY_GENERAL as ENTITY_TYPE_REGISTRY,
 )
+from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
 
 logger = structlog.get_logger()
 
@@ -101,6 +102,13 @@ try:
             # Phase 2: Entity registry with fuzzy matching disabled by default for performance
             self.entity_registry = EntityRegistry(
                 enable_fuzzy_matching=config.graphrag_settings.ENABLE_FUZZY_MATCHING
+            )
+            # Episode embedding manager for semantic search
+            self.episode_embedding_manager = EpisodeEmbeddingManager(
+                neo4j_uri=NEO4J_URI,
+                neo4j_user=NEO4J_USER,
+                neo4j_password=NEO4J_PASSWORD,
+                neo4j_database=NEO4J_DATABASE,
             )
             # Progress tracking state
             self._progress = {
@@ -313,6 +321,20 @@ try:
                     episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
                     episode_uuids.append(episode_uuid)
                     previous_episode_uuid = episode_uuid
+
+                    # Generate content embedding for semantic search
+                    if episode_uuid and self.episode_embedding_manager:
+                        try:
+                            await self.episode_embedding_manager.add_content_embedding(
+                                episode_uuid=episode_uuid,
+                                content=chunk_text,
+                            )
+                        except Exception as emb_error:
+                            await logger.awarning(
+                                "Failed to generate episode embedding",
+                                episode_uuid=episode_uuid,
+                                error=str(emb_error),
+                            )
 
                     # Aggregate metrics
                     entity_count = len(result.nodes) if hasattr(result, "nodes") else 0
@@ -717,6 +739,27 @@ class SimpleDocumentProcessor:
                 episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
                 episode_uuids.append(episode_uuid)
                 previous_episode_uuid = episode_uuid
+
+                # Generate content embedding for semantic search
+                if episode_uuid:
+                    try:
+                        episode_embedding_manager = EpisodeEmbeddingManager(
+                            neo4j_uri=NEO4J_URI,
+                            neo4j_user=NEO4J_USER,
+                            neo4j_password=NEO4J_PASSWORD,
+                            neo4j_database=NEO4J_DATABASE,
+                        )
+                        await episode_embedding_manager.add_content_embedding(
+                            episode_uuid=episode_uuid,
+                            content=chunk_text,
+                        )
+                        await episode_embedding_manager.close()
+                    except Exception as emb_error:
+                        logger.warning(
+                            "Failed to generate episode embedding",
+                            episode_uuid=episode_uuid,
+                            error=str(emb_error),
+                        )
 
                 # Aggregate metrics
                 entity_count = len(result.nodes) if hasattr(result, "nodes") else 0

@@ -73,6 +73,28 @@ def init_graphiti():
             "FOR (ep:Episodic) ON (ep.group_id)"
         )
 
+        # 7. Vector index on Episodic.content_embedding (for semantic search on episodes)
+        print("   - Creating vector index on Episodic.content_embedding...")
+        session.run(
+            """
+            CREATE VECTOR INDEX episodic_content_embedding_index IF NOT EXISTS
+            FOR (ep:Episodic) ON (ep.content_embedding)
+            OPTIONS {indexConfig: {
+                `vector.dimensions`: 1536,
+                `vector.similarity_function`: 'cosine'
+            }}
+            """
+        )
+
+        # 8. Fulltext index on Episodic.content and Episodic.name (for BM25 search)
+        print("   - Creating fulltext index on Episodic content...")
+        session.run(
+            """
+            CREATE FULLTEXT INDEX episodic_content_fulltext IF NOT EXISTS
+            FOR (ep:Episodic) ON EACH [ep.content, ep.name]
+            """
+        )
+
         print("✅ Graphiti initialization complete!")
         print("\n📋 Created indices and constraints:")
         print("   ✓ Unique constraint on Entity.uuid")
@@ -81,6 +103,8 @@ def init_graphiti():
         print("   ✓ Vector index on Entity.name_embedding (1536 dims, cosine)")
         print("   ✓ Unique constraint on Episodic.uuid")
         print("   ✓ Index on Episodic.group_id")
+        print("   ✓ Vector index on Episodic.content_embedding (1536 dims, cosine)")
+        print("   ✓ Fulltext index on Episodic.content and Episodic.name")
         print(f"\n🎯 Database '{neo4j_database}' is ready for Graphiti operations!")
 
     driver.close()

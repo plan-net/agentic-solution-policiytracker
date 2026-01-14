@@ -136,6 +136,25 @@ async def list_tools() -> list[Tool]:
                 "properties": {},
                 "required": []
             }
+        ),
+        Tool(
+            name="search_documents",
+            description="Search source documents (episodic nodes) in the knowledge graph using semantic similarity. Returns document chunks that are relevant to the query.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query to find relevant documents"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximum number of documents to return",
+                        "default": 5
+                    }
+                },
+                "required": ["query"]
+            }
         )
     ]
 
@@ -159,6 +178,11 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
             )
         elif name == "graph_statistics":
             return await handle_statistics()
+        elif name == "search_documents":
+            return await handle_search_documents(
+                arguments["query"],
+                arguments.get("limit", 5)
+            )
         else:
             return [TextContent(type="text", text=f"Unknown tool: {name}")]
     except Exception as e:
@@ -199,7 +223,23 @@ async def handle_search(query: str) -> list[TextContent]:
         output.append(f"## Relationships ({result['metadata']['total_relationships']})")
         for rel in result['retrieved_context']['relationships'][:5]:
             output.append(f"- {rel['source']} --[{rel['type']}]--> {rel['target']}")
-    
+        output.append("")
+
+    # Include source documents (episodes) if available
+    if result.get('sources'):
+        output.append(f"## Source Documents ({len(result['sources'])})")
+        for i, source in enumerate(result['sources'][:5], 1):
+            name = source.get('name', 'Unknown')
+            preview = source.get('content_preview', '')[:150]
+            if len(source.get('content_preview', '')) > 150:
+                preview += "..."
+            source_desc = source.get('source_description', '')
+            output.append(f"{i}. **{name}**")
+            if source_desc:
+                output.append(f"   Source: {source_desc}")
+            if preview:
+                output.append(f"   Preview: {preview}")
+
     return [TextContent(type="text", text="\n".join(output))]
 
 
@@ -273,6 +313,48 @@ async def handle_relationships(entity_name: str, max_results: int) -> list[TextC
         target_uuid = f" [UUID: {rel['target_uuid']}]" if rel.get('target_uuid') else ""
         output.append(f"- **{rel['source']}**{source_uuid} --[{rel['relationship']}]--> **{rel['target']}**{target_uuid}{fact_text}")
     
+    return [TextContent(type="text", text="\n".join(output))]
+
+
+async def handle_search_documents(query: str, limit: int = 5) -> list[TextContent]:
+    """Handle search_documents tool - semantic search over episodic nodes."""
+    logger.info(f"Searching documents for: {query}")
+    await retriever.executor.initialize()
+
+    result = await retriever.executor._search_episodes({
+        "query": query,
+        "limit": limit
+    })
+
+    episodes = result.get("episodes", [])
+
+    if not episodes:
+        return [TextContent(type="text", text=f"No documents found for: {query}")]
+
+    output = [f"## Source Documents for: {query}", ""]
+
+    for i, ep in enumerate(episodes, 1):
+        name = ep.get('name', 'Unknown')
+        content = ep.get('content', '')
+        source_desc = ep.get('source_description', '')
+        date = ep.get('valid_at', '') or ep.get('created_at', '')
+        score = ep.get('score', 0)
+        uuid = ep.get('uuid', '')
+
+        output.append(f"### {i}. {name}")
+        if source_desc:
+            output.append(f"**Source**: {source_desc}")
+        if date:
+            output.append(f"**Date**: {date}")
+        if score:
+            output.append(f"**Relevance Score**: {score:.3f}")
+        if uuid:
+            output.append(f"**UUID**: {uuid}")
+        output.append("")
+        output.append("**Content Preview**:")
+        output.append(f"> {content}")
+        output.append("")
+
     return [TextContent(type="text", text="\n".join(output))]
 
 

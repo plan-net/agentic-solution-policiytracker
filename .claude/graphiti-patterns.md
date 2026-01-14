@@ -465,12 +465,20 @@ result = await client.add_episode(
 4. **✅ APISIX LLM Routing**: Cost tracking via APISIX gateway
 5. **✅ Preprocessing Pipeline**: Link removal, deduplication, encoding detection
 
+### ✅ Episode Semantic Search (v0.2.1 - NEW)
+
+6. **Episode Content Embeddings**: Semantic search over source documents
+   - Vector embeddings on `Episodic.content_embedding` (1536-dim, cosine)
+   - Hybrid BM25 + vector search for improved retrieval
+   - `EpisodeEmbeddingManager` class for embedding operations
+   - Backfill script for existing episodes
+   - Integrated with MCP Graph Retrieval server
+
 ### 🚧 Planned Future Enhancements
 
 1. **Community Detection**: Implement policy clustering via Graphiti
-2. **Advanced Search**: Temporal queries, semantic search interface
-3. **Graph Type Differentiation**: Separate lexical (internet research) from domain (Bundestag DIP) graphs
-4. **Schema Evolution**: Add DrucksachePage entities for page-level navigation
+2. **Graph Type Differentiation**: Separate lexical (internet research) from domain (Bundestag DIP) graphs
+3. **Schema Evolution**: Add DrucksachePage entities for page-level navigation
 
 ### 📊 Performance Metrics (Current)
 
@@ -480,9 +488,189 @@ result = await client.add_episode(
 - **Schema Coverage**: 28 entity types, 52 relationship types
 - **Boundary Types**: Header → Paragraph → Fixed-size (hybrid strategy)
 
+## Episode Semantic Search (v0.2.1)
+
+### Overview
+Episodic nodes contain chunked source documents. To enable semantic retrieval of source content alongside entities, we add vector embeddings to episode content.
+
+### Database Schema Extensions
+```sql
+-- Vector index for semantic search on episode content
+CREATE VECTOR INDEX episodic_content_embedding_index IF NOT EXISTS
+FOR (ep:Episodic) ON (ep.content_embedding)
+OPTIONS {indexConfig: {
+    `vector.dimensions`: 1536,
+    `vector.similarity_function`: 'cosine'
+}}
+
+-- Fulltext index for BM25 search on episode content
+CREATE FULLTEXT INDEX episodic_content_fulltext IF NOT EXISTS
+FOR (ep:Episodic) ON EACH [ep.content, ep.name]
+```
+
+### Episode Embedding Manager
+**File**: `src/graphrag/episode_embedding_manager.py`
+
+```python
+from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
+
+# Initialize manager (uses APISIX for cost tracking)
+manager = EpisodeEmbeddingManager(
+    neo4j_uri=NEO4J_URI,
+    neo4j_user=NEO4J_USER,
+    neo4j_password=NEO4J_PASSWORD,
+    neo4j_database=NEO4J_DATABASE,
+)
+
+# Add embedding to existing episode
+success = await manager.add_content_embedding(episode_uuid, content_text)
+
+# Check embedding coverage statistics
+stats = await manager.get_embedding_stats()
+# Returns: {
+#   total_episodes: 7611,
+#   episodes_with_embeddings: 7500,
+#   episodes_without_embeddings: 111,
+#   coverage_percentage: 98.54
+# }
+
+# Find episodes needing embeddings (for backfill)
+episodes = await manager.get_episodes_without_embeddings(limit=100)
+# Returns: [{uuid, content, name}, ...]
+
+# Generate query embedding for search
+query_embedding = await manager.generate_query_embedding("GDPR enforcement")
+
+# Cleanup
+await manager.close()
+```
+
+### Integration with Document Processor
+Episodes automatically receive embeddings during ingestion:
+
+```python
+# In src/flows/data_ingestion/document_processor.py
+from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
+
+class DocumentProcessorActor:
+    def __init__(self):
+        # ... existing initialization ...
+        self.embedding_manager = EpisodeEmbeddingManager()
+
+    async def process_chunk(self, chunk_text: str, ...):
+        # Add episode via Graphiti
+        result = await self.graphiti_client.add_episode(...)
+
+        # Generate and store content embedding
+        if result.episode and result.episode.uuid:
+            await self.embedding_manager.add_content_embedding(
+                result.episode.uuid,
+                chunk_text
+            )
+```
+
+### Backfill Operations
+**File**: `scripts/backfill_episode_embeddings.py`
+
+```bash
+# Check embedding coverage
+just check-episode-embeddings
+
+# Dry run (estimate cost without generating embeddings)
+just backfill-episodes-dry
+
+# Full backfill with default batch size (50)
+just backfill-episodes
+
+# Custom batch size for faster processing
+just backfill-episodes 100
+
+# Test with limited episodes
+just backfill-episodes-test 50
+```
+
+**Cost Estimation**:
+- Model: `text-embedding-3-small` at $0.02/1M tokens
+- ~7,611 episodes × ~5K chars avg = ~38M chars
+- ~38M chars / 4 chars per token = ~9.5M tokens
+- **Initial backfill cost**: ~$0.19
+- **Ongoing cost**: ~$0.50/month (~173 new episodes/day)
+
+### Hybrid Search Pattern
+The MCP Graph Retrieval server combines BM25 + vector search:
+
+```python
+# In src/mcp/graph_retrieval/retriever.py
+async def _search_episodes(self, params: dict) -> dict:
+    """Hybrid BM25 + vector search on episodic nodes."""
+    query_text = params["query"]
+    limit = params.get("limit", 5)
+
+    # Generate query embedding
+    embedder = await self._get_embedder()
+    query_embedding = await embedder.create(input_data=[query_text])
+
+    # Execute hybrid search with score fusion
+    # BM25 weight: 0.3, Vector weight: 0.7
+    query = """
+    CALL {
+        // BM25 fulltext search
+        CALL db.index.fulltext.queryNodes('episodic_content_fulltext', $query)
+        YIELD node, score AS bm25_score
+        RETURN node, bm25_score, 0.0 AS vector_score
+        LIMIT $limit
+
+        UNION ALL
+
+        // Vector similarity search
+        MATCH (ep:Episodic)
+        WHERE ep.content_embedding IS NOT NULL
+        WITH ep, vector.similarity.cosine(ep.content_embedding, $embedding) AS vec_score
+        WHERE vec_score > 0.3
+        RETURN ep AS node, 0.0 AS bm25_score, vec_score AS vector_score
+        ORDER BY vec_score DESC
+        LIMIT $limit
+    }
+    WITH node, max(bm25_score) AS bm25, max(vector_score) AS vector
+    WITH node,
+         CASE WHEN bm25 > 0 AND vector > 0 THEN (0.3 * bm25 + 0.7 * vector)
+              WHEN vector > 0 THEN vector
+              ELSE bm25 END AS combined_score
+    ORDER BY combined_score DESC
+    LIMIT $limit
+    RETURN node.uuid, node.name, node.content, node.source_description,
+           node.valid_at, combined_score AS score
+    """
+```
+
+### Claude Agent Integration
+The `search_documents` tool is available in the Claude agent:
+
+```python
+# In src/claude_agent/agent.py - TOOLS list
+{
+    "name": "search_documents",
+    "description": "Search source documents (episodic nodes) using semantic similarity...",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Search query"},
+            "limit": {"type": "integer", "default": 5}
+        },
+        "required": ["query"]
+    }
+}
+
+# In SYSTEM_PROMPT - Available Tools
+# 2. search_documents - Use this to search source documents using semantic similarity
+
+# Best Practice
+# - For finding specific passages or quotes from source documents, use search_documents
+```
+
 ---
 
-**Status**: ✅ Production-ready with custom schema
-**Last Updated**: 2025-11-17
-**Version**: 2.0
-**Implementation**: `src/flows/data_ingestion/document_processor.py`
+**Status**: ✅ Production-ready with custom schema and semantic search
+**Last Updated**: 2025-01-14
+**Version**: 2.1
+**Implementation**: `src/flows/data_ingestion/document_processor.py`, `src/graphrag/episode_embedding_manager.py`

@@ -691,3 +691,77 @@ fix-embeddings mode="dry-run":
 check-embeddings:
     @echo "📊 Checking entity embedding dimensions..."
     uv run python scripts/fix_embedding_dimensions.py --verify
+
+# === Episode Embedding (Semantic Search) ===
+
+# Backfill episode embeddings for semantic search (dry-run)
+backfill-episodes-dry:
+    @echo "👀 Performing episode embedding dry run..."
+    uv run python scripts/backfill_episode_embeddings.py --dry-run
+
+# Backfill episode embeddings for semantic search
+backfill-episodes batch_size="50":
+    @echo "🔄 Backfilling episode embeddings (batch size: {{batch_size}})..."
+    uv run python scripts/backfill_episode_embeddings.py --batch-size {{batch_size}}
+
+# Backfill limited number of episodes (for testing)
+backfill-episodes-test count="100":
+    @echo "🧪 Backfilling {{count}} episodes for testing..."
+    uv run python scripts/backfill_episode_embeddings.py --max-episodes {{count}}
+
+# Check episode embedding coverage statistics
+check-episode-embeddings:
+    @echo "📊 Checking episode embedding coverage..."
+    uv run python -c "import asyncio; from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager; m = EpisodeEmbeddingManager(); stats = asyncio.run(m.get_embedding_stats()); print('Episode Embedding Stats:'); print(f'  Total episodes: {stats[\"total_episodes\"]:,}'); print(f'  With embeddings: {stats[\"episodes_with_embeddings\"]:,}'); print(f'  Without embeddings: {stats[\"episodes_without_embeddings\"]:,}'); print(f'  Coverage: {stats[\"coverage_percentage\"]:.1f}%'); asyncio.run(m.close())"
+
+# Initialize episodic search indexes (run after database setup)
+init-episode-indexes:
+    @echo "📊 Creating episodic search indexes..."
+    uv run python scripts/init_graphiti_v3_database.py
+    @echo "✅ Indexes created. Run 'just backfill-episodes' to generate embeddings."
+
+# === Hybrid Search Vector Indexes ===
+
+# Check hybrid search vector index status
+hybrid-search-status:
+    @echo "📊 Checking hybrid search vector index status..."
+    uv run python scripts/add_hybrid_search_indexes.py --status
+
+# Create hybrid search vector indexes (dry-run)
+hybrid-search-dry:
+    @echo "👀 Performing hybrid search index dry run..."
+    uv run python scripts/add_hybrid_search_indexes.py --dry-run
+
+# Create hybrid search vector indexes
+hybrid-search-create:
+    @echo "🔧 Creating hybrid search vector indexes..."
+    uv run python scripts/add_hybrid_search_indexes.py
+    @echo "✅ Hybrid search indexes created. Check status with 'just hybrid-search-status'"
+
+# Remove hybrid search vector indexes (rollback)
+hybrid-search-rollback:
+    @echo "🔄 Removing hybrid search vector indexes..."
+    uv run python scripts/add_hybrid_search_indexes.py --rollback
+
+# === Phase 2 Entity Deduplication Indexes ===
+
+# Check Phase 2 index status
+phase2-index-status:
+    @echo "📊 Checking Phase 2 index status..."
+    uv run python scripts/add_phase2_indexes.py --status
+
+# Create Phase 2 indexes (dry-run)
+phase2-index-dry:
+    @echo "👀 Performing Phase 2 index dry run..."
+    uv run python scripts/add_phase2_indexes.py --dry-run
+
+# Create Phase 2 indexes for entity deduplication
+phase2-index-create:
+    @echo "🔧 Creating Phase 2 indexes..."
+    uv run python scripts/add_phase2_indexes.py
+    @echo "✅ Phase 2 indexes created. Check status with 'just phase2-index-status'"
+
+# Remove Phase 2 indexes (rollback)
+phase2-index-rollback:
+    @echo "🔄 Removing Phase 2 indexes..."
+    uv run python scripts/add_phase2_indexes.py --rollback

@@ -40,14 +40,38 @@ function ChatContextView({ initialSessionId = null, initialIs3D = false }) {
         if (data.error) {
           setError(data.error)
         } else {
+          // Log the raw data for debugging
+          console.log('Chat context API response:', {
+            nodeCount: data.nodes?.length || 0,
+            linkCount: data.links?.length || 0,
+            sampleNodes: data.nodes?.slice(0, 3).map(n => ({ id: n.id, name: n.name })),
+            sampleLinks: data.links?.slice(0, 3).map(l => ({ source: l.source, target: l.target, type: l.type }))
+          })
+
+          // Validate links - check if source/target IDs exist in nodes
+          const nodeIds = new Set((data.nodes || []).map(n => n.id))
+          const validLinks = (data.links || []).filter(link => {
+            const sourceExists = nodeIds.has(link.source)
+            const targetExists = nodeIds.has(link.target)
+            if (!sourceExists || !targetExists) {
+              console.warn(`Invalid link: source=${link.source} (exists: ${sourceExists}), target=${link.target} (exists: ${targetExists})`)
+            }
+            return sourceExists && targetExists
+          })
+
+          if (validLinks.length !== (data.links || []).length) {
+            console.warn(`${(data.links || []).length - validLinks.length} links have missing node references`)
+          }
+
           setResult({
             graphData: {
               nodes: data.nodes || [],
-              links: data.links || []
+              links: validLinks
             },
             metadata: data.metadata || {},
             nodeCount: data.nodes?.length || 0,
-            edgeCount: data.links?.length || 0
+            edgeCount: data.links?.length || 0,
+            validEdgeCount: validLinks.length
           })
         }
       } else {
@@ -237,7 +261,12 @@ function ChatContextView({ initialSessionId = null, initialIs3D = false }) {
                 📊 <strong className="text-white">{result.nodeCount}</strong> nodes
               </span>
               <span className="text-gray-400">
-                🔗 <strong className="text-white">{result.edgeCount}</strong> edges
+                🔗 <strong className="text-white">{result.validEdgeCount !== undefined ? result.validEdgeCount : result.edgeCount}</strong> edges
+                {result.validEdgeCount !== undefined && result.validEdgeCount !== result.edgeCount && (
+                  <span className="text-yellow-500 ml-1" title={`${result.edgeCount - result.validEdgeCount} edges filtered (missing node references)`}>
+                    ({result.edgeCount} total, {result.edgeCount - result.validEdgeCount} orphaned)
+                  </span>
+                )}
               </span>
             </div>
           </div>
