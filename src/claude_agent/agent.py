@@ -52,6 +52,9 @@ Best Practices:
 - When asked for specific entity details, use get_entity_info
 - Always cite your sources from the knowledge graph
 
+Language Instructions:
+IMPORTANT: Always respond in the same language as the user's query. If the user asks a question in German, respond in German. If the user asks in English, respond in English. Match the language of your response to the language of the user's input.
+
 Respond in a helpful, professional manner. If the knowledge graph doesn't have information on a topic, say so clearly."""
 
 # Tool definitions matching the MCP server
