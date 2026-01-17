@@ -765,3 +765,61 @@ phase2-index-create:
 phase2-index-rollback:
     @echo "🔄 Removing Phase 2 indexes..."
     uv run python scripts/add_phase2_indexes.py --rollback
+
+# === Multilingual Embedding Migration (ada-002) ===
+
+# Calculate exact re-embedding cost for the graph
+calculate-reembedding-cost:
+    @echo "💰 Calculating re-embedding cost..."
+    uv run python calculate_reembedding_cost.py
+
+# Re-embed entities only with ada-002 (Phase 1a)
+reembed-entities:
+    @echo "🔄 Re-embedding entities with ada-002..."
+    uv run python scripts/re_embed_with_ada002.py --entities
+
+# Re-embed relationships only with ada-002 (Phase 1b)
+reembed-relationships:
+    @echo "🔄 Re-embedding relationships with ada-002..."
+    uv run python scripts/re_embed_with_ada002.py --relationships
+
+# Re-embed entities and relationships with ada-002 (Phase 1 - Recommended)
+reembed-phase1:
+    @echo "🔄 Re-embedding entities + relationships with ada-002 (Phase 1)..."
+    uv run python scripts/re_embed_with_ada002.py --entities --relationships
+
+# Re-embed episodic nodes with ada-002 (Phase 2 - Manual implementation)
+reembed-episodic:
+    @echo "🔄 Re-embedding episodic nodes with ada-002 (Phase 2)..."
+    @echo "⚠️  Note: This is a template. User needs to implement manually."
+    uv run python scripts/re_embed_with_ada002.py --episodic
+
+# Dry run - preview what would be re-embedded
+reembed-dry:
+    @echo "👀 Performing re-embedding dry run..."
+    uv run python scripts/re_embed_with_ada002.py --entities --relationships --dry-run
+
+# Test re-embedding with limited items (for testing)
+reembed-test limit="10":
+    @echo "🧪 Testing re-embedding with {{limit}} items..."
+    uv run python scripts/re_embed_with_ada002.py --entities --limit {{limit}}
+
+# Re-embed everything (entities + relationships + episodic)
+reembed-all:
+    @echo "🔄 Re-embedding all graph items with ada-002..."
+    @echo "⚠️  This includes episodic nodes (7,794 items, ~$0.98)"
+    @read -p "Continue? (y/N) " -n 1 -r; \
+    if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+        echo ""; \
+        uv run python scripts/re_embed_with_ada002.py --entities --relationships --episodic; \
+    fi
+
+# Test graph embeddings (analyze current multilingual performance)
+test-graph-embeddings:
+    @echo "🧪 Analyzing graph embeddings..."
+    uv run python test_graph_embeddings.py
+
+# Test multilingual embedding models (compare ada-002 vs others)
+test-multilingual-models:
+    @echo "🧪 Testing multilingual embedding models..."
+    uv run python test_embedding_comparison_with_voyage.py
