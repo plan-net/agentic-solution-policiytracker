@@ -814,6 +814,71 @@ reembed-all:
         uv run python scripts/re_embed_with_ada002.py --entities --relationships --episodic; \
     fi
 
+# Backup embeddings to JSON before re-embedding (safety measure)
+backup-embeddings:
+    @echo "💾 Backing up all embeddings to JSON..."
+    uv run python scripts/backup_embeddings.py
+
+# Backup entities only
+backup-embeddings-entities:
+    @echo "💾 Backing up entity embeddings..."
+    uv run python scripts/backup_embeddings.py --entities
+
+# Backup relationships only
+backup-embeddings-relationships:
+    @echo "💾 Backing up relationship embeddings..."
+    uv run python scripts/backup_embeddings.py --relationships
+
+# Backup episodic nodes only
+backup-embeddings-episodic:
+    @echo "💾 Backing up episodic node embeddings..."
+    uv run python scripts/backup_embeddings.py --episodic
+
+# Check re-embedding migration status (see progress)
+reembed-status:
+    @echo "📊 Checking re-embedding migration status..."
+    uv run python scripts/check_migration_status.py
+
+# Check entity migration status only
+reembed-status-entities:
+    @echo "📊 Checking entity migration status..."
+    uv run python scripts/check_migration_status.py --entities
+
+# Check relationship migration status only
+reembed-status-relationships:
+    @echo "📊 Checking relationship migration status..."
+    uv run python scripts/check_migration_status.py --relationships
+
+# Check episodic migration status only
+reembed-status-episodic:
+    @echo "📊 Checking episodic migration status..."
+    uv run python scripts/check_migration_status.py --episodic
+
+# Detailed migration status (with timestamps)
+reembed-status-detailed:
+    @echo "📊 Checking detailed migration status..."
+    uv run python scripts/check_migration_status.py --detailed
+
+# Restore embeddings from backup (rollback capability)
+restore-embeddings backup_file:
+    @echo "⏪ Restoring embeddings from {{backup_file}}..."
+    uv run python scripts/restore_embeddings.py {{backup_file}}
+
+# Restore entities only from backup
+restore-embeddings-entities backup_file:
+    @echo "⏪ Restoring entity embeddings from {{backup_file}}..."
+    uv run python scripts/restore_embeddings.py {{backup_file}} --entities
+
+# Restore relationships only from backup
+restore-embeddings-relationships backup_file:
+    @echo "⏪ Restoring relationship embeddings from {{backup_file}}..."
+    uv run python scripts/restore_embeddings.py {{backup_file}} --relationships
+
+# Restore episodic nodes only from backup
+restore-embeddings-episodic backup_file:
+    @echo "⏪ Restoring episodic embeddings from {{backup_file}}..."
+    uv run python scripts/restore_embeddings.py {{backup_file}} --episodic
+
 # Test graph embeddings (analyze current multilingual performance)
 test-graph-embeddings:
     @echo "🧪 Analyzing graph embeddings..."

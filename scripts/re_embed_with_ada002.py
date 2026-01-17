@@ -44,6 +44,10 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 from openai import AsyncOpenAI
 from neo4j import AsyncGraphDatabase
 from tqdm.asyncio import tqdm
@@ -126,10 +130,10 @@ async def get_embedding(client: AsyncOpenAI, text: str, max_retries: int = 3) ->
     """
     for attempt in range(max_retries):
         try:
+            # Note: ada-002 does not support dimensions parameter (always returns 1536)
             response = await client.embeddings.create(
                 model="text-embedding-ada-002",
-                input=text,
-                dimensions=1536
+                input=text
             )
             return response.data[0].embedding
         except Exception as e:
@@ -147,16 +151,30 @@ async def re_embed_entities(
     batch_size: int = 100,
     limit: Optional[int] = None,
     dry_run: bool = False,
+    force: bool = False,
 ) -> None:
-    """Re-embed all entities with ada-002."""
+    """Re-embed all entities with ada-002.
+
+    Args:
+        force: If True, re-embed even if already migrated to ada-002
+    """
 
     print("\n" + "=" * 80)
     print("RE-EMBEDDING ENTITIES")
     print("=" * 80)
 
     async with driver.session(database=settings.NEO4J_DATABASE) as session:
-        # Count total
-        count_query = "MATCH (e:Entity) WHERE e.name IS NOT NULL RETURN count(e) as count"
+        # Count total (skip already migrated unless --force)
+        if force:
+            count_query = "MATCH (e:Entity) WHERE e.name IS NOT NULL RETURN count(e) as count"
+        else:
+            count_query = """
+            MATCH (e:Entity)
+            WHERE e.name IS NOT NULL
+              AND (e.embedding_model IS NULL OR e.embedding_model <> 'text-embedding-ada-002')
+            RETURN count(e) as count
+            """
+
         result = await session.run(count_query)
         record = await result.single()
         total_count = record['count'] if record else 0
@@ -165,6 +183,9 @@ async def re_embed_entities(
             total_count = min(total_count, limit)
 
         print(f"\nTotal entities to process: {total_count:,}")
+
+        if not force:
+            print("  (Skipping items already migrated to ada-002)")
 
         if dry_run:
             print("✓ DRY RUN - No changes will be made")
@@ -175,15 +196,26 @@ async def re_embed_entities(
         pbar = tqdm(total=total_count, desc="Entities", unit="entity")
 
         while offset < total_count:
-            # Fetch batch
-            fetch_query = """
-            MATCH (e:Entity)
-            WHERE e.name IS NOT NULL
-            RETURN e.uuid as uuid, e.name as name
-            ORDER BY e.uuid
-            SKIP $offset
-            LIMIT $batch_size
-            """
+            # Fetch batch (skip already migrated unless --force)
+            if force:
+                fetch_query = """
+                MATCH (e:Entity)
+                WHERE e.name IS NOT NULL
+                RETURN e.uuid as uuid, e.name as name
+                ORDER BY e.uuid
+                SKIP $offset
+                LIMIT $batch_size
+                """
+            else:
+                fetch_query = """
+                MATCH (e:Entity)
+                WHERE e.name IS NOT NULL
+                  AND (e.embedding_model IS NULL OR e.embedding_model <> 'text-embedding-ada-002')
+                RETURN e.uuid as uuid, e.name as name
+                ORDER BY e.uuid
+                SKIP $offset
+                LIMIT $batch_size
+                """
 
             result = await session.run(fetch_query, {"offset": offset, "batch_size": batch_size})
             records = await result.data()
@@ -200,10 +232,12 @@ async def re_embed_entities(
                 embedding = await get_embedding(openai_client, name)
 
                 if embedding:
-                    # Update in Neo4j
+                    # Update in Neo4j with marker properties
                     update_query = """
                     MATCH (e:Entity {uuid: $uuid})
-                    SET e.name_embedding = $embedding
+                    SET e.name_embedding = $embedding,
+                        e.embedding_model = 'text-embedding-ada-002',
+                        e.embedding_migrated_at = datetime()
                     """
                     await session.run(update_query, {"uuid": uuid, "embedding": embedding})
 
@@ -228,16 +262,30 @@ async def re_embed_relationships(
     batch_size: int = 100,
     limit: Optional[int] = None,
     dry_run: bool = False,
+    force: bool = False,
 ) -> None:
-    """Re-embed all relationships with ada-002."""
+    """Re-embed all relationships with ada-002.
+
+    Args:
+        force: If True, re-embed even if already migrated to ada-002
+    """
 
     print("\n" + "=" * 80)
     print("RE-EMBEDDING RELATIONSHIPS")
     print("=" * 80)
 
     async with driver.session(database=settings.NEO4J_DATABASE) as session:
-        # Count total
-        count_query = "MATCH ()-[r:RELATES_TO]->() WHERE r.fact IS NOT NULL RETURN count(r) as count"
+        # Count total (skip already migrated unless --force)
+        if force:
+            count_query = "MATCH ()-[r:RELATES_TO]->() WHERE r.fact IS NOT NULL RETURN count(r) as count"
+        else:
+            count_query = """
+            MATCH ()-[r:RELATES_TO]->()
+            WHERE r.fact IS NOT NULL
+              AND (r.embedding_model IS NULL OR r.embedding_model <> 'text-embedding-ada-002')
+            RETURN count(r) as count
+            """
+
         result = await session.run(count_query)
         record = await result.single()
         total_count = record['count'] if record else 0
@@ -246,6 +294,9 @@ async def re_embed_relationships(
             total_count = min(total_count, limit)
 
         print(f"\nTotal relationships to process: {total_count:,}")
+
+        if not force:
+            print("  (Skipping items already migrated to ada-002)")
 
         if dry_run:
             print("✓ DRY RUN - No changes will be made")
@@ -256,15 +307,26 @@ async def re_embed_relationships(
         pbar = tqdm(total=total_count, desc="Relationships", unit="rel")
 
         while offset < total_count:
-            # Fetch batch
-            fetch_query = """
-            MATCH ()-[r:RELATES_TO]->()
-            WHERE r.fact IS NOT NULL
-            RETURN id(r) as rel_id, r.fact as fact
-            ORDER BY id(r)
-            SKIP $offset
-            LIMIT $batch_size
-            """
+            # Fetch batch (skip already migrated unless --force)
+            if force:
+                fetch_query = """
+                MATCH ()-[r:RELATES_TO]->()
+                WHERE r.fact IS NOT NULL
+                RETURN id(r) as rel_id, r.fact as fact
+                ORDER BY id(r)
+                SKIP $offset
+                LIMIT $batch_size
+                """
+            else:
+                fetch_query = """
+                MATCH ()-[r:RELATES_TO]->()
+                WHERE r.fact IS NOT NULL
+                  AND (r.embedding_model IS NULL OR r.embedding_model <> 'text-embedding-ada-002')
+                RETURN id(r) as rel_id, r.fact as fact
+                ORDER BY id(r)
+                SKIP $offset
+                LIMIT $batch_size
+                """
 
             result = await session.run(fetch_query, {"offset": offset, "batch_size": batch_size})
             records = await result.data()
@@ -281,11 +343,13 @@ async def re_embed_relationships(
                 embedding = await get_embedding(openai_client, fact)
 
                 if embedding:
-                    # Update in Neo4j
+                    # Update in Neo4j with marker properties
                     update_query = """
                     MATCH ()-[r:RELATES_TO]->()
                     WHERE id(r) = $rel_id
-                    SET r.fact_embedding = $embedding
+                    SET r.fact_embedding = $embedding,
+                        r.embedding_model = 'text-embedding-ada-002',
+                        r.embedding_migrated_at = datetime()
                     """
                     await session.run(update_query, {"rel_id": rel_id, "embedding": embedding})
 
@@ -310,9 +374,12 @@ async def re_embed_episodic(
     batch_size: int = 100,
     limit: Optional[int] = None,
     dry_run: bool = False,
+    force: bool = False,
 ) -> None:
-    """
-    Re-embed all episodic nodes with ada-002.
+    """Re-embed all episodic nodes with ada-002.
+
+    Args:
+        force: If True, re-embed even if already migrated to ada-002
 
     NOTE: User will implement this manually. This is a template structure.
     """
@@ -324,8 +391,17 @@ async def re_embed_episodic(
     print("   User will implement episodic re-embedding manually.")
 
     async with driver.session(database=settings.NEO4J_DATABASE) as session:
-        # Count total
-        count_query = "MATCH (ep:Episodic) WHERE ep.content IS NOT NULL RETURN count(ep) as count"
+        # Count total (skip already migrated unless --force)
+        if force:
+            count_query = "MATCH (ep:Episodic) WHERE ep.content IS NOT NULL RETURN count(ep) as count"
+        else:
+            count_query = """
+            MATCH (ep:Episodic)
+            WHERE ep.content IS NOT NULL
+              AND (ep.embedding_model IS NULL OR ep.embedding_model <> 'text-embedding-ada-002')
+            RETURN count(ep) as count
+            """
+
         result = await session.run(count_query)
         record = await result.single()
         total_count = record['count'] if record else 0
@@ -334,6 +410,10 @@ async def re_embed_episodic(
             total_count = min(total_count, limit)
 
         print(f"\nTotal episodic nodes to process: {total_count:,}")
+
+        if not force:
+            print("  (Skipping items already migrated to ada-002)")
+
         print(f"Estimated cost: ${(total_count * 1256 * 0.10 / 1_000_000):.2f}")
 
         if dry_run:
@@ -342,6 +422,10 @@ async def re_embed_episodic(
 
         print("\n🛑 Skipping episodic re-embedding (to be implemented manually)")
         print("   Run with --episodic flag once implementation is ready")
+        print("\n📝 Template structure for manual implementation:")
+        print("   1. Fetch batch with query that skips already-migrated items")
+        print("   2. Get new embeddings from OpenAI")
+        print("   3. Update with marker properties: embedding_model, embedding_migrated_at")
 
 
 async def main():
@@ -358,6 +442,7 @@ async def main():
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size (default: 100)")
     parser.add_argument("--limit", type=int, help="Limit number of items per type (for testing)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without making changes")
+    parser.add_argument("--force", action="store_true", help="Re-embed even if already migrated to ada-002")
 
     args = parser.parse_args()
 
@@ -376,6 +461,8 @@ async def main():
         print(f"⚠️  LIMIT: {args.limit} items per type (testing mode)")
     if args.dry_run:
         print(f"⚠️  DRY RUN: No changes will be made")
+    if args.force:
+        print(f"⚠️  FORCE: Re-embedding items already migrated to ada-002")
 
     print("\nProcessing:")
     if args.entities:
@@ -403,13 +490,13 @@ async def main():
     try:
         # Process each type
         if args.entities:
-            await re_embed_entities(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run)
+            await re_embed_entities(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run, args.force)
 
         if args.relationships:
-            await re_embed_relationships(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run)
+            await re_embed_relationships(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run, args.force)
 
         if args.episodic:
-            await re_embed_episodic(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run)
+            await re_embed_episodic(driver, openai_client, stats, args.batch_size, args.limit, args.dry_run, args.force)
 
         # Print summary
         if not args.dry_run:
