@@ -19,12 +19,41 @@ Architecture:
 import hashlib
 import json
 import os
+from datetime import datetime
 from typing import Optional
 
 import structlog
 from neo4j import GraphDatabase
+from neo4j.time import DateTime as Neo4jDateTime
 
 logger = structlog.get_logger()
+
+
+def _convert_neo4j_datetime(value):
+    """Convert Neo4j DateTime to Python datetime for JSON serialization."""
+    if isinstance(value, Neo4jDateTime):
+        return value.to_native()
+    return value
+
+
+def _sanitize_record(record) -> dict:
+    """
+    Convert Neo4j record to dict with JSON-serializable values.
+
+    Neo4j returns DateTime objects that are not JSON serializable.
+    This function converts them to Python datetime objects.
+    """
+    if record is None:
+        return None
+    result = {}
+    for key, value in dict(record).items():
+        if isinstance(value, Neo4jDateTime):
+            result[key] = value.to_native()
+        elif isinstance(value, list):
+            result[key] = [_convert_neo4j_datetime(v) for v in value]
+        else:
+            result[key] = value
+    return result
 
 
 def validate_entity_name(name: str) -> tuple[bool, str]:
@@ -487,7 +516,7 @@ class EntityRegistry:
 
                 record = exact_result.single()
                 if record:
-                    return dict(record)
+                    return _sanitize_record(record)
 
                 # Step 2: Alias match
                 alias_result = session.run(
@@ -512,7 +541,7 @@ class EntityRegistry:
 
                 record = alias_result.single()
                 if record:
-                    return dict(record)
+                    return _sanitize_record(record)
 
                 # Step 3: Fuzzy match (requires APOC) - EXPENSIVE, disabled by default
                 if self.enable_fuzzy_matching:
@@ -546,7 +575,7 @@ class EntityRegistry:
 
                         record = fuzzy_result.single()
                         if record:
-                            return dict(record)
+                            return _sanitize_record(record)
 
                     except Exception as fuzzy_error:
                         # APOC might not be available, skip fuzzy matching
@@ -603,7 +632,7 @@ class EntityRegistry:
                     limit=limit,
                 )
 
-                return [dict(record) for record in result]
+                return [_sanitize_record(record) for record in result]
 
         except Exception as e:
             logger.error(f"Failed to find similar entities: {e}", entity_name=entity_name)
@@ -641,7 +670,7 @@ class EntityRegistry:
                 )
 
                 record = result.single()
-                return dict(record) if record else None
+                return _sanitize_record(record)
 
         except Exception as e:
             logger.error(f"Failed to get entity usage stats: {e}", uuid=canonical_uuid)
