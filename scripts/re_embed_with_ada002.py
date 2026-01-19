@@ -380,15 +380,11 @@ async def re_embed_episodic(
 
     Args:
         force: If True, re-embed even if already migrated to ada-002
-
-    NOTE: User will implement this manually. This is a template structure.
     """
 
     print("\n" + "=" * 80)
     print("RE-EMBEDDING EPISODIC NODES")
     print("=" * 80)
-    print("\n⚠️  NOTE: This functionality is provided as a template.")
-    print("   User will implement episodic re-embedding manually.")
 
     async with driver.session(database=settings.NEO4J_DATABASE) as session:
         # Count total (skip already migrated unless --force)
@@ -420,12 +416,72 @@ async def re_embed_episodic(
             print("✓ DRY RUN - No changes will be made")
             return
 
-        print("\n🛑 Skipping episodic re-embedding (to be implemented manually)")
-        print("   Run with --episodic flag once implementation is ready")
-        print("\n📝 Template structure for manual implementation:")
-        print("   1. Fetch batch with query that skips already-migrated items")
-        print("   2. Get new embeddings from OpenAI")
-        print("   3. Update with marker properties: embedding_model, embedding_migrated_at")
+        if total_count == 0:
+            print("✓ No episodic nodes to process")
+            return
+
+        # Process in batches
+        offset = 0
+        pbar = tqdm(total=total_count, desc="Episodic", unit="node")
+
+        while offset < total_count:
+            # Fetch batch (skip already migrated unless --force)
+            if force:
+                fetch_query = """
+                MATCH (ep:Episodic)
+                WHERE ep.content IS NOT NULL
+                RETURN ep.uuid as uuid, ep.content as content
+                ORDER BY ep.uuid
+                SKIP $offset
+                LIMIT $batch_size
+                """
+            else:
+                fetch_query = """
+                MATCH (ep:Episodic)
+                WHERE ep.content IS NOT NULL
+                  AND (ep.embedding_model IS NULL OR ep.embedding_model <> 'text-embedding-ada-002')
+                RETURN ep.uuid as uuid, ep.content as content
+                ORDER BY ep.uuid
+                SKIP $offset
+                LIMIT $batch_size
+                """
+
+            result = await session.run(fetch_query, {"offset": offset, "batch_size": batch_size})
+            records = await result.data()
+
+            if not records:
+                break
+
+            # Process batch
+            for record in records:
+                uuid = record['uuid']
+                content = record['content']
+
+                # Get new embedding
+                embedding = await get_embedding(openai_client, content)
+
+                if embedding:
+                    # Update in Neo4j with marker properties
+                    update_query = """
+                    MATCH (ep:Episodic {uuid: $uuid})
+                    SET ep.content_embedding = $embedding,
+                        ep.embedding_model = 'text-embedding-ada-002',
+                        ep.embedding_migrated_at = datetime()
+                    """
+                    await session.run(update_query, {"uuid": uuid, "embedding": embedding})
+
+                    stats.episodic_processed += 1
+                    stats.add_tokens(len(content.split()) * 1.3)  # Rough token estimate
+                else:
+                    stats.episodic_failed += 1
+
+                pbar.update(1)
+
+            offset += len(records)
+            await asyncio.sleep(0.1)  # Rate limiting
+
+        pbar.close()
+        print(f"✓ Completed: {stats.episodic_processed:,} episodic nodes re-embedded")
 
 
 async def main():
@@ -438,7 +494,7 @@ async def main():
 
     parser.add_argument("--entities", action="store_true", help="Re-embed entities")
     parser.add_argument("--relationships", action="store_true", help="Re-embed relationships")
-    parser.add_argument("--episodic", action="store_true", help="Re-embed episodic nodes (template only)")
+    parser.add_argument("--episodic", action="store_true", help="Re-embed episodic nodes")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size (default: 100)")
     parser.add_argument("--limit", type=int, help="Limit number of items per type (for testing)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without making changes")

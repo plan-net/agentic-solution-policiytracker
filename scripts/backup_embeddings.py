@@ -191,17 +191,42 @@ async def main():
             if args.episodic:
                 backup_data["episodic"] = await backup_episodic(session, args.limit)
 
-        # Write to file
+        # Write to file (streaming to avoid memory issues)
         print(f"\n💾 Writing backup to {output_path}...")
 
-        json_str = json.dumps(backup_data, indent=2)
+        # Force compression for large backups to save memory
+        if not args.compress and (len(backup_data['entities']) + len(backup_data['relationships']) + len(backup_data['episodic'])) > 10000:
+            print("  (Automatically using compression for large backup)")
+            if not output_path.suffix == '.gz':
+                output_path = Path(str(output_path) + '.gz')
+            args.compress = True
 
         if args.compress:
             with gzip.open(output_path, 'wt', encoding='utf-8') as f:
-                f.write(json_str)
+                # Write incrementally to reduce memory usage
+                f.write('{\n')
+                f.write(f'  "timestamp": "{backup_data["timestamp"]}",\n')
+                f.write(f'  "database": "{backup_data["database"]}",\n')
+                f.write('  "entities": ')
+                json.dump(backup_data['entities'], f)
+                f.write(',\n  "relationships": ')
+                json.dump(backup_data['relationships'], f)
+                f.write(',\n  "episodic": ')
+                json.dump(backup_data['episodic'], f)
+                f.write('\n}')
         else:
             with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(json_str)
+                # Write incrementally to reduce memory usage
+                f.write('{\n')
+                f.write(f'  "timestamp": "{backup_data["timestamp"]}",\n')
+                f.write(f'  "database": "{backup_data["database"]}",\n')
+                f.write('  "entities": ')
+                json.dump(backup_data['entities'], f)
+                f.write(',\n  "relationships": ')
+                json.dump(backup_data['relationships'], f)
+                f.write(',\n  "episodic": ')
+                json.dump(backup_data['episodic'], f)
+                f.write('\n}')
 
         # Print summary
         file_size_mb = output_path.stat().st_size / (1024 * 1024)

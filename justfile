@@ -788,10 +788,9 @@ reembed-phase1:
     @echo "🔄 Re-embedding entities + relationships with ada-002 (Phase 1)..."
     uv run python scripts/re_embed_with_ada002.py --entities --relationships
 
-# Re-embed episodic nodes with ada-002 (Phase 2 - Manual implementation)
+# Re-embed episodic nodes with ada-002 (Phase 2)
 reembed-episodic:
     @echo "🔄 Re-embedding episodic nodes with ada-002 (Phase 2)..."
-    @echo "⚠️  Note: This is a template. User needs to implement manually."
     uv run python scripts/re_embed_with_ada002.py --episodic
 
 # Dry run - preview what would be re-embedded
@@ -888,3 +887,23 @@ test-graph-embeddings:
 test-multilingual-models:
     @echo "🧪 Testing multilingual embedding models..."
     uv run python test_embedding_comparison_with_voyage.py
+
+# Verify ada-002 migration is working correctly
+verify-ada002:
+    @echo "✅ Verifying ada-002 migration..."
+    uv run python scripts/verify_ada002_migration.py
+
+# Verify ada-002 migration with detailed output
+verify-ada002-detailed:
+    @echo "✅ Verifying ada-002 migration (detailed)..."
+    uv run python scripts/verify_ada002_migration.py --detailed
+
+# Verify ada-002 migration (larger sample)
+verify-ada002-large:
+    @echo "✅ Verifying ada-002 migration (sample size: 100)..."
+    uv run python scripts/verify_ada002_migration.py --sample-size 100
+
+# Quick cross-lingual test only (skip entity checks)
+verify-ada002-quick:
+    @echo "✅ Quick cross-lingual verification..."
+    uv run python scripts/verify_ada002_migration.py --skip-entity-check
