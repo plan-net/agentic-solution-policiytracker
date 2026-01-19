@@ -907,3 +907,8 @@ verify-ada002-large:
 verify-ada002-quick:
     @echo "✅ Quick cross-lingual verification..."
     uv run python scripts/verify_ada002_migration.py --skip-entity-check
+
+# Check which embedding model each component is using
+check-embedding-model:
+    @echo "🔍 Checking embedding model configuration..."
+    uv run python scripts/check_embedding_model.py

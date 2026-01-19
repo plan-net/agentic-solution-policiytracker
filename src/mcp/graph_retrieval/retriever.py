@@ -868,7 +868,7 @@ class MCPExecutor:
             try:
                 from src.flows.shared.apisix_llm_client import create_apisix_graphiti_embedder
                 self._embedder = create_apisix_graphiti_embedder(
-                    embedding_model="text-embedding-3-small"
+                    embedding_model="text-embedding-ada-002"
                 )
             except Exception as e:
                 logger.warning(f"Could not create APISIX embedder: {e}")

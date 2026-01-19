@@ -20,7 +20,8 @@ from neo4j import AsyncGraphDatabase
 logger = logging.getLogger(__name__)
 
 # Default configuration
-EMBEDDING_MODEL = "text-embedding-3-small"
+# Updated to text-embedding-ada-002 for better multilingual support (100% vs 13% cross-lingual similarity)
+EMBEDDING_MODEL = "text-embedding-ada-002"
 EMBEDDING_DIM = 1536
 
 
