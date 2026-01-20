@@ -81,6 +81,8 @@ dependencies = [
     "exa-py>=1.9.0",
     # SSL Certificate handling
     "certifi>=2023.0.0",
+    # Claude Agent SDK
+    "claude-agent-sdk>=0.1.20",
 ]
 
 [project.optional-dependencies]

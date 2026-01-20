@@ -20,7 +20,8 @@ from src.graph_viz.reports import (
     ReportType,
 )
 
-from .agent import WeeklyReportAgent
+# Use SDK-based agent for automatic agentic loop and native MCP support
+from .agent.report_agent_sdk import WeeklyReportSDKAgent as WeeklyReportAgent
 
 logger = logging.getLogger(__name__)
 

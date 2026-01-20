@@ -2,22 +2,30 @@
 
 This server provides an OpenAI-compatible chat completions API that includes
 session_id in responses for graph visualization integration.
+
+Features:
+- OpenAI-compatible chat completions API
+- Session management endpoints for multi-turn context
+- Streaming support
+- Graph visualization integration
 """
 
 import logging
 import time
 import uuid
-from typing import AsyncGenerator, Optional
+from typing import Any, AsyncGenerator, Optional
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from ray import serve
 
 from src.config import settings
+from src.shared.context_manager import sdk_context_manager
 
-from .agent import PolicyTrackerAgent
+# Use SDK-based agent for automatic agentic loop and native MCP support
+from .agent_sdk import PolicyTrackerSDKAgent as PolicyTrackerAgent
 
 # Configure logging
 log_level = getattr(logging, settings.LOG_LEVEL, logging.INFO)
@@ -56,7 +64,7 @@ class ChatCompletionChoice(BaseModel):
 
 
 class ChatCompletionResponse(BaseModel):
-    """OpenAI-compatible chat completion response with session_id."""
+    """OpenAI-compatible chat completion response with session_id and metadata."""
 
     id: str
     object: str = "chat.completion"
@@ -66,6 +74,30 @@ class ChatCompletionResponse(BaseModel):
     session_id: str = Field(
         description="Session ID for graph visualization. Use with /api/graph/chat-context endpoint."
     )
+    metadata: Optional[dict[str, Any]] = Field(
+        default=None,
+        description="Additional metadata including reflection confidence scores"
+    )
+
+
+class SessionMetadata(BaseModel):
+    """Session metadata response."""
+
+    session_id: str
+    message_count: int
+    entity_count: int
+    tool_calls: int
+    is_continuation: bool
+    created_at: Optional[str] = None
+
+
+class SessionMessagesResponse(BaseModel):
+    """Session messages response."""
+
+    status: str
+    session_id: str
+    messages: list[dict[str, Any]]
+    total: int
 
 
 class StreamChoice(BaseModel):
@@ -202,11 +234,14 @@ class ClaudeAgentServer:
         """Handle non-streaming chat completion."""
         try:
             agent = await self._get_agent()
-            response_text, final_session_id = await agent.query(user_message, session_id)
+            # query() now returns (response_text, session_id, metadata)
+            response_text, final_session_id, metadata = await agent.query(user_message, session_id)
 
             # Append session info footer for graph visualization
             graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
-            session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}`\n🔗 [View Graph Context]({graph_viz_url})"
+            confidence = metadata.get("avg_confidence", 1.0)
+            confidence_indicator = "🟢" if confidence > 0.7 else "🟡" if confidence > 0.4 else "🔴"
+            session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}` {confidence_indicator}\n🔗 [View Graph Context]({graph_viz_url})"
 
             return ChatCompletionResponse(
                 id=f"chatcmpl-{uuid.uuid4().hex[:29]}",
@@ -220,6 +255,7 @@ class ClaudeAgentServer:
                     )
                 ],
                 session_id=final_session_id,
+                metadata=metadata,
             )
 
         except Exception as e:
@@ -241,6 +277,7 @@ class ClaudeAgentServer:
                     )
                 ],
                 session_id=error_session_id,
+                metadata={"error": str(e)},
             )
 
     async def _stream_response(
@@ -250,19 +287,20 @@ class ClaudeAgentServer:
         session_id: Optional[str] = None
     ) -> AsyncGenerator[str, None]:
         """Handle streaming chat completion."""
-        import json
-
         chat_id = f"chatcmpl-{uuid.uuid4().hex[:29]}"
         created = int(time.time())
         final_session_id = None
+        final_metadata: dict[str, Any] = {}
 
         try:
             agent = await self._get_agent()
 
-            async for chunk, chunk_session_id in agent.stream_query(user_message, session_id):
+            # stream_query() now returns (chunk, session_id, metadata)
+            async for chunk, chunk_session_id, metadata in agent.stream_query(user_message, session_id):
                 if chunk_session_id:
-                    # Final chunk with session ID
+                    # Final chunk with session ID and metadata
                     final_session_id = chunk_session_id
+                    final_metadata = metadata
 
                 if chunk:
                     response = StreamResponse(
@@ -282,7 +320,9 @@ class ClaudeAgentServer:
 
             # Send session footer before final chunk
             graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
-            session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}`\n🔗 [View Graph Context]({graph_viz_url})"
+            confidence = final_metadata.get("avg_confidence", 1.0)
+            confidence_indicator = "🟢" if confidence > 0.7 else "🟡" if confidence > 0.4 else "🔴"
+            session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}` {confidence_indicator}\n🔗 [View Graph Context]({graph_viz_url})"
 
             footer_response = StreamResponse(
                 id=chat_id,
@@ -333,6 +373,97 @@ class ClaudeAgentServer:
             )
             yield f"data: {error_response.model_dump_json()}\n\n"
             yield "data: [DONE]\n\n"
+
+    @fastapi_app.get("/v1/sessions/{session_id}")
+    async def get_session(self, session_id: str) -> dict[str, Any]:
+        """Get session metadata and context summary.
+
+        Returns:
+            Session metadata including message count, entities tracked, etc.
+        """
+        try:
+            metadata = sdk_context_manager.get_session_metadata(session_id)
+            return {
+                "status": "success",
+                "session": metadata,
+            }
+        except Exception as e:
+            logger.error(f"Error getting session {session_id}: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @fastapi_app.get("/v1/sessions/{session_id}/messages")
+    async def get_session_messages(
+        self, session_id: str, limit: int = 20
+    ) -> SessionMessagesResponse:
+        """Get conversation history for a session.
+
+        Args:
+            session_id: Session identifier
+            limit: Maximum number of messages to return (default 20)
+
+        Returns:
+            Session messages with total count
+        """
+        try:
+            context = await sdk_context_manager.get_session_context(session_id)
+            messages = context.get("messages", [])[-limit:]
+            return SessionMessagesResponse(
+                status="success",
+                session_id=session_id,
+                messages=messages,
+                total=len(context.get("messages", [])),
+            )
+        except Exception as e:
+            logger.error(f"Error getting messages for session {session_id}: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @fastapi_app.delete("/v1/sessions/{session_id}")
+    async def clear_session(self, session_id: str) -> dict[str, str]:
+        """Clear session context (for starting fresh).
+
+        Note: This only clears the in-memory cache, not Neo4j persistence.
+
+        Args:
+            session_id: Session identifier to clear
+
+        Returns:
+            Confirmation message
+        """
+        try:
+            sdk_context_manager.clear_session(session_id)
+            return {
+                "status": "success",
+                "message": f"Session {session_id} cleared from cache",
+            }
+        except Exception as e:
+            logger.error(f"Error clearing session {session_id}: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @fastapi_app.get("/v1/sessions")
+    async def list_sessions(self, limit: int = 50) -> dict[str, Any]:
+        """List all active sessions in the cache.
+
+        Args:
+            limit: Maximum number of sessions to return
+
+        Returns:
+            List of session IDs with basic metadata
+        """
+        try:
+            # Get sessions from the context manager cache
+            sessions = []
+            for session_id in list(sdk_context_manager._cache.keys())[:limit]:
+                metadata = sdk_context_manager.get_session_metadata(session_id)
+                sessions.append(metadata)
+
+            return {
+                "status": "success",
+                "sessions": sessions,
+                "total": len(sdk_context_manager._cache),
+            }
+        except Exception as e:
+            logger.error(f"Error listing sessions: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 # Ray Serve app binding

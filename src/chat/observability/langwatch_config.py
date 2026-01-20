@@ -82,10 +82,12 @@ class LangWatchConfig:
         Returns:
             Complete session data as a dict
         """
+        logger.info(f"[LangWatch] finalize_session called for {session_id}, collectors: {list(self._session_collectors.keys())}")
         if session_id and session_id in self._session_collectors:
             data = self._session_collectors.pop(session_id)
-            logger.debug(f"Finalized session {session_id}: {len(data['turns'])} turns, {len(data['tool_calls'])} tool calls")
+            logger.info(f"[LangWatch] Finalized session {session_id}: {len(data['turns'])} turns, {len(data['tool_calls'])} tool calls")
             return data
+        logger.warning(f"[LangWatch] Session {session_id} not found in collectors")
         return {}
 
     def _truncate_tool_calls_to_fit(self, tool_calls: list, target_size: int) -> list:
@@ -736,12 +738,16 @@ class LangWatchConfig:
         - Execution timing and success status
         - Context (turn number, session) for correlation
         """
+        logger.info(f"[LangWatch] capture_tool_call_with_response: tool={tool_name}, session={session_id}, enabled={self.enabled}, initialized={self._initialized}")
+
         if not self.enabled or not self._initialized:
+            logger.warning(f"[LangWatch] Not capturing tool call - enabled={self.enabled}, initialized={self._initialized}")
             return
 
         # Store in session collector (synchronous - no async needed)
         if session_id:
             collector = self.get_session_collector(session_id)
+            logger.info(f"[LangWatch] Got collector for session {session_id}, current tool_calls count: {len(collector.get('tool_calls', []))}")
 
             # Filter embeddings FIRST, then parse
             parsed_output = self._filter_embeddings(self._parse_tool_output(tool_output))
@@ -752,16 +758,27 @@ class LangWatchConfig:
             final_output = self._smart_truncate_output(parsed_output, max_len=50000)
             final_input = self._smart_truncate_output(filtered_input, max_len=10000)
 
+            # Always store the actual output, even for low-confidence results
+            # The success flag indicates validation confidence, not whether output exists
+            # We want to observe all tool outputs regardless of confidence score
+            output_to_store = final_output
+            if not output_to_store and error:
+                output_to_store = {"error": error}
+            elif not output_to_store:
+                output_to_store = {"raw": "No output captured"}
+
             collector["tool_calls"].append({
                 "tool_name": tool_name,
                 "tool_use_id": tool_use_id,
                 "input": final_input,  # Always valid JSON-serializable
-                "output": final_output if success else {"error": error},
+                "output": output_to_store,  # Always store actual output
                 "success": success,
                 "execution_time_ms": int(execution_time * 1000),
                 "turn_number": turn_number,
             })
-            logger.debug(f"Collected tool call: {tool_name} for session {session_id}")
+            logger.info(f"[LangWatch] Collected tool call: {tool_name} for session {session_id}, new count: {len(collector['tool_calls'])}")
+        else:
+            logger.warning(f"[LangWatch] No session_id provided for tool call: {tool_name}")
 
     def set_thread_id(self, thread_id: str) -> None:
         """Set the thread_id for the current trace to enable session grouping.
