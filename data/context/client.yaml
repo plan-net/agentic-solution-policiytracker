@@ -7,8 +7,7 @@
 # CLIENT IDENTITY
 # =============================================================================
 
-¸
-  - zalando
+client_name: zalando
 
 industry:
   primary: "E-commerce / Online Retail"

@@ -36,18 +36,17 @@ from src.chat.observability.langwatch_config import langwatch_config
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 
-from .prompts import DEFAULT_MCP_SERVER_URL, get_weekly_report_system_prompt
+from .prompts import (
+    DEFAULT_MCP_SERVER_URL,
+    DEFAULT_BUNDESTAG_MCP_URL,
+    DEFAULT_WEB_SEARCH_MCP_URL,
+    KNOWLEDGE_GRAPH_TOOLS,
+    BUNDESTAG_DIP_TOOLS,
+    WEB_SEARCH_TOOLS,
+    get_weekly_report_system_prompt,
+)
 
 logger = logging.getLogger(__name__)
-
-# MCP tool names available on the server
-MCP_TOOLS = [
-    "search_knowledge_graph",
-    "analyze_query",
-    "get_entity_info",
-    "find_relationships",
-    "graph_statistics",
-]
 
 
 class WeeklyReportSDKAgent:
@@ -68,29 +67,44 @@ class WeeklyReportSDKAgent:
     def __init__(
         self,
         mcp_server_url: Optional[str] = None,
+        bundestag_mcp_url: Optional[str] = None,
+        web_search_mcp_url: Optional[str] = None,
         model: str = "claude-sonnet-4-20250514",
         max_turns: int = 30,
         enable_reflection: bool = True,
+        enable_bundestag: bool = True,
+        enable_web_search: bool = True,
     ):
         """Initialize the Weekly Report SDK Agent.
 
         Args:
-            mcp_server_url: MCP server URL (defaults to DEFAULT_MCP_SERVER_URL)
+            mcp_server_url: Knowledge Graph MCP server URL (defaults to DEFAULT_MCP_SERVER_URL)
+            bundestag_mcp_url: Bundestag DIP MCP server URL (defaults to DEFAULT_BUNDESTAG_MCP_URL)
+            web_search_mcp_url: Web Search MCP server URL (defaults to DEFAULT_WEB_SEARCH_MCP_URL)
             model: Claude model to use (user-selectable via UI)
             max_turns: Maximum number of conversation turns for the agentic loop
             enable_reflection: Enable reflection pattern with confidence scoring
+            enable_bundestag: Enable Bundestag DIP API tools
+            enable_web_search: Enable web search tools (Exa.ai, DPA)
         """
         self.mcp_server_url = mcp_server_url or DEFAULT_MCP_SERVER_URL
+        self.bundestag_mcp_url = bundestag_mcp_url or DEFAULT_BUNDESTAG_MCP_URL
+        self.web_search_mcp_url = web_search_mcp_url or DEFAULT_WEB_SEARCH_MCP_URL
         self.model = model
         self.max_turns = max_turns
         self.enable_reflection = enable_reflection
+        self.enable_bundestag = enable_bundestag
+        self.enable_web_search = enable_web_search
 
         # Initialize LangWatch in manual mode
         langwatch_config.initialize(instrumentation_mode="manual")
 
         logger.info(
             f"WeeklyReportSDKAgent initialized with model: {model}, "
-            f"MCP server: {self.mcp_server_url}, reflection: {enable_reflection}"
+            f"MCP servers: knowledge_graph={self.mcp_server_url}, "
+            f"bundestag={'enabled' if enable_bundestag else 'disabled'}, "
+            f"web_search={'enabled' if enable_web_search else 'disabled'}, "
+            f"reflection: {enable_reflection}"
         )
 
     async def _get_system_prompt(
@@ -177,20 +191,53 @@ class WeeklyReportSDKAgent:
         return base_prompt
 
     def _build_mcp_config(self) -> dict:
-        """Build MCP server configuration for SSE transport."""
-        return {
+        """Build MCP server configuration for SSE transport.
+
+        Configures connections to all enabled MCP servers:
+        - knowledge_graph: Neo4j/Graphiti knowledge graph (always enabled)
+        - bundestag_dip: German Bundestag DIP API (optional)
+        - web_search: Exa.ai and DPA news search (optional)
+        """
+        config = {
             "knowledge_graph": {
                 "type": "sse",
                 "url": self.mcp_server_url,
             }
         }
 
+        if self.enable_bundestag:
+            config["bundestag_dip"] = {
+                "type": "sse",
+                "url": self.bundestag_mcp_url,
+            }
+
+        if self.enable_web_search:
+            config["web_search"] = {
+                "type": "sse",
+                "url": self.web_search_mcp_url,
+            }
+
+        return config
+
     def _get_allowed_tools(self) -> list[str]:
         """Get list of allowed MCP tools in SDK format.
 
         SDK tool naming convention: mcp__<server_name>__<tool_name>
+
+        Returns tools from all enabled MCP servers.
         """
-        return [f"mcp__knowledge_graph__{tool}" for tool in MCP_TOOLS]
+        # Knowledge graph tools (always enabled)
+        tools = [f"mcp__knowledge_graph__{t}" for t in KNOWLEDGE_GRAPH_TOOLS]
+
+        # Bundestag DIP tools (optional)
+        if self.enable_bundestag:
+            tools.extend([f"mcp__bundestag_dip__{t}" for t in BUNDESTAG_DIP_TOOLS])
+
+        # Web search tools (optional)
+        if self.enable_web_search:
+            tools.extend([f"mcp__web_search__{t}" for t in WEB_SEARCH_TOOLS])
+
+        return tools
 
     @langwatch_config.trace(
         name="weekly_report_sdk_generation",
@@ -309,24 +356,36 @@ Begin by searching for legislative and regulatory updates, then proceed through 
                                 increment_turn()
                                 turn_count += 1
 
-                                # Extract tool name from SDK format
+                                # Extract tool name from SDK format (handles all 3 servers)
                                 tool_name = block.name
-                                if tool_name.startswith("mcp__knowledge_graph__"):
-                                    tool_name = tool_name.replace(
-                                        "mcp__knowledge_graph__", ""
-                                    )
+                                source = "unknown"
+                                for prefix, src in [
+                                    ("mcp__knowledge_graph__", "knowledge_graph"),
+                                    ("mcp__bundestag_dip__", "bundestag_dip"),
+                                    ("mcp__web_search__", "web_search"),
+                                ]:
+                                    if tool_name.startswith(prefix):
+                                        tool_name = tool_name.replace(prefix, "")
+                                        source = src
+                                        break
 
                                 tool_input = getattr(block, "input", {})
                                 tool_calls.append({
                                     "tool": tool_name,
+                                    "source": source,
                                     "input": tool_input,
                                     "success": True,
                                 })
 
                                 if tracer:
                                     query_text = tool_input.get("query", tool_name)
+                                    source_label = {
+                                        "knowledge_graph": "KG",
+                                        "bundestag_dip": "Bundestag",
+                                        "web_search": "Web",
+                                    }.get(source, source)
                                     await tracer.markdown(
-                                        f"  - Searched: {query_text[:50]}..."
+                                        f"  - [{source_label}] {query_text[:50]}..."
                                     )
 
                     elif isinstance(message, ResultMessage):
