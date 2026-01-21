@@ -183,6 +183,52 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # Bundestag DIP API MCP Server - German parliamentary data
+  bundestag-dip-mcp:
+    build:
+      context: .
+      dockerfile: ./src/mcp/bundestag_dip/Dockerfile
+    container_name: policiytracker-bundestag-dip-mcp
+    ports:
+      - "8004:8004"
+    environment:
+      # Bundestag DIP API (optional - has public default key)
+      BUNDESTAG_DIP_API_KEY: ${BUNDESTAG_DIP_API_KEY:-}
+      # Server config
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8004
+      LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Web Search MCP Server - Exa.ai and DPA news search
+  web-search-mcp:
+    build:
+      context: .
+      dockerfile: ./src/mcp/web_search/Dockerfile
+    container_name: policiytracker-web-search-mcp
+    ports:
+      - "8005:8005"
+    environment:
+      # Exa.ai API (required for web search)
+      EXA_API_KEY: ${EXA_API_KEY}
+      # DPA API (optional - for German press agency news)
+      DPA_API_KEY: ${DPA_API_KEY:-}
+      # Server config
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8005
+      LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
   # Airflow services for ETL orchestration
   airflow-postgres:
     image: postgres:15-alpine

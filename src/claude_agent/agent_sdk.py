@@ -36,41 +36,58 @@ from src.shared.context_manager import SDKContextManager
 
 logger = logging.getLogger(__name__)
 
-# Default MCP server URL - can be overridden via MCP_SERVER_URL env var
+# Default MCP server URLs - can be overridden via environment variables
 DEFAULT_MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://localhost:8003/sse")
+DEFAULT_BUNDESTAG_MCP_URL = os.getenv("BUNDESTAG_MCP_URL", "http://localhost:8004/sse")
+DEFAULT_WEB_SEARCH_MCP_URL = os.getenv("WEB_SEARCH_MCP_URL", "http://localhost:8005/sse")
 
 # Fallback system prompt (used when PromptManager is unavailable)
-FALLBACK_SYSTEM_PROMPT = """You are a Political Monitoring Assistant with access to a knowledge graph containing information about EU regulations, policies, politicians, organizations, and legislative activities.
+FALLBACK_SYSTEM_PROMPT = """You are a Political Monitoring Assistant with access to multiple data sources:
+1. A knowledge graph containing curated information about EU regulations, policies, politicians, and organizations
+2. The German Bundestag DIP API for real-time parliamentary data
+3. Web search capabilities via Exa.ai and DPA (German Press Agency) news
 
-Your knowledge graph contains information about:
-- Regulations: GDPR, DSA, DMA, AI Act, and other EU/German legislation
-- Politicians: EU Commissioners, MEPs, Bundestag members
-- Organizations: EU institutions, regulatory bodies, industry groups
-- Legislative processes: Votes, committees, debates, amendments
+## Knowledge Graph Tools (Curated historical data)
+Use these for established regulatory information and entity relationships:
+- search_knowledge_graph - General queries about regulations, policies, or entities
+- search_documents - Search source documents using semantic similarity
+- analyze_query - Understand complex queries before searching
+- get_entity_info - Get detailed information about a specific entity
+- find_relationships - Explore connections between entities
+- graph_statistics - Understand the scope of available data
 
-Available Tools:
-1. search_knowledge_graph - Use this for general queries about regulations, policies, or entities
-2. search_documents - Use this to search source documents (episodic nodes) using semantic similarity
-3. analyze_query - Use this to understand complex queries before searching
-4. get_entity_info - Use this to get detailed information about a specific entity
-5. find_relationships - Use this to explore connections between entities
-6. graph_statistics - Use this to understand the scope of available data
+## Bundestag DIP API Tools (Real-time parliamentary data)
+Use these for current German parliamentary information:
+- search_bundestag_legislation - Search legislative procedures (Vorgänge)
+- get_bundestag_vorgang - Get details of a specific legislative procedure
+- search_bundestag_documents - Search parliamentary documents (Drucksachen)
+- get_bundestag_drucksache - Get details of a specific document
+- search_bundestag_persons - Search Bundestag members
+- get_bundestag_person - Get details of a specific MP
+- search_bundestag_activities - Search parliamentary activities
+- get_bundestag_plenarprotokoll - Get plenary session transcripts
 
-Best Practices:
-- For simple factual questions, use search_knowledge_graph directly
-- For finding specific passages or quotes from source documents, use search_documents
-- For complex questions, first use analyze_query to understand the query structure
-- When asked about relationships, use find_relationships
-- When asked for specific entity details, use get_entity_info
-- Always cite your sources from the knowledge graph
+## Web Search Tools (Internet research)
+Use these when information is not in other sources or for recent news:
+- web_search - General web search via Exa.ai
+- search_news - News-specific search with date filtering
+- search_dpa_news - German Press Agency (DPA) news search
+- get_article_content - Fetch full article content from URLs
+
+## Best Practices
+- Start with the knowledge graph for established regulatory information
+- Use Bundestag tools for current German parliamentary status
+- Use web search for recent news or when other sources lack information
+- Combine multiple tools for comprehensive answers
+- Always cite your sources
 
 Language Instructions:
-IMPORTANT: Always respond in the same language as the user's query. If the user asks a question in German, respond in German. If the user asks in English, respond in English. Match the language of your response to the language of the user's input.
+IMPORTANT: Always respond in the same language as the user's query. If the user asks a question in German, respond in German. If the user asks in English, respond in English.
 
-Respond in a helpful, professional manner. If the knowledge graph doesn't have information on a topic, say so clearly."""
+Respond in a helpful, professional manner. Be transparent about which sources you used."""
 
-# MCP tool names that are available on the server
-MCP_TOOLS = [
+# MCP tool names that are available on each server
+KNOWLEDGE_GRAPH_TOOLS = [
     "search_knowledge_graph",
     "search_documents",
     "analyze_query",
@@ -78,6 +95,27 @@ MCP_TOOLS = [
     "find_relationships",
     "graph_statistics",
 ]
+
+BUNDESTAG_DIP_TOOLS = [
+    "search_bundestag_legislation",
+    "get_bundestag_vorgang",
+    "search_bundestag_documents",
+    "get_bundestag_drucksache",
+    "search_bundestag_persons",
+    "get_bundestag_person",
+    "search_bundestag_activities",
+    "get_bundestag_plenarprotokoll",
+]
+
+WEB_SEARCH_TOOLS = [
+    "web_search",
+    "search_news",
+    "search_dpa_news",
+    "get_article_content",
+]
+
+# Combined list for backwards compatibility
+MCP_TOOLS = KNOWLEDGE_GRAPH_TOOLS + BUNDESTAG_DIP_TOOLS + WEB_SEARCH_TOOLS
 
 
 class PolicyTrackerSDKAgent:
@@ -98,25 +136,37 @@ class PolicyTrackerSDKAgent:
     def __init__(
         self,
         mcp_server_url: Optional[str] = None,
+        bundestag_mcp_url: Optional[str] = None,
+        web_search_mcp_url: Optional[str] = None,
         claude_model: Optional[str] = None,
         enable_reflection: bool = True,
         enable_multi_turn: bool = True,
         max_turns: int = 15,
+        enable_bundestag: bool = True,
+        enable_web_search: bool = True,
     ):
         """Initialize the PolicyTracker SDK agent.
 
         Args:
-            mcp_server_url: MCP server URL (defaults to DEFAULT_MCP_SERVER_URL)
+            mcp_server_url: Knowledge Graph MCP server URL (defaults to DEFAULT_MCP_SERVER_URL)
+            bundestag_mcp_url: Bundestag DIP MCP server URL (defaults to DEFAULT_BUNDESTAG_MCP_URL)
+            web_search_mcp_url: Web Search MCP server URL (defaults to DEFAULT_WEB_SEARCH_MCP_URL)
             claude_model: Claude model to use (defaults to claude-sonnet-4-20250514)
             enable_reflection: Enable reflection pattern with confidence scoring
             enable_multi_turn: Enable multi-turn context management
             max_turns: Maximum turns for the agentic loop
+            enable_bundestag: Enable Bundestag DIP API tools
+            enable_web_search: Enable web search tools
         """
         self.mcp_server_url = mcp_server_url or DEFAULT_MCP_SERVER_URL
+        self.bundestag_mcp_url = bundestag_mcp_url or DEFAULT_BUNDESTAG_MCP_URL
+        self.web_search_mcp_url = web_search_mcp_url or DEFAULT_WEB_SEARCH_MCP_URL
         self.model = claude_model or "claude-sonnet-4-20250514"
         self.enable_reflection = enable_reflection
         self.enable_multi_turn = enable_multi_turn
         self.max_turns = max_turns
+        self.enable_bundestag = enable_bundestag
+        self.enable_web_search = enable_web_search
 
         # Neo4j driver and context tracker (initialized lazily)
         self._neo4j_driver = None
@@ -128,7 +178,9 @@ class PolicyTrackerSDKAgent:
 
         logger.info(
             f"PolicyTrackerSDKAgent initialized with model: {self.model}, "
-            f"MCP server: {self.mcp_server_url}, "
+            f"MCP servers: knowledge_graph={self.mcp_server_url}, "
+            f"bundestag={self.bundestag_mcp_url if enable_bundestag else 'disabled'}, "
+            f"web_search={self.web_search_mcp_url if enable_web_search else 'disabled'}, "
             f"reflection: {enable_reflection}, multi_turn: {enable_multi_turn}"
         )
 
@@ -226,20 +278,55 @@ class PolicyTrackerSDKAgent:
         return f"claude_{uuid.uuid4().hex[:16]}"
 
     def _build_mcp_config(self) -> dict:
-        """Build MCP server configuration for SSE transport."""
-        return {
+        """Build MCP server configuration for SSE transport.
+
+        Configures connections to all enabled MCP servers:
+        - knowledge_graph: Neo4j/Graphiti knowledge graph (always enabled)
+        - bundestag_dip: German Bundestag DIP API (optional)
+        - web_search: Exa.ai and DPA news search (optional)
+        """
+        config = {
             "knowledge_graph": {
                 "type": "sse",
                 "url": self.mcp_server_url,
             }
         }
 
+        if self.enable_bundestag:
+            config["bundestag_dip"] = {
+                "type": "sse",
+                "url": self.bundestag_mcp_url,
+            }
+
+        if self.enable_web_search:
+            config["web_search"] = {
+                "type": "sse",
+                "url": self.web_search_mcp_url,
+            }
+
+        return config
+
     def _get_allowed_tools(self) -> list[str]:
         """Get list of allowed MCP tools in SDK format.
 
         SDK tool naming convention: mcp__<server_name>__<tool_name>
+
+        Returns tools from all enabled MCP servers.
         """
-        return [f"mcp__knowledge_graph__{tool}" for tool in MCP_TOOLS]
+        allowed_tools = []
+
+        # Knowledge graph tools (always enabled)
+        allowed_tools.extend([f"mcp__knowledge_graph__{tool}" for tool in KNOWLEDGE_GRAPH_TOOLS])
+
+        # Bundestag DIP tools (optional)
+        if self.enable_bundestag:
+            allowed_tools.extend([f"mcp__bundestag_dip__{tool}" for tool in BUNDESTAG_DIP_TOOLS])
+
+        # Web search tools (optional)
+        if self.enable_web_search:
+            allowed_tools.extend([f"mcp__web_search__{tool}" for tool in WEB_SEARCH_TOOLS])
+
+        return allowed_tools
 
     async def _init_session_context(
         self, context_tracker: ChatContextTracker, session_id: str, query_text: str
