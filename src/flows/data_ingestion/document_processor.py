@@ -8,6 +8,7 @@ common abbreviations and name variations.
 """
 
 import asyncio
+import json
 import os
 import re
 from datetime import datetime
@@ -47,6 +48,55 @@ from src.graphrag.political_schema_v5 import (
 from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
 
 logger = structlog.get_logger()
+
+
+# Custom JSON encoder to handle Neo4j DateTime objects
+class Neo4jJSONEncoder(json.JSONEncoder):
+    """
+    Custom JSON encoder that handles Neo4j DateTime objects.
+
+    This is required because Graphiti internally uses json.dumps() on Neo4j
+    data which may contain DateTime objects from the graph database.
+    """
+
+    def default(self, obj):
+        # Handle Neo4j DateTime objects
+        if hasattr(obj, "__class__") and "DateTime" in obj.__class__.__name__:
+            return obj.isoformat() if hasattr(obj, "isoformat") else str(obj)
+
+        # Handle Python datetime objects
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+
+        # Let the base class handle everything else
+        return super().default(obj)
+
+
+# Monkey-patch json.dumps to use our custom encoder by default
+# This fixes Graphiti's internal json.dumps() calls that fail on Neo4j DateTime objects
+_original_json_dumps = json.dumps
+
+
+def _patched_json_dumps(obj, *, skipkeys=False, ensure_ascii=True, check_circular=True,
+                       allow_nan=True, cls=None, indent=None, separators=None,
+                       default=None, sort_keys=False, **kw):
+    """
+    Patched version of json.dumps that uses Neo4jJSONEncoder by default.
+
+    This ensures that Neo4j DateTime objects are properly serialized even when
+    Graphiti or other libraries call json.dumps() internally.
+    """
+    if cls is None:
+        cls = Neo4jJSONEncoder
+    return _original_json_dumps(
+        obj, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular,
+        allow_nan=allow_nan, cls=cls, indent=indent, separators=separators,
+        default=default, sort_keys=sort_keys, **kw
+    )
+
+
+# Apply the monkey patch globally
+json.dumps = _patched_json_dumps
 
 
 def ensure_json_serializable(value):
