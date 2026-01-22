@@ -48,6 +48,42 @@ from src.graphrag.episode_embedding_manager import EpisodeEmbeddingManager
 
 logger = structlog.get_logger()
 
+
+def ensure_json_serializable(value):
+    """
+    Convert Neo4j types (like DateTime) to JSON-serializable Python types.
+
+    Args:
+        value: Any value that might contain Neo4j types
+
+    Returns:
+        JSON-serializable version of the value
+    """
+    # Handle None
+    if value is None:
+        return None
+
+    # Handle Neo4j DateTime objects
+    if hasattr(value, "__class__") and "DateTime" in value.__class__.__name__:
+        # Convert Neo4j DateTime to ISO format string
+        return value.isoformat() if hasattr(value, "isoformat") else str(value)
+
+    # Handle lists
+    if isinstance(value, list):
+        return [ensure_json_serializable(item) for item in value]
+
+    # Handle dicts
+    if isinstance(value, dict):
+        return {k: ensure_json_serializable(v) for k, v in value.items()}
+
+    # Handle other iterables (tuples, sets, etc.)
+    if hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
+        return [ensure_json_serializable(item) for item in value]
+
+    # Return as-is for primitive types (str, int, float, bool)
+    return value
+
+
 # Configuration
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
@@ -319,6 +355,8 @@ try:
 
                     # Track this episode for chain linking
                     episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
+                    # Ensure UUID is JSON-serializable (convert Neo4j types if needed)
+                    episode_uuid = ensure_json_serializable(episode_uuid)
                     episode_uuids.append(episode_uuid)
                     previous_episode_uuid = episode_uuid
 
@@ -344,10 +382,14 @@ try:
 
                     # Phase 2: Extract entity tracking data for chunk-aware tracking
                     entity_names = (
-                        [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                        [ensure_json_serializable(node.name) for node in result.nodes]
+                        if hasattr(result, "nodes")
+                        else []
                     )
                     entity_uuids = (
-                        [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                        [ensure_json_serializable(node.uuid) for node in result.nodes]
+                        if hasattr(result, "nodes")
+                        else []
                     )
 
                     # Phase 2: Extract canonical UUIDs from deduplication metadata
@@ -356,16 +398,18 @@ try:
                         resolution_map = result.metadata["entity_resolution_map"]
                         # Get canonical UUIDs in same order as entity_uuids
                         canonical_uuids = [
-                            resolution_map.get(
-                                entity_uuid,
-                                EntityResolutionResult(
-                                    original_uuid=entity_uuid,
-                                    canonical_uuid=entity_uuid,
-                                    is_reused=False,
-                                    match_type="new",
-                                    confidence=1.0,
-                                ),
-                            ).canonical_uuid
+                            ensure_json_serializable(
+                                resolution_map.get(
+                                    entity_uuid,
+                                    EntityResolutionResult(
+                                        original_uuid=entity_uuid,
+                                        canonical_uuid=entity_uuid,
+                                        is_reused=False,
+                                        match_type="new",
+                                        confidence=1.0,
+                                    ),
+                                ).canonical_uuid
+                            )
                             for entity_uuid in entity_uuids
                         ]
                     else:
@@ -737,6 +781,8 @@ class SimpleDocumentProcessor:
 
                 # Track this episode for chain linking
                 episode_uuid = result.episode.uuid if hasattr(result, "episode") else None
+                # Ensure UUID is JSON-serializable (convert Neo4j types if needed)
+                episode_uuid = ensure_json_serializable(episode_uuid)
                 episode_uuids.append(episode_uuid)
                 previous_episode_uuid = episode_uuid
 
@@ -769,10 +815,14 @@ class SimpleDocumentProcessor:
 
                 # Phase 2: Extract entity tracking data for chunk-aware tracking
                 entity_names = (
-                    [node.name for node in result.nodes] if hasattr(result, "nodes") else []
+                    [ensure_json_serializable(node.name) for node in result.nodes]
+                    if hasattr(result, "nodes")
+                    else []
                 )
                 entity_uuids = (
-                    [node.uuid for node in result.nodes] if hasattr(result, "nodes") else []
+                    [ensure_json_serializable(node.uuid) for node in result.nodes]
+                    if hasattr(result, "nodes")
+                    else []
                 )
 
                 # Phase 2: Extract canonical UUIDs from deduplication metadata
@@ -781,16 +831,18 @@ class SimpleDocumentProcessor:
                     resolution_map = result.metadata["entity_resolution_map"]
                     # Get canonical UUIDs in same order as entity_uuids
                     canonical_uuids = [
-                        resolution_map.get(
-                            entity_uuid,
-                            EntityResolutionResult(
-                                original_uuid=entity_uuid,
-                                canonical_uuid=entity_uuid,
-                                is_reused=False,
-                                match_type="new",
-                                confidence=1.0,
-                            ),
-                        ).canonical_uuid
+                        ensure_json_serializable(
+                            resolution_map.get(
+                                entity_uuid,
+                                EntityResolutionResult(
+                                    original_uuid=entity_uuid,
+                                    canonical_uuid=entity_uuid,
+                                    is_reused=False,
+                                    match_type="new",
+                                    confidence=1.0,
+                                ),
+                            ).canonical_uuid
+                        )
                         for entity_uuid in entity_uuids
                     ]
                 else:
