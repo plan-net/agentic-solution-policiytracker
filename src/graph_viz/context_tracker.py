@@ -460,6 +460,12 @@ class ChatContextTracker:
 
                 for record in records:
                     try:
+                        # Filter out CanonicalEntity nodes - we don't want to display them in the UI
+                        labels = record.get("labels", [])
+                        if "CanonicalEntity" in labels:
+                            logger.warning(f"🚫 Filtering out CanonicalEntity: {record.get('name', 'Unknown')} (UUID: {record['uuid'][:8]})")
+                            continue
+
                         # Sanitize properties to convert Neo4j DateTime objects to strings
                         props = record.get("props", {})
                         logger.warning(
@@ -528,9 +534,12 @@ class ChatContextTracker:
             async with self.driver.session(database=settings.NEO4J_DATABASE) as session:
                 # Query 1: Get all relationships where at least one end is in our entity list
                 # This captures both internal connections and connections to neighbors
+                # Filter out relationships connected to CanonicalEntity nodes
                 rel_query = """
                     MATCH (e1)-[r]->(e2)
-                    WHERE e1.uuid IN $uuids OR e2.uuid IN $uuids
+                    WHERE (e1.uuid IN $uuids OR e2.uuid IN $uuids)
+                      AND NOT 'CanonicalEntity' IN labels(e1)
+                      AND NOT 'CanonicalEntity' IN labels(e2)
                     RETURN e1.uuid AS source_uuid,
                            e2.uuid AS target_uuid,
                            type(r) AS rel_type,
