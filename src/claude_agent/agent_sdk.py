@@ -28,6 +28,14 @@ from claude_agent_sdk import (
 from neo4j import AsyncGraphDatabase
 
 from src.chat.observability.langwatch_config import langwatch_config
+from src.chat.observability.observability_provider import observability_provider
+from src.chat.observability.langfuse_config import (
+    create_trace_context as langfuse_create_trace,
+    update_trace as langfuse_update_trace,
+    capture_generation as langfuse_capture_generation,
+    is_initialized as langfuse_is_initialized,
+    get_langfuse_client,
+)
 from src.config import settings
 from src.graph_viz.context_tracker import ChatContextTracker
 from src.prompts.prompt_manager import prompt_manager
@@ -174,8 +182,8 @@ class PolicyTrackerSDKAgent:
         self._context_tracker = None
         self._sdk_context_manager: Optional[SDKContextManager] = None
 
-        # Initialize LangWatch in manual mode
-        langwatch_config.initialize(instrumentation_mode="manual")
+        # Initialize observability (handles LangWatch, LangFuse, or both based on OBSERVABILITY_PROVIDER)
+        observability_provider.initialize(instrumentation_mode="manual")
 
         logger.info(
             f"PolicyTrackerSDKAgent initialized with model: {self.model}, "
@@ -415,6 +423,25 @@ class PolicyTrackerSDKAgent:
         langwatch_config.set_thread_id(session_id)
         langwatch_config.set_session_query(session_id, user_message)
 
+        # Create LangFuse trace context (if enabled)
+        langfuse_trace = None
+        if langfuse_is_initialized():
+            langfuse = get_langfuse_client()
+            if langfuse:
+                try:
+                    langfuse_trace = langfuse.start_as_current_span(
+                        name="policy_tracker_query",
+                        input={"user_message": user_message, "session_id": session_id},
+                        metadata={"agent": "PolicyTrackerSDKAgent", "model": self.model},
+                    )
+                    langfuse_trace.__enter__()
+                    langfuse.update_current_trace(
+                        tags=["policy-tracker", "sdk-agent"],
+                        metadata={"session_id": session_id},
+                    )
+                except Exception as e:
+                    logger.debug(f"Failed to create LangFuse trace: {e}")
+
         # Get context tracker and initialize session
         context_tracker = await self._get_context_tracker()
         await self._init_session_context(context_tracker, session_id, user_message)
@@ -516,6 +543,21 @@ class PolicyTrackerSDKAgent:
 
         self._finalize_langwatch(session_id, response_text)
 
+        # Finalize LangFuse trace (if enabled)
+        if langfuse_trace:
+            try:
+                langfuse = get_langfuse_client()
+                if langfuse:
+                    langfuse.update_current_span(
+                        output=response_text,
+                        metadata={"turns": turn_count},
+                    )
+                langfuse_trace.__exit__(None, None, None)
+                langfuse.flush()
+                logger.debug(f"LangFuse trace completed for session: {session_id}")
+            except Exception as e:
+                logger.debug(f"Failed to finalize LangFuse trace: {e}")
+
         # Build metadata with reflection summary
         reflection_summary = get_reflection()
         metadata: dict[str, Any] = {
@@ -578,6 +620,25 @@ class PolicyTrackerSDKAgent:
         # Set thread_id for LangWatch trace grouping
         langwatch_config.set_thread_id(session_id)
         langwatch_config.set_session_query(session_id, user_message)
+
+        # Create LangFuse trace context (if enabled)
+        langfuse_trace = None
+        if langfuse_is_initialized():
+            langfuse = get_langfuse_client()
+            if langfuse:
+                try:
+                    langfuse_trace = langfuse.start_as_current_span(
+                        name="policy_tracker_stream_query",
+                        input={"user_message": user_message, "session_id": session_id},
+                        metadata={"agent": "PolicyTrackerSDKAgent", "model": self.model, "streaming": True},
+                    )
+                    langfuse_trace.__enter__()
+                    langfuse.update_current_trace(
+                        tags=["policy-tracker", "sdk-agent", "streaming"],
+                        metadata={"session_id": session_id},
+                    )
+                except Exception as e:
+                    logger.debug(f"Failed to create LangFuse trace: {e}")
 
         # Get context tracker and initialize session
         context_tracker = await self._get_context_tracker()
@@ -677,6 +738,21 @@ class PolicyTrackerSDKAgent:
             )
 
         self._finalize_langwatch(session_id, full_response)
+
+        # Finalize LangFuse trace (if enabled)
+        if langfuse_trace:
+            try:
+                langfuse = get_langfuse_client()
+                if langfuse:
+                    langfuse.update_current_span(
+                        output=full_response,
+                        metadata={"turns": turn_count},
+                    )
+                langfuse_trace.__exit__(None, None, None)
+                langfuse.flush()
+                logger.debug(f"LangFuse trace completed for session: {session_id}")
+            except Exception as e:
+                logger.debug(f"Failed to finalize LangFuse trace: {e}")
 
         # Build metadata with reflection summary
         reflection_summary = get_reflection()

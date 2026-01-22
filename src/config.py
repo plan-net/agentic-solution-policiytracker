@@ -68,6 +68,15 @@ class Settings(BaseSettings):
         default="https://cloud.langfuse.com", description="Langfuse host URL"
     )
 
+    # Observability Provider Selection
+    OBSERVABILITY_PROVIDER: str = Field(
+        default="langwatch",
+        description="Observability provider: langwatch, langfuse, or both (for migration)",
+    )
+    LANGFUSE_ENABLE_TRACING: bool = Field(
+        default=True, description="Enable LangFuse tracing when provider is langfuse or both"
+    )
+
     # LangWatch Observability
     ENABLE_LANGWATCH: bool = Field(default=False, description="Enable LangWatch observability")
     LANGWATCH_API_KEY: Optional[str] = Field(default=None, description="LangWatch API key")

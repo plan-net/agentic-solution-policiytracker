@@ -243,6 +243,23 @@ async def create_langwatch_hooks(
         except Exception as e:
             logger.warning(f"Failed to capture tool call in LangWatch: {e}", exc_info=True)
 
+        # Capture in LangFuse (if enabled)
+        try:
+            from src.chat.observability.langfuse_config import get_langfuse_client, is_initialized
+
+            if is_initialized():
+                langfuse = get_langfuse_client()
+                if langfuse:
+                    # Score the current span with tool execution metadata
+                    langfuse.score_current_span(
+                        name="tool_execution",
+                        value=1.0 if tool_output else 0.0,
+                        comment=f"Tool: {tool_name}, Duration: {execution_time:.2f}s",
+                    )
+                    logger.debug(f"[LangFuse] Scored tool call: {tool_name}")
+        except Exception as e:
+            logger.debug(f"LangFuse scoring skipped: {e}")
+
         # Track in context for graph visualization
         if context_tracker:
             try:

@@ -17,34 +17,168 @@ services:
       timeout: 5s
       retries: 5
 
-  # Langfuse for LLM observability
-  langfuse-server:
-    image: langfuse/langfuse:2
+  # ============================================================================
+  # LANGFUSE v3 - LLM OBSERVABILITY
+  # ============================================================================
+
+  # ClickHouse for LangFuse analytics
+  langfuse-clickhouse:
+    image: docker.io/clickhouse/clickhouse-server
+    container_name: policiytracker-langfuse-clickhouse
+    user: "101:101"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse_password
+    volumes:
+      - langfuse_clickhouse_data:/var/lib/clickhouse
+      - langfuse_clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 1s
+
+  # Redis for LangFuse caching and queues
+  langfuse-redis:
+    image: docker.io/redis:7
+    container_name: policiytracker-langfuse-redis
+    command: >
+      --requirepass langfuse_redis_secret
+      --maxmemory-policy noeviction
+    volumes:
+      - langfuse_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+  # MinIO for LangFuse blob storage
+  langfuse-minio:
+    image: minio/minio:latest
+    container_name: policiytracker-langfuse-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio_secret_password
+    volumes:
+      - langfuse_minio_data:/data
+    ports:
+      - "9092:9000"   # S3 API (changed from 9090 to avoid conflict with APISIX)
+      - "9093:9001"   # MinIO Console
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  # LangFuse Worker - Background processing
+  langfuse-worker:
+    image: docker.io/langfuse/langfuse-worker:3
+    container_name: policiytracker-langfuse-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      langfuse-clickhouse:
+        condition: service_healthy
+      langfuse-redis:
+        condition: service_healthy
+      langfuse-minio:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3030:3030"
+    environment:
+      # Core settings
+      NEXTAUTH_URL: http://localhost:3001
+      TELEMETRY_ENABLED: "true"
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
+      # Database (reusing existing postgres container)
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/langfuse
+      # ClickHouse - separate credentials required by LangFuse v3
+      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse_password
+      CLICKHOUSE_MIGRATION_URL: clickhouse://langfuse-clickhouse:9000
+      CLICKHOUSE_CLUSTER_ENABLED: "false"
+      # Redis - using separate host/port/auth variables
+      REDIS_HOST: langfuse-redis
+      REDIS_PORT: "6379"
+      REDIS_AUTH: langfuse_redis_secret
+      # S3/MinIO - using LANGFUSE_S3_* prefix
+      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: minio_secret_password
+      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://langfuse-minio:9000
+      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: minio_secret_password
+      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://localhost:9092
+      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+      # Security (CHANGEME in production - generate with: openssl rand -hex 32)
+      ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
+      SALT: changeme-salt-value-here
+    restart: unless-stopped
+
+  # LangFuse Web - Main application
+  langfuse-web:
+    image: docker.io/langfuse/langfuse:3
     container_name: policiytracker-langfuse
     depends_on:
       postgres:
         condition: service_healthy
+      langfuse-clickhouse:
+        condition: service_healthy
+      langfuse-redis:
+        condition: service_healthy
+      langfuse-minio:
+        condition: service_healthy
     ports:
       - "3001:3000"
     environment:
-      # Database
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/langfuse
-      DIRECT_URL: postgresql://postgres:postgres@postgres:5432/langfuse
-      
-      # Auth & Security
-      NEXTAUTH_SECRET: changeme-nextauth-secret
+      # Core settings
       NEXTAUTH_URL: http://localhost:3001
-      SALT: changeme-salt
-      
-      # Feature flags
+      NEXTAUTH_SECRET: changeme-nextauth-secret-here
+      TELEMETRY_ENABLED: "true"
       LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
-    volumes:
-      - langfuse_data:/app/.next
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/public/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      # Database (reusing existing postgres container)
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/langfuse
+      # ClickHouse - separate credentials required by LangFuse v3
+      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse_password
+      CLICKHOUSE_MIGRATION_URL: clickhouse://langfuse-clickhouse:9000
+      CLICKHOUSE_CLUSTER_ENABLED: "false"
+      # Redis - using separate host/port/auth variables
+      REDIS_HOST: langfuse-redis
+      REDIS_PORT: "6379"
+      REDIS_AUTH: langfuse_redis_secret
+      # S3/MinIO - using LANGFUSE_S3_* prefix
+      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: minio_secret_password
+      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://langfuse-minio:9000
+      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: minio_secret_password
+      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://localhost:9092
+      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+      # Security (CHANGEME in production - must match worker, generate with: openssl rand -hex 32)
+      ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
+      SALT: changeme-salt-value-here
+    restart: unless-stopped
 
   # Azurite - Azure Storage Emulator for local development
   azurite:
@@ -367,89 +501,6 @@ services:
       - open_webui_data:/app/backend/data
     restart: unless-stopped
 
-  # LangWatch - LLMOps observability platform
-  langwatch-postgres:
-    image: postgres:15-alpine
-    container_name: policiytracker-langwatch-postgres
-    environment:
-      POSTGRES_DB: langwatch
-      POSTGRES_USER: langwatch
-      POSTGRES_PASSWORD: langwatch_secure_password
-    volumes:
-      - langwatch_postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U langwatch -d langwatch"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  langwatch-clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: policiytracker-langwatch-clickhouse
-    environment:
-      CLICKHOUSE_DB: langwatch
-      CLICKHOUSE_USER: langwatch
-      CLICKHOUSE_PASSWORD: langwatch_secure_password
-    volumes:
-      - langwatch_clickhouse_data:/var/lib/clickhouse
-    healthcheck:
-      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  langwatch-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: policiytracker-langwatch-elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - langwatch_elasticsearch_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  langwatch-server:
-    image: langwatch/langwatch:latest
-    container_name: policiytracker-langwatch
-    depends_on:
-      langwatch-postgres:
-        condition: service_healthy
-      langwatch-clickhouse:
-        condition: service_healthy
-      langwatch-elasticsearch:
-        condition: service_healthy
-    ports:
-      - "5560:5560"
-    environment:
-      # Database connections (LangWatch uses these specific variable names)
-      DATABASE_URL: postgresql://langwatch:langwatch_secure_password@langwatch-postgres:5432/langwatch
-      CLICKHOUSE_URL: http://langwatch:langwatch_secure_password@langwatch-clickhouse:8123/langwatch
-      ELASTICSEARCH_NODE_URL: http://langwatch-elasticsearch:9200
-
-      # Application settings
-      NEXTAUTH_SECRET: ${LANGWATCH_NEXTAUTH_SECRET:-changeme-langwatch-secret}
-      API_TOKEN_JWT_SECRET: ${LANGWATCH_API_TOKEN_JWT_SECRET:-changeme-api-token-jwt-secret}
-      NEXTAUTH_URL: http://localhost:5560
-      BASE_HOST: http://localhost:5560
-
-      # Optional: OpenAI for evaluations
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-    volumes:
-      - langwatch_data:/app/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5560/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-
   # ============================================================================
   # API GATEWAY & COST TRACKING INFRASTRUCTURE
   # ============================================================================
@@ -592,7 +643,6 @@ services:
 
 volumes:
   postgres_data:
-  langfuse_data:
   azurite_data:
   neo4j_data:
   neo4j_logs:
@@ -601,10 +651,11 @@ volumes:
   airflow_postgres_data:
   airflow_logs:
   open_webui_data:
-  langwatch_postgres_data:
-  langwatch_clickhouse_data:
-  langwatch_elasticsearch_data:
-  langwatch_data:
+  # LangFuse v3 volumes
+  langfuse_clickhouse_data:
+  langfuse_clickhouse_logs:
+  langfuse_redis_data:
+  langfuse_minio_data:
   # API Gateway & Cost Tracking volumes
   etcd_data:
   apisix_logs:

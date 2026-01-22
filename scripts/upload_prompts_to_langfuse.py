@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
+
+# Load environment variables from .env file BEFORE importing settings
+# This ensures API keys and configuration are available
+load_dotenv()
 
 # Add src to path so we can import our modules
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -43,9 +48,9 @@ def upload_prompts_to_langfuse():
         return False
     print()
 
-    # Get all prompt files
+    # Get all prompt files (recursively search subdirectories)
     prompts_dir = Path(__file__).parent.parent / "src" / "prompts"
-    prompt_files = list(prompts_dir.glob("*.md"))
+    prompt_files = sorted(prompts_dir.rglob("*.md"))
 
     if not prompt_files:
         print("❌ No prompt files found in src/prompts/")
@@ -53,7 +58,9 @@ def upload_prompts_to_langfuse():
 
     print(f"📄 Found {len(prompt_files)} prompt files:")
     for file in prompt_files:
-        print(f"   • {file.name}")
+        # Show relative path from prompts_dir for clarity
+        rel_path = file.relative_to(prompts_dir)
+        print(f"   • {rel_path}")
     print()
 
     # Upload each prompt
@@ -61,7 +68,8 @@ def upload_prompts_to_langfuse():
 
     for prompt_file in prompt_files:
         try:
-            print(f"📤 Processing {prompt_file.name}...")
+            rel_path = prompt_file.relative_to(prompts_dir)
+            print(f"📤 Processing {rel_path}...")
 
             # Read file content
             content = prompt_file.read_text(encoding="utf-8")
@@ -73,10 +81,10 @@ def upload_prompts_to_langfuse():
                     frontmatter = yaml.safe_load(parts[1])
                     prompt_content = parts[2].strip()
                 else:
-                    print(f"   ⚠️  Invalid frontmatter in {prompt_file.name}, skipping...")
+                    print(f"   ⚠️  Invalid frontmatter in {rel_path}, skipping...")
                     continue
             else:
-                print(f"   ⚠️  No frontmatter found in {prompt_file.name}, skipping...")
+                print(f"   ⚠️  No frontmatter found in {rel_path}, skipping...")
                 continue
 
             # Extract metadata
@@ -126,7 +134,7 @@ def upload_prompts_to_langfuse():
                 print(f"   ❌ Failed to upload '{prompt_name}': {e}")
 
         except Exception as e:
-            print(f"   ❌ Error uploading {prompt_file.name}: {e}")
+            print(f"   ❌ Error uploading {rel_path}: {e}")
             continue
 
     print()

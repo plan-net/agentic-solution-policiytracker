@@ -66,7 +66,7 @@ status:
     @echo "  📊 Ray Dashboard:  http://localhost:8265"
     @echo "  💬 Open WebUI:     http://localhost:3000"
     @echo "  🗄️  Neo4j Browser:  http://localhost:7474 (neo4j/password123)"
-    @echo "  🔍 Langfuse:       http://localhost:3001 (disabled, use 'just langfuse-up')"
+    @echo "  🔍 LangFuse:       http://localhost:3001 (use 'just langfuse-up' to enable)"
     @echo "  ✈️  Airflow:        http://localhost:8080 (admin/admin)"
     @echo "  ☁️  Azurite:        http://localhost:10000 (blob storage)"
     @echo "  🤖 Graphiti MCP:   http://localhost:8000 (SSE endpoint)"
@@ -143,27 +143,100 @@ redeploy: sync-config
 
 # === Docker Services ===
 
-# Start Docker services only (excluding Langfuse)
+# Start Docker services only (excluding LangFuse)
 services-up:
-    @echo "🐳 Starting Docker services (excluding Langfuse)..."
-    docker compose up -d --scale langfuse-server=0
-    @echo "✅ Docker services started (Langfuse disabled)"
+    @echo "🐳 Starting Docker services (excluding LangFuse observability)..."
+    docker compose up -d --scale langfuse-clickhouse=0 --scale langfuse-redis=0 --scale langfuse-minio=0 --scale langfuse-worker=0 --scale langfuse-web=0
+    @echo "✅ Docker services started (LangFuse disabled, use 'just langfuse-up' to enable)"
 
 # Stop Docker services
 services-down:
     docker compose down
 
-# Start Langfuse observability service (optional)
+# Start LangFuse v3 observability stack (recommended)
 langfuse-up:
-    @echo "🔭 Starting Langfuse observability..."
-    docker compose up -d langfuse-server
-    @echo "✅ Langfuse started at http://localhost:3001"
+    @echo "🔭 Starting LangFuse v3 observability stack..."
+    docker compose up -d postgres langfuse-clickhouse langfuse-redis langfuse-minio langfuse-worker langfuse-web
+    @echo "⏳ Waiting for services to be healthy (~30-60 seconds)..."
+    @sleep 30
+    @just langfuse-status
+    @echo ""
+    @echo "📝 Next steps:"
+    @echo "  1. Visit http://localhost:3001"
+    @echo "  2. Create account and organization"
+    @echo "  3. Go to Settings → API Keys"
+    @echo "  4. Copy keys to .env (LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY)"
+    @echo "  5. Set OBSERVABILITY_PROVIDER=langfuse in .env"
 
-# Stop Langfuse service
+# Stop LangFuse services
 langfuse-down:
-    @echo "🛑 Stopping Langfuse..."
-    docker compose stop langfuse-server
-    @echo "✅ Langfuse stopped"
+    @echo "🛑 Stopping LangFuse services..."
+    docker compose stop langfuse-web langfuse-worker langfuse-minio langfuse-redis langfuse-clickhouse
+    @echo "✅ LangFuse stopped"
+
+# Restart LangFuse services
+langfuse-restart:
+    @echo "🔄 Restarting LangFuse services..."
+    docker compose restart langfuse-web langfuse-worker
+    @echo "✅ LangFuse restarted"
+
+# View LangFuse logs (all services or specific)
+langfuse-logs service="langfuse-web":
+    @echo "📜 Viewing LangFuse logs for {{service}}..."
+    docker compose logs -f {{service}}
+
+# Check LangFuse service status
+langfuse-status:
+    @echo "📊 LangFuse v3 Service Status:"
+    @echo "=============================="
+    @docker compose ps langfuse-web langfuse-worker langfuse-clickhouse langfuse-redis langfuse-minio postgres 2>/dev/null || echo "Services not running"
+    @echo ""
+    @echo "🌐 LangFuse UI: http://localhost:3001"
+    @echo ""
+    @echo "Testing LangFuse health..."
+    @curl -s http://localhost:3001/api/public/health 2>/dev/null | python3 -m json.tool || echo "❌ LangFuse not responding (may still be starting)"
+
+# Open LangFuse UI in browser
+langfuse-ui:
+    @echo "🌐 Opening LangFuse UI..."
+    open http://localhost:3001 || xdg-open http://localhost:3001 || echo "Please visit: http://localhost:3001"
+
+# Setup instructions for LangFuse v3
+langfuse-setup:
+    @echo "📝 LangFuse v3 Setup Instructions:"
+    @echo ""
+    @echo "1. Start LangFuse stack:"
+    @echo "   just langfuse-up"
+    @echo ""
+    @echo "2. Wait for services to be healthy (~60 seconds)"
+    @echo ""
+    @echo "3. Access LangFuse UI:"
+    @echo "   http://localhost:3001"
+    @echo ""
+    @echo "4. Create account and organization"
+    @echo ""
+    @echo "5. Get API keys:"
+    @echo "   Settings → API Keys → Create new API key"
+    @echo ""
+    @echo "6. Update .env file:"
+    @echo "   OBSERVABILITY_PROVIDER=langfuse"
+    @echo "   LANGFUSE_PUBLIC_KEY=pk-lf-xxxxxxxx"
+    @echo "   LANGFUSE_SECRET_KEY=sk-lf-xxxxxxxx"
+    @echo "   LANGFUSE_HOST=http://localhost:3001"
+    @echo ""
+    @echo "7. (Optional) Upload prompts to LangFuse:"
+    @echo "   just upload-prompts"
+    @echo ""
+    @echo "8. Restart services to apply:"
+    @echo "   just restart"
+    @echo ""
+    @echo "For more details, see: .claude/plans/parallel-wibbling-shell.md"
+
+# View LangFuse MinIO console (blob storage)
+langfuse-minio:
+    @echo "🌐 Opening MinIO Console..."
+    @echo "Login: langfuse / langfuse_minio_password"
+    open http://localhost:9093 || xdg-open http://localhost:9093 || echo "Please visit: http://localhost:9093"
 
 # View service logs
 logs service="":
@@ -189,6 +262,11 @@ build-communities:
 upload-prompts:
     @echo "📤 Uploading prompts to Langfuse..."
     uv run python scripts/upload_prompts_to_langfuse.py
+
+# Test LangFuse tracing
+test-langfuse:
+    @echo "🧪 Testing LangFuse tracing..."
+    uv run python scripts/test_langfuse_trace.py
 
 # Test ETL pipeline
 test-etl:
@@ -584,40 +662,48 @@ grafana-ui:
     @echo "🌐 Opening Grafana Dashboard..."
     open http://localhost:3002 || xdg-open http://localhost:3002 || echo "Please visit: http://localhost:3002 (admin/admin123)"
 
-# === LangWatch Observability ===
+# === LangWatch Observability (DEPRECATED - Use LangFuse instead) ===
+# NOTE: LangWatch is being replaced by LangFuse v3.
+# Use 'just langfuse-up' for the recommended observability stack.
+# LangWatch commands kept for backward compatibility during migration.
 
-# Start LangWatch services
+# Start LangWatch services (DEPRECATED)
 langwatch-up:
+    @echo "⚠️  WARNING: LangWatch is deprecated. Consider using LangFuse instead: just langfuse-up"
+    @echo ""
     @echo "🔭 Starting LangWatch services..."
     docker compose up -d langwatch-postgres langwatch-clickhouse langwatch-elasticsearch langwatch-server
     @echo "⏳ Waiting for services to be healthy..."
     @sleep 15
     @just langwatch-status
 
-# Stop LangWatch services
+# Stop LangWatch services (DEPRECATED)
 langwatch-down:
     @echo "🛑 Stopping LangWatch services..."
     docker compose stop langwatch-server langwatch-elasticsearch langwatch-clickhouse langwatch-postgres
 
-# View LangWatch logs
+# View LangWatch logs (DEPRECATED)
 langwatch-logs:
     docker compose logs -f langwatch-server
 
-# Check LangWatch service status
+# Check LangWatch service status (DEPRECATED)
 langwatch-status:
-    @echo "📊 LangWatch Service Status:"
-    @docker compose ps langwatch-server langwatch-postgres langwatch-clickhouse langwatch-elasticsearch
+    @echo "📊 LangWatch Service Status (DEPRECATED - use 'just langfuse-status'):"
+    @docker compose ps langwatch-server langwatch-postgres langwatch-clickhouse langwatch-elasticsearch 2>/dev/null || echo "LangWatch services not defined in docker-compose.yml"
     @echo ""
     @echo "🌐 LangWatch UI: http://localhost:5560"
 
-# Open LangWatch UI in browser
+# Open LangWatch UI in browser (DEPRECATED)
 langwatch-ui:
-    @echo "🌐 Opening LangWatch UI..."
+    @echo "⚠️  LangWatch is deprecated. Consider LangFuse: just langfuse-ui"
     open http://localhost:5560 || xdg-open http://localhost:5560 || echo "Please visit: http://localhost:5560"
 
-# Setup instructions for LangWatch
+# Setup instructions for LangWatch (DEPRECATED)
 langwatch-setup:
-    @echo "📝 LangWatch Setup Instructions:"
+    @echo "⚠️  LangWatch is DEPRECATED. Use LangFuse instead:"
+    @echo "   just langfuse-setup"
+    @echo ""
+    @echo "📝 Legacy LangWatch Setup Instructions:"
     @echo ""
     @echo "1. Start services: just langwatch-up"
     @echo "2. Access LangWatch UI at http://localhost:5560"
@@ -625,10 +711,10 @@ langwatch-setup:
     @echo "4. Go to Settings → API Keys"
     @echo "5. Generate new API key"
     @echo "6. Add to .env: LANGWATCH_API_KEY=<your-key>"
-    @echo "7. Set ENABLE_LANGWATCH=true in .env"
+    @echo "7. Set OBSERVABILITY_PROVIDER=langwatch in .env"
     @echo "8. Restart services: just restart"
 
-# Test LangWatch integration
+# Test LangWatch integration (DEPRECATED)
 test-langwatch:
     @echo "🧪 Testing LangWatch integration..."
     uv run pytest tests/integration/test_langwatch_integration.py -v

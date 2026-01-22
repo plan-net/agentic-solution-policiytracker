@@ -33,6 +33,11 @@ from claude_agent_sdk import (
 )
 
 from src.chat.observability.langwatch_config import langwatch_config
+from src.chat.observability.observability_provider import observability_provider
+from src.chat.observability.langfuse_config import (
+    is_initialized as langfuse_is_initialized,
+    get_langfuse_client,
+)
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.client_context import get_client_context_for_prompt
@@ -97,8 +102,8 @@ class WeeklyReportSDKAgent:
         self.enable_bundestag = enable_bundestag
         self.enable_web_search = enable_web_search
 
-        # Initialize LangWatch in manual mode
-        langwatch_config.initialize(instrumentation_mode="manual")
+        # Initialize observability (handles LangWatch, LangFuse, or both based on OBSERVABILITY_PROVIDER)
+        observability_provider.initialize(instrumentation_mode="manual")
 
         logger.info(
             f"WeeklyReportSDKAgent initialized with model: {model}, "
@@ -333,6 +338,29 @@ Begin by searching for legislative and regulatory updates, then proceed through 
         langwatch_config.set_thread_id(report_session_id)
         langwatch_config.set_session_query(report_session_id, user_message)
 
+        # Create LangFuse trace context (if enabled)
+        langfuse_trace = None
+        if langfuse_is_initialized():
+            langfuse = get_langfuse_client()
+            if langfuse:
+                try:
+                    langfuse_trace = langfuse.start_as_current_span(
+                        name="weekly_report_generation",
+                        input={"user_message": user_message, "session_id": report_session_id},
+                        metadata={
+                            "agent": "WeeklyReportSDKAgent",
+                            "model": self.model,
+                            "week_label": week_label,
+                        },
+                    )
+                    langfuse_trace.__enter__()
+                    langfuse.update_current_trace(
+                        tags=["weekly-report", "sdk-agent"],
+                        metadata={"session_id": report_session_id},
+                    )
+                except Exception as e:
+                    logger.debug(f"Failed to create LangFuse trace: {e}")
+
         # Track tool calls for metadata
         tool_calls: list[dict[str, Any]] = []
         turn_count = 0
@@ -439,6 +467,21 @@ Begin by searching for legislative and regulatory updates, then proceed through 
             success = langwatch_config.send_trace_via_rest_api(session_data)
             if success:
                 logger.info(f"Trace sent for report session: {report_session_id}")
+
+        # Finalize LangFuse trace (if enabled)
+        if langfuse_trace:
+            try:
+                langfuse = get_langfuse_client()
+                if langfuse:
+                    langfuse.update_current_span(
+                        output=report_content[:5000] if report_content else "",
+                        metadata={"turns": turn_count, "tool_calls": len(tool_calls)},
+                    )
+                langfuse_trace.__exit__(None, None, None)
+                langfuse.flush()
+                logger.debug(f"LangFuse trace completed for report session: {report_session_id}")
+            except Exception as e:
+                logger.debug(f"Failed to finalize LangFuse trace: {e}")
 
         # Get reflection summary
         reflection_summary = get_reflection()
