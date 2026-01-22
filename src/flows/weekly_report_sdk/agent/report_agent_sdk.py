@@ -35,6 +35,7 @@ from claude_agent_sdk import (
 from src.chat.observability.langwatch_config import langwatch_config
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
+from src.shared.client_context import get_client_context_for_prompt
 
 from .prompts import (
     DEFAULT_MCP_SERVER_URL,
@@ -161,10 +162,29 @@ class WeeklyReportSDKAgent:
             logger.warning(f"Failed to load tool selection prompt: {e}")
             return ""
 
+    async def _get_client_context_prompt(self) -> str:
+        """Load client context prompt with business understanding.
+
+        Loads the client context from data/context/client.yaml and injects
+        it into the prompt template for business-aware analysis.
+
+        Returns:
+            Client context prompt or empty string if unavailable
+        """
+        try:
+            client_vars = get_client_context_for_prompt()
+            return await prompt_manager.get_prompt(
+                "sdk_agents/client_context",
+                variables=client_vars
+            )
+        except Exception as e:
+            logger.warning(f"Failed to load client context prompt: {e}")
+            return ""
+
     async def _build_full_system_prompt(
         self, week_label: str, week_start: str, week_end: str
     ) -> str:
-        """Build complete system prompt with base, planning, and reflection components.
+        """Build complete system prompt with client context, planning, and reflection.
 
         Args:
             week_label: Week label (e.g., "KW48/2025")
@@ -172,10 +192,19 @@ class WeeklyReportSDKAgent:
             week_end: End date (ISO format)
 
         Returns:
-            Complete system prompt combining all components
+            Complete system prompt combining all components:
+            1. Base system prompt with week info
+            2. Client context (business understanding and regulatory focus)
+            3. Planning strategy for multi-step research
+            4. Tool selection/reflection strategy (if enabled)
         """
         # Get base prompt
         base_prompt = await self._get_system_prompt(week_label, week_start, week_end)
+
+        # Add client context (business understanding)
+        client_context_prompt = await self._get_client_context_prompt()
+        if client_context_prompt:
+            base_prompt = f"{base_prompt}\n\n{client_context_prompt}"
 
         # Add planning strategy
         planning_prompt = await self._get_planning_prompt()

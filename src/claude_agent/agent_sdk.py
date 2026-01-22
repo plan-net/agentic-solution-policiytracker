@@ -33,6 +33,7 @@ from src.graph_viz.context_tracker import ChatContextTracker
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.context_manager import SDKContextManager
+from src.shared.client_context import get_client_context_for_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -240,17 +241,39 @@ class PolicyTrackerSDKAgent:
             logger.warning(f"Failed to load response synthesis prompt: {e}")
             return ""
 
+    async def _get_client_context_prompt(self) -> str:
+        """Load client context prompt with business understanding.
+
+        Loads the client context from data/context/client.yaml and injects
+        it into the prompt template for business-aware analysis.
+        """
+        try:
+            client_vars = get_client_context_for_prompt()
+            return await prompt_manager.get_prompt(
+                "sdk_agents/client_context",
+                variables=client_vars
+            )
+        except Exception as e:
+            logger.warning(f"Failed to load client context prompt: {e}")
+            return ""
+
     async def _build_system_prompt_with_context(self, session_id: str) -> str:
-        """Build complete system prompt with reflection and conversation context.
+        """Build complete system prompt with client context, reflection, and conversation context.
 
         Combines:
         1. Base system prompt (from PromptManager or fallback)
-        2. Response synthesis guidelines (Public Affairs perspective)
-        3. Reflection/tool selection strategy (if enabled)
-        4. Conversation context (if multi-turn enabled and continuing session)
+        2. Client context (business understanding and regulatory focus)
+        3. Response synthesis guidelines (Public Affairs perspective)
+        4. Reflection/tool selection strategy (if enabled)
+        5. Conversation context (if multi-turn enabled and continuing session)
         """
         # Get base prompt
         base_prompt = await self._get_system_prompt()
+
+        # Add client context (business understanding)
+        client_context_prompt = await self._get_client_context_prompt()
+        if client_context_prompt:
+            base_prompt = f"{base_prompt}\n\n{client_context_prompt}"
 
         # Add response synthesis guidelines (Public Affairs perspective)
         response_synthesis_prompt = await self._get_response_synthesis_prompt()
