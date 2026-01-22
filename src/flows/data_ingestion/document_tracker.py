@@ -18,6 +18,52 @@ from typing import Optional
 
 import structlog
 
+
+def ensure_json_serializable(value):
+    """
+    Convert Neo4j types (like DateTime) to JSON-serializable Python types.
+
+    This is crucial for saving tracking data that may contain Neo4j objects
+    from the graph database queries.
+
+    Args:
+        value: Any value that might contain Neo4j types
+
+    Returns:
+        JSON-serializable version of the value
+    """
+    # Handle None
+    if value is None:
+        return None
+
+    # Handle Neo4j DateTime objects
+    if hasattr(value, "__class__") and "DateTime" in value.__class__.__name__:
+        # Convert Neo4j DateTime to ISO format string
+        return value.isoformat() if hasattr(value, "isoformat") else str(value)
+
+    # Handle datetime objects (Python native)
+    if isinstance(value, datetime):
+        return value.isoformat()
+
+    # Handle lists
+    if isinstance(value, list):
+        return [ensure_json_serializable(item) for item in value]
+
+    # Handle dicts
+    if isinstance(value, dict):
+        return {k: ensure_json_serializable(v) for k, v in value.items()}
+
+    # Handle sets (convert to lists)
+    if isinstance(value, set):
+        return [ensure_json_serializable(item) for item in value]
+
+    # Handle other iterables (tuples, etc.) but not strings/bytes
+    if hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
+        return [ensure_json_serializable(item) for item in value]
+
+    # Return as-is for primitive types (str, int, float, bool)
+    return value
+
 # Configure logging for Ray environment (but not in Airflow)
 try:
     from src.flows.data_ingestion.logging_config import configure_logging
@@ -106,6 +152,10 @@ class DocumentTracker:
                         if doc_path in self.processed_docs:
                             merged_data[doc_path] = self.processed_docs[doc_path]
 
+                    # Ensure all data is JSON-serializable before saving
+                    # This prevents "Object of type DateTime is not JSON serializable" errors
+                    merged_data = ensure_json_serializable(merged_data)
+
                     # Use unique temp file with PID to avoid collisions
                     import os
 
@@ -178,15 +228,17 @@ class DocumentTracker:
         if entity_names:
             entity_names_hash = self._calculate_entity_hash(entity_names)
 
-        self.processed_docs[doc_path_str] = {
-            "episode_id": episode_id,
-            "processed_at": datetime.now().isoformat(),
-            "status": "completed",
-            "entity_count": entity_count,
-            "relationship_count": relationship_count,
-            "entity_names_hash": entity_names_hash,
-            "unique_entity_count": len(set(entity_names)) if entity_names else None,
-        }
+        self.processed_docs[doc_path_str] = ensure_json_serializable(
+            {
+                "episode_id": episode_id,
+                "processed_at": datetime.now().isoformat(),
+                "status": "completed",
+                "entity_count": entity_count,
+                "relationship_count": relationship_count,
+                "entity_names_hash": entity_names_hash,
+                "unique_entity_count": len(set(entity_names)) if entity_names else None,
+            }
+        )
         self._modified_docs.add(doc_path_str)
         self._save_tracking()
         logger.info(f"Marked as processed: {doc_path}")
@@ -220,35 +272,37 @@ class DocumentTracker:
         if entity_names:
             entity_names_hash = self._calculate_entity_hash(entity_names)
 
-        self.processed_docs[doc_path_str] = {
-            "episode_uuids": episode_uuids,  # List of all chunk episode IDs
-            "primary_episode_id": episode_uuids[0]
-            if episode_uuids
-            else None,  # First chunk for backward compatibility
-            "processed_at": datetime.now().isoformat(),
-            "status": "completed",
-            "entity_count": entity_count,
-            "relationship_count": relationship_count,
-            "is_chunked": True,
-            "total_chunks": total_chunks,
-            "successful_chunks": len([c for c in (chunk_results or []) if "error" not in c]),
-            "chunking_strategy": "hybrid",
-            "entity_names_hash": entity_names_hash,
-            "unique_entity_count": len(set(entity_names)) if entity_names else None,
-            "chunk_summary": [
-                {
-                    "chunk_index": c.get("chunk_index"),
-                    "episode_uuid": c.get("episode_uuid"),
-                    "entities": c.get("entities", 0),
-                    "relationships": c.get("relationships", 0),
-                    "boundary_type": c.get("boundary_type", "unknown"),
-                }
-                for c in (chunk_results or [])
-                if "error" not in c
-            ]
-            if chunk_results
-            else [],
-        }
+        self.processed_docs[doc_path_str] = ensure_json_serializable(
+            {
+                "episode_uuids": episode_uuids,  # List of all chunk episode IDs
+                "primary_episode_id": episode_uuids[0]
+                if episode_uuids
+                else None,  # First chunk for backward compatibility
+                "processed_at": datetime.now().isoformat(),
+                "status": "completed",
+                "entity_count": entity_count,
+                "relationship_count": relationship_count,
+                "is_chunked": True,
+                "total_chunks": total_chunks,
+                "successful_chunks": len([c for c in (chunk_results or []) if "error" not in c]),
+                "chunking_strategy": "hybrid",
+                "entity_names_hash": entity_names_hash,
+                "unique_entity_count": len(set(entity_names)) if entity_names else None,
+                "chunk_summary": [
+                    {
+                        "chunk_index": c.get("chunk_index"),
+                        "episode_uuid": c.get("episode_uuid"),
+                        "entities": c.get("entities", 0),
+                        "relationships": c.get("relationships", 0),
+                        "boundary_type": c.get("boundary_type", "unknown"),
+                    }
+                    for c in (chunk_results or [])
+                    if "error" not in c
+                ]
+                if chunk_results
+                else [],
+            }
+        )
         self._modified_docs.add(doc_path_str)
         self._save_tracking()
         logger.info(f"Marked chunked document as processed: {doc_path} ({total_chunks} chunks)")
@@ -489,11 +543,12 @@ class DocumentTracker:
             entity_uuids = chunk_result.get("entity_uuids", [])
             canonical_uuids = chunk_result.get("canonical_uuids", [])
 
+            # Ensure all values are JSON-serializable (handle Neo4j DateTime objects)
             chunk_entity_map[f"chunk_{chunk_idx}"] = {
-                "episode_uuid": episode_uuid,
-                "entities": entities,
-                "entity_uuids": entity_uuids,
-                "canonical_uuids": canonical_uuids,
+                "episode_uuid": ensure_json_serializable(episode_uuid),
+                "entities": ensure_json_serializable(entities),
+                "entity_uuids": ensure_json_serializable(entity_uuids),
+                "canonical_uuids": ensure_json_serializable(canonical_uuids),
                 "entity_count": len(entities),
             }
 
