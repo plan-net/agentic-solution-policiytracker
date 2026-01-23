@@ -3,6 +3,8 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
+from dotenv import load_dotenv
+
 
 @dataclass
 class ManagerConfig:
@@ -34,12 +36,13 @@ class ManagerConfig:
         Returns:
             ManagerConfig instance
         """
+        load_dotenv()
         return cls(
             # Neo4j
             neo4j_uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
             neo4j_user=os.getenv("NEO4J_USER", "neo4j"),
             neo4j_password=os.getenv("NEO4J_PASSWORD", "password123"),
-            neo4j_database=os.getenv("NEO4J_DATABASE", "politicamonitoring.v2"),
+            neo4j_database=os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3"),
             # DIP API
             dip_api_key=os.getenv("BUNDESTAG_DIP_API_KEY"),
             dip_base_url=os.getenv(
