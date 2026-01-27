@@ -67,6 +67,12 @@ class Settings(BaseSettings):
     LANGFUSE_HOST: str = Field(
         default="https://cloud.langfuse.com", description="Langfuse host URL"
     )
+    LANGFUSE_TIMEOUT: int = Field(
+        default=30, description="Langfuse API timeout in seconds (increase for slow networks)"
+    )
+    LANGFUSE_FLUSH_INTERVAL: int = Field(
+        default=5, description="Langfuse background flush interval in seconds (batches traces)"
+    )
 
     # Observability Provider Selection
     OBSERVABILITY_PROVIDER: str = Field(

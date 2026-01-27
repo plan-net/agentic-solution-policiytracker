@@ -246,6 +246,33 @@ logs service="":
         docker compose logs -f {{service}}; \
     fi
 
+# === Single Document Processing ===
+
+# Process a single markdown file through Graphiti pipeline
+process-doc file:
+    @echo "📄 Processing single document: {{file}}"
+    uv run python scripts/process_single_document.py "{{file}}"
+
+# Process with force reprocess (ignore tracking)
+process-doc-force file:
+    @echo "📄 Force processing: {{file}}"
+    uv run python scripts/process_single_document.py "{{file}}" --force
+
+# Process with verbose output
+process-doc-verbose file:
+    @echo "📄 Processing with verbose output: {{file}}"
+    uv run python scripts/process_single_document.py "{{file}}" --verbose
+
+# Process with JSON output (for scripting)
+process-doc-json file:
+    @echo "📄 Processing with JSON output: {{file}}"
+    uv run python scripts/process_single_document.py "{{file}}" --json
+
+# Dry run - preview what would happen without processing
+process-doc-dry file:
+    @echo "👀 Dry run for: {{file}}"
+    uv run python scripts/process_single_document.py "{{file}}" --dry-run
+
 # === Data & Analysis ===
 
 # Import sample data to Azurite

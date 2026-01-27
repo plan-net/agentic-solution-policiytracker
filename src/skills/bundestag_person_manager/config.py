@@ -1,9 +1,14 @@
 """Configuration for BundestagPerson Manager."""
 import os
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
+
+# Find project root (where .env is located)
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+load_dotenv(_PROJECT_ROOT / ".env")
 
 
 @dataclass
@@ -29,7 +34,6 @@ class ManagerConfig:
     @classmethod
     def from_env(cls) -> "ManagerConfig":
         """Load configuration from environment variables."""
-        load_dotenv()
         return cls(
             # Neo4j
             neo4j_uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),

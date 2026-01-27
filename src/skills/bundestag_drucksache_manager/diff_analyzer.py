@@ -180,13 +180,13 @@ class DrucksacheDiffAnalyzer:
         """Get all Drucksache IDs from Neo4j.
 
         Returns:
-            List of Drucksache IDs
+            List of Drucksache IDs (drucksache_nummer values)
         """
         query = """
         MATCH (d:Drucksache)
         WHERE d.active = true
-        RETURN d.drucksache_id as drucksache_id
-        ORDER BY d.drucksache_id
+        RETURN d.drucksache_nummer as drucksache_id
+        ORDER BY d.drucksache_nummer
         """
 
         with self.neo4j_driver.session(database=self.neo4j_database) as session:
@@ -197,13 +197,13 @@ class DrucksacheDiffAnalyzer:
         """Get Drucksache data from Neo4j.
 
         Args:
-            drucksache_id: Drucksache ID
+            drucksache_id: Drucksache ID (drucksache_nummer value)
 
         Returns:
             Drucksache data dict or None
         """
         query = """
-        MATCH (d:Drucksache {drucksache_id: $drucksache_id})
+        MATCH (d:Drucksache {drucksache_nummer: $drucksache_id})
         WHERE d.active = true
         RETURN d
         """

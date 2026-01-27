@@ -68,14 +68,27 @@ def initialize_langfuse() -> bool:
         # Initialize LangFuse client for manual enrichment
         from langfuse import Langfuse
 
+        # Get timeout from settings or use sensible default (30 seconds)
+        # Increase for slow networks or high-latency connections
+        langfuse_timeout = getattr(settings, "LANGFUSE_TIMEOUT", 30)
+
+        # Get flush interval - controls background batch flushing (default 5 seconds)
+        # Higher values reduce network calls but delay trace visibility
+        langfuse_flush_interval = getattr(settings, "LANGFUSE_FLUSH_INTERVAL", 5)
+
         _langfuse_client = Langfuse(
             public_key=settings.LANGFUSE_PUBLIC_KEY,
             secret_key=settings.LANGFUSE_SECRET_KEY,
             host=settings.LANGFUSE_HOST,
+            timeout=langfuse_timeout,  # Configure timeout to avoid ReadTimeout errors
+            flush_interval=langfuse_flush_interval,  # Background flush interval in seconds
         )
 
-        # Verify connection
-        _langfuse_client.auth_check()
+        # Verify connection (with timeout protection)
+        try:
+            _langfuse_client.auth_check()
+        except Exception as auth_error:
+            logger.warning(f"LangFuse auth_check failed (non-fatal): {auth_error}")
 
         _initialized = True
         logger.info(

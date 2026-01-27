@@ -2,6 +2,13 @@
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Find project root (where .env is located)
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+load_dotenv(_PROJECT_ROOT / ".env")
 
 
 @dataclass
@@ -20,7 +27,7 @@ class Neo4jConfig:
             uri=os.getenv("NEO4J_URI", "bolt://localhost:7687"),
             user=os.getenv("NEO4J_USER", "neo4j"),
             password=os.getenv("NEO4J_PASSWORD", "password123"),
-            database=os.getenv("NEO4J_DATABASE", "politicamonitoring.v2"),
+            database=os.getenv("NEO4J_DATABASE", "politicalmonitoring.v3"),
         )
 
 

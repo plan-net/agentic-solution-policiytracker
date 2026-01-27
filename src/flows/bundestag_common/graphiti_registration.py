@@ -12,7 +12,7 @@ Architecture:
 Required Graphiti Metadata:
 - :Entity label (in addition to specific label like :BundestagPerson)
 - uuid: Unique identifier
-- name_embedding: 1536-dim vector from text-embedding-3-small
+- name_embedding: 1536-dim vector from text-embedding-ada-002
 - group_id: "bundestag_direct" to distinguish from LLM-extracted entities
 - created_at: Timestamp
 """
@@ -29,8 +29,8 @@ from openai import AsyncOpenAI
 logger = structlog.get_logger()
 
 # Graphiti constants
-EMBEDDING_MODEL = "text-embedding-3-small"
-EMBEDDING_DIM = 1536
+EMBEDDING_MODEL = "text-embedding-ada-002"
+EMBEDDING_DIM = 1536  # ada-002 also produces 1536 dimensions
 GROUP_ID = "bundestag_direct"  # Distinguishes direct ingestion from LLM extraction
 
 
