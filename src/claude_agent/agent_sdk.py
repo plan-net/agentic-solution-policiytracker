@@ -54,7 +54,7 @@ DEFAULT_WEB_SEARCH_MCP_URL = os.getenv("WEB_SEARCH_MCP_URL", "http://localhost:8
 FALLBACK_SYSTEM_PROMPT = """You are a Political Monitoring Assistant with access to multiple data sources:
 1. A knowledge graph containing curated information about EU regulations, policies, politicians, and organizations
 2. The German Bundestag DIP API for real-time parliamentary data
-3. Web search capabilities via Exa.ai and DPA (German Press Agency) news
+3. Web search capabilities via native web search and DPA (German Press Agency) news
 
 ## Knowledge Graph Tools (Curated historical data)
 Use these for established regulatory information and entity relationships:
@@ -78,8 +78,7 @@ Use these for current German parliamentary information:
 
 ## Web Search Tools (Internet research)
 Use these when information is not in other sources or for recent news:
-- web_search - General web search via Exa.ai
-- search_news - News-specific search with date filtering
+- WebSearch - Native web search with automatic citations (use for general web searches)
 - search_dpa_news - German Press Agency (DPA) news search
 - get_article_content - Fetch full article content from URLs
 
@@ -117,8 +116,6 @@ BUNDESTAG_DIP_TOOLS = [
 ]
 
 WEB_SEARCH_TOOLS = [
-    "web_search",
-    "search_news",
     "search_dpa_news",
     "get_article_content",
 ]
@@ -153,6 +150,8 @@ class PolicyTrackerSDKAgent:
         max_turns: int = 15,
         enable_bundestag: bool = True,
         enable_web_search: bool = True,
+        max_thinking_tokens: Optional[int] = 10000,
+        enable_todo: bool = True,
     ):
         """Initialize the PolicyTracker SDK agent.
 
@@ -166,6 +165,8 @@ class PolicyTrackerSDKAgent:
             max_turns: Maximum turns for the agentic loop
             enable_bundestag: Enable Bundestag DIP API tools
             enable_web_search: Enable web search tools
+            max_thinking_tokens: Maximum tokens for extended thinking (default 10000)
+            enable_todo: Enable TodoWrite tool for task tracking (default True)
         """
         self.mcp_server_url = mcp_server_url or DEFAULT_MCP_SERVER_URL
         self.bundestag_mcp_url = bundestag_mcp_url or DEFAULT_BUNDESTAG_MCP_URL
@@ -176,6 +177,8 @@ class PolicyTrackerSDKAgent:
         self.max_turns = max_turns
         self.enable_bundestag = enable_bundestag
         self.enable_web_search = enable_web_search
+        self.max_thinking_tokens = max_thinking_tokens
+        self.enable_todo = enable_todo
 
         # Neo4j driver and context tracker (initialized lazily)
         self._neo4j_driver = None
@@ -356,6 +359,12 @@ class PolicyTrackerSDKAgent:
         # Web search tools (optional)
         if self.enable_web_search:
             allowed_tools.extend([f"mcp__web_search__{tool}" for tool in WEB_SEARCH_TOOLS])
+            # Add SDK's native WebSearch tool for general web searches
+            allowed_tools.append("WebSearch")
+
+        # TodoWrite tool (optional)
+        if self.enable_todo:
+            allowed_tools.append("TodoWrite")
 
         return allowed_tools
 
@@ -487,6 +496,7 @@ class PolicyTrackerSDKAgent:
             allowed_tools=self._get_allowed_tools(),
             model=self.model,
             max_turns=self.max_turns,
+            max_thinking_tokens=self.max_thinking_tokens,
             hooks={
                 "PreToolUse": [HookMatcher(hooks=[pre_hook])],
                 "PostToolUse": [HookMatcher(hooks=[post_hook])],
@@ -685,6 +695,7 @@ class PolicyTrackerSDKAgent:
             allowed_tools=self._get_allowed_tools(),
             model=self.model,
             max_turns=self.max_turns,
+            max_thinking_tokens=self.max_thinking_tokens,
             hooks={
                 "PreToolUse": [HookMatcher(hooks=[pre_hook])],
                 "PostToolUse": [HookMatcher(hooks=[post_hook])],
