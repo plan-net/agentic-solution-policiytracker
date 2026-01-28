@@ -151,10 +151,9 @@ def collect_news_data(**context):
         enabled_collectors = [collector_type] if collector_type else []
 
     if not enabled_collectors:
-        print("No collectors enabled!")
-        context["task_instance"].xcom_push(key="articles", value=[])
-        context["task_instance"].xcom_push(key="collector_stats", value={})
-        return 0
+        error_msg = "No collectors enabled! Please configure API keys."
+        print(f"❌ {error_msg}")
+        raise ValueError(error_msg)
 
     # Run async collection from all collectors
     articles, collector_stats = asyncio.run(
@@ -181,6 +180,15 @@ def collect_news_data(**context):
         print(f"  - {collector}: {count} articles")
     print(f"Total collected: {len(articles)} articles")
     print(f"{'='*50}\n")
+
+    # Fail if no articles collected
+    if len(articles) == 0:
+        error_msg = (
+            f"Failed to collect any articles. All {len(enabled_collectors)} collector(s) failed. "
+            f"Check API keys and credits."
+        )
+        print(f"❌ {error_msg}")
+        raise ValueError(error_msg)
 
     return len(articles)
 

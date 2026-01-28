@@ -142,9 +142,19 @@ class KeywordScorer:
         self.additional_keywords = additional_keywords or []
 
         # Extract keyword lists from config
-        self._company_terms = self._normalize_keywords(
-            client_config.get("company_terms", [])
-        )
+        # Support both client_name (string) and company_terms (list)
+        client_name = client_config.get("client_name")
+        company_terms = client_config.get("company_terms", [])
+
+        # Convert client_name to list if present
+        if client_name and isinstance(client_name, str):
+            terms = [client_name]
+        elif company_terms:
+            terms = company_terms
+        else:
+            terms = []
+
+        self._company_terms = self._normalize_keywords(terms)
         self._core_industries = self._normalize_keywords(
             client_config.get("core_industries", [])
         )

@@ -52,6 +52,12 @@ class ClientConfigLoader:
 
     def get_company_names(self) -> list[str]:
         """Get list of company names/terms to search for."""
+        # Priority 1: Check for client_name (string)
+        client_name = self.config.get("client_name")
+        if client_name and isinstance(client_name, str):
+            return [client_name]
+
+        # Priority 2: Fall back to company_terms (list) for backward compatibility
         return self.config.get("company_terms", [])
 
     def get_primary_company_name(self) -> str:

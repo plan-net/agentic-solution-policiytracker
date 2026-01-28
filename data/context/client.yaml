@@ -9,7 +9,7 @@
 
 client_name: zalando
 
-industry:
+core_industries:
   primary: "E-commerce / Online Retail"
   secondary:
     - fashion retail
@@ -17,6 +17,104 @@ industry:
     - digital platform
     - apparel
 
+#=============================================================================
+# data points from old format for ETL compatibility , these sections are MANDATORY
+# =============================================================================
+primary_markets:
+  - european union
+  - eu
+  - germany
+  - poland
+  - france
+  - italy
+  - spain
+  - belgium
+  - netherlands
+  - austria
+  - czech republic
+
+secondary_markets:
+  - uk
+  - switzerland
+  - sweden
+  - denmark
+  - finland
+  - norway
+
+strategic_themes:
+  - digital transformation
+  - sustainability
+  - customer experience
+  - data privacy
+  - supply chain
+  - logistics
+  - payment systems
+  - mobile commerce
+  - artificial intelligence
+  - automation
+
+topic_patterns:
+  data-protection:
+    - gdpr
+    - data privacy
+    - personal information
+    - data protection
+    - privacy policy
+    - data processing
+    - consent management
+    
+  compliance:
+    - regulatory compliance
+    - legal requirement
+    - enforcement action
+    - compliance obligation
+    - regulatory framework
+    - legal framework
+    
+  ecommerce-regulation:
+    - digital services act
+    - dsa
+    - digital markets act
+    - dma
+    - online platform
+    - marketplace regulation
+    - consumer protection
+    
+  sustainability:
+    - esg
+    - environmental
+    - carbon footprint
+    - circular economy
+    - sustainable fashion
+    - green logistics
+    - climate change
+    
+  competition:
+    - antitrust
+    - competition law
+    - market dominance
+    - monopoly
+    - merger control
+
+direct_impact_keywords:
+  - must comply
+  - required to
+  - obligation
+  - penalty
+  - enforcement
+  - violation
+  - breach
+  - non-compliance
+  - legal action
+  - investigation
+
+exclusion_terms:
+  - sports
+  - automotive
+  - real estate
+  - agriculture
+  - mining
+  - oil and gas
 # =============================================================================
 # BUSINESS MODEL UNDERSTANDING
 # Help the agent understand HOW this client operates (not just keywords)
