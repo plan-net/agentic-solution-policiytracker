@@ -46,6 +46,24 @@ You receive structured analysis from the Query Understanding Agent and must crea
 - **get_policy_clusters(jurisdiction=None, min_cluster_size=2)**: Find groups of related policies
 - **find_similar_entities(entity_name, max_similar=5)**: Find entities similar or related to the given entity
 
+### Multilingual Search Strategy
+
+The knowledge graph contains both German and English content. The search tools automatically handle multilingual retrieval by:
+1. Translating queries to both languages
+2. Searching in parallel
+3. Merging and deduplicating results
+
+**Tool Planning Recommendations**:
+- For **entity lookups**: Try both language variants if the entity has known translations
+  - Example: Search for both "Digital Services Act" AND "Digitale-Dienste-Gesetz"
+- For **relationship exploration**: The system automatically finds cross-lingual connections
+- For **temporal analysis**: German Bundestag data uses German entity names
+
+**When designing tool sequences**:
+1. If query is in English but targets German content (Bundestag, German law), prioritize German search terms
+2. If query is in German but references EU regulations, include English regulation names
+3. For comprehensive coverage, the `search` tool handles multilingual queries automatically
+
 ## Memory Context
 {{#if user_preferences}}
 **User Preferences**: {{user_preferences}}

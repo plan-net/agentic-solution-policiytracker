@@ -80,9 +80,24 @@ class ToolIntegrationManager:
     def get_tool_recommendations(
         self, intent: str, entities: list[str], complexity: str, strategy_type: str
     ) -> list[dict[str, Any]]:
-        """Get intelligent tool recommendations based on query analysis."""
+        """Get intelligent tool recommendations based on query analysis.
+
+        The recommendations include multilingual search guidance since the knowledge
+        graph contains both German (~20%) and English (~73%) content.
+        """
 
         recommendations = []
+
+        # Multilingual guidance to be added to search tools
+        multilingual_guidance = {
+            "note": "multilingual_search_enabled",
+            "guidance": (
+                "The search tool automatically handles EN↔DE translation. "
+                "For specialized terms, consider searching both language variants explicitly: "
+                "GDPR/DSGVO, DSA/Digitale-Dienste-Gesetz, AI Act/KI-Verordnung, "
+                "European Commission/Europäische Kommission, Bundestag/Federal Parliament"
+            ),
+        }
 
         # Normalize inputs for case-insensitive matching
         intent_lower = intent.lower()
@@ -270,6 +285,12 @@ class ToolIntegrationManager:
             ),
             reverse=True,
         )
+
+        # Add multilingual guidance to search tools
+        for rec in recommendations:
+            if rec.get("tool_name") == "search":
+                rec["multilingual_guidance"] = multilingual_guidance
+                break
 
         return recommendations
 

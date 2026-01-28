@@ -262,6 +262,16 @@ class GraphRAGSettings(BaseSettings):
         default=0.7, description="Weight for vector vs graph search"
     )
 
+    # Multilingual Search Configuration
+    ENABLE_MULTILINGUAL_SEARCH: bool = Field(
+        default=True,
+        description="Enable dual-language search (EN↔DE) for improved cross-lingual retrieval",
+    )
+    MULTILINGUAL_TRANSLATION_MODEL: str = Field(
+        default="claude-3-5-haiku-20241022",
+        description="Model for query translation (fast/cheap model recommended)",
+    )
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 

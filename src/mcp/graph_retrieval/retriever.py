@@ -448,7 +448,152 @@ class MCPExecutor:
     async def _get_session(self):
         """Get a database session with correct database name."""
         return self.driver.session(database=self.config.database)
-    
+
+    # =========================================================================
+    # Multilingual Search Support
+    # =========================================================================
+
+    def _detect_language(self, text: str) -> str:
+        """Detect if text is German or English using stopword heuristics.
+
+        Uses common stopwords to determine the dominant language of the query.
+        This is a fast heuristic approach suitable for short queries.
+
+        Args:
+            text: The query text to analyze
+
+        Returns:
+            'de' for German, 'en' for English (default)
+        """
+        german_stopwords = {
+            'der', 'die', 'das', 'und', 'ist', 'von', 'mit', 'für',
+            'auf', 'den', 'dem', 'ein', 'eine', 'einer', 'eines',
+            'zu', 'werden', 'wird', 'wurde', 'sind', 'hat', 'haben',
+            'nach', 'über', 'bei', 'aus', 'wie', 'wenn', 'oder',
+            'nicht', 'auch', 'nur', 'kann', 'noch', 'mehr', 'schon',
+            'durch', 'diese', 'dieser', 'dieses', 'welche', 'welcher'
+        }
+        english_stopwords = {
+            'the', 'and', 'is', 'of', 'with', 'for', 'on', 'a', 'an',
+            'to', 'in', 'will', 'be', 'are', 'has', 'have', 'had',
+            'after', 'about', 'from', 'by', 'as', 'at', 'or', 'if',
+            'not', 'also', 'only', 'can', 'still', 'more', 'already',
+            'through', 'this', 'that', 'these', 'those', 'which', 'what'
+        }
+
+        words = set(text.lower().split())
+        german_count = len(words & german_stopwords)
+        english_count = len(words & english_stopwords)
+
+        return 'de' if german_count > english_count else 'en'
+
+    async def _translate_query(self, query: str, source_lang: str) -> str:
+        """Translate query to opposite language using Claude Haiku.
+
+        Uses Claude 3.5 Haiku for fast, cost-effective translation while
+        preserving entity names and technical/political terminology.
+
+        Args:
+            query: The original query text
+            source_lang: Source language code ('en' or 'de')
+
+        Returns:
+            Translated query in the opposite language
+        """
+        from src.flows.shared.apisix_llm_client import (
+            AgentContext,
+            create_apisix_anthropic_client,
+        )
+
+        target_lang = 'German' if source_lang == 'en' else 'English'
+
+        prompt = f"""Translate the following text to {target_lang}.
+Preserve entity names, acronyms (like GDPR, DSGVO, DSA, AI Act), and technical terms.
+Output ONLY the translation, nothing else.
+
+Text: {query}"""
+
+        try:
+            # Create Anthropic client for translation
+            context = AgentContext(
+                agent_type="graph_retrieval",
+                agent_name="multilingual_translator",
+            )
+            client = create_apisix_anthropic_client(agent_context=context)
+
+            response = await client.messages.create(
+                model="claude-3-5-haiku-20241022",
+                max_tokens=200,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            translated = response.content[0].text.strip()
+            logger.info(f"Translated query [{source_lang}→{target_lang}]: '{query[:50]}...' → '{translated[:50]}...'")
+            return translated
+
+        except Exception as e:
+            logger.warning(f"Translation failed, using original query: {e}")
+            return query
+
+    def _merge_multilingual_results(self, results1: dict, results2: dict) -> dict:
+        """Merge and deduplicate results from dual-language search.
+
+        Combines results from original and translated query searches,
+        keeping the highest score for each unique item (by UUID).
+
+        Args:
+            results1: Results from original language search
+            results2: Results from translated language search
+
+        Returns:
+            Merged dict with deduplicated nodes, edges, and episodes
+        """
+        def merge_by_uuid(items1: list, items2: list, key: str = "uuid") -> list:
+            """Merge two lists, keeping highest score per UUID."""
+            merged = {}
+            for item in (items1 or []) + (items2 or []):
+                uuid = item.get(key)
+                if uuid is None:
+                    continue
+                if uuid not in merged or item.get("score", 0) > merged[uuid].get("score", 0):
+                    merged[uuid] = item
+            # Sort by score descending
+            return sorted(merged.values(), key=lambda x: x.get("score", 0), reverse=True)
+
+        merged = {
+            "nodes": merge_by_uuid(results1.get("nodes", []), results2.get("nodes", [])),
+            "edges": merge_by_uuid(results1.get("edges", []), results2.get("edges", [])),
+            "episodes": merge_by_uuid(results1.get("episodes", []), results2.get("episodes", [])),
+        }
+
+        logger.info(
+            f"Merged multilingual results: {len(merged['nodes'])} nodes, "
+            f"{len(merged['edges'])} edges, {len(merged['episodes'])} episodes"
+        )
+        return merged
+
+    async def _search_single_language(
+        self, query_text: str, query_embedding: list | None, limit: int
+    ) -> dict:
+        """Execute search for a single language query.
+
+        This is the core search logic extracted to support dual-language searching.
+
+        Args:
+            query_text: The search query string
+            query_embedding: Pre-computed query embedding (or None for keyword-only)
+            limit: Maximum number of results
+
+        Returns:
+            Dict with 'nodes' (entities), 'edges' (relationships), 'episodes'
+        """
+        nodes = await self._search_entities_hybrid(query_text, query_embedding, limit)
+        edges = await self._search_relationships_hybrid(query_text, query_embedding, limit)
+        episode_results = await self._search_episodes({"query": query_text, "limit": 5})
+        episodes = episode_results.get("episodes", [])
+
+        return {"nodes": nodes, "edges": edges, "episodes": episodes}
+
     async def _search(self, params: dict) -> dict:
         """Execute hybrid search using keyword + vector similarity.
 
@@ -456,18 +601,33 @@ class MCPExecutor:
         vector similarity for improved retrieval quality. The hybrid approach
         finds results that match either by exact keywords or by meaning.
 
+        When multilingual search is enabled (default), the query is also
+        translated to the opposite language (EN↔DE) and both searches are
+        executed in parallel, with results merged and deduplicated.
+
         Args:
-            params: Dict with 'query' (str), optional 'limit' (int, default 10)
+            params: Dict with:
+                - 'query' (str): The search query
+                - 'limit' (int, optional): Max results per search (default 10)
+                - 'multilingual' (bool, optional): Enable dual-language search (default True)
 
         Returns:
             Dict with 'nodes' (entities), 'edges' (relationships), 'episodes'
         """
+        from src.config import graphrag_settings
+
         query_text = params["query"]
         limit = params.get("limit", 10)
+        enable_multilingual = params.get(
+            "multilingual",
+            getattr(graphrag_settings, "ENABLE_MULTILINGUAL_SEARCH", True)
+        )
 
-        # Get query embedding for vector search
-        query_embedding = None
+        # Get embedder for vector search
         embedder = await self._get_embedder()
+
+        # Generate query embedding for original query
+        query_embedding = None
         if embedder:
             try:
                 query_embedding = await embedder.create(input_data=[query_text])
@@ -475,15 +635,34 @@ class MCPExecutor:
             except Exception as e:
                 logger.warning(f"Could not generate query embedding, falling back to keyword-only: {e}")
 
-        # Execute hybrid searches
-        nodes = await self._search_entities_hybrid(query_text, query_embedding, limit)
-        edges = await self._search_relationships_hybrid(query_text, query_embedding, limit)
+        if enable_multilingual:
+            # Dual-language search: detect language, translate, and search both
+            source_lang = self._detect_language(query_text)
+            logger.info(f"Multilingual search enabled. Detected language: {source_lang}")
 
-        # Also search episodes (source documents) - already uses hybrid search
-        episode_results = await self._search_episodes({"query": query_text, "limit": 5})
-        episodes = episode_results.get("episodes", [])
+            # Translate query to opposite language
+            translated_query = await self._translate_query(query_text, source_lang)
 
-        return {"edges": edges, "nodes": nodes, "episodes": episodes}
+            # Generate embedding for translated query
+            translated_embedding = None
+            if embedder and translated_query != query_text:
+                try:
+                    translated_embedding = await embedder.create(input_data=[translated_query])
+                except Exception as e:
+                    logger.warning(f"Could not generate translated query embedding: {e}")
+
+            # Execute both searches in parallel
+            original_results, translated_results = await asyncio.gather(
+                self._search_single_language(query_text, query_embedding, limit),
+                self._search_single_language(translated_query, translated_embedding, limit),
+            )
+
+            # Merge and deduplicate results
+            return self._merge_multilingual_results(original_results, translated_results)
+
+        else:
+            # Single-language search (original behavior)
+            return await self._search_single_language(query_text, query_embedding, limit)
 
     async def _search_entities_hybrid(
         self, query_text: str, query_embedding: list | None, limit: int

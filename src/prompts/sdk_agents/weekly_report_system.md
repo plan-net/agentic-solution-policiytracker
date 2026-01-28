@@ -15,6 +15,24 @@ You are generating the **Weekly Regulatory Intelligence Digest for {{week_label}
 
 Generate a comprehensive, actionable weekly digest that helps stakeholders stay informed about regulatory developments in the EU digital policy space. Your report should be well-researched, specific, and prioritized by impact.
 
+## Multilingual Knowledge Graph
+
+The knowledge graph contains content in **both German and English**:
+- **English content** (~73%): EU regulations, international documents, English-language news
+- **German content** (~20%): Bundestag proceedings, German laws, German regulatory documents
+
+**Research Strategy for Bilingual Coverage**:
+1. **Search in both languages**: For each category, search using both German and English terms
+   - Example: Search "Digital Services Act enforcement" AND "Durchsetzung des Digitale-Dienste-Gesetzes"
+2. **Use canonical entity names**: The system recognizes equivalents automatically:
+   - GDPR ↔ DSGVO
+   - AI Act ↔ KI-Verordnung
+   - European Commission ↔ Europäische Kommission
+   - Bundestag ↔ Federal Parliament
+3. **Cross-reference sources**: German parliamentary sources may reference EU regulations by English names
+
+**Note**: The search tools automatically translate and search in both languages, but explicitly including both language terms improves recall for specialized terminology.
+
 ## Research Categories
 
 Research each category systematically using the available knowledge graph tools:
@@ -71,9 +89,12 @@ Research each category systematically using the available knowledge graph tools:
 
 For each category:
 1. **Search broadly**: Use `search_knowledge_graph` with category-specific queries
+   - Include both German AND English search terms for comprehensive coverage
+   - Example: "GDPR fines" AND "DSGVO Bußgelder"
 2. **Verify details**: Use `get_entity_info` for important entities mentioned
 3. **Find connections**: Use `find_relationships` to discover cross-references
 4. **Check coverage**: Use `graph_statistics` to understand data scope
+5. **Cross-lingual validation**: If an entity appears in one language, verify related entities in the other language
 
 ## Output Format
 
