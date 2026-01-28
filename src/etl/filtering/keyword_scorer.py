@@ -19,6 +19,13 @@ from typing import Any, Optional
 
 import structlog
 
+from ..utils.schema_helpers import (
+    extract_company_terms,
+    extract_exclusion_terms,
+    extract_industries,
+    extract_markets,
+)
+
 logger = structlog.get_logger()
 
 
@@ -141,29 +148,20 @@ class KeywordScorer:
         self.client_config = client_config
         self.additional_keywords = additional_keywords or []
 
-        # Extract keyword lists from config
-        # Support both client_name (string) and company_terms (list)
-        client_name = client_config.get("client_name")
-        company_terms = client_config.get("company_terms", [])
-
-        # Convert client_name to list if present
-        if client_name and isinstance(client_name, str):
-            terms = [client_name]
-        elif company_terms:
-            terms = company_terms
-        else:
-            terms = []
-
-        self._company_terms = self._normalize_keywords(terms)
+        # Extract keyword lists from config using schema helpers
+        # This supports both nested and flat formats
+        self._company_terms = self._normalize_keywords(
+            extract_company_terms(client_config)
+        )
         self._core_industries = self._normalize_keywords(
-            client_config.get("core_industries", [])
+            extract_industries(client_config)
         )
-        self._primary_markets = self._normalize_keywords(
-            client_config.get("primary_markets", [])
-        )
-        self._secondary_markets = self._normalize_keywords(
-            client_config.get("secondary_markets", [])
-        )
+
+        # Extract markets using helper
+        primary_markets, secondary_markets = extract_markets(client_config)
+        self._primary_markets = self._normalize_keywords(primary_markets)
+        self._secondary_markets = self._normalize_keywords(secondary_markets)
+
         self._strategic_themes = self._normalize_keywords(
             client_config.get("strategic_themes", [])
         )
@@ -171,7 +169,7 @@ class KeywordScorer:
             client_config.get("direct_impact_keywords", [])
         )
         self._exclusion_terms = self._normalize_keywords(
-            client_config.get("exclusion_terms", [])
+            extract_exclusion_terms(client_config)
         )
 
         # Extract topic patterns

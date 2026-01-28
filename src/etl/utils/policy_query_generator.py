@@ -13,6 +13,8 @@ from typing import Any
 
 import yaml
 
+from .schema_helpers import extract_industries, extract_markets
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,17 +46,11 @@ class PolicyQueryGenerator:
         """
         queries = []
 
-        # Core markets and industries for context (support both old and new structure)
-        markets_data = self.context_data.get("markets", {})
-        markets = self.context_data.get("primary_markets", []) or markets_data.get("primary", [])
-
-        industry_data = self.context_data.get("industry", {})
-        industries = self.context_data.get("core_industries", [])
-        if not industries:
-            # Build from new structure
-            primary_industry = industry_data.get("primary", "")
-            secondary_industries = industry_data.get("secondary", [])
-            industries = ([primary_industry] if primary_industry else []) + secondary_industries
+        # Extract markets and industries using schema helpers
+        # This automatically handles both nested and flat formats
+        primary_markets, secondary_markets = extract_markets(self.context_data)
+        markets = primary_markets + secondary_markets
+        industries = extract_industries(self.context_data)
 
         # Generate queries for each topic pattern (limited)
         # Support both old topic_patterns and new regulatory_relevance structure

@@ -13,6 +13,8 @@ from typing import Any, Optional
 
 import structlog
 
+from ..utils.schema_helpers import extract_industries, extract_markets
+
 logger = structlog.get_logger()
 
 
@@ -86,12 +88,16 @@ Respond in JSON format:
         self.client_config = client_config or {}
         self.relevance_threshold = relevance_threshold
 
-        # Extract context from client config
-        self._industries = ", ".join(self.client_config.get("core_industries", ["e-commerce"]))
-        self._markets = ", ".join(
-            self.client_config.get("primary_markets", [])[:5]
-            + self.client_config.get("secondary_markets", [])[:3]
-        )
+        # Extract context from client config using schema helpers
+        industries_list = extract_industries(self.client_config)
+        if not industries_list:
+            industries_list = ["e-commerce"]
+        self._industries = ", ".join(industries_list[:5])
+
+        # Extract markets using helper
+        primary_markets, secondary_markets = extract_markets(self.client_config)
+        self._markets = ", ".join(primary_markets[:5] + secondary_markets[:3])
+
         self._themes = ", ".join(
             self.client_config.get("strategic_themes", [])[:5]
         )

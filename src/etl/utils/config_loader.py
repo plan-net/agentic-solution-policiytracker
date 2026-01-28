@@ -10,6 +10,13 @@ from typing import Any
 import structlog
 import yaml
 
+from .schema_helpers import (
+    extract_company_terms,
+    extract_exclusion_terms,
+    extract_industries,
+    extract_markets,
+)
+
 logger = structlog.get_logger()
 
 
@@ -51,14 +58,11 @@ class ClientConfigLoader:
         }
 
     def get_company_names(self) -> list[str]:
-        """Get list of company names/terms to search for."""
-        # Priority 1: Check for client_name (string)
-        client_name = self.config.get("client_name")
-        if client_name and isinstance(client_name, str):
-            return [client_name]
+        """Get list of company names/terms to search for.
 
-        # Priority 2: Fall back to company_terms (list) for backward compatibility
-        return self.config.get("company_terms", [])
+        Uses schema_helpers to support both company_terms list and client_name fallback.
+        """
+        return extract_company_terms(self.config)
 
     def get_primary_company_name(self) -> str:
         """Get the primary company name for searches."""
@@ -79,8 +83,27 @@ class ClientConfigLoader:
         return queries
 
     def get_exclusion_terms(self) -> list[str]:
-        """Get terms to exclude from search results."""
-        return self.config.get("exclusion_terms", [])
+        """Get terms to exclude from search results.
+
+        Uses schema_helpers to support both flat and nested formats.
+        """
+        return extract_exclusion_terms(self.config)
+
+    def get_core_industries(self) -> list[str]:
+        """Get core industries, supporting both nested and flat formats.
+
+        Returns:
+            List of industry strings extracted from config
+        """
+        return extract_industries(self.config)
+
+    def get_markets(self) -> tuple[list[str], list[str]]:
+        """Get primary and secondary markets.
+
+        Returns:
+            Tuple of (primary_markets, secondary_markets)
+        """
+        return extract_markets(self.config)
 
     def should_exclude_article(self, article: dict[str, Any]) -> bool:
         """Check if an article should be excluded based on exclusion terms."""

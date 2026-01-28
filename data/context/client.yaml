@@ -9,6 +9,45 @@
 
 client_name: zalando
 
+# =============================================================================
+# ETL-REQUIRED FIELDS
+# These fields are required by the ETL pipeline for content collection and scoring
+# =============================================================================
+
+# Company terms for relevance scoring (40% weight in ETL scoring)
+# Includes primary brand, related services, competitors, and marketplace terms
+company_terms:
+  # Primary brand
+  - "Zalando"
+  - "Zalando SE"
+
+  # Related Zalando brands and services
+  - "Zalando Plus"
+  - "Zalando Lounge"
+  - "Zalando Beauty"
+  - "Zalando Pay"
+
+  # Direct competitors (for competitive intelligence)
+  - "ASOS"
+  - "Boohoo"
+  - "About You"
+  - "Otto"
+  - "H&M online"
+  - "Zara online"
+
+  # Marketplace/platform terms
+  - "online fashion marketplace"
+  - "e-commerce platform"
+  - "fashion retail platform"
+  - "digital marketplace"
+
+  # Buy-now-pay-later competitors (relevant to payment services)
+  - "Klarna"
+  - "Afterpay"
+  - "Clearpay"
+
+# Core industries (25% weight in ETL scoring)
+# Nested format: ETL will extract flat list from primary + secondary
 core_industries:
   primary: "E-commerce / Online Retail"
   secondary:
