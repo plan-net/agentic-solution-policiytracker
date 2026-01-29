@@ -539,14 +539,46 @@ async def create_enhanced_hooks(
         tool_input = input_data.get("tool_input", {})
 
         # Try multiple possible key names for tool output
-        tool_output = (
-            input_data.get("tool_response")
-            or input_data.get("tool_output")
-            or input_data.get("output")
-            or input_data.get("result")
-            or input_data.get("response")
-            or ""
-        )
+        output_keys = ["tool_response", "tool_output", "output", "result", "response"]
+        tool_output = None
+        found_key = None
+
+        for key in output_keys:
+            if key in input_data and input_data[key]:
+                tool_output = input_data[key]
+                found_key = key
+                break
+
+        if tool_output is None:
+            # Log all available keys for debugging
+            available_keys = list(input_data.keys())
+            logger.warning(
+                f"[PostToolUse Enhanced] Tool output not found. Tried keys: {output_keys}. "
+                f"Available keys: {available_keys}. tool_name={tool_name}, tool_use_id={tool_use_id}"
+            )
+
+            # Try to extract from nested structures as fallback
+            if "content" in input_data:
+                tool_output = input_data["content"]
+                found_key = "content"
+                logger.info(f"[PostToolUse Enhanced] Found output in 'content' key")
+            else:
+                # Last resort: convert entire input_data to string (excluding internal fields)
+                import json
+                filtered = {k: v for k, v in input_data.items() if not k.startswith("_") and k not in ["tool_name", "tool_input"]}
+                if filtered:
+                    tool_output = json.dumps(filtered, indent=2)
+                    found_key = "fallback_serialization"
+                    logger.warning(f"[PostToolUse Enhanced] Using fallback serialization for tool output")
+                else:
+                    tool_output = ""
+                    found_key = "none"
+                    logger.error(f"[PostToolUse Enhanced] No tool output found at all for {tool_name}")
+        else:
+            logger.debug(f"[PostToolUse Enhanced] Found tool output in key: '{found_key}'")
+
+        # Convert to string for validation
+        tool_output_str = str(tool_output) if tool_output else ""
 
         # Retrieve start time and turn number from closure-based tracking
         start_time = tool_start_times.pop(tool_use_id, time.time()) if tool_use_id else time.time()
@@ -556,17 +588,22 @@ async def create_enhanced_hooks(
         execution_time = time.time() - start_time
 
         # Debug logging to verify tool output is being captured
-        logger.info(f"[PostToolUse Enhanced] tool_output type: {type(tool_output)}, len: {len(str(tool_output)) if tool_output else 0}, first 200 chars: {str(tool_output)[:200] if tool_output else 'EMPTY'}")
+        logger.info(
+            f"[PostToolUse Enhanced] tool_output type: {type(tool_output)}, "
+            f"len: {len(tool_output_str)}, found_key: {found_key}, "
+            f"first 200 chars: {tool_output_str[:200] if tool_output_str else 'EMPTY'}"
+        )
 
         # Validate result for reflection
-        validation = validate_tool_result(tool_name, str(tool_output))
+        validation = validate_tool_result(tool_name, tool_output_str)
 
         # Cache for reflection summary
         tool_results_cache[tool_name] = {
-            "output": str(tool_output)[:1000],
+            "output": tool_output_str[:1000],
             "validation": validation,
             "execution_time": execution_time,
             "turn_number": turn_number,
+            "output_key_found": found_key,
         }
 
         logger.info(

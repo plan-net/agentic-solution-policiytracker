@@ -41,6 +41,7 @@ from src.chat.observability.langfuse_config import (
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.client_context import get_client_context_for_prompt
+from src.claude_agent.query_decomposition import QueryDecomposer
 
 from .prompts import (
     DEFAULT_MCP_SERVER_URL,
@@ -76,7 +77,7 @@ class WeeklyReportSDKAgent:
         bundestag_mcp_url: Optional[str] = None,
         web_search_mcp_url: Optional[str] = None,
         model: str = "claude-sonnet-4-20250514",
-        max_turns: int = 30,
+        max_turns: int = 50,  # Increased from 30 for complex report generation
         enable_reflection: bool = True,
         enable_bundestag: bool = True,
         enable_web_search: bool = True,
@@ -101,6 +102,9 @@ class WeeklyReportSDKAgent:
         self.enable_reflection = enable_reflection
         self.enable_bundestag = enable_bundestag
         self.enable_web_search = enable_web_search
+
+        # Query decomposer for handling complex report generation tasks
+        self._query_decomposer = QueryDecomposer(complexity_threshold=max_turns)
 
         # Initialize observability (handles LangWatch, LangFuse, or both based on OBSERVABILITY_PROVIDER)
         observability_provider.initialize(instrumentation_mode="manual")
@@ -331,6 +335,13 @@ into a well-structured report following the output format specified in your inst
 
 Begin by searching for legislative and regulatory updates, then proceed through each category."""
 
+        # Analyze task complexity
+        complexity_analysis = self._query_decomposer.analyze_complexity(user_message)
+        logger.info(
+            f"Report generation complexity: {complexity_analysis.complexity.value}, "
+            f"estimated_turns: {complexity_analysis.estimated_turns}"
+        )
+
         # Generate a unique session ID for this report generation
         report_session_id = f"report_{uuid.uuid4().hex[:12]}"
 
@@ -446,7 +457,55 @@ Begin by searching for legislative and regulatory updates, then proceed through 
                                     )
 
                     elif isinstance(message, ResultMessage):
-                        break
+                        stop_reason = getattr(message, "subtype", "end_turn")
+                        logger.info(f"[Session {report_session_id}] Received ResultMessage: stop_reason={stop_reason}")
+
+                        # Check if we have content before breaking
+                        if not report_content:
+                            logger.warning(f"[Session {report_session_id}] ResultMessage received but no report content accumulated")
+
+                        # Capture final metrics
+                        langwatch_config.capture_agentic_turn(
+                            session_id=report_session_id,
+                            turn=turn_count,
+                            tool_name="report_generation_complete",
+                            tool_input={"status": "complete"},
+                            tool_output=f"Report generated: {len(report_content)} characters",
+                            reflection={
+                                "stop_reason": stop_reason,
+                                "has_content": bool(report_content),
+                            }
+                        )
+
+                        # Handle different stop reasons
+                        if stop_reason == "timeout":
+                            logger.error(f"[Session {report_session_id}] Agent execution timed out")
+                            report_content += "\n\n[Note: Report generation timed out]"
+
+                        # Break on valid stop conditions
+                        if stop_reason in ["end_turn", "max_turns", "timeout", "error_max_turns"]:
+                            break
+                        else:
+                            logger.warning(f"[Session {report_session_id}] Unknown stop_reason: {stop_reason}, breaking anyway")
+                            break
+
+            # Validate response - ensure we have content
+            if not report_content:
+                error_msg = (
+                    f"No report content generated after {turn_count} turns. "
+                    f"Tools executed but produced no output."
+                )
+                logger.error(f"[Session {report_session_id}] {error_msg}")
+                report_content = (
+                    f"# Weekly Regulatory Intelligence Digest - {week_label}\n\n"
+                    f"**Generation Status**: Error\n\n"
+                    f"I apologize, but I encountered an issue generating the report. "
+                    f"The research tools executed successfully ({turn_count} turns, {len(tool_calls)} tool calls), "
+                    f"but I was unable to produce the final report content. "
+                    f"Please try running the report again or contact support if this persists."
+                )
+
+            logger.info(f"[Session {report_session_id}] Report content generated: {len(report_content)} characters, {turn_count} turns")
 
             if tracer:
                 await tracer.markdown("\n**Report generation complete!**")
@@ -506,6 +565,11 @@ Begin by searching for legislative and regulatory updates, then proceed through 
                 "reflection": reflection_summary,
                 "avg_confidence": reflection_summary.get("avg_confidence", 1.0),
                 "validation_passed": reflection_summary.get("avg_confidence", 1.0) > 0.7,
+                "task_complexity": {
+                    "level": complexity_analysis.complexity.value,
+                    "estimated_turns": complexity_analysis.estimated_turns,
+                    "actual_turns": turn_count,
+                },
             },
             "tool_calls": tool_calls,
         }

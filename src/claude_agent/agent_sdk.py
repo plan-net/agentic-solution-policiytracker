@@ -42,6 +42,7 @@ from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.context_manager import SDKContextManager
 from src.shared.client_context import get_client_context_for_prompt
+from src.claude_agent.query_decomposition import QueryDecomposer
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +148,7 @@ class PolicyTrackerSDKAgent:
         claude_model: Optional[str] = None,
         enable_reflection: bool = True,
         enable_multi_turn: bool = True,
-        max_turns: int = 15,
+        max_turns: int = 25,  # Increased from 15 to allow more complex queries
         enable_bundestag: bool = True,
         enable_web_search: bool = True,
         max_thinking_tokens: Optional[int] = 10000,
@@ -184,6 +185,9 @@ class PolicyTrackerSDKAgent:
         self._neo4j_driver = None
         self._context_tracker = None
         self._sdk_context_manager: Optional[SDKContextManager] = None
+
+        # Query decomposer for handling complex queries
+        self._query_decomposer = QueryDecomposer(complexity_threshold=max_turns)
 
         # Initialize observability (handles LangWatch, LangFuse, or both based on OBSERVABILITY_PROVIDER)
         observability_provider.initialize(instrumentation_mode="manual")
@@ -268,7 +272,11 @@ class PolicyTrackerSDKAgent:
             logger.warning(f"Failed to load client context prompt: {e}")
             return ""
 
-    async def _build_system_prompt_with_context(self, session_id: str) -> str:
+    async def _build_system_prompt_with_context(
+        self,
+        session_id: str,
+        decomposition_context: str = ""
+    ) -> str:
         """Build complete system prompt with client context, reflection, and conversation context.
 
         Combines:
@@ -276,7 +284,8 @@ class PolicyTrackerSDKAgent:
         2. Client context (business understanding and regulatory focus)
         3. Response synthesis guidelines (Public Affairs perspective)
         4. Reflection/tool selection strategy (if enabled)
-        5. Conversation context (if multi-turn enabled and continuing session)
+        5. Query decomposition context (if query is complex)
+        6. Conversation context (if multi-turn enabled and continuing session)
         """
         # Get base prompt
         base_prompt = await self._get_system_prompt()
@@ -296,6 +305,10 @@ class PolicyTrackerSDKAgent:
             reflection_prompt = await self._get_reflection_prompt()
             if reflection_prompt:
                 base_prompt = f"{base_prompt}\n\n{reflection_prompt}"
+
+        # Add query decomposition context if provided
+        if decomposition_context:
+            base_prompt = f"{base_prompt}\n\n{decomposition_context}"
 
         # Add conversation context if multi-turn enabled
         if self.enable_multi_turn:
@@ -464,11 +477,51 @@ class PolicyTrackerSDKAgent:
                 {"role": "user", "content": user_message}
             )
 
+        # Analyze query complexity and handle decomposition if needed
+        complexity_analysis = self._query_decomposer.analyze_complexity(user_message)
+        logger.info(
+            f"[Session {session_id}] Query complexity: {complexity_analysis.complexity.value}, "
+            f"estimated_turns: {complexity_analysis.estimated_turns}, "
+            f"requires_decomposition: {complexity_analysis.requires_decomposition}"
+        )
+
+        # If query is very complex, perform decomposition analysis
+        decomposition_result = None
+        if complexity_analysis.requires_decomposition:
+            decomposition_result = self._query_decomposer.decompose_query(user_message)
+            logger.info(
+                f"[Session {session_id}] Query decomposition recommended: "
+                f"{len(decomposition_result.sub_queries)} sub-queries, "
+                f"strategy: {decomposition_result.strategy}"
+            )
+
+            # Add decomposition info to system prompt context
+            decomposition_context = (
+                f"\n\n## Query Complexity Note\n"
+                f"This query has been analyzed as {complexity_analysis.complexity.value} "
+                f"(estimated {complexity_analysis.estimated_turns} turns needed). "
+                f"Reasoning: {complexity_analysis.reasoning}\n"
+            )
+
+            # If decomposition is strongly recommended (very complex), include the breakdown
+            if complexity_analysis.complexity.value == "very_complex":
+                decomposition_context += (
+                    f"\n**Recommended approach**: Break down into {len(decomposition_result.sub_queries)} sub-questions:\n"
+                )
+                for sq in decomposition_result.sub_queries:
+                    decomposition_context += f"- {sq.question}\n"
+                decomposition_context += (
+                    f"\nExecution strategy: {decomposition_result.strategy}\n"
+                    f"Consider addressing these aspects systematically to provide a comprehensive answer.\n"
+                )
+        else:
+            decomposition_context = ""
+
         # Get Neo4j driver for entity name lookups in hooks
         neo4j_driver = await self._get_neo4j_driver()
 
-        # Build context-aware system prompt
-        system_prompt = await self._build_system_prompt_with_context(session_id)
+        # Build context-aware system prompt with decomposition context
+        system_prompt = await self._build_system_prompt_with_context(session_id, decomposition_context)
 
         # Create hooks - use enhanced hooks if reflection is enabled
         if self.enable_reflection:
@@ -522,24 +575,61 @@ class PolicyTrackerSDKAgent:
                                 turn_count += 1
 
                     elif isinstance(message, ResultMessage):
+                        # Log ResultMessage details for debugging
+                        stop_reason = getattr(message, "subtype", "end_turn")
+                        logger.info(f"[Session {session_id}] Received ResultMessage: stop_reason={stop_reason}")
+
+                        # Check if we have content before breaking
+                        if not response_text:
+                            logger.warning(
+                                f"[Session {session_id}] ResultMessage received but no response accumulated. "
+                                f"Turn count: {turn_count}, stop_reason: {stop_reason}"
+                            )
+
                         # Capture final metrics
                         usage = getattr(message, "usage", None)
                         langwatch_config.capture_agentic_turn(
                             turn_number=turn_count,
                             session_id=session_id,
-                            stop_reason=getattr(message, "subtype", "end_turn"),
+                            stop_reason=stop_reason,
                             tool_calls=[],
                             input_tokens=usage.get("input_tokens", 0) if usage else 0,
                             output_tokens=usage.get("output_tokens", 0) if usage else 0,
                             model=self.model,
                         )
-                        break
+
+                        # Handle different stop reasons
+                        if stop_reason == "timeout":
+                            logger.error(f"[Session {session_id}] Agent execution timed out")
+                            response_text += "\n\n[Agent execution timed out]"
+
+                        # Break on valid stop conditions
+                        if stop_reason in ["end_turn", "max_turns", "timeout", "error_max_turns"]:
+                            break
+                        else:
+                            # Unknown stop reason - log warning but still break to prevent infinite loop
+                            logger.warning(f"[Session {session_id}] Unknown stop_reason: {stop_reason}, breaking anyway")
+                            break
 
         except Exception as e:
             logger.error(f"Error in SDK query: {e}", exc_info=True)
             response_text = f"Error processing query: {str(e)}"
 
+        # Validate response - ensure we have content
+        if not response_text:
+            error_msg = (
+                f"No response generated after {turn_count} turns. "
+                f"Tools executed but produced no output."
+            )
+            logger.error(f"[Session {session_id}] {error_msg}")
+            response_text = (
+                "I apologize, but I encountered an issue processing your request. "
+                "The tools executed successfully, but I was unable to generate a response. "
+                "Please try rephrasing your question or contact support if this persists."
+            )
+
         # Store assistant response
+        logger.info(f"[Session {session_id}] Storing response ({len(response_text)} chars), {turn_count} turns")
         await context_tracker.store_message(session_id, "assistant", response_text)
 
         # Update SDK context manager with response if multi-turn enabled
@@ -577,6 +667,12 @@ class PolicyTrackerSDKAgent:
             "reflection": reflection_summary,
             "avg_confidence": reflection_summary.get("avg_confidence", 1.0),
             "entities_tracked": len(context_tracker.context_cache.get(session_id, {}).get("entity_uuids", [])),
+            "query_complexity": {
+                "level": complexity_analysis.complexity.value,
+                "estimated_turns": complexity_analysis.estimated_turns,
+                "actual_turns": turn_count,
+                "decomposition_recommended": complexity_analysis.requires_decomposition,
+            }
         }
 
         # Add multi-turn session info if enabled
@@ -663,11 +759,51 @@ class PolicyTrackerSDKAgent:
                 {"role": "user", "content": user_message}
             )
 
+        # Analyze query complexity and handle decomposition if needed
+        complexity_analysis = self._query_decomposer.analyze_complexity(user_message)
+        logger.info(
+            f"[Session {session_id}] Query complexity: {complexity_analysis.complexity.value}, "
+            f"estimated_turns: {complexity_analysis.estimated_turns}, "
+            f"requires_decomposition: {complexity_analysis.requires_decomposition}"
+        )
+
+        # If query is very complex, perform decomposition analysis
+        decomposition_result = None
+        if complexity_analysis.requires_decomposition:
+            decomposition_result = self._query_decomposer.decompose_query(user_message)
+            logger.info(
+                f"[Session {session_id}] Query decomposition recommended: "
+                f"{len(decomposition_result.sub_queries)} sub-queries, "
+                f"strategy: {decomposition_result.strategy}"
+            )
+
+            # Add decomposition info to system prompt context
+            decomposition_context = (
+                f"\n\n## Query Complexity Note\n"
+                f"This query has been analyzed as {complexity_analysis.complexity.value} "
+                f"(estimated {complexity_analysis.estimated_turns} turns needed). "
+                f"Reasoning: {complexity_analysis.reasoning}\n"
+            )
+
+            # If decomposition is strongly recommended (very complex), include the breakdown
+            if complexity_analysis.complexity.value == "very_complex":
+                decomposition_context += (
+                    f"\n**Recommended approach**: Break down into {len(decomposition_result.sub_queries)} sub-questions:\n"
+                )
+                for sq in decomposition_result.sub_queries:
+                    decomposition_context += f"- {sq.question}\n"
+                decomposition_context += (
+                    f"\nExecution strategy: {decomposition_result.strategy}\n"
+                    f"Consider addressing these aspects systematically to provide a comprehensive answer.\n"
+                )
+        else:
+            decomposition_context = ""
+
         # Get Neo4j driver for entity name lookups
         neo4j_driver = await self._get_neo4j_driver()
 
-        # Build context-aware system prompt
-        system_prompt = await self._build_system_prompt_with_context(session_id)
+        # Build context-aware system prompt with decomposition context
+        system_prompt = await self._build_system_prompt_with_context(session_id, decomposition_context)
 
         # Create hooks - use enhanced hooks if reflection is enabled
         if self.enable_reflection:
@@ -729,15 +865,56 @@ class PolicyTrackerSDKAgent:
                                 yield f"\n\n*Using {tool_name}...*\n", "", {}
 
                     elif isinstance(message, ResultMessage):
-                        break
+                        # Log ResultMessage details for debugging
+                        stop_reason = getattr(message, "subtype", "end_turn")
+                        logger.info(f"[Session {session_id}] Stream: Received ResultMessage: stop_reason={stop_reason}")
+
+                        # Check if we have content before breaking
+                        if not full_response:
+                            logger.warning(
+                                f"[Session {session_id}] Stream: ResultMessage received but no response accumulated. "
+                                f"Turn count: {turn_count}, stop_reason: {stop_reason}"
+                            )
+
+                        # Handle different stop reasons
+                        if stop_reason == "timeout":
+                            logger.error(f"[Session {session_id}] Stream: Agent execution timed out")
+                            timeout_msg = "\n\n[Agent execution timed out]"
+                            full_response += timeout_msg
+                            yield timeout_msg, "", {}
+
+                        # Break on valid stop conditions
+                        if stop_reason in ["end_turn", "max_turns", "timeout", "error_max_turns"]:
+                            break
+                        else:
+                            # Unknown stop reason - log warning but still break to prevent infinite loop
+                            logger.warning(f"[Session {session_id}] Stream: Unknown stop_reason: {stop_reason}, breaking anyway")
+                            break
 
         except Exception as e:
             logger.error(f"Error in SDK stream_query: {e}", exc_info=True)
-            yield f"\n\nError: {str(e)}", "", {}
+            error_msg = f"\n\nError: {str(e)}"
+            full_response += error_msg
+            yield error_msg, "", {}
 
-        # Store assistant response
-        if full_response:
-            await context_tracker.store_message(session_id, "assistant", full_response)
+        # Validate and store assistant response
+        if not full_response:
+            # No response generated - this is an error state
+            error_msg = (
+                f"No response generated after {turn_count} turns. "
+                f"Tools executed but produced no output."
+            )
+            logger.error(f"[Session {session_id}] Stream: {error_msg}")
+
+            full_response = (
+                "I apologize, but I encountered an issue processing your request. "
+                "The tools executed successfully, but I was unable to generate a response. "
+                "Please try rephrasing your question or contact support if this persists."
+            )
+            yield full_response, "", {}
+
+        logger.info(f"[Session {session_id}] Stream: Storing response ({len(full_response)} chars), {turn_count} turns")
+        await context_tracker.store_message(session_id, "assistant", full_response)
 
         # Update SDK context manager with response if multi-turn enabled
         if self.enable_multi_turn:
@@ -774,6 +951,12 @@ class PolicyTrackerSDKAgent:
             "reflection": reflection_summary,
             "avg_confidence": reflection_summary.get("avg_confidence", 1.0),
             "entities_tracked": len(context_tracker.context_cache.get(session_id, {}).get("entity_uuids", [])),
+            "query_complexity": {
+                "level": complexity_analysis.complexity.value,
+                "estimated_turns": complexity_analysis.estimated_turns,
+                "actual_turns": turn_count,
+                "decomposition_recommended": complexity_analysis.requires_decomposition,
+            }
         }
 
         # Add multi-turn session info if enabled
