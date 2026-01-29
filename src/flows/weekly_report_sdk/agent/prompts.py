@@ -20,6 +20,12 @@ KNOWLEDGE_GRAPH_TOOLS = [
     "get_entity_info",
     "find_relationships",
     "graph_statistics",
+    # Temporal tools
+    "search_by_date_range",
+    "get_entity_history",
+    "find_concurrent_events",
+    "compare_timelines",
+    "track_policy_evolution",
 ]
 
 # Bundestag DIP API tools
@@ -77,6 +83,14 @@ Use for established regulatory information and entity relationships:
 - **find_relationships** - Map connections between entities
 - **graph_statistics** - Understand data coverage and scope
 
+### Temporal Analysis Tools (Time-Based Queries)
+Use for tracking changes over time and historical analysis:
+- **search_by_date_range** - Search events/changes within a date range (e.g., what happened in Q4 2024)
+- **get_entity_history** - Track how an entity has evolved over time
+- **find_concurrent_events** - Find events around a specific date (±N days)
+- **compare_timelines** - Compare evolution of multiple entities/policies
+- **track_policy_evolution** - Track policy phases: proposal → amendment → implementation → enforcement
+
 ### Bundestag DIP API Tools (Real-Time German Parliamentary Data)
 Use for current German legislative status, bills, and MP information:
 - **search_bundestag_legislation** - Find bills, motions, legislative procedures (Vorgänge)
@@ -127,10 +141,18 @@ Use for breaking news, recent developments, and external verification:
 
 ### 5. Upcoming Events & Deadlines
 **Goal**: Important dates in the next 30-90 days
-- START: `search_knowledge_graph` for known compliance deadlines
+- START: `search_by_date_range` for events with specific date windows
 - THEN: `search_bundestag_legislation` for pending bills and timelines
 - NEWS: `search_news` for event announcements and conferences
+- EVOLUTION: `track_policy_evolution` for policies nearing implementation phase
 - Example queries: "deadline compliance date upcoming", "conference event regulatory"
+
+### 6. Policy Evolution & Historical Context
+**Goal**: Track how regulations have developed
+- HISTORY: `get_entity_history` for major policies (AI Act, GDPR, DSA)
+- COMPARE: `compare_timelines` for related regulations (e.g., DSA vs DMA timeline)
+- EVOLUTION: `track_policy_evolution` for enforcement phase tracking
+- Example: track_policy_evolution("KI-Verordnung") or get_entity_history("DSGVO")
 
 ## Output Format
 

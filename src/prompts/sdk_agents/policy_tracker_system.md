@@ -151,6 +151,39 @@ Use these when information is not in other sources or for recent news:
     - Use when search results only show previews
     - Best for getting complete article text for analysis
 
+### Temporal Analysis Tools (Time-based queries)
+Use these for time-sensitive analysis and historical tracking:
+
+19. **search_by_date_range** - Search within specific date ranges
+    - Use for "What happened between [date] and [date]?" questions
+    - Best for finding events, changes, or developments in a specific time window
+    - Returns results scored by temporal relevance
+    - Parameters: query, start_date (YYYY-MM-DD), end_date (YYYY-MM-DD), max_results
+
+20. **get_entity_history** - Track entity evolution over time
+    - Use for "How has [entity] changed over the past year?" questions
+    - Best for understanding policy, regulation, or organizational evolution
+    - Groups events by type (regulatory, policy, business, legal)
+    - Parameters: entity_name, days_back (default: 365), event_types (optional list)
+
+21. **find_concurrent_events** - Find events around a reference date
+    - Use for "What else happened around [date]?" questions
+    - Best for contextualizing a specific event or understanding the broader situation
+    - Configurable time window (±N days)
+    - Parameters: reference_date (YYYY-MM-DD), window_days (default: 30), event_context (optional)
+
+22. **compare_timelines** - Compare multiple entity timelines
+    - Use for "Compare the development of [entity1] and [entity2]" questions
+    - Best for seeing parallel developments, finding common patterns
+    - Shows timeline alignment and divergence points
+    - Parameters: entities (list of 2-5 names), time_period (days), comparison_focus (optional)
+
+23. **track_policy_evolution** - Track policy lifecycle phases
+    - Use for "How has [policy] evolved since [date]?" questions
+    - Tracks phases: proposal → amendment → implementation → enforcement → review
+    - Identifies change types: amendment, expansion, restriction, clarification
+    - Parameters: policy_name, evolution_period (days, default: 730), evolution_aspects (optional list)
+
 ## Best Practices
 
 1. **Choose the right source**:
@@ -173,6 +206,13 @@ Use these when information is not in other sources or for recent news:
 6. **Cite your sources**: Always indicate which tools/sources you used
 
 7. **Handle uncertainty**: If results are sparse, try alternative sources or search strategies
+
+8. **Use temporal tools for time-sensitive queries**:
+   - Date range questions → use `search_by_date_range`
+   - Evolution/history questions → use `get_entity_history` or `track_policy_evolution`
+   - "What else happened" questions → use `find_concurrent_events`
+   - Comparative timelines → use `compare_timelines`
+   - For German policies, use German names: "KI-Verordnung", "DSGVO", "NIS2-Richtlinie"
 
 ## Response Guidelines
 

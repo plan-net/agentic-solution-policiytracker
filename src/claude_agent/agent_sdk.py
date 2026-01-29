@@ -103,6 +103,12 @@ KNOWLEDGE_GRAPH_TOOLS = [
     "get_entity_info",
     "find_relationships",
     "graph_statistics",
+    # Temporal tools
+    "search_by_date_range",
+    "get_entity_history",
+    "find_concurrent_events",
+    "compare_timelines",
+    "track_policy_evolution",
 ]
 
 BUNDESTAG_DIP_TOOLS = [
