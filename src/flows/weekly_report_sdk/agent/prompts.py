@@ -15,6 +15,7 @@ DEFAULT_WEB_SEARCH_MCP_URL = os.getenv("WEB_SEARCH_MCP_URL", "http://localhost:8
 
 # Knowledge Graph tools
 KNOWLEDGE_GRAPH_TOOLS = [
+    # Base tools
     "search_knowledge_graph",
     "analyze_query",
     "get_entity_info",
@@ -26,6 +27,17 @@ KNOWLEDGE_GRAPH_TOOLS = [
     "find_concurrent_events",
     "compare_timelines",
     "track_policy_evolution",
+    # Community detection tools
+    "get_communities",
+    "get_community_members",
+    "get_policy_clusters",
+    # Graph traversal tools
+    "traverse_from_entity",
+    "find_paths_between_entities",
+    "get_entity_neighbors",
+    "analyze_entity_impact",
+    # Similarity tool
+    "find_similar_entities",
 ]
 
 # Bundestag DIP API tools
@@ -90,6 +102,22 @@ Use for tracking changes over time and historical analysis:
 - **find_concurrent_events** - Find events around a specific date (±N days)
 - **compare_timelines** - Compare evolution of multiple entities/policies
 - **track_policy_evolution** - Track policy phases: proposal → amendment → implementation → enforcement
+
+### Community Detection Tools (Graph Clusters)
+Use for understanding regulatory landscape and entity groupings:
+- **get_communities** - Discover clusters of related entities (e.g., "What are the main clusters of EU regulations?")
+- **get_community_members** - Get members of a specific thematic community
+- **get_policy_clusters** - Group policies by theme, jurisdiction, or time period
+
+### Graph Traversal Tools (Navigation & Exploration)
+Use for exploring entity connections and impact analysis:
+- **traverse_from_entity** - Multi-hop traversal with relevance filtering (explore regulatory networks)
+- **find_paths_between_entities** - Find connection paths between two entities
+- **get_entity_neighbors** - Get directly connected entities (outgoing/incoming)
+- **analyze_entity_impact** - Analyze what entities are impacted by or impact a given entity
+
+### Similarity Tool (Related Entities)
+- **find_similar_entities** - Find entities similar to a given entity (based on co-occurrence and structure)
 
 ### Bundestag DIP API Tools (Real-Time German Parliamentary Data)
 Use for current German legislative status, bills, and MP information:

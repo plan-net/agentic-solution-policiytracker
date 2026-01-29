@@ -97,6 +97,7 @@ Respond in a helpful, professional manner. Be transparent about which sources yo
 
 # MCP tool names that are available on each server
 KNOWLEDGE_GRAPH_TOOLS = [
+    # Base tools
     "search_knowledge_graph",
     "search_documents",
     "analyze_query",
@@ -109,6 +110,17 @@ KNOWLEDGE_GRAPH_TOOLS = [
     "find_concurrent_events",
     "compare_timelines",
     "track_policy_evolution",
+    # Community detection tools
+    "get_communities",
+    "get_community_members",
+    "get_policy_clusters",
+    # Graph traversal tools
+    "traverse_from_entity",
+    "find_paths_between_entities",
+    "get_entity_neighbors",
+    "analyze_entity_impact",
+    # Similarity tool
+    "find_similar_entities",
 ]
 
 BUNDESTAG_DIP_TOOLS = [

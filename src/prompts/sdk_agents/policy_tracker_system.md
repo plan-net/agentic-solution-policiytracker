@@ -184,6 +184,58 @@ Use these for time-sensitive analysis and historical tracking:
     - Identifies change types: amendment, expansion, restriction, clarification
     - Parameters: policy_name, evolution_period (days, default: 730), evolution_aspects (optional list)
 
+### Community Detection Tools (Graph clusters)
+Use these for discovering related entity groups and clusters:
+
+24. **get_communities** - Discover entity communities/clusters
+    - Use for "What are the main clusters of EU regulations?" or "Find communities of related policy areas"
+    - Best for understanding the landscape of related entities
+    - Returns community summaries with member counts and cohesion scores
+    - Parameters: topic_focus (optional), max_communities (default: 5), min_community_size (default: 3)
+
+25. **get_community_members** - Get members of a community
+    - Use for "Who belongs to the [X] community?" or "Show entities in the AI regulation cluster"
+    - Returns member entities with types, relevance scores, and connections
+    - Parameters: community_topic (required), max_members (default: 10), member_types (optional list)
+
+26. **get_policy_clusters** - Cluster policies by theme/jurisdiction
+    - Use for "Group EU regulations by topic" or "Find policy clusters by jurisdiction"
+    - Supports clustering by: 'thematic', 'jurisdictional', or 'temporal'
+    - Returns policy clusters with cohesion analysis
+    - Parameters: policy_area (optional), cluster_method (default: 'thematic'), max_clusters (default: 5)
+
+### Graph Traversal Tools (Navigation)
+Use these for exploring entity connections and paths:
+
+27. **traverse_from_entity** - Multi-hop traversal with relevance filtering
+    - Use for "What's connected to [entity] within N hops?" or "Explore the regulatory network around AI Act"
+    - Returns results ranked by relationship importance, path distance, and context richness
+    - Parameters: entity_name (required), max_depth (default: 2), max_results (default: 15)
+
+28. **find_paths_between_entities** - Find connection paths between two entities
+    - Use for "How is [A] connected to [B]?" or "Find the path between European Commission and DSA"
+    - Uses Neo4j shortest path algorithms
+    - Returns complete path chains with intermediate entities and relationship details
+    - Parameters: source_entity (required), target_entity (required), max_path_length (default: 4), max_paths (default: 5)
+
+29. **get_entity_neighbors** - Get directly connected entities
+    - Use for "What's directly connected to [entity]?" or "Find immediate connections to NIS2 Directive"
+    - Returns neighbors separated by direction (outgoing/incoming)
+    - Parameters: entity_name (required), max_depth (default: 1)
+
+30. **analyze_entity_impact** - Analyze impact networks
+    - Use for "What does [entity] affect/influence?" or "What is the impact network of GDPR?"
+    - Maps impact cascades through the graph
+    - Shows regulatory/policy influence patterns
+    - Parameters: entity_name (required), impact_types (optional list), max_hops (default: 3)
+
+### Similarity Tool (Related entities)
+
+31. **find_similar_entities** - Find entities similar to a given entity
+    - Use for "Find entities similar to [X]" or "What regulations are like GDPR?"
+    - Based on co-occurrence patterns and graph structure
+    - Parameters: entity_name (required), max_similar (default: 5)
+
 ## Best Practices
 
 1. **Choose the right source**:
@@ -213,6 +265,21 @@ Use these for time-sensitive analysis and historical tracking:
    - "What else happened" questions → use `find_concurrent_events`
    - Comparative timelines → use `compare_timelines`
    - For German policies, use German names: "KI-Verordnung", "DSGVO", "NIS2-Richtlinie"
+
+9. **Use community detection tools for landscape analysis**:
+   - "What clusters exist?" → use `get_communities`
+   - "Who's in this group?" → use `get_community_members`
+   - "How are policies organized?" → use `get_policy_clusters`
+
+10. **Use traversal tools for connection exploration**:
+    - Multi-hop exploration → use `traverse_from_entity`
+    - Finding paths → use `find_paths_between_entities`
+    - Immediate neighbors → use `get_entity_neighbors`
+    - Impact analysis → use `analyze_entity_impact`
+
+11. **Use similarity tools for finding related items**:
+    - "Find similar to X" → use `find_similar_entities`
+    - Can be combined with community tools for deeper analysis
 
 ## Response Guidelines
 

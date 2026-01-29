@@ -16,6 +16,19 @@ Choose the most appropriate tool based on query intent:
 | "Latest updates on X" | `search_knowledge_graph` | `get_entity_info` |
 | "Statistics about X" | `graph_statistics` | `search_knowledge_graph` |
 | Complex multi-part question | `analyze_query` first | Then appropriate tool |
+| "What happened between dates?" | `search_by_date_range` | `search_knowledge_graph` |
+| "How has X evolved?" | `get_entity_history` | `track_policy_evolution` |
+| "What else happened around date?" | `find_concurrent_events` | `search_by_date_range` |
+| "Compare X and Y timelines" | `compare_timelines` | `get_entity_history` |
+| "How has policy evolved?" | `track_policy_evolution` | `get_entity_history` |
+| "Find entity clusters/groups" | `get_communities` | `get_policy_clusters` |
+| "Who's in this community?" | `get_community_members` | `get_entity_neighbors` |
+| "Group policies by theme" | `get_policy_clusters` | `get_communities` |
+| "What's connected within N hops?" | `traverse_from_entity` | `get_entity_neighbors` |
+| "How is A connected to B?" | `find_paths_between_entities` | `find_relationships` |
+| "What's directly connected?" | `get_entity_neighbors` | `find_relationships` |
+| "What does X impact?" | `analyze_entity_impact` | `traverse_from_entity` |
+| "Find similar entities" | `find_similar_entities` | `search_knowledge_graph` |
 
 ## Multi-Step Strategy for Complex Queries
 
@@ -157,3 +170,27 @@ If a tool fails or returns an error:
 | `search_dpa_news` | German or English OK |
 | `web_search` | English or German OK |
 | `search_news` | English or German OK |
+| `search_by_date_range` | German preferred for KG queries |
+| `get_entity_history` | German entity names preferred |
+| `find_concurrent_events` | German or English context OK |
+| `compare_timelines` | German entity names preferred |
+| `track_policy_evolution` | **German policy names required** |
+| `get_communities` | German topics preferred |
+| `get_community_members` | N/A (uses community topics) |
+| `get_policy_clusters` | German policy types preferred |
+| `traverse_from_entity` | German entity names preferred |
+| `find_paths_between_entities` | German entity names preferred |
+| `get_entity_neighbors` | German entity names preferred |
+| `analyze_entity_impact` | German entity names preferred |
+| `find_similar_entities` | German entity names preferred |
+
+## Multi-Step Strategy for Graph Exploration
+
+For questions requiring deep graph exploration:
+
+1. **Start Broad**: Use `get_communities` or `get_policy_clusters` to understand the landscape
+2. **Identify Key Entities**: Use `get_community_members` or `search_knowledge_graph`
+3. **Explore Connections**: Use `get_entity_neighbors` for direct links
+4. **Find Paths**: Use `find_paths_between_entities` for specific connections
+5. **Analyze Impact**: Use `analyze_entity_impact` for influence mapping
+6. **Find Similar**: Use `find_similar_entities` for related items
