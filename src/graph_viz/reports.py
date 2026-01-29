@@ -529,7 +529,7 @@ class ReportsService:
             # Initialize the agent
             agent = WeeklyReportAgent(
                 model=claude_model,
-                max_turns=30,
+                max_turns=50,  # Increased from 30 for comprehensive report generation
             )
 
             try:

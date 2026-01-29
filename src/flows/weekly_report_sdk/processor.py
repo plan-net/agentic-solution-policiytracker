@@ -80,7 +80,7 @@ async def execute_weekly_report(inputs: dict, tracer: Tracer) -> core.response.M
     try:
         agent = WeeklyReportAgent(
             model=claude_model,
-            max_turns=30,
+            max_turns=50,  # Increased from 30 for comprehensive report generation
         )
         await tracer.markdown("✅ Agent initialized\n\n")
     except Exception as e:
