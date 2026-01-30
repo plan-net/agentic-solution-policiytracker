@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { User, Bot, ThumbsUp, ThumbsDown, Send } from 'lucide-react'
 import { MarkdownRenderer } from '../rich-content'
+import ToolCallIndicator from './ToolCallIndicator'
+import { parseToolCalls } from '../../utils/parseToolCalls'
+import { FEATURES } from '../../config/features'
 
 function ChatMessage({
   role,
@@ -14,6 +17,14 @@ function ChatMessage({
   const [showCommentBox, setShowCommentBox] = useState(false)
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Parse tool calls from content (memoized for performance)
+  const parsedContent = useMemo(() => {
+    if (isUser || !FEATURES.TOOL_CALL_VISUALIZATION) {
+      return null
+    }
+    return parseToolCalls(content)
+  }, [content, isUser])
 
   const handleThumbsUp = async () => {
     if (feedback || isSubmitting) return
@@ -89,7 +100,23 @@ function ChatMessage({
             <p className="whitespace-pre-wrap">{content}</p>
           ) : (
             <div className="markdown-content">
-              <MarkdownRenderer content={content} />
+              {/* Render with tool call visualization if enabled and tools detected */}
+              {parsedContent && parsedContent.tools.length > 0 ? (
+                <>
+                  {parsedContent.before && (
+                    <MarkdownRenderer content={parsedContent.before} />
+                  )}
+                  <ToolCallIndicator
+                    tools={parsedContent.tools}
+                    isStreaming={isStreaming}
+                  />
+                  {parsedContent.after && (
+                    <MarkdownRenderer content={parsedContent.after} />
+                  )}
+                </>
+              ) : (
+                <MarkdownRenderer content={content} />
+              )}
               {isStreaming && (
                 <span className="inline-block w-2 h-4 bg-accent-primary animate-pulse ml-1" />
               )}

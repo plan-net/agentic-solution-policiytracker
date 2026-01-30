@@ -173,3 +173,58 @@ body {
 .timeline-status-text {
   @apply text-xs text-gray-500 capitalize;
 }
+
+/* Tool call indicator styles */
+.tool-call-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 my-2;
+  @apply text-xs font-medium text-gray-600;
+  @apply bg-gray-50 border border-gray-200 rounded-full;
+  @apply cursor-pointer hover:bg-gray-100 transition-colors;
+}
+
+.tool-call-badge.streaming {
+  @apply bg-accent-primary/10 border-accent-primary/30 text-accent-primary;
+}
+
+.tool-call-expanded {
+  @apply my-3 p-3 bg-gray-50 rounded-lg border border-gray-200;
+}
+
+.tool-call-flow {
+  @apply flex items-center flex-wrap gap-0;
+}
+
+.tool-call-item {
+  @apply flex items-center;
+}
+
+.tool-call-icon {
+  @apply w-7 h-7 rounded-full flex items-center justify-center relative;
+  @apply transition-all hover:scale-110;
+}
+
+.tool-call-count {
+  @apply absolute -top-1 -right-1 w-4 h-4 rounded-full;
+  @apply bg-gray-700 text-white text-[10px] font-bold;
+  @apply flex items-center justify-center;
+}
+
+.tool-call-connector {
+  @apply w-4 h-0.5 bg-gray-300;
+}
+
+.tool-call-labels {
+  @apply flex flex-wrap gap-2 mt-2 pt-2 border-t border-gray-200;
+}
+
+.tool-call-label {
+  @apply text-[10px] text-gray-500 font-medium;
+}
+
+.tool-call-messages {
+  @apply mt-2 pt-2 border-t border-gray-200 space-y-1;
+}
+
+.tool-call-message {
+  @apply text-xs text-gray-500 italic pl-2 border-l-2 border-gray-200;
+}
