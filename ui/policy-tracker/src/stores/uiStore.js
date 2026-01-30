@@ -1,6 +1,14 @@
 import { create } from 'zustand'
 
 export const useUIStore = create((set) => ({
+  // Sidebar collapsed state
+  sidebarCollapsed: false,
+  toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+
+  // Chat sidebar collapsed state
+  chatSidebarCollapsed: false,
+  toggleChatSidebar: () => set((state) => ({ chatSidebarCollapsed: !state.chatSidebarCollapsed })),
+
   // Slide-out panel state
   slideOutPanel: {
     isOpen: false,

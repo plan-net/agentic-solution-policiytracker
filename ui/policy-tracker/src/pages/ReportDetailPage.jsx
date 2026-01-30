@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, RefreshCw, Play, Calendar, Clock, Cpu, FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
+import { MarkdownRenderer } from '../components/rich-content'
 import { getReport, generateReport } from '../services/reportsApi'
 
 const statusConfig = {
@@ -272,35 +272,7 @@ function ReportDetailPage() {
           </div>
         ) : report.content ? (
           <div className="prose prose-gray max-w-none">
-            <ReactMarkdown
-              components={{
-                h1: ({ children }) => <h1 className="text-2xl font-bold text-gray-900 mt-6 mb-4 first:mt-0">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3 border-b border-gray-200 pb-2">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">{children}</h3>,
-                p: ({ children }) => <p className="text-gray-700 mb-4 leading-relaxed">{children}</p>,
-                ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1 text-gray-700">{children}</ul>,
-                ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1 text-gray-700">{children}</ol>,
-                li: ({ children }) => <li className="text-gray-700">{children}</li>,
-                strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
-                em: ({ children }) => <em className="italic text-gray-600">{children}</em>,
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-accent-primary pl-4 my-4 italic text-gray-600">
-                    {children}
-                  </blockquote>
-                ),
-                code: ({ inline, children }) =>
-                  inline ? (
-                    <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800">{children}</code>
-                  ) : (
-                    <code className="block bg-gray-100 p-4 rounded-lg text-sm font-mono text-gray-800 overflow-x-auto">
-                      {children}
-                    </code>
-                  ),
-                hr: () => <hr className="my-6 border-gray-200" />,
-              }}
-            >
-              {report.content}
-            </ReactMarkdown>
+            <MarkdownRenderer content={report.content} variant="report" />
           </div>
         ) : (
           <div className="text-center py-12 text-gray-500">

@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Plus, Trash2, RefreshCw } from 'lucide-react'
+import { Plus, Trash2, RefreshCw, PanelLeftClose, PanelLeft } from 'lucide-react'
 import ChatContainer from '../components/chat/ChatContainer'
 import ConversationList from '../components/chat/ConversationList'
 import { listSessions, deleteSession } from '../services/chatApi'
+import { useUIStore } from '../stores/uiStore'
 
 function ChatPage() {
   const { sessionId } = useParams()
   const navigate = useNavigate()
+  const { chatSidebarCollapsed, toggleChatSidebar } = useUIStore()
   const [conversations, setConversations] = useState([])
   const [currentSession, setCurrentSession] = useState(sessionId || null)
   const [isLoading, setIsLoading] = useState(false)
@@ -95,35 +97,74 @@ function ChatPage() {
   return (
     <div className="flex h-screen">
       {/* Conversation Sidebar */}
-      <div className="w-72 border-r border-content-border bg-content-bgAlt flex flex-col">
-        {/* New Chat Button */}
-        <div className="p-4 border-b border-content-border">
+      <div
+        className={`
+          border-r border-content-border bg-content-bgAlt flex flex-col
+          transition-all duration-300 ease-in-out
+          ${chatSidebarCollapsed ? 'w-14' : 'w-72'}
+        `}
+      >
+        {/* New Chat Button + Toggle */}
+        <div className={`p-3 border-b border-content-border flex items-center ${chatSidebarCollapsed ? 'justify-center' : 'gap-2'}`}>
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-sidebar-bg text-white rounded-lg hover:bg-gray-800 transition-colors"
+            title={chatSidebarCollapsed ? 'New Chat' : undefined}
+            className={`
+              flex items-center justify-center gap-2 bg-sidebar-bg text-white rounded-lg hover:bg-gray-800 transition-colors
+              ${chatSidebarCollapsed ? 'w-10 h-10 p-0' : 'flex-1 px-4 py-2.5'}
+            `}
           >
             <Plus size={18} />
-            New Chat
+            {!chatSidebarCollapsed && <span>New Chat</span>}
           </button>
+          {!chatSidebarCollapsed && (
+            <button
+              onClick={toggleChatSidebar}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+              title="Collapse chat history"
+            >
+              <PanelLeftClose size={18} />
+            </button>
+          )}
         </div>
 
-        {/* Conversations List Header */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-content-border">
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-            History
-          </span>
-          <button
-            onClick={fetchConversations}
-            disabled={isLoading}
-            className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-            title="Refresh conversations"
-          >
-            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          </button>
-        </div>
+        {/* Expand button when collapsed */}
+        {chatSidebarCollapsed && (
+          <div className="p-3 flex justify-center">
+            <button
+              onClick={toggleChatSidebar}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Expand chat history"
+            >
+              <PanelLeft size={18} />
+            </button>
+          </div>
+        )}
+
+        {/* Conversations List Header - only when expanded */}
+        {!chatSidebarCollapsed && (
+          <div className="flex items-center justify-between px-4 py-2 border-b border-content-border">
+            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+              History
+            </span>
+            <button
+              onClick={fetchConversations}
+              disabled={isLoading}
+              className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              title="Refresh conversations"
+            >
+              <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            </button>
+          </div>
+        )}
+
+        {/* Collapsed divider */}
+        {chatSidebarCollapsed && (
+          <div className="mx-2 my-2 h-px bg-content-border" />
+        )}
 
         {/* Error Message */}
-        {error && (
+        {error && !chatSidebarCollapsed && (
           <div className="px-4 py-2 text-xs text-red-600 bg-red-50 border-b border-red-100">
             {error}
           </div>
@@ -136,6 +177,7 @@ function ChatPage() {
           onSelect={handleSelectConversation}
           onDelete={handleDeleteConversation}
           isLoading={isLoading}
+          collapsed={chatSidebarCollapsed}
         />
       </div>
 

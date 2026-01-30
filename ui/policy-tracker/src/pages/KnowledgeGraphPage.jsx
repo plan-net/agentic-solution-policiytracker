@@ -52,7 +52,8 @@ const mockTableData = [
 
 function KnowledgeGraphPage() {
   const { openSlideOutPanel } = useUIStore()
-  const [activeTab, setActiveTab] = useState('visualization')
+  // Graph Visualization tab disabled - currently a placeholder
+  const [activeTab, setActiveTab] = useState('schema')
   const [searchQuery, setSearchQuery] = useState('')
   const [graphData, setGraphData] = useState(mockGraphData)
   const [tableData, setTableData] = useState(mockTableData)
@@ -169,8 +170,9 @@ function KnowledgeGraphPage() {
       {/* Header */}
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Knowledge Graph</h1>
 
-      {/* Tab Navigation */}
+      {/* Tab Navigation - Graph Visualization tab hidden (placeholder) */}
       <div className="flex gap-2 mb-6">
+        {/* Graph Visualization tab disabled - uncomment when ready
         <button
           onClick={() => setActiveTab('visualization')}
           className={`
@@ -184,6 +186,7 @@ function KnowledgeGraphPage() {
           <Share2 size={16} />
           Graph Visualization
         </button>
+        */}
         <button
           onClick={() => setActiveTab('schema')}
           className={`
@@ -195,7 +198,7 @@ function KnowledgeGraphPage() {
           `}
         >
           <Database size={16} />
-          Schema Explorer
+          Graph Explorer
         </button>
       </div>
 

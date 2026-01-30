@@ -15,7 +15,7 @@ import EventsPage from './pages/EventsPage'
 import { useUIStore } from './stores/uiStore'
 
 function App() {
-  const { slideOutPanel } = useUIStore()
+  const { slideOutPanel, sidebarCollapsed } = useUIStore()
 
   return (
     <div className="flex min-h-screen bg-content-bg">
@@ -23,7 +23,12 @@ function App() {
       <Sidebar />
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-64 min-h-screen">
+      <main
+        className={`
+          flex-1 min-h-screen transition-all duration-300 ease-in-out
+          ${sidebarCollapsed ? 'ml-16' : 'ml-64'}
+        `}
+      >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />

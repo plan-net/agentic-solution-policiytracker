@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { User, Bot, ThumbsUp, ThumbsDown, Send } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
+import { MarkdownRenderer } from '../rich-content'
 
 function ChatMessage({
   role,
@@ -88,8 +88,8 @@ function ChatMessage({
           {isUser ? (
             <p className="whitespace-pre-wrap">{content}</p>
           ) : (
-            <div className="markdown-content prose prose-sm max-w-none">
-              <ReactMarkdown>{content}</ReactMarkdown>
+            <div className="markdown-content">
+              <MarkdownRenderer content={content} />
               {isStreaming && (
                 <span className="inline-block w-2 h-4 bg-accent-primary animate-pulse ml-1" />
               )}

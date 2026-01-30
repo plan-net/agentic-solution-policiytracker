@@ -7,6 +7,7 @@ function ConversationList({
   onSelect,
   onDelete,
   isLoading = false,
+  collapsed = false,
 }) {
   if (isLoading && conversations.length === 0) {
     return (
@@ -19,7 +20,33 @@ function ConversationList({
   if (conversations.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center p-4 text-gray-500 text-sm">
-        No conversations yet
+        {!collapsed && 'No conversations yet'}
+      </div>
+    )
+  }
+
+  // Collapsed view - show icons only
+  if (collapsed) {
+    return (
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-1 space-y-1">
+          {conversations.map((conv) => (
+            <button
+              key={conv.id}
+              onClick={() => onSelect(conv.id)}
+              title={conv.title}
+              className={`
+                w-full flex items-center justify-center p-2 rounded-lg transition-colors
+                ${currentSessionId === conv.id
+                  ? 'bg-white shadow-sm'
+                  : 'hover:bg-white/50'
+                }
+              `}
+            >
+              <MessageSquare size={18} className="text-gray-500" />
+            </button>
+          ))}
+        </div>
       </div>
     )
   }
