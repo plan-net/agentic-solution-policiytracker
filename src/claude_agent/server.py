@@ -318,144 +318,135 @@ class ClaudeAgentServer:
     ) -> AsyncGenerator[str, None]:
         """Handle streaming chat completion.
 
-        Uses an async queue to handle AskUserQuestion events that may occur
-        while the agent is processing. When Claude calls AskUserQuestion,
-        the question_handler invokes our callback which puts the question
-        into the queue, allowing us to emit the SSE event immediately.
-
-        The key insight is that when can_use_tool is invoked for AskUserQuestion:
-        1. The callback puts the question into the queue
-        2. Then can_use_tool blocks waiting for the answer
-        3. Meanwhile, we need to emit the SSE event from the queue
-        4. The user submits their answer via /answer endpoint
-        5. can_use_tool unblocks and returns to Claude
-        6. Claude continues and produces more chunks
-
-        To achieve this, we use asyncio.wait with FIRST_COMPLETED to race
-        between getting the next chunk and receiving a question event.
+        For AskUserQuestion handling, we use an async queue that collects
+        question events. The agent iteration runs in a background task,
+        while the main loop yields both content chunks and question events.
         """
         chat_id = f"chatcmpl-{uuid.uuid4().hex[:29]}"
         created = int(time.time())
         final_session_id = None
         final_metadata: dict[str, Any] = {}
 
-        # Queue to receive question events from the question_handler
-        question_queue: asyncio.Queue[dict] = asyncio.Queue()
+        # Queue for all events (chunks and questions)
+        event_queue: asyncio.Queue = asyncio.Queue()
+
+        # Sentinel values
+        STREAM_DONE = {"type": "done"}
+        STREAM_ERROR = {"type": "error"}
+
+        # Track the callback session ID (may change when real session ID arrives)
+        callback_session_id = session_id or f"pending_{uuid.uuid4().hex[:16]}"
 
         # Callback that the question_handler will invoke when Claude asks a question
         async def on_question_ready(question_data: dict) -> None:
             """Called by question_handler when AskUserQuestion is invoked."""
-            logger.info("Question callback invoked - putting question into queue")
-            await question_queue.put(question_data)
+            logger.info("Question callback invoked - putting question into event queue")
+            await event_queue.put({
+                "type": "question",
+                "data": question_data
+            })
 
-        # Generate or use provided session_id for callback registration
-        # We need to register before starting so we don't miss any questions
-        callback_session_id = session_id or f"pending_{uuid.uuid4().hex[:16]}"
         register_question_callback(callback_session_id, on_question_ready)
 
+        async def run_agent():
+            """Run the agent in a background task and push events to the queue."""
+            nonlocal final_session_id, final_metadata, callback_session_id
+
+            try:
+                agent = await self._get_agent()
+
+                async for chunk, chunk_session_id, metadata in agent.stream_query(user_message, session_id):
+                    if chunk_session_id:
+                        final_session_id = chunk_session_id
+                        final_metadata = metadata
+
+                        # Re-register callback with actual session ID if it changed
+                        if callback_session_id != final_session_id:
+                            logger.info(
+                                f"Re-registering question callback: {callback_session_id} -> {final_session_id}"
+                            )
+                            unregister_question_callback(callback_session_id)
+                            callback_session_id = final_session_id
+                            register_question_callback(callback_session_id, on_question_ready)
+
+                    await event_queue.put({
+                        "type": "chunk",
+                        "chunk": chunk,
+                        "session_id": chunk_session_id,
+                        "metadata": metadata
+                    })
+
+                await event_queue.put(STREAM_DONE)
+
+            except Exception as e:
+                logger.error(f"Agent error: {e}", exc_info=True)
+                await event_queue.put({**STREAM_ERROR, "error": str(e)})
+
+        # Start the agent task
+        agent_task = asyncio.create_task(run_agent())
+
         try:
-            agent = await self._get_agent()
+            while True:
+                event = await event_queue.get()
 
-            # Create async generator from agent
-            agent_gen = agent.stream_query(user_message, session_id)
+                if event["type"] == "done":
+                    break
 
-            # Sentinel to indicate agent is done
-            AGENT_DONE = object()
+                if event["type"] == "error":
+                    error_msg = event.get("error", "Unknown error")
+                    error_response = StreamResponse(
+                        id=chat_id,
+                        created=created,
+                        model=model,
+                        choices=[
+                            StreamChoice(
+                                index=0,
+                                delta={"content": f"\n\nError: {error_msg}"},
+                                finish_reason="stop",
+                            )
+                        ],
+                        session_id=session_id or f"error_{uuid.uuid4().hex[:16]}",
+                    )
+                    yield f"data: {error_response.model_dump_json()}\n\n"
+                    yield "data: [DONE]\n\n"
+                    return
 
-            async def get_next_chunk():
-                """Get next chunk from agent, return AGENT_DONE when complete."""
-                try:
-                    return await agent_gen.__anext__()
-                except StopAsyncIteration:
-                    return AGENT_DONE
+                if event["type"] == "question":
+                    question_data = event["data"]
+                    current_session = final_session_id or session_id or callback_session_id
+                    question_event = {
+                        "type": "ask_user_question",
+                        "session_id": current_session,
+                        "questions": question_data.get("questions", [])
+                    }
+                    logger.info(f"[Session {current_session}] Emitting ask_user_question SSE event")
+                    yield f"data: {json.dumps(question_event)}\n\n"
+                    continue
 
-            async def get_next_question():
-                """Get next question from queue."""
-                return await question_queue.get()
+                if event["type"] == "chunk":
+                    chunk = event["chunk"]
+                    metadata = event.get("metadata", {})
 
-            # Track tasks
-            chunk_task: asyncio.Task | None = None
-            question_task: asyncio.Task | None = None
-            agent_done = False
+                    # Skip session_init messages
+                    if metadata.get("type") == "session_init":
+                        logger.info(f"Session initialized with ID: {event.get('session_id')}")
+                        continue
 
-            while not agent_done:
-                # Ensure we have active tasks for both sources
-                if chunk_task is None:
-                    chunk_task = asyncio.create_task(get_next_chunk())
-                if question_task is None:
-                    question_task = asyncio.create_task(get_next_question())
-
-                # Wait for whichever completes first
-                done, pending = await asyncio.wait(
-                    [chunk_task, question_task],
-                    return_when=asyncio.FIRST_COMPLETED
-                )
-
-                for task in done:
-                    if task is chunk_task:
-                        result = task.result()
-                        chunk_task = None  # Reset so we create a new one
-
-                        if result is AGENT_DONE:
-                            agent_done = True
-                            # Cancel the question task since we're done
-                            if question_task and not question_task.done():
-                                question_task.cancel()
-                                try:
-                                    await question_task
-                                except asyncio.CancelledError:
-                                    pass
-                        else:
-                            chunk, chunk_session_id, metadata = result
-
-                            if chunk_session_id:
-                                # Update final session ID and re-register callback
-                                # This is CRITICAL for AskUserQuestion to work properly
-                                final_session_id = chunk_session_id
-                                final_metadata = metadata
-
-                                # Re-register callback with actual session ID if it changed
-                                if callback_session_id != final_session_id:
-                                    logger.info(
-                                        f"Re-registering question callback: {callback_session_id} -> {final_session_id}"
-                                    )
-                                    unregister_question_callback(callback_session_id)
-                                    callback_session_id = final_session_id
-                                    register_question_callback(callback_session_id, on_question_ready)
-
-                            # Skip session_init messages (they're just for callback registration)
-                            if metadata.get("type") == "session_init":
-                                logger.info(f"Session initialized with ID: {chunk_session_id}")
-                                continue
-
-                            if chunk:
-                                response = StreamResponse(
-                                    id=chat_id,
-                                    created=created,
-                                    model=model,
-                                    choices=[
-                                        StreamChoice(
-                                            index=0,
-                                            delta={"content": chunk},
-                                            finish_reason=None,
-                                        )
-                                    ],
-                                    session_id=None,
+                    if chunk:
+                        response = StreamResponse(
+                            id=chat_id,
+                            created=created,
+                            model=model,
+                            choices=[
+                                StreamChoice(
+                                    index=0,
+                                    delta={"content": chunk},
+                                    finish_reason=None,
                                 )
-                                yield f"data: {response.model_dump_json()}\n\n"
-
-                    elif task is question_task:
-                        question_data = task.result()
-                        question_task = None  # Reset so we create a new one
-
-                        current_session = final_session_id or session_id or callback_session_id
-                        question_event = {
-                            "type": "ask_user_question",
-                            "session_id": current_session,
-                            "questions": question_data.get("questions", [])
-                        }
-                        logger.info(f"[Session {current_session}] Emitting ask_user_question SSE event")
-                        yield f"data: {json.dumps(question_event)}\n\n"
+                            ],
+                            session_id=None,
+                        )
+                        yield f"data: {response.model_dump_json()}\n\n"
 
             # Send session footer before final chunk
             if final_session_id:
@@ -516,6 +507,14 @@ class ClaudeAgentServer:
         finally:
             # Always unregister the callback when done
             unregister_question_callback(callback_session_id)
+
+            # Ensure agent task is complete or cancelled
+            if not agent_task.done():
+                agent_task.cancel()
+                try:
+                    await agent_task
+                except asyncio.CancelledError:
+                    pass
 
     @fastapi_app.get("/v1/sessions/{session_id}")
     async def get_session(self, session_id: str) -> dict[str, Any]:
