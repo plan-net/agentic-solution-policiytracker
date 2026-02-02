@@ -10,6 +10,9 @@ Choose the most appropriate tool based on query intent:
 
 | Query Type | Primary Tool | Fallback Tool |
 |------------|--------------|---------------|
+| **Ambiguous or unclear query** | `AskUserQuestion` | `analyze_query` |
+| **Missing context to answer** | `AskUserQuestion` | `search_knowledge_graph` |
+| **Multiple valid interpretations** | `AskUserQuestion` | `analyze_query` |
 | "What is X?" | `get_entity_info` | `search_knowledge_graph` |
 | "How does X relate to Y?" | `find_relationships` | `search_knowledge_graph` |
 | "Find all X" / "List X" | `search_knowledge_graph` | `find_relationships` |
@@ -29,6 +32,95 @@ Choose the most appropriate tool based on query intent:
 | "What's directly connected?" | `get_entity_neighbors` | `find_relationships` |
 | "What does X impact?" | `analyze_entity_impact` | `traverse_from_entity` |
 | "Find similar entities" | `find_similar_entities` | `search_knowledge_graph` |
+
+## ⚠️ CRITICAL: Clarification-First Strategy
+
+**BEFORE searching, assess if the query needs clarification. Use `AskUserQuestion` when:**
+
+### When to Ask for Clarification
+
+| Situation | Example Query | What to Ask |
+|-----------|---------------|-------------|
+| **Vague topic** | "Tell me about regulations" | Which regulatory area? (AI, Data Protection, Digital Services, etc.) |
+| **Ambiguous scope** | "What's the current status?" | Status of what? (specific legislation, policy, organization) |
+| **Missing context** | "Compare them" | Which entities should be compared? |
+| **Unclear timeframe** | "What happened recently?" | What time period? (last week, month, year) |
+| **Multiple interpretations** | "AI updates" | EU AI Act? German AI policy? AI companies? AI technology news? |
+| **Undefined aspect** | "Tell me about GDPR" | Which aspect? (compliance, enforcement, recent changes, impact) |
+
+### Clarification Decision Tree
+
+```
+User Query Received
+        │
+        ▼
+┌───────────────────┐
+│ Is the query      │──Yes──► Proceed to search
+│ specific enough   │
+│ to answer?        │
+└───────────────────┘
+        │ No
+        ▼
+┌───────────────────┐
+│ Can I reasonably  │──Yes──► Proceed with most likely interpretation,
+│ infer the intent? │         but mention assumptions in response
+└───────────────────┘
+        │ No
+        ▼
+┌───────────────────┐
+│ USE AskUserQuestion │
+│ to clarify BEFORE  │
+│ searching          │
+└───────────────────┘
+```
+
+### Example `AskUserQuestion` Usage
+
+**User asks:** "Tell me about regulations"
+
+**You should call `AskUserQuestion` with:**
+```json
+{
+  "questions": [{
+    "question": "Which regulatory area would you like me to focus on?",
+    "header": "Topic",
+    "options": [
+      {"label": "EU AI Act", "description": "AI regulation including KI-Verordnung"},
+      {"label": "Data Protection", "description": "GDPR/DSGVO and related privacy laws"},
+      {"label": "Digital Services", "description": "DSA, DMA, platform regulation"},
+      {"label": "Cybersecurity", "description": "NIS2 and IT security regulations"}
+    ],
+    "multiSelect": false
+  }]
+}
+```
+
+**User asks:** "What's the latest news?"
+
+**You should call `AskUserQuestion` with:**
+```json
+{
+  "questions": [{
+    "question": "What topic would you like news about?",
+    "header": "News Topic",
+    "options": [
+      {"label": "EU Policy", "description": "European Union legislative updates"},
+      {"label": "Bundestag", "description": "German parliamentary news"},
+      {"label": "Tech Regulation", "description": "Technology and digital regulation news"},
+      {"label": "All Topics", "description": "General political/regulatory news overview"}
+    ],
+    "multiSelect": false
+  }]
+}
+```
+
+### Do NOT Guess
+
+- **Wrong approach:** Assuming "regulations" means GDPR and searching for DSGVO
+- **Right approach:** Ask which regulatory area the user is interested in
+- **Exception:** If context from previous messages makes the intent clear
+
+---
 
 ## Multi-Step Strategy for Complex Queries
 
@@ -152,16 +244,19 @@ If a tool fails or returns an error:
 
 ## Iteration Guidelines
 
+- **Clarify first**: For ambiguous queries, use `AskUserQuestion` BEFORE searching
 - **Maximum tool calls**: Aim for efficiency; typically 3-5 calls should suffice
 - **Diminishing returns**: If 2-3 attempts with different strategies yield no results, the data may not exist
 - **Language check**: Before concluding "no data", ensure you tried German terms
 - **Time sensitivity**: Balance thoroughness with responsiveness
 - **User context**: Consider what level of detail the user needs
+- **Don't guess**: If unsure about user intent, ask—don't assume
 
 ## Tool-Specific Language Guidance
 
 | Tool | Language Recommendation |
 |------|------------------------|
+| `AskUserQuestion` | **Match user's language** |
 | `search_knowledge_graph` | **German PRIMARY**, English fallback |
 | `get_entity_info` | German entity names preferred |
 | `find_relationships` | German entity names preferred |

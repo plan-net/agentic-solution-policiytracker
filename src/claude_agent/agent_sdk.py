@@ -43,6 +43,7 @@ from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.context_manager import SDKContextManager
 from src.shared.client_context import get_client_context_for_prompt
 from src.claude_agent.query_decomposition import QueryDecomposer
+from src.claude_agent.question_handler import handle_ask_user_question, get_pending_question
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +84,20 @@ Use these when information is not in other sources or for recent news:
 - search_dpa_news - German Press Agency (DPA) news search
 - get_article_content - Fetch full article content from URLs
 
+## User Interaction Tool (Clarifying Questions)
+- AskUserQuestion - Ask the user clarifying questions when their query is ambiguous
+
+**IMPORTANT: Use AskUserQuestion when:**
+- The query is vague (e.g., "Tell me about regulations" - which regulations?)
+- Multiple interpretations exist (e.g., "What's the status?" - status of what?)
+- You need specific context before searching (e.g., time period, specific entity, aspect)
+- Guessing might lead to an unhelpful or irrelevant response
+
+**Do NOT guess** - if you're unsure what the user wants, ASK them using AskUserQuestion.
+Provide 2-4 clear options that cover the most likely user intents.
+
 ## Best Practices
+- Ask before guessing: Use AskUserQuestion for ambiguous queries BEFORE searching
 - Start with the knowledge graph for established regulatory information
 - Use Bundestag tools for current German parliamentary status
 - Use web search for recent news or when other sources lack information
@@ -137,6 +151,11 @@ BUNDESTAG_DIP_TOOLS = [
 WEB_SEARCH_TOOLS = [
     "search_dpa_news",
     "get_article_content",
+]
+
+# User interaction tools (built-in SDK tools)
+USER_INTERACTION_TOOLS = [
+    "AskUserQuestion",
 ]
 
 # Combined list for backwards compatibility
@@ -397,6 +416,9 @@ class PolicyTrackerSDKAgent:
         if self.enable_todo:
             allowed_tools.append("TodoWrite")
 
+        # AskUserQuestion tool for clarifying questions (always enabled)
+        allowed_tools.append("AskUserQuestion")
+
         return allowed_tools
 
     async def _init_session_context(
@@ -560,7 +582,17 @@ class PolicyTrackerSDKAgent:
             )
             get_reflection = lambda: {"total_tools": 0, "avg_confidence": 1.0, "low_confidence_tools": [], "turns": 0}
 
-        # Build SDK options with hooks
+        # Define can_use_tool callback for AskUserQuestion handling
+        async def _can_use_tool(tool_name: str, input_data: dict, context) -> dict:
+            """Handle tool permission requests, especially AskUserQuestion."""
+            if tool_name == "AskUserQuestion":
+                # Handle clarifying questions - waits for user response
+                result = await handle_ask_user_question(input_data, session_id)
+                return {"behavior": "allow", **result}
+            # Auto-approve other tools (MCP tools are already validated)
+            return {"behavior": "allow", "updated_input": input_data}
+
+        # Build SDK options with hooks and can_use_tool callback
         options = ClaudeAgentOptions(
             system_prompt=system_prompt,
             mcp_servers=self._build_mcp_config(),
@@ -568,6 +600,7 @@ class PolicyTrackerSDKAgent:
             model=self.model,
             max_turns=self.max_turns,
             max_thinking_tokens=self.max_thinking_tokens,
+            can_use_tool=_can_use_tool,
             hooks={
                 "PreToolUse": [HookMatcher(hooks=[pre_hook])],
                 "PostToolUse": [HookMatcher(hooks=[post_hook])],
@@ -735,11 +768,17 @@ class PolicyTrackerSDKAgent:
 
         Yields:
             Tuples of (text_chunk, session_id, metadata)
-            - session_id and metadata are populated in final yield
+            - First yield sends empty text with session_id for callback registration
+            - Intermediate yields send text chunks with empty session_id
+            - Final yield sends empty text with session_id and full metadata
         """
         # Generate or use provided session ID
         if not session_id:
             session_id = self._generate_session_id()
+
+        # IMPORTANT: Yield the session_id immediately so the server can register
+        # callbacks for AskUserQuestion handling before any tools are called
+        yield "", session_id, {"type": "session_init"}
 
         # Set thread_id for LangWatch trace grouping
         langwatch_config.set_thread_id(session_id)
@@ -842,7 +881,17 @@ class PolicyTrackerSDKAgent:
             )
             get_reflection = lambda: {"total_tools": 0, "avg_confidence": 1.0, "low_confidence_tools": [], "turns": 0}
 
-        # Build SDK options with hooks
+        # Define can_use_tool callback for AskUserQuestion handling
+        async def _can_use_tool(tool_name: str, input_data: dict, context) -> dict:
+            """Handle tool permission requests, especially AskUserQuestion."""
+            if tool_name == "AskUserQuestion":
+                # Handle clarifying questions - waits for user response
+                result = await handle_ask_user_question(input_data, session_id)
+                return {"behavior": "allow", **result}
+            # Auto-approve other tools (MCP tools are already validated)
+            return {"behavior": "allow", "updated_input": input_data}
+
+        # Build SDK options with hooks and can_use_tool callback
         options = ClaudeAgentOptions(
             system_prompt=system_prompt,
             mcp_servers=self._build_mcp_config(),
@@ -850,6 +899,7 @@ class PolicyTrackerSDKAgent:
             model=self.model,
             max_turns=self.max_turns,
             max_thinking_tokens=self.max_thinking_tokens,
+            can_use_tool=_can_use_tool,
             hooks={
                 "PreToolUse": [HookMatcher(hooks=[pre_hook])],
                 "PostToolUse": [HookMatcher(hooks=[post_hook])],

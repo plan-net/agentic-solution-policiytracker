@@ -100,6 +100,7 @@ export async function streamChatMessage({
   onSessionId = () => {},
   onError = () => {},
   onDone = () => {},
+  onAskUserQuestion = () => {},  // Callback for clarifying questions from Claude
 }) {
   try {
     const response = await fetch('/v1/chat/completions', {
@@ -141,6 +142,15 @@ export async function streamChatMessage({
           try {
             const parsed = JSON.parse(data)
 
+            // Handle ask_user_question event from Claude
+            if (parsed.type === 'ask_user_question') {
+              onAskUserQuestion({
+                sessionId: parsed.session_id,
+                questions: parsed.questions
+              })
+              continue
+            }
+
             // Extract content from SSE response
             if (parsed.choices?.[0]?.delta?.content) {
               onChunk(parsed.choices[0].delta.content)
@@ -169,6 +179,33 @@ export async function streamChatMessage({
   }
 }
 
+/**
+ * Submit answers to a pending clarifying question
+ * @param {string} sessionId - The session ID
+ * @param {Object} answers - Dict mapping question text to selected option label(s)
+ * @returns {Promise<Object>} - Response from the server
+ */
+export async function submitQuestionAnswer(sessionId, answers) {
+  try {
+    const response = await fetch(`/v1/sessions/${sessionId}/answer`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ answers }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to submit answer:', error)
+    throw error
+  }
+}
+
 export default {
   listSessions,
   getSession,
@@ -176,4 +213,5 @@ export default {
   deleteSession,
   updateSessionTitle,
   streamChatMessage,
+  submitQuestionAnswer,
 }

@@ -37,6 +37,76 @@ Communities are clusters of related entities in the knowledge graph, automatical
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+## Just Commands (Quick Reference)
+
+The following `just` commands are available for community generation:
+
+| Command | Description | LLM Calls |
+|---------|-------------|-----------|
+| `just build-communities` | Basic Graphiti community builder (legacy) | Yes |
+| `just build-communities-gds` | GDS clustering only | No |
+| `just build-communities-gds-summarize` | GDS clustering + LLM summaries | Yes |
+| `just communities-summarize-only` | Add summaries to existing communities | Yes |
+| `just build-communities-gds-group <id>` | Build for specific group_id | Yes |
+| `just build-communities-full` | Full rebuild with all options | Yes |
+
+### Command Details
+
+#### `just build-communities-gds [min_size]`
+Run Leiden clustering without LLM summarization. Fast and free (no API calls).
+
+```bash
+# Default: minimum 3 members per community
+just build-communities-gds
+
+# Custom minimum size
+just build-communities-gds 5
+```
+
+#### `just build-communities-gds-summarize [min_size] [max_summarize]`
+Run clustering + generate LLM summaries for top communities.
+
+```bash
+# Default: min_size=3, max_summarize=50
+just build-communities-gds-summarize
+
+# Custom: min 5 members, summarize top 100
+just build-communities-gds-summarize 5 100
+```
+
+#### `just communities-summarize-only [max_summarize] [max_members]`
+Skip clustering, only add summaries to existing communities. Useful after initial detection.
+
+```bash
+# Default: summarize 50 communities, max 100 members each
+just communities-summarize-only
+
+# Custom: summarize 10 communities, max 50 members each
+just communities-summarize-only 10 50
+```
+
+#### `just build-communities-gds-group <group_id> [min_size]`
+Build communities for a specific group_id filter.
+
+```bash
+# Build for specific group
+just build-communities-gds-group "bundestag-wp21"
+
+# With custom min size
+just build-communities-gds-group "bundestag-wp21" 5
+```
+
+#### `just build-communities-full [min_size] [max_summarize] [max_members]`
+Full rebuild with all customization options.
+
+```bash
+# Default: min_size=3, max_summarize=100, max_members=100
+just build-communities-full
+
+# Custom: min 5 members, summarize top 200, use 150 members each
+just build-communities-full 5 200 150
+```
+
 ## Scripts
 
 ### Primary Script: `scripts/build_communities_gds.py`
@@ -56,6 +126,18 @@ python scripts/build_communities_gds.py --summarize-only --max-summarize 10 --ma
 # Clustering only (no LLM calls)
 python scripts/build_communities_gds.py --min-size 5
 ```
+
+### Script Options Reference
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--min-size` | 3 | Minimum members per community |
+| `--summarize` | false | Enable LLM summarization after clustering |
+| `--summarize-only` | false | Skip clustering, only add summaries |
+| `--max-summarize` | 50 | Max communities to summarize (cost control) |
+| `--max-members` | 100 | Max text entries per community |
+| `--group-id` | all | Filter to specific group_id |
+| `--relationships` | RELATES_TO,BELONGS_TO,DOCUMENT_FOR | Relationship types for clustering |
 
 ### Legacy Script: `scripts/build_communities.py`
 

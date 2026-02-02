@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { getSessionMessages, streamChatMessage } from '../services/chatApi'
+import { getSessionMessages, streamChatMessage, submitQuestionAnswer } from '../services/chatApi'
 import { submitFeedback as submitFeedbackApi } from '../services/feedbackApi'
 
 export function useStreamingChat(initialSessionId = null) {
@@ -9,6 +9,7 @@ export function useStreamingChat(initialSessionId = null) {
   const [error, setError] = useState(null)
   const [sessionId, setSessionId] = useState(initialSessionId)
   const [graphSessionId, setGraphSessionId] = useState(null)
+  const [pendingQuestion, setPendingQuestion] = useState(null)  // For clarifying questions
   const abortControllerRef = useRef(null)
 
   // Track if we created the session ourselves (to avoid reloading)
@@ -128,6 +129,10 @@ export function useStreamingChat(initialSessionId = null) {
           setSessionId(newSessionId)
           setGraphSessionId(newSessionId)
         },
+        onAskUserQuestion: ({ sessionId: qSessionId, questions }) => {
+          // Claude is asking a clarifying question
+          setPendingQuestion({ sessionId: qSessionId, questions })
+        },
         onError: (errorMessage) => {
           setError(errorMessage)
           // Remove the empty assistant message on error
@@ -200,6 +205,25 @@ export function useStreamingChat(initialSessionId = null) {
     }
   }, [sessionId])
 
+  // Submit answer to pending clarifying question
+  const answerQuestion = useCallback(async (answers) => {
+    if (!pendingQuestion) return
+
+    try {
+      await submitQuestionAnswer(pendingQuestion.sessionId, answers)
+      setPendingQuestion(null)
+      // The stream will continue automatically after answer is submitted
+    } catch (error) {
+      console.error('Failed to submit answer:', error)
+      setError('Failed to submit answer')
+    }
+  }, [pendingQuestion])
+
+  // Clear pending question (e.g., on cancel)
+  const clearPendingQuestion = useCallback(() => {
+    setPendingQuestion(null)
+  }, [])
+
   return {
     messages,
     isStreaming,
@@ -212,6 +236,9 @@ export function useStreamingChat(initialSessionId = null) {
     clearMessages,
     setMessages,
     submitFeedback,
+    pendingQuestion,
+    answerQuestion,
+    clearPendingQuestion,
   }
 }
 

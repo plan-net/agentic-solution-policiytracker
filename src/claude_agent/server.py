@@ -10,6 +10,8 @@ Features:
 - Graph visualization integration
 """
 
+import asyncio
+import json
 import logging
 import time
 import uuid
@@ -23,6 +25,12 @@ from ray import serve
 
 from src.config import settings
 from src.shared.context_manager import sdk_context_manager
+from src.claude_agent.question_handler import (
+    submit_answers,
+    get_pending_question,
+    register_question_callback,
+    unregister_question_callback,
+)
 
 # Use SDK-based agent for automatic agentic loop and native MCP support
 from .agent_sdk import PolicyTrackerSDKAgent as PolicyTrackerAgent
@@ -98,6 +106,28 @@ class SessionMessagesResponse(BaseModel):
     session_id: str
     messages: list[dict[str, Any]]
     total: int
+
+
+class QuestionOption(BaseModel):
+    """Option for a clarifying question from Claude."""
+
+    label: str
+    description: str
+
+
+class ClarifyingQuestion(BaseModel):
+    """A clarifying question from Claude."""
+
+    question: str
+    header: str
+    options: list[QuestionOption]
+    multiSelect: bool = False
+
+
+class UserAnswerRequest(BaseModel):
+    """Request to submit answers to clarifying questions."""
+
+    answers: dict[str, str]  # Maps question text to selected option label(s)
 
 
 class StreamChoice(BaseModel):
@@ -286,58 +316,168 @@ class ClaudeAgentServer:
         user_message: str,
         session_id: Optional[str] = None
     ) -> AsyncGenerator[str, None]:
-        """Handle streaming chat completion."""
+        """Handle streaming chat completion.
+
+        Uses an async queue to handle AskUserQuestion events that may occur
+        while the agent is processing. When Claude calls AskUserQuestion,
+        the question_handler invokes our callback which puts the question
+        into the queue, allowing us to emit the SSE event immediately.
+
+        The key insight is that when can_use_tool is invoked for AskUserQuestion:
+        1. The callback puts the question into the queue
+        2. Then can_use_tool blocks waiting for the answer
+        3. Meanwhile, we need to emit the SSE event from the queue
+        4. The user submits their answer via /answer endpoint
+        5. can_use_tool unblocks and returns to Claude
+        6. Claude continues and produces more chunks
+
+        To achieve this, we use asyncio.wait with FIRST_COMPLETED to race
+        between getting the next chunk and receiving a question event.
+        """
         chat_id = f"chatcmpl-{uuid.uuid4().hex[:29]}"
         created = int(time.time())
         final_session_id = None
         final_metadata: dict[str, Any] = {}
 
+        # Queue to receive question events from the question_handler
+        question_queue: asyncio.Queue[dict] = asyncio.Queue()
+
+        # Callback that the question_handler will invoke when Claude asks a question
+        async def on_question_ready(question_data: dict) -> None:
+            """Called by question_handler when AskUserQuestion is invoked."""
+            logger.info("Question callback invoked - putting question into queue")
+            await question_queue.put(question_data)
+
+        # Generate or use provided session_id for callback registration
+        # We need to register before starting so we don't miss any questions
+        callback_session_id = session_id or f"pending_{uuid.uuid4().hex[:16]}"
+        register_question_callback(callback_session_id, on_question_ready)
+
         try:
             agent = await self._get_agent()
 
-            # stream_query() now returns (chunk, session_id, metadata)
-            async for chunk, chunk_session_id, metadata in agent.stream_query(user_message, session_id):
-                if chunk_session_id:
-                    # Final chunk with session ID and metadata
-                    final_session_id = chunk_session_id
-                    final_metadata = metadata
+            # Create async generator from agent
+            agent_gen = agent.stream_query(user_message, session_id)
 
-                if chunk:
-                    response = StreamResponse(
-                        id=chat_id,
-                        created=created,
-                        model=model,
-                        choices=[
-                            StreamChoice(
-                                index=0,
-                                delta={"content": chunk},
-                                finish_reason=None,
-                            )
-                        ],
-                        session_id=None,  # Only include in final chunk
-                    )
-                    yield f"data: {response.model_dump_json()}\n\n"
+            # Sentinel to indicate agent is done
+            AGENT_DONE = object()
+
+            async def get_next_chunk():
+                """Get next chunk from agent, return AGENT_DONE when complete."""
+                try:
+                    return await agent_gen.__anext__()
+                except StopAsyncIteration:
+                    return AGENT_DONE
+
+            async def get_next_question():
+                """Get next question from queue."""
+                return await question_queue.get()
+
+            # Track tasks
+            chunk_task: asyncio.Task | None = None
+            question_task: asyncio.Task | None = None
+            agent_done = False
+
+            while not agent_done:
+                # Ensure we have active tasks for both sources
+                if chunk_task is None:
+                    chunk_task = asyncio.create_task(get_next_chunk())
+                if question_task is None:
+                    question_task = asyncio.create_task(get_next_question())
+
+                # Wait for whichever completes first
+                done, pending = await asyncio.wait(
+                    [chunk_task, question_task],
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+
+                for task in done:
+                    if task is chunk_task:
+                        result = task.result()
+                        chunk_task = None  # Reset so we create a new one
+
+                        if result is AGENT_DONE:
+                            agent_done = True
+                            # Cancel the question task since we're done
+                            if question_task and not question_task.done():
+                                question_task.cancel()
+                                try:
+                                    await question_task
+                                except asyncio.CancelledError:
+                                    pass
+                        else:
+                            chunk, chunk_session_id, metadata = result
+
+                            if chunk_session_id:
+                                # Update final session ID and re-register callback
+                                # This is CRITICAL for AskUserQuestion to work properly
+                                final_session_id = chunk_session_id
+                                final_metadata = metadata
+
+                                # Re-register callback with actual session ID if it changed
+                                if callback_session_id != final_session_id:
+                                    logger.info(
+                                        f"Re-registering question callback: {callback_session_id} -> {final_session_id}"
+                                    )
+                                    unregister_question_callback(callback_session_id)
+                                    callback_session_id = final_session_id
+                                    register_question_callback(callback_session_id, on_question_ready)
+
+                            # Skip session_init messages (they're just for callback registration)
+                            if metadata.get("type") == "session_init":
+                                logger.info(f"Session initialized with ID: {chunk_session_id}")
+                                continue
+
+                            if chunk:
+                                response = StreamResponse(
+                                    id=chat_id,
+                                    created=created,
+                                    model=model,
+                                    choices=[
+                                        StreamChoice(
+                                            index=0,
+                                            delta={"content": chunk},
+                                            finish_reason=None,
+                                        )
+                                    ],
+                                    session_id=None,
+                                )
+                                yield f"data: {response.model_dump_json()}\n\n"
+
+                    elif task is question_task:
+                        question_data = task.result()
+                        question_task = None  # Reset so we create a new one
+
+                        current_session = final_session_id or session_id or callback_session_id
+                        question_event = {
+                            "type": "ask_user_question",
+                            "session_id": current_session,
+                            "questions": question_data.get("questions", [])
+                        }
+                        logger.info(f"[Session {current_session}] Emitting ask_user_question SSE event")
+                        yield f"data: {json.dumps(question_event)}\n\n"
 
             # Send session footer before final chunk
-            graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
-            confidence = final_metadata.get("avg_confidence", 1.0)
-            confidence_indicator = "🟢" if confidence > 0.7 else "🟡" if confidence > 0.4 else "🔴"
-            session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}` {confidence_indicator}\n🔗 [View Graph Context]({graph_viz_url})"
+            if final_session_id:
+                graph_viz_url = f"http://localhost:5174/chat-context?session={final_session_id}&mode=3d"
+                confidence = final_metadata.get("avg_confidence", 1.0)
+                confidence_indicator = "🟢" if confidence > 0.7 else "🟡" if confidence > 0.4 else "🔴"
+                session_footer = f"\n\n---\n📊 **Session ID**: `{final_session_id}` {confidence_indicator}\n🔗 [View Graph Context]({graph_viz_url})"
 
-            footer_response = StreamResponse(
-                id=chat_id,
-                created=created,
-                model=model,
-                choices=[
-                    StreamChoice(
-                        index=0,
-                        delta={"content": session_footer},
-                        finish_reason=None,
-                    )
-                ],
-                session_id=None,
-            )
-            yield f"data: {footer_response.model_dump_json()}\n\n"
+                footer_response = StreamResponse(
+                    id=chat_id,
+                    created=created,
+                    model=model,
+                    choices=[
+                        StreamChoice(
+                            index=0,
+                            delta={"content": session_footer},
+                            finish_reason=None,
+                        )
+                    ],
+                    session_id=None,
+                )
+                yield f"data: {footer_response.model_dump_json()}\n\n"
 
             # Send final chunk with session_id
             final_response = StreamResponse(
@@ -373,6 +513,9 @@ class ClaudeAgentServer:
             )
             yield f"data: {error_response.model_dump_json()}\n\n"
             yield "data: [DONE]\n\n"
+        finally:
+            # Always unregister the callback when done
+            unregister_question_callback(callback_session_id)
 
     @fastapi_app.get("/v1/sessions/{session_id}")
     async def get_session(self, session_id: str) -> dict[str, Any]:
@@ -464,6 +607,50 @@ class ClaudeAgentServer:
         except Exception as e:
             logger.error(f"Error listing sessions: {e}")
             raise HTTPException(status_code=500, detail=str(e))
+
+    @fastapi_app.post("/v1/sessions/{session_id}/answer")
+    async def submit_user_answer(
+        self, session_id: str, request: UserAnswerRequest
+    ) -> dict[str, str]:
+        """Submit user's answers to pending clarifying questions.
+
+        The frontend calls this after rendering the Adaptive Card and
+        collecting the user's selections.
+
+        Args:
+            session_id: The session ID
+            request: The user's answers
+
+        Returns:
+            Success confirmation
+        """
+        success = submit_answers(session_id, request.answers)
+        if not success:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No pending question for session {session_id}"
+            )
+        return {"status": "success", "message": "Answers submitted"}
+
+    @fastapi_app.get("/v1/sessions/{session_id}/pending-question")
+    async def get_session_pending_question(self, session_id: str) -> dict[str, Any]:
+        """Get pending question for a session (if any).
+
+        Useful if the frontend needs to re-fetch the question data.
+
+        Args:
+            session_id: The session ID
+
+        Returns:
+            Pending question data or no_pending_question status
+        """
+        question = get_pending_question(session_id)
+        if not question:
+            return {"status": "no_pending_question", "questions": None}
+        return {
+            "status": "awaiting_answer",
+            "questions": question.get("questions", [])
+        }
 
 
 # Ray Serve app binding

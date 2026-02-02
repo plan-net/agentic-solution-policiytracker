@@ -280,10 +280,37 @@ import-data:
     @echo "📤 Importing sample data..."
     uv run python scripts/import_data_to_azurite.py
 
-# Build communities from knowledge graph
+# Build communities from knowledge graph (Graphiti - basic)
 build-communities:
     @echo "🏘️ Building communities from graph..."
     uv run python scripts/build_communities.py
+
+# === GDS Community Detection (Recommended for large graphs) ===
+
+# Build communities using Neo4j GDS (clustering only, no summaries)
+build-communities-gds min_size="3":
+    @echo "🏘️ Building communities with Neo4j GDS (min size: {{min_size}})..."
+    uv run python scripts/build_communities_gds.py --min-size {{min_size}}
+
+# Build communities with GDS + LLM summarization
+build-communities-gds-summarize min_size="3" max_summarize="50":
+    @echo "🏘️ Building communities with GDS + summarization..."
+    uv run python scripts/build_communities_gds.py --min-size {{min_size}} --summarize --max-summarize {{max_summarize}}
+
+# Add summaries to existing communities (skip clustering)
+communities-summarize-only max_summarize="50" max_members="100":
+    @echo "🤖 Adding summaries to existing communities..."
+    uv run python scripts/build_communities_gds.py --summarize-only --max-summarize {{max_summarize}} --max-members {{max_members}}
+
+# Build communities for a specific group_id
+build-communities-gds-group group_id min_size="3":
+    @echo "🏘️ Building communities for group: {{group_id}}..."
+    uv run python scripts/build_communities_gds.py --group-id {{group_id}} --min-size {{min_size}} --summarize
+
+# Full community rebuild with all options
+build-communities-full min_size="3" max_summarize="100" max_members="100":
+    @echo "🏘️ Full community rebuild (GDS + summaries + embeddings)..."
+    uv run python scripts/build_communities_gds.py --min-size {{min_size}} --summarize --max-summarize {{max_summarize}} --max-members {{max_members}}
 
 # Upload prompts to Langfuse
 upload-prompts:

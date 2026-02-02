@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { User, Bot, ThumbsUp, ThumbsDown, Send } from 'lucide-react'
 import { MarkdownRenderer } from '../rich-content'
 import ToolCallIndicator from './ToolCallIndicator'
+import AdaptiveCardQuestion from './AdaptiveCardQuestion'
 import { parseToolCalls } from '../../utils/parseToolCalls'
 import { FEATURES } from '../../config/features'
 
@@ -12,6 +13,8 @@ function ChatMessage({
   messageIndex,
   feedback,
   onFeedback,
+  pendingQuestion = null,
+  onAnswerSubmit = null,
 }) {
   const isUser = role === 'user'
   const [showCommentBox, setShowCommentBox] = useState(false)
@@ -123,6 +126,15 @@ function ChatMessage({
             </div>
           )}
         </div>
+
+        {/* Render pending question as Adaptive Card */}
+        {!isUser && isStreaming && pendingQuestion && onAnswerSubmit && (
+          <AdaptiveCardQuestion
+            questions={pendingQuestion.questions}
+            sessionId={pendingQuestion.sessionId}
+            onAnswerSubmit={onAnswerSubmit}
+          />
+        )}
 
         {/* Feedback buttons for assistant messages */}
         {!isUser && !isStreaming && content && (

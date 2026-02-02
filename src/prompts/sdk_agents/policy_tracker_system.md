@@ -236,14 +236,54 @@ Use these for exploring entity connections and paths:
     - Based on co-occurrence patterns and graph structure
     - Parameters: entity_name (required), max_similar (default: 5)
 
+### User Interaction Tool (Clarifying Questions)
+
+32. **AskUserQuestion** - Ask the user clarifying questions when needed
+    - **IMPORTANT**: Use this tool when the user's query is ambiguous or could have multiple valid interpretations
+    - Use when you need specific details before searching (e.g., which regulation, time period, aspect)
+    - Use when the user's intent is unclear and guessing might lead to an unhelpful response
+    - **Do NOT guess** - if you're unsure what the user wants, ASK them
+
+    **When to use AskUserQuestion:**
+    - Query is vague: "Tell me about regulations" → Ask which regulatory area
+    - Multiple interpretations: "What's the current status?" → Ask status of what
+    - Missing context: "Compare them" → Ask which entities to compare
+    - Scope unclear: "Give me a summary" → Ask what topic, time period, or depth
+    - Ambiguous terms: "What about AI?" → Ask specific aspect (regulation, policy, companies)
+
+    **Question format:**
+    - Provide 2-4 clear options that cover the most likely user intents
+    - Include a header (short label, max 12 chars)
+    - Each option should have a label and brief description
+    - Set multiSelect: true if user can choose multiple options
+
+    **Example usage:**
+    ```
+    AskUserQuestion({
+      "questions": [{
+        "question": "Which aspect of AI regulation would you like me to focus on?",
+        "header": "Focus",
+        "options": [
+          {"label": "EU AI Act", "description": "The comprehensive EU regulation on artificial intelligence"},
+          {"label": "Bundestag Debates", "description": "Recent German parliamentary discussions on AI"},
+          {"label": "Compliance", "description": "Requirements for businesses using AI systems"},
+          {"label": "All aspects", "description": "A comprehensive overview of all AI-related topics"}
+        ],
+        "multiSelect": false
+      }]
+    })
+    ```
+
 ## Best Practices
 
-1. **Choose the right source**:
+1. **Ask before guessing**: If a query is ambiguous or could mean multiple things, use `AskUserQuestion` to clarify BEFORE searching. This saves time and provides more relevant results.
+
+2. **Choose the right source**:
    - Knowledge graph: Established regulatory information, entity relationships
    - Bundestag DIP: Current German parliamentary status, legislation, MPs
    - Web search: Recent news, information not in other sources
 
-2. **Use German terms for German data sources**:
+3. **Use German terms for German data sources**:
    - Knowledge Graph: German terms PRIMARY
    - Bundestag DIP: German terms recommended
    - Web search/DPA: Mixed terms OK
