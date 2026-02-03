@@ -95,26 +95,36 @@ async def summarize_pair(client, summary1: str, summary2: str) -> str:
     """
     Merge two summaries into one (same pattern as Graphiti).
 
-    Uses the exact same prompt structure as graphiti_core/prompts/summarize_nodes.py
-    with additional instruction to output in English for bilingual graphs.
+    Uses improved prompts for crisper, more specific outputs.
     """
     messages = [
         {
             "role": "system",
-            "content": "You are a helpful assistant that combines summaries. "
-                       "Always output in English, even if inputs contain German text."
+            "content": (
+                "You are a precise summarizer that creates focused, factual summaries. "
+                "Always output in English, translating German content. "
+                "Be specific - use concrete names, dates, figures, and entities. "
+                "Avoid vague phrases like 'various', 'comprehensive', 'key initiatives', 'highlights'."
+            )
         },
         {
             "role": "user",
-            "content": f"""
-Synthesize the information from the following two summaries into a single succinct summary.
-Output the summary in English, translating any German content.
+            "content": f"""Combine these two texts into ONE focused summary (max 100 words).
 
-Summaries must be under 250 words.
+Rules:
+- Lead with the most important specific facts
+- Include concrete names, organizations, dates, or figures when available
+- Do NOT start with "The summary...", "This text...", or "This covers..."
+- Do NOT use meta-phrases like "outlines", "highlights", "discusses"
+- Write directly about the content, not about the summary itself
 
-Summaries:
-{json.dumps([{"summary": summary1}, {"summary": summary2}], indent=2)}
-"""
+Text 1:
+{summary1}
+
+Text 2:
+{summary2}
+
+Combined summary:"""
         }
     ]
 
@@ -122,7 +132,7 @@ Summaries:
         model="gpt-4o-mini",
         messages=messages,
         temperature=0.1,
-        max_tokens=500,
+        max_tokens=300,
     )
 
     return response.choices[0].message.content.strip()
@@ -130,25 +140,45 @@ Summaries:
 
 async def generate_community_name(client, summary: str) -> str:
     """
-    Generate a one-sentence description for the community name.
+    Generate a concise topic label for the community.
 
-    Uses the exact same prompt structure as graphiti_core/prompts/summarize_nodes.py
-    with additional instruction to output in English for bilingual graphs.
+    Creates specific, searchable names rather than generic descriptions.
     """
     messages = [
         {
             "role": "system",
-            "content": "You are a helpful assistant that describes provided contents in a single sentence. "
-                       "Always output in English."
+            "content": (
+                "You create concise topic labels (5-15 words) for document clusters. "
+                "Be specific - use actual names, organizations, topics, or time periods. "
+                "Always output in English."
+            )
         },
         {
             "role": "user",
-            "content": f"""
-Create a short one sentence description in English that explains what kind of information is summarized.
+            "content": f"""Create a concise topic label (5-15 words) for this content cluster.
 
-Summary:
-{json.dumps(summary, indent=2)}
-"""
+Rules:
+- Do NOT start with "The summary...", "This covers...", "Overview of...", or similar meta-phrases
+- Use specific names, organizations, legislation, or topics when possible
+- Include time periods or locations if relevant
+- Write a label, not a sentence (no period at the end)
+
+Good examples:
+- "German Climate Legislation 2023-2024"
+- "Zalando E-Commerce Platform Operations"
+- "Hamburg Port Infrastructure and HHLA Performance"
+- "EU Digital Markets Act Implementation"
+- "Bundestag Transportation Committee Debates"
+
+Bad examples (too vague):
+- "The summary highlights key legislative initiatives..."
+- "Overview of various regulatory reforms..."
+- "Information about comprehensive modernization efforts..."
+
+Content to label:
+{summary}
+
+Topic label:"""
         }
     ]
 
@@ -156,7 +186,7 @@ Summary:
         model="gpt-4o-mini",
         messages=messages,
         temperature=0.1,
-        max_tokens=150,
+        max_tokens=100,
     )
 
     return response.choices[0].message.content.strip()

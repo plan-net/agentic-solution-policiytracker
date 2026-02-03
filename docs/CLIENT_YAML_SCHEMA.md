@@ -14,6 +14,38 @@ The current schema supports a **nested, principle-based format** that is more ex
 
 ---
 
+## Key Usage Summary
+
+### Legend
+- 🟢 **ETL** = Used by ETL pipeline components
+- 🔵 **Agent** = Used by Claude Agent / Chat system
+- ⚪ **Unused** = Not currently used by any component
+
+### Quick Reference Table
+
+| Key | Format | Scoring Weight | ETL | Agent | Primary Purpose |
+|-----|--------|---------------|-----|-------|-----------------|
+| `client_name` | `string` | Fallback | 🟢 | 🔵 | Client identifier |
+| `company_terms` | `list[str]` | **40%** | 🟢 | - | Brand/competitor monitoring |
+| `core_industries` | `{primary, secondary}` | **25%** | 🟢 | 🔵 | Industry context |
+| `primary_markets` | `list[str]` | **15%** | 🟢 | 🔵 | Geographic focus |
+| `secondary_markets` | `list[str]` | (part of 15%) | 🟢 | 🔵 | Additional markets |
+| `strategic_themes` | `list[str]` | **10%** | 🟢 | 🔵 | Strategic alignment |
+| `topic_patterns` | `dict[str, list]` | (strategic) | 🟢 | - | Keyword patterns |
+| `direct_impact_keywords` | `list[str]` | **40%** | 🟢 | - | Urgency indicators |
+| `exclusion_terms` | `list[str]` | Filter | 🟢 | - | Content filtering |
+| `business_model` | `{description, key_activities}` | - | - | 🔵 | How client operates |
+| `regulatory_relevance` | `{high/medium/monitor}` | (fallback) | 🟢* | 🔵 | Regulatory areas to watch |
+| `competitive_awareness` | `{principle, similar_businesses}` | - | - | 🔵 | Competitive context |
+| `markets` (nested) | `{primary, secondary, monitoring_only}` | (fallback) | 🟢* | 🔵 | Geographic scope tiers |
+| `geographic_priority` | `{principle}` | - | - | 🔵 | Market prioritization |
+| `impact_indicators` | `{high/medium/context signals}` | - | - | 🔵 | Urgency assessment |
+| `exclusions` (nested) | `{principles, industries}` | - | - | 🔵 | Principle-based exclusions |
+
+*🟢* = Used as fallback when primary field is missing
+
+---
+
 ## Required Fields for ETL
 
 These fields are **mandatory** for the ETL pipeline to function correctly:
@@ -24,6 +56,10 @@ Single identifier for the client.
 ```yaml
 client_name: zalando
 ```
+
+**Used by**:
+- `config_loader.py` → `get_company_names()` (fallback)
+- `client_context.py` → `get_client_name()`
 
 ### 2. `company_terms` (list of strings)
 **Weight in scoring: 40%**
@@ -51,6 +87,10 @@ company_terms:
 
 **Best Practice**: Include 15-30 terms covering primary brand, services, competitors, and industry-specific phrases.
 
+**Used by**:
+- `keyword_scorer.py` → `_company_terms` (40% direct impact weight)
+- `config_loader.py` → `get_company_names()`
+
 ### 3. `core_industries` (nested object)
 **Weight in scoring: 25%**
 
@@ -75,6 +115,12 @@ core_industries:
   - "fashion retail"
   - "marketplace operator"
 ```
+
+**Used by**:
+- `keyword_scorer.py` → `_core_industries` (25% industry relevance weight)
+- `llm_analyzer.py` → `_industries` (LLM prompt context)
+- `policy_query_generator.py` → industry-based query generation
+- `client_context.py` → `get_client_context_for_prompt()` as "client_industry"
 
 ### 4. `primary_markets` and `secondary_markets` (lists)
 **Weight in scoring: 15%**
@@ -105,6 +151,12 @@ markets:
     - switzerland
 ```
 
+**Used by**:
+- `keyword_scorer.py` → `_primary_markets`, `_secondary_markets` (15% geographic weight)
+- `llm_analyzer.py` → `_markets` (LLM prompt context)
+- `policy_query_generator.py` → market-based query generation
+- `client_context.py` → `get_primary_markets()`
+
 ### 5. `strategic_themes` (list of strings)
 **Weight in scoring: 10%**
 
@@ -118,6 +170,11 @@ strategic_themes:
   - data privacy
   - payment systems
 ```
+
+**Used by**:
+- `keyword_scorer.py` → `_strategic_themes` (10% strategic alignment weight)
+- `llm_analyzer.py` → `_themes` (LLM prompt context)
+- `policy_query_generator.py` → strategic query generation
 
 ### 6. `direct_impact_keywords` (list of strings)
 **Weight in scoring: 40% (direct impact component)**
@@ -134,6 +191,9 @@ direct_impact_keywords:
   - violation
   - deadline
 ```
+
+**Used by**:
+- `keyword_scorer.py` → `_direct_impact_keywords` (40% direct impact weight)
 
 ### 7. `topic_patterns` (nested object)
 Dictionary of topic categories with associated keywords.
@@ -157,6 +217,10 @@ topic_patterns:
     - circular economy
 ```
 
+**Used by**:
+- `keyword_scorer.py` → `_topic_patterns` (pattern matching for strategic alignment)
+- `policy_query_generator.py` → category-based query generation
+
 ### 8. `exclusion_terms` (list of strings)
 Content to filter out from results.
 
@@ -176,6 +240,11 @@ exclusions:
     - automotive
 ```
 
+**Used by**:
+- `keyword_scorer.py` → `_exclusion_terms` (content filtering)
+- `config_loader.py` → `get_exclusion_terms()`, `should_exclude_article()`
+- `relevance_filter.py` → filtering logic
+
 ---
 
 ## Optional Fields for Agents
@@ -194,6 +263,11 @@ business_model:
     - "Direct B2C sales of fashion and apparel"
     - "Offers payment options including deferred payment / buy-now-pay-later"
 ```
+
+**Used by**:
+- `client_context.py` → `get_client_context_for_prompt()` as "client_description"
+- `agent_sdk.py` → system prompt personalization
+- `report_agent_sdk.py` → report context
 
 ### `regulatory_relevance` (object)
 Principle-based regulatory monitoring structure.
@@ -220,6 +294,12 @@ regulatory_relevance:
 
 **ETL Note**: The policy query generator can fall back to building topic_patterns from regulatory_relevance if topic_patterns is not provided.
 
+**Used by**:
+- `policy_query_generator.py` → FALLBACK: builds `topic_patterns` if missing
+- `client_context.py` → "regulatory_focus" in agent context
+- `agent_sdk.py` → agent understanding of regulatory areas
+- `report_agent_sdk.py` → report structure
+
 ### `impact_indicators` (object)
 Helps agents gauge urgency and relevance.
 
@@ -238,6 +318,39 @@ impact_indicators:
     - "Agency reorganization affecting digital policy"
     - "Political priorities"
 ```
+
+**Used by**:
+- `client_context.py` → agent context
+- `agent_sdk.py` → urgency assessment in responses
+
+### `competitive_awareness` (object)
+Contextual competitive intelligence.
+
+```yaml
+competitive_awareness:
+  principle: "Enforcement against or regulatory treatment of similar platforms may set precedents"
+
+  similar_businesses:
+    - "Other EU e-commerce platforms and marketplaces"
+    - "Fashion retail platforms"
+    - "Companies offering BNPL/deferred payment"
+```
+
+**Used by**:
+- `client_context.py` → competitive context for agent
+- `agent_sdk.py` → contextual responses
+
+### `geographic_priority` (object)
+Helps prioritize by geography.
+
+```yaml
+geographic_priority:
+  principle: "German implementation of EU law is highest priority, followed by EU-level developments, then other member states"
+```
+
+**Used by**:
+- `client_context.py` → geographic prioritization
+- `agent_sdk.py` → response prioritization
 
 ---
 
@@ -259,6 +372,134 @@ The keyword scorer uses these weights:
 
 ---
 
+## Component-to-Key Mapping
+
+### ETL Pipeline Components
+
+#### 1. `config_loader.py` - `ClientConfigLoader`
+```
+Reads:
+├── client_name        → get_company_names() fallback
+├── company_terms      → get_company_names()
+├── core_industries    → get_core_industries()
+├── primary_markets    → get_markets()
+├── secondary_markets  → get_markets()
+└── exclusion_terms    → get_exclusion_terms(), should_exclude_article()
+```
+
+#### 2. `keyword_scorer.py` - `KeywordScorer`
+```
+Reads (via schema_helpers):
+├── company_terms      → _company_terms (40% weight - direct impact)
+├── core_industries    → _core_industries (25% weight - industry relevance)
+├── primary_markets    → _primary_markets (15% weight - geographic relevance)
+├── secondary_markets  → _secondary_markets (part of geographic)
+├── strategic_themes   → _strategic_themes (10% weight - strategic alignment)
+├── direct_impact_keywords → _direct_impact_keywords (40% weight)
+├── topic_patterns     → _topic_patterns (pattern matching)
+└── exclusion_terms    → _exclusion_terms (filter out)
+```
+
+#### 3. `llm_analyzer.py` - `LLMAnalyzer`
+```
+Reads (via schema_helpers):
+├── core_industries    → _industries (context for LLM prompt)
+├── primary_markets    → _markets (context for LLM prompt)
+├── secondary_markets  → _markets (context for LLM prompt)
+└── strategic_themes   → _themes (context for LLM prompt)
+```
+
+#### 4. `policy_query_generator.py` - `PolicyQueryGenerator`
+```
+Reads (via schema_helpers):
+├── core_industries       → industries for query generation
+├── primary_markets       → markets for query generation
+├── secondary_markets     → markets for query generation
+├── topic_patterns        → category queries
+├── regulatory_relevance  → FALLBACK: builds topic_patterns if missing
+└── strategic_themes      → strategic queries
+```
+
+#### 5. `relevance_filter.py` - `RelevanceFilter`
+```
+Reads:
+├── company_terms      → via KeywordScorer
+├── core_industries    → via KeywordScorer
+├── exclusion_terms    → filtering logic
+└── (all KeywordScorer fields)
+```
+
+#### 6. DAG Files (news_collection, policy_collection, website_discovery)
+```
+Use via ConfigLoader:
+├── company_terms      → news search queries
+├── exclusion_terms    → article filtering
+└── (all ConfigLoader methods)
+```
+
+### Agent Components
+
+#### 1. `client_context.py` - `load_client_context()`
+```
+Reads:
+├── client_name           → get_client_name()
+├── core_industries       → get_client_context_for_prompt() as "client_industry"
+├── primary_markets       → get_primary_markets()
+├── business_model        → get_client_context_for_prompt() as "client_description"
+├── regulatory_relevance  → "regulatory_focus"
+├── exclusions            → is_relevant_industry() check
+└── (entire config)       → passed to agent prompts
+```
+
+#### 2. `agent_sdk.py` - `ClaudeAgentSDK`
+```
+Uses via client_context:
+├── client_name           → system prompt personalization
+├── business_model        → agent context
+├── regulatory_relevance  → agent understanding
+└── (full context)        → injected into prompts
+```
+
+#### 3. `report_agent_sdk.py` - `WeeklyReportAgent`
+```
+Uses via client_context:
+├── client_name           → report personalization
+├── primary_markets       → geographic focus
+├── regulatory_relevance  → report structure
+└── (full context)        → report generation
+```
+
+---
+
+## Visual Key Usage Matrix
+
+```
+                        │ ETL │ Agent │ Scoring │ Query Gen │
+────────────────────────┼─────┼───────┼─────────┼───────────┤
+client_name             │  ✓  │   ✓   │  (fb)   │     -     │
+company_terms           │  ✓  │   -   │  40%    │     -     │
+core_industries         │  ✓  │   ✓   │  25%    │     ✓     │
+primary_markets         │  ✓  │   ✓   │  15%    │     ✓     │
+secondary_markets       │  ✓  │   ✓   │  (15%)  │     ✓     │
+strategic_themes        │  ✓  │   ✓   │  10%    │     ✓     │
+topic_patterns          │  ✓  │   -   │   ✓     │     ✓     │
+direct_impact_keywords  │  ✓  │   -   │  40%    │     -     │
+exclusion_terms         │  ✓  │   -   │ filter  │     -     │
+────────────────────────┼─────┼───────┼─────────┼───────────┤
+business_model          │  -  │   ✓   │    -    │     -     │
+regulatory_relevance    │ (fb)│   ✓   │    -    │    (fb)   │
+competitive_awareness   │  -  │   ✓   │    -    │     -     │
+markets (nested)        │ (fb)│   ✓   │    -    │     -     │
+geographic_priority     │  -  │   ✓   │    -    │     -     │
+impact_indicators       │  -  │   ✓   │    -    │     -     │
+exclusions (nested)     │  -  │   ✓   │    -    │     -     │
+────────────────────────┴─────┴───────┴─────────┴───────────┘
+
+Legend: ✓ = used, - = not used, (fb) = fallback, (%) = weight contribution
+```
+
+---
+
 ## Schema Helper Utilities
 
 All ETL components use helper functions from `src/etl/utils/schema_helpers.py`:
@@ -272,6 +513,15 @@ from src.etl.utils.schema_helpers import (
     validate_required_fields, # Validates all required fields present
 )
 ```
+
+### Helper Function Details
+
+| Helper Function | Input Keys | Output | Used By |
+|-----------------|------------|--------|---------|
+| `extract_company_terms()` | `company_terms`, `client_name` | `List[str]` | config_loader, keyword_scorer |
+| `extract_industries()` | `core_industries` (nested or flat) | `List[str]` | config_loader, keyword_scorer, llm_analyzer, policy_query_generator |
+| `extract_markets()` | `markets` or `primary_markets`/`secondary_markets` | `Tuple[List, List]` | config_loader, keyword_scorer, llm_analyzer, policy_query_generator |
+| `extract_exclusion_terms()` | `exclusion_terms` or `exclusions.industries` | `List[str]` | config_loader, keyword_scorer |
 
 These helpers automatically handle both nested and flat formats, making the code more maintainable.
 
@@ -377,19 +627,24 @@ else:
 ## Components Using client.yaml
 
 ### ETL Pipeline
-- **Config Loader**: `src/etl/utils/config_loader.py`
-- **Keyword Scorer**: `src/etl/filtering/keyword_scorer.py`
-- **LLM Analyzer**: `src/etl/filtering/llm_analyzer.py`
-- **Policy Query Generator**: `src/etl/utils/policy_query_generator.py`
-- **News Collection DAG**: `src/etl/dags/news_collection_dag.py`
-- **Policy Collection DAG**: `src/etl/dags/policy_collection_dag.py`
-- **Website Discovery DAG**: `src/etl/dags/website_discovery_dag.py`
+| Component | File Path | Keys Used |
+|-----------|-----------|-----------|
+| **Config Loader** | `src/etl/utils/config_loader.py` | client_name, company_terms, core_industries, primary_markets, secondary_markets, exclusion_terms |
+| **Keyword Scorer** | `src/etl/filtering/keyword_scorer.py` | All ETL-required fields |
+| **LLM Analyzer** | `src/etl/filtering/llm_analyzer.py` | core_industries, primary_markets, secondary_markets, strategic_themes |
+| **Policy Query Generator** | `src/etl/utils/policy_query_generator.py` | core_industries, primary_markets, secondary_markets, topic_patterns, regulatory_relevance (fallback), strategic_themes |
+| **Relevance Filter** | `src/etl/filtering/relevance_filter.py` | Via KeywordScorer |
+| **News Collection DAG** | `src/etl/dags/news_collection_dag.py` | Via ConfigLoader |
+| **Policy Collection DAG** | `src/etl/dags/policy_collection_dag.py` | Via PolicyQueryGenerator |
+| **Website Discovery DAG** | `src/etl/dags/website_discovery_dag.py` | Via ConfigLoader |
 
 ### AI Agents
-- **Client Context Module**: `src/shared/client_context.py`
-- **Claude Agent SDK**: `src/claude_agent/agent_sdk.py`
-- **Weekly Report Agent SDK**: `src/flows/weekly_report_sdk/agent/report_agent_sdk.py`
-- **Weekly Digest V2 Processor**: `src/flows/weekly_digest_v2/processor.py`
+| Component | File Path | Keys Used |
+|-----------|-----------|-----------|
+| **Client Context Module** | `src/shared/client_context.py` | All fields (full config passed to agents) |
+| **Claude Agent SDK** | `src/claude_agent/agent_sdk.py` | Via client_context |
+| **Weekly Report Agent SDK** | `src/flows/weekly_report_sdk/agent/report_agent_sdk.py` | Via client_context |
+| **Weekly Digest V2 Processor** | `src/flows/weekly_digest_v2/processor.py` | Via client_context |
 
 ---
 
@@ -423,6 +678,11 @@ else:
 - Check for syntax errors (colons, indentation)
 - Common error: Using `=` instead of `:` for key-value pairs
 - Validate with: `python -c "import yaml; yaml.safe_load(open('data/context/client.yaml'))"`
+
+### DAG fails with "TypeError: 'type' object is not subscriptable"
+- This occurs when running on Python < 3.9
+- Ensure `schema_helpers.py` uses `from __future__ import annotations`
+- Use `Dict`, `List`, `Tuple` from `typing` module instead of `dict`, `list`, `tuple`
 
 ---
 
