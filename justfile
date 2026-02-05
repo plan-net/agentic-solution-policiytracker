@@ -420,10 +420,22 @@ check-drucksache-sync:
     @echo "📊 Checking Drucksache sync status..."
     uv run python -c "import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; m = BundestagDrucksacheManager(use_mock_dip=True); status = asyncio.run(m.check_sync_status()); print('\n📊 Drucksache Sync Status:'); print(json.dumps(status, indent=2)); m.close()"
 
-# Dry run Drucksache sync (preview changes without applying)
+# Dry run Drucksache sync (preview changes without applying) - MOCK DATA
 sync-drucksachen-dry:
-    @echo "👀 Performing Drucksache dry run..."
+    @echo "👀 Performing Drucksache dry run (MOCK DATA)..."
     uv run python -c "import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; result = asyncio.run(BundestagDrucksacheManager(use_mock_dip=True).sync_all_drucksachen(dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Sync Drucksache with REAL DIP API
+# Usage: just sync-drucksachen-real 21 1000
+sync-drucksachen-real wahlperiode="21" max_items="1000":
+    @echo "🔄 Syncing Drucksache records from REAL DIP API (Wahlperiode {{wahlperiode}}, max {{max_items}} items)..."
+    uv run python -c "from dotenv import load_dotenv; load_dotenv(); import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; result = asyncio.run(BundestagDrucksacheManager(use_mock_dip=False).sync_all_drucksachen(limit=int('{{max_items}}'), wahlperiode='{{wahlperiode}}')); print('\n✅ Sync Complete:'); print(json.dumps(result.to_dict(), indent=2))"
+
+# Dry run Drucksache sync with REAL DIP API (preview changes without applying)
+# Usage: just sync-drucksachen-dry-real 21 1000
+sync-drucksachen-dry-real wahlperiode="21" max_items="1000":
+    @echo "👀 Performing Drucksache dry run (REAL API, Wahlperiode {{wahlperiode}}, max {{max_items}} items)..."
+    uv run python -c "from dotenv import load_dotenv; load_dotenv(); import asyncio; from src.skills.bundestag_drucksache_manager import BundestagDrucksacheManager; import json; result = asyncio.run(BundestagDrucksacheManager(use_mock_dip=False).sync_all_drucksachen(limit=int('{{max_items}}'), wahlperiode='{{wahlperiode}}', dry_run=True)); print('\n📊 Dry Run Results:'); print(json.dumps(result.to_dict(), indent=2))"
 
 # Aktivitaet Manager commands
 demo-aktivitaet:

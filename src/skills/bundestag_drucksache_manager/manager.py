@@ -118,7 +118,10 @@ class BundestagDrucksacheManager:
         logger.info("BundestagDrucksacheManager initialized")
 
     async def sync_all_drucksachen(
-        self, limit: Optional[int] = None, dry_run: bool = False
+        self,
+        limit: Optional[int] = None,
+        wahlperiode: Optional[str] = None,
+        dry_run: bool = False,
     ) -> SyncResult:
         """Synchronize all Drucksachen from Bundestag DIP API to Neo4j.
 
@@ -126,18 +129,23 @@ class BundestagDrucksacheManager:
 
         Args:
             limit: Maximum number of Drucksachen to sync (None = all)
+            wahlperiode: Filter by Wahlperiode (e.g., "20", "21")
             dry_run: If True, analyze differences but don't execute operations
 
         Returns:
             SyncResult with execution details
         """
-        logger.info(f"Starting full Drucksache sync (limit={limit}, dry_run={dry_run})")
+        logger.info(
+            f"Starting full Drucksache sync (limit={limit}, wahlperiode={wahlperiode}, dry_run={dry_run})"
+        )
         start_time = datetime.now()
 
         try:
             # Step 1: Analyze differences
             logger.info("Step 1: Analyzing differences...")
-            diffs = await self.diff_analyzer.analyze_all_drucksachen(limit=limit)
+            diffs = await self.diff_analyzer.analyze_all_drucksachen(
+                limit=limit, wahlperiode=wahlperiode
+            )
             diff_summary = self.diff_analyzer.generate_summary(diffs)
 
             logger.info(f"Analysis complete: {diff_summary['total_diffs']} differences found")

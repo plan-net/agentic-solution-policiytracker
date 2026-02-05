@@ -40,7 +40,7 @@ try:
 except ImportError:
     pass
 
-# Factory functions should always be available
+# News factory functions
 try:
     from .factory import (
         create_news_collector,
@@ -49,13 +49,27 @@ try:
         validate_collector_config,
     )
 
-    _factory_available = True
+    _news_factory_available = True
 except ImportError:
-    _factory_available = False
+    _news_factory_available = False
+
+# Policy factory functions
+try:
+    from .policy_factory import (
+        create_policy_collector,
+        get_available_policy_collectors,
+        get_enabled_policy_collectors,
+        validate_policy_collector_config,
+    )
+
+    _policy_factory_available = True
+except ImportError:
+    _policy_factory_available = False
 
 # Export what's available
 __all__ = list(_collectors.keys())
-if _factory_available:
+
+if _news_factory_available:
     __all__.extend(
         [
             "create_news_collector",
@@ -65,14 +79,35 @@ if _factory_available:
         ]
     )
 
+if _policy_factory_available:
+    __all__.extend(
+        [
+            "create_policy_collector",
+            "get_available_policy_collectors",
+            "get_enabled_policy_collectors",
+            "validate_policy_collector_config",
+        ]
+    )
+
 # Add to module namespace
 globals().update(_collectors)
-if _factory_available:
+
+if _news_factory_available:
     globals().update(
         {
             "create_news_collector": create_news_collector,
             "get_available_collectors": get_available_collectors,
             "get_enabled_collectors": get_enabled_collectors,
             "validate_collector_config": validate_collector_config,
+        }
+    )
+
+if _policy_factory_available:
+    globals().update(
+        {
+            "create_policy_collector": create_policy_collector,
+            "get_available_policy_collectors": get_available_policy_collectors,
+            "get_enabled_policy_collectors": get_enabled_policy_collectors,
+            "validate_policy_collector_config": validate_policy_collector_config,
         }
     )

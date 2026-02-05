@@ -23,44 +23,85 @@ class BundestagDrucksacheDIPClient:
 
         logger.info(f"BundestagDrucksacheDIPClient initialized (base_url={self.api_base_url})")
 
-    async def get_all_drucksache_ids(self, limit: Optional[int] = None) -> list[str]:
-        """Get all Drucksache IDs from DIP API.
+    async def get_all_drucksache_ids(
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None
+    ) -> list[str]:
+        """Get all Drucksache IDs from DIP API with cursor-based pagination.
 
         Args:
             limit: Maximum number of IDs to return
+            wahlperiode: Filter by Wahlperiode (e.g., "20", "21")
 
         Returns:
             List of Drucksache IDs
         """
         endpoint = "/drucksache"
-        params = {"format": "json"}
+        all_drucksache_ids = []
+        collected = 0
+        cursor = None
+        page_num = 0
 
-        if limit:
-            params["rows"] = limit
+        # Base params for all requests
+        base_params = {"format": "json"}
+
+        # Add API key as query parameter (DIP API authentication method)
+        if self.api_key:
+            base_params["apikey"] = self.api_key
+
+        # Add wahlperiode filter
+        if wahlperiode:
+            base_params["f.wahlperiode"] = wahlperiode
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.get(
-                    f"{self.api_base_url}{endpoint}",
-                    params=params,
-                    headers=self._get_headers(),
-                )
+                # Paginate through all results
+                while True:
+                    page_num += 1
+                    params = base_params.copy()
 
-                if response.status_code == 200:
-                    data = response.json()
-                    # Extract Drucksache IDs from response
-                    drucksachen = data.get("documents", [])
-                    drucksache_ids = [d.get("id") for d in drucksachen if d.get("id")]
+                    # Add cursor for pagination (if not first page)
+                    if cursor:
+                        params["cursor"] = cursor
 
-                    logger.info(f"Retrieved {len(drucksache_ids)} Drucksache IDs from DIP API")
-                    return drucksache_ids
-                else:
-                    logger.error(f"DIP API error: {response.status_code} - {response.text}")
-                    return []
+                    logger.info(f"Fetching page {page_num} (collected so far: {collected})")
+
+                    response = await client.get(
+                        f"{self.api_base_url}{endpoint}",
+                        params=params,
+                        headers=self._get_headers(),
+                    )
+
+                    if response.status_code == 200:
+                        data = response.json()
+
+                        # Extract Drucksache IDs from response
+                        drucksachen = data.get("documents", [])
+                        page_ids = [d.get("id") for d in drucksachen if d.get("id")]
+
+                        all_drucksache_ids.extend(page_ids)
+                        collected += len(page_ids)
+
+                        # Check if we've reached the limit
+                        if limit and collected >= limit:
+                            all_drucksache_ids = all_drucksache_ids[:limit]
+                            logger.info(f"Reached limit of {limit} Drucksache IDs")
+                            break
+
+                        # Check for next page cursor
+                        cursor = data.get("cursor")
+                        if not cursor or not page_ids:
+                            # No more pages
+                            break
+                    else:
+                        logger.error(f"DIP API error: {response.status_code} - {response.text}")
+                        break
+
+            logger.info(f"Retrieved {len(all_drucksache_ids)} Drucksache IDs from DIP API")
+            return all_drucksache_ids
 
         except Exception as e:
             logger.error(f"Error fetching Drucksache IDs from DIP API: {e}")
-            return []
+            return all_drucksache_ids
 
     async def get_drucksache_by_id(self, drucksache_id: str) -> Optional[dict[str, Any]]:
         """Get detailed Drucksache data by ID.
@@ -72,12 +113,17 @@ class BundestagDrucksacheDIPClient:
             Drucksache data dictionary or None
         """
         endpoint = f"/drucksache/{drucksache_id}"
+        params = {"format": "json"}
+
+        # Add API key as query parameter (DIP API authentication method)
+        if self.api_key:
+            params["apikey"] = self.api_key
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.get(
                     f"{self.api_base_url}{endpoint}",
-                    params={"format": "json"},
+                    params=params,
                     headers=self._get_headers(),
                 )
 

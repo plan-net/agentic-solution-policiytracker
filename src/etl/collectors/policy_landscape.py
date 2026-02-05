@@ -15,7 +15,7 @@ from typing import Any
 from ..storage import get_storage
 from ..transformers.markdown_transformer import MarkdownTransformer
 from ..utils.policy_query_generator import PolicyQueryGenerator
-from .exa_direct import ExaDirectCollector
+from .policy_factory import create_policy_collector, get_enabled_policy_collectors
 
 logger = logging.getLogger(__name__)
 
@@ -25,19 +25,41 @@ class PolicyLandscapeCollector:
 
     def __init__(
         self,
-        exa_api_key: str,
+        exa_api_key: str = None,
         client_context_path: str = "data/context/client.yaml",
         storage_type: str = "local",
+        collector_types: list[str] = None,
     ):
         """
         Initialize policy landscape collector.
 
         Args:
-            exa_api_key: API key for Exa search
+            exa_api_key: API key for Exa search (optional, for backwards compatibility)
             client_context_path: Path to client context YAML
             storage_type: Storage type ("local" or "azure")
+            collector_types: List of collectors to use (e.g., ["exa_direct", "dpa"])
+                            If None, uses POLICY_COLLECTORS env var
         """
-        self.exa_collector = ExaDirectCollector(exa_api_key)
+        # Initialize collectors via factory
+        self.enabled_collectors = collector_types or get_enabled_policy_collectors()
+        self.collectors = {}
+
+        for collector_type in self.enabled_collectors:
+            try:
+                # Pass exa_api_key if provided (backwards compatibility)
+                if collector_type == "exa_direct" and exa_api_key:
+                    self.collectors[collector_type] = create_policy_collector(
+                        collector_type, api_key=exa_api_key
+                    )
+                else:
+                    self.collectors[collector_type] = create_policy_collector(collector_type)
+                logger.info(f"Initialized {collector_type} collector for policy")
+            except ValueError as e:
+                logger.warning(f"Could not initialize {collector_type}: {e}")
+
+        if not self.collectors:
+            raise ValueError("No policy collectors could be initialized. Check API keys.")
+
         self.query_generator = PolicyQueryGenerator(client_context_path)
         self.transformer = MarkdownTransformer()
         self.storage = get_storage(storage_type, base_path="data/input")
@@ -66,6 +88,7 @@ class PolicyLandscapeCollector:
         # Collect documents in batches to respect API limits
         all_results = []
         failed_queries = []
+        aggregated_collector_stats = {}
 
         # Process queries in batches
         for i in range(0, len(queries), max_concurrent_queries):
@@ -75,6 +98,11 @@ class PolicyLandscapeCollector:
             for result in batch_results:
                 if result.get("success"):
                     all_results.extend(result.get("articles", []))
+                    # Aggregate collector stats
+                    for collector, count in result.get("collector_stats", {}).items():
+                        aggregated_collector_stats[collector] = (
+                            aggregated_collector_stats.get(collector, 0) + count
+                        )
                 else:
                     failed_queries.append(result.get("query"))
 
@@ -99,6 +127,8 @@ class PolicyLandscapeCollector:
             "total_articles_found": len(all_results),
             "documents_saved": len(saved_documents),
             "categories_covered": self._get_categories_summary(queries),
+            "collectors_used": list(self.collectors.keys()),
+            "collector_stats": aggregated_collector_stats,
             "failed_queries": failed_queries[:5],  # Sample of failed queries
             "sample_documents": saved_documents[:3],  # Sample of saved documents
         }
@@ -126,28 +156,50 @@ class PolicyLandscapeCollector:
     async def _execute_single_query(
         self, query_info: dict[str, str], days_back: int, max_results_per_query: int
     ) -> dict[str, Any]:
-        """Execute a single search query."""
+        """Execute a single search query across all enabled collectors."""
         try:
-            # Use the same date range logic as news collection
-            start_date = datetime.now() - timedelta(days=days_back)
+            all_articles = []
+            collector_stats = {}
 
             logger.debug(f"Executing query: {query_info['query'][:50]}...")
 
-            articles = await self.exa_collector.collect_news(
-                query=query_info["query"], max_items=max_results_per_query, days_back=days_back
-            )
+            for collector_type, collector in self.collectors.items():
+                try:
+                    # Simplify query for DPA (it needs shorter queries)
+                    query = query_info["query"]
+                    if collector_type == "dpa":
+                        query = self._simplify_query_for_dpa(query)
 
-            # Add category metadata to articles
-            for article in articles:
-                article["policy_category"] = query_info["category"]
-                article["query_description"] = query_info["description"]
-                article["collection_type"] = "policy_landscape"
+                    articles = await collector.collect_news(
+                        query=query,
+                        max_items=max_results_per_query,
+                        days_back=days_back,
+                    )
+
+                    # Tag articles with collector source and metadata
+                    for article in articles:
+                        article["_collector_type"] = collector_type
+                        article["policy_category"] = query_info["category"]
+                        article["query_description"] = query_info["description"]
+                        article["collection_type"] = "policy_landscape"
+
+                    all_articles.extend(articles)
+                    collector_stats[collector_type] = len(articles)
+                    logger.debug(
+                        f"Collector {collector_type} returned {len(articles)} articles"
+                    )
+
+                except Exception as e:
+                    logger.error(f"Collector {collector_type} failed for query: {e}")
+                    collector_stats[collector_type] = 0
+                    # Continue with other collectors
 
             return {
-                "success": True,
+                "success": len(all_articles) > 0,
                 "query": query_info["query"],
                 "category": query_info["category"],
-                "articles": articles,
+                "articles": all_articles,
+                "collector_stats": collector_stats,
             }
 
         except Exception as e:
@@ -158,6 +210,26 @@ class PolicyLandscapeCollector:
                 "category": query_info["category"],
                 "error": str(e),
             }
+
+    def _simplify_query_for_dpa(self, query: str) -> str:
+        """
+        Simplify complex queries for DPA API.
+
+        DPA works better with simpler queries. Complex boolean queries
+        like '"GDPR" AND "EU" AND "e-commerce"' should be simplified.
+        """
+        import re
+
+        # Extract quoted terms
+        terms = re.findall(r'"([^"]+)"', query)
+
+        if terms:
+            # Use first 3 key terms
+            return " ".join(terms[:3])
+
+        # Fallback: remove boolean operators and truncate
+        simplified = query.replace(" AND ", " ").replace(" OR ", " ")
+        return simplified[:100]
 
     async def _save_policy_documents(self, articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Transform and save policy documents."""
@@ -203,7 +275,7 @@ class PolicyLandscapeCollector:
                     "policy_category": article.get("policy_category", "unknown"),
                     "collection_type": article.get("collection_type", "policy_landscape"),
                     "query_description": article.get("query_description", ""),
-                    "collector_type": "exa_direct",
+                    "collector_type": article.get("_collector_type", "unknown"),
                 }
 
                 # Use standardized storage save method
@@ -293,18 +365,31 @@ async def main() -> None:
     """Test the policy landscape collector."""
     import os
 
-    print("=== Policy Landscape Collector Test ===")
+    from .policy_factory import get_available_policy_collectors, get_enabled_policy_collectors
 
-    # Check if API key is available
-    api_key = os.getenv("EXA_API_KEY")
-    if not api_key:
-        print("❌ EXA_API_KEY not found in environment")
+    print("=== Policy Landscape Collector Test (Multi-Collector) ===")
+
+    # Show available and enabled collectors
+    available = get_available_policy_collectors()
+    enabled = get_enabled_policy_collectors()
+
+    print(f"\n🔧 Collector Configuration:")
+    print(f"  • Available collectors: {available}")
+    print(f"  • Enabled collectors: {enabled}")
+
+    if not enabled:
+        print("❌ No policy collectors available. Check API keys.")
         return
 
-    # Initialize collector
-    collector = PolicyLandscapeCollector(
-        exa_api_key=api_key, client_context_path="data/context/client.yaml"
-    )
+    # Initialize collector (now supports multi-collector)
+    try:
+        collector = PolicyLandscapeCollector(
+            client_context_path="data/context/client.yaml"
+        )
+        print(f"  • Initialized collectors: {list(collector.collectors.keys())}")
+    except ValueError as e:
+        print(f"❌ Failed to initialize collector: {e}")
+        return
 
     # Get collection stats
     print("\n📊 Collection Statistics:")
@@ -334,6 +419,14 @@ async def main() -> None:
         print(f"  • Queries processed: {result['queries_processed']}")
         print(f"  • Documents found: {result['total_articles_found']}")
         print(f"  • Documents saved: {result['documents_saved']}")
+        print(f"  • Collectors used: {result.get('collectors_used', [])}")
+
+        # Show per-collector stats
+        collector_stats = result.get("collector_stats", {})
+        if collector_stats:
+            print("\n📈 Per-Collector Statistics:")
+            for coll, count in collector_stats.items():
+                print(f"  • {coll}: {count} articles")
 
         if result["failed_queries"]:
             print(f"  • Failed queries: {len(result['failed_queries'])}")

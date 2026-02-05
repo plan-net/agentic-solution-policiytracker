@@ -20,6 +20,10 @@ from airflow.operators.python import BranchPythonOperator, PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 # ETL imports
+from src.etl.collectors.policy_factory import (
+    get_available_policy_collectors,
+    get_enabled_policy_collectors,
+)
 from src.etl.collectors.policy_landscape import PolicyLandscapeCollector
 from src.etl.utils.config_loader import ClientConfigLoader
 from src.etl.utils.initialization_tracker import ETLInitializationTracker
@@ -60,27 +64,40 @@ def load_policy_config() -> dict[str, Any]:
         client_loader = ClientConfigLoader()
         base_config = {}
 
+        # Get enabled and available collectors via factory
+        enabled_collectors = get_enabled_policy_collectors()
+        available_collectors = get_available_policy_collectors()
+
         # Policy-specific configuration
         policy_config = {
-            "exa_api_key": os.getenv("EXA_API_KEY"),
+            "exa_api_key": os.getenv("EXA_API_KEY"),  # Optional now, for backwards compatibility
             "client_context_path": os.getenv("CLIENT_CONTEXT_PATH", "data/context/client.yaml"),
             "storage_type": os.getenv("STORAGE_TYPE", "local"),
             "collection_days": int(os.getenv("POLICY_COLLECTION_DAYS", "7")),
             "max_results_per_query": int(os.getenv("POLICY_MAX_RESULTS_PER_QUERY", "10")),
             "max_concurrent_queries": int(os.getenv("POLICY_MAX_CONCURRENT_QUERIES", "3")),
             "initialization_days": int(os.getenv("POLICY_INITIALIZATION_DAYS", "90")),
+            # Multi-collector configuration
+            "enabled_collectors": enabled_collectors,
+            "available_collectors": available_collectors,
         }
 
         # Merge configurations
         config = {**base_config, **policy_config}
 
-        # Validate required fields
-        required_fields = ["exa_api_key", "client_context_path"]
-        for field in required_fields:
-            if not config.get(field):
-                raise ValueError(f"Missing required configuration: {field}")
+        # Validate: at least one collector must be enabled
+        if not config.get("enabled_collectors"):
+            raise ValueError(
+                "No policy collectors enabled. Set POLICY_COLLECTORS env var or ensure API keys are configured."
+            )
 
-        logger.info("Policy collection configuration loaded successfully")
+        # Validate client context path exists
+        if not config.get("client_context_path"):
+            raise ValueError("Missing required configuration: client_context_path")
+
+        logger.info(f"Policy collection configuration loaded successfully")
+        logger.info(f"  Enabled collectors: {enabled_collectors}")
+        logger.info(f"  Available collectors: {available_collectors}")
         return config
 
     except Exception as e:
@@ -130,16 +147,20 @@ def collect_policy_documents(**context) -> dict[str, Any]:
         config = initialization_info["config"]
         collection_days = initialization_info["collection_days"]
 
+        enabled_collectors = config.get("enabled_collectors", [])
+
         logger.info(
             f"Starting policy collection: {collection_days} days "
-            f"({initialization_info['collection_type']} mode)"
+            f"({initialization_info['collection_type']} mode) "
+            f"with collectors: {enabled_collectors}"
         )
 
-        # Initialize policy collector with standardized storage interface
+        # Initialize policy collector with multi-collector support
         collector = PolicyLandscapeCollector(
-            exa_api_key=config["exa_api_key"],
+            exa_api_key=config.get("exa_api_key"),  # Optional, for backwards compatibility
             client_context_path=config["client_context_path"],
             storage_type=config["storage_type"],
+            collector_types=enabled_collectors,  # Pass enabled collectors
         )
 
         # Execute collection
@@ -272,6 +293,7 @@ def generate_policy_collection_summary(**context) -> dict[str, Any]:
                 "run_type": initialization_info["collection_type"],
                 "collection_days": initialization_info["collection_days"],
                 "total_runtime_seconds": collection_result["processing_time_seconds"],
+                "collectors_used": collection_result.get("collectors_used", []),
             },
             "collection_metrics": {
                 "queries_processed": collection_result["queries_processed"],
@@ -279,6 +301,7 @@ def generate_policy_collection_summary(**context) -> dict[str, Any]:
                 "total_articles_found": collection_result["total_articles_found"],
                 "documents_saved": collection_result["documents_saved"],
                 "categories_covered": collection_result["categories_covered"],
+                "collector_stats": collection_result.get("collector_stats", {}),
             },
             "quality_indicators": {
                 "success_rate": (
@@ -307,11 +330,19 @@ def generate_policy_collection_summary(**context) -> dict[str, Any]:
 
         # Log summary
         logger.info("📊 Policy Collection Summary:")
+        logger.info(f"  • Collectors used: {summary['dag_run_summary']['collectors_used']}")
         logger.info(f"  • Documents saved: {summary['collection_metrics']['documents_saved']}")
         logger.info(f"  • Success rate: {summary['quality_indicators']['success_rate']:.1%}")
         logger.info(
             f"  • Processing speed: {summary['quality_indicators']['processing_speed_docs_per_minute']:.1f} docs/min"
         )
+
+        # Log per-collector stats
+        collector_stats = summary["collection_metrics"].get("collector_stats", {})
+        if collector_stats:
+            logger.info("  • Per-collector stats:")
+            for collector, count in collector_stats.items():
+                logger.info(f"    - {collector}: {count} articles")
 
         # Store summary
         context["task_instance"].xcom_push(key="dag_summary", value=summary)
@@ -380,8 +411,9 @@ collect_documents_task = PythonOperator(
 
     Main collection task that:
     1. Generates targeted policy search queries from client context
-    2. Executes searches via Exa API
-    3. Transforms and saves documents to storage
+    2. Executes searches via enabled collectors (Exa, DPA, etc.)
+    3. Aggregates results from all collectors
+    4. Transforms and saves documents to storage
     """,
 )
 

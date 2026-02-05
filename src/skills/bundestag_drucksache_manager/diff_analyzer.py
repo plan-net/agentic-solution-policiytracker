@@ -59,19 +59,24 @@ class DrucksacheDiffAnalyzer:
 
         logger.info("DrucksacheDiffAnalyzer initialized")
 
-    async def analyze_all_drucksachen(self, limit: Optional[int] = None) -> list[DrucksacheDiff]:
+    async def analyze_all_drucksachen(
+        self, limit: Optional[int] = None, wahlperiode: Optional[str] = None
+    ) -> list[DrucksacheDiff]:
         """Analyze all Drucksachen and find differences.
 
         Args:
             limit: Maximum number of Drucksachen to analyze (None = all)
+            wahlperiode: Filter by Wahlperiode (e.g., "20", "21")
 
         Returns:
             List of DrucksacheDiff objects
         """
-        logger.info(f"Starting analysis of all Drucksachen (limit={limit})")
+        logger.info(f"Starting analysis of all Drucksachen (limit={limit}, wahlperiode={wahlperiode})")
 
         # 1. Get all Drucksache IDs from DIP API
-        dip_drucksache_ids = await self.dip_client.get_all_drucksache_ids(limit=limit)
+        dip_drucksache_ids = await self.dip_client.get_all_drucksache_ids(
+            limit=limit, wahlperiode=wahlperiode
+        )
         logger.info(f"Found {len(dip_drucksache_ids)} Drucksachen in DIP API")
 
         # 2. Get all Drucksache IDs from Neo4j
