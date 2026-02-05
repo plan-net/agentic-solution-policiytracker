@@ -1,0 +1,490 @@
+# Client Context for Political Monitoring Agent
+# Version: 3 - Regulatory-focused values, SAME SCHEMA as v2
+# 
+# CHANGES FROM v2:
+# - company_terms: removed competitors, added regulatory category terms (DE+EN)
+# - strategic_themes: added German equivalents
+# - topic_patterns: added German terms to existing categories
+# - direct_impact_keywords: added German equivalents
+# - exclusion_terms: added German equivalents
+# - NO NEW FIELDS - ETL compatible, drop-in replacement
+#
+# =============================================================================
+# CLIENT IDENTITY
+# =============================================================================
+
+client_name: zalando
+
+# =============================================================================
+# ETL-REQUIRED FIELDS
+# =============================================================================
+
+# Company terms for relevance scoring (40% weight)
+# v3: Removed competitors, added regulatory category terms (bilingual)
+company_terms:
+  # Primary brand only
+  - "Zalando"
+  - "Zalando SE"
+
+  # Platform/marketplace terms (EN)
+  - "online marketplace"
+  - "online platform"
+  - "e-commerce platform"
+  - "digital marketplace"
+  - "online retailer"
+  
+  # Platform/marketplace terms (DE)
+  - "Online-Marktplatz"
+  - "Online-Plattform"
+  - "E-Commerce-Plattform"
+  - "digitaler Marktplatz"
+  - "Online-Händler"
+  
+  # Regulatory category terms (what Zalando IS under DSA/DMA)
+  - "intermediary service"
+  - "Vermittlungsdienst"
+  - "hosting service"
+  - "Hosting-Dienst"
+  - "very large online platform"
+  - "VLOP"
+
+# Core industries (25% weight)
+core_industries:
+  primary: "E-commerce / Online Retail"
+  secondary:
+    - fashion retail
+    - marketplace operator
+    - digital platform
+    - apparel
+    - Modehandel
+    - Plattformbetreiber
+
+# Primary markets - added German equivalents
+primary_markets:
+  - european union
+  - eu
+  - europäische union
+  - germany
+  - deutschland
+  - poland
+  - polen
+  - france
+  - frankreich
+  - italy
+  - italien
+  - spain
+  - spanien
+  - belgium
+  - belgien
+  - netherlands
+  - niederlande
+  - austria
+  - österreich
+  - czech republic
+  - tschechien
+
+secondary_markets:
+  - uk
+  - vereinigtes königreich
+  - switzerland
+  - schweiz
+  - sweden
+  - schweden
+  - denmark
+  - dänemark
+  - finland
+  - finnland
+  - norway
+  - norwegen
+
+# Strategic themes - added German equivalents
+strategic_themes:
+  # Digital/Platform
+  - digital transformation
+  - digitale Transformation
+  - platform regulation
+  - Plattformregulierung
+  
+  # Sustainability
+  - sustainability
+  - Nachhaltigkeit
+  - circular economy
+  - Kreislaufwirtschaft
+  
+  # Consumer
+  - customer experience
+  - consumer protection
+  - Verbraucherschutz
+  
+  # Data/Privacy
+  - data privacy
+  - Datenschutz
+  - GDPR
+  - DSGVO
+  
+  # Supply chain
+  - supply chain
+  - Lieferkette
+  - logistics
+  - Logistik
+  
+  # Payments
+  - payment systems
+  - Zahlungsdienste
+  
+  # Tech
+  - artificial intelligence
+  - künstliche Intelligenz
+  - automation
+  - Automatisierung
+
+# Topic patterns - added German terms to each category
+topic_patterns:
+  data-protection:
+    - gdpr
+    - DSGVO
+    - data privacy
+    - Datenschutz
+    - personal information
+    - personenbezogene Daten
+    - data protection
+    - privacy policy
+    - Datenschutzrichtlinie
+    - data processing
+    - Datenverarbeitung
+    - consent management
+    - Einwilligung
+    - data breach
+    - Datenpanne
+    
+  compliance:
+    - regulatory compliance
+    - legal requirement
+    - gesetzliche Anforderung
+    - enforcement action
+    - Durchsetzungsmaßnahme
+    - compliance obligation
+    - Compliance-Pflicht
+    - regulatory framework
+    - Regulierungsrahmen
+    - legal framework
+    - Rechtsrahmen
+    - Bußgeld
+    - penalty
+    - fine
+    
+  ecommerce-regulation:
+    - digital services act
+    - DSA
+    - Digitale-Dienste-Gesetz
+    - digital markets act
+    - DMA
+    - online platform
+    - Online-Plattform
+    - marketplace regulation
+    - Marktplatzregulierung
+    - consumer protection
+    - Verbraucherschutz
+    - platform liability
+    - Plattformhaftung
+    
+  sustainability:
+    - esg
+    - environmental
+    - Umwelt
+    - carbon footprint
+    - CO2-Fußabdruck
+    - circular economy
+    - Kreislaufwirtschaft
+    - sustainable fashion
+    - nachhaltige Mode
+    - green logistics
+    - supply chain due diligence
+    - Lieferkettensorgfaltspflicht
+    - Lieferkettengesetz
+    - LkSG
+    - textile labeling
+    - Textilkennzeichnung
+    
+  competition:
+    - antitrust
+    - Kartellrecht
+    - competition law
+    - Wettbewerbsrecht
+    - market dominance
+    - Marktbeherrschung
+    - monopoly
+    - merger control
+    - Fusionskontrolle
+    - Bundeskartellamt
+    
+  product-safety:
+    - product safety
+    - Produktsicherheit
+    - market surveillance
+    - Marktüberwachung
+    - CE marking
+    - CE-Kennzeichnung
+    - product recall
+    - Produktrückruf
+    - GPSR
+    
+  payment-services:
+    - payment services
+    - Zahlungsdienste
+    - PSD2
+    - PSD3
+    - consumer credit
+    - Verbraucherkredit
+    - buy now pay later
+    - BNPL
+    - Ratenzahlung
+
+# Direct impact keywords - added German equivalents
+direct_impact_keywords:
+  # English
+  - must comply
+  - required to
+  - obligation
+  - penalty
+  - fine
+  - enforcement
+  - violation
+  - breach
+  - non-compliance
+  - legal action
+  - investigation
+  - deadline
+  - entry into force
+  
+  # German
+  - Verpflichtung
+  - Pflicht
+  - Bußgeld
+  - Strafe
+  - Durchsetzung
+  - Verstoß
+  - Nichteinhaltung
+  - Ermittlungen
+  - Verfahren
+  - Frist
+  - Inkrafttreten
+  - Umsetzungsfrist
+
+# Exclusion terms - added German equivalents
+exclusion_terms:
+  - sports
+  - Sport
+  - automotive
+  - Automobil
+  - real estate
+  - Immobilien
+  - agriculture
+  - Landwirtschaft
+  - mining
+  - Bergbau
+  - oil and gas
+  - Öl und Gas
+
+# =============================================================================
+# BUSINESS MODEL (unchanged)
+# =============================================================================
+
+business_model:
+  description: "Online marketplace connecting consumers with fashion brands, operating B2C sales and enabling third-party sellers across EU markets"
+  
+  key_activities:
+    - "Operates online marketplace with third-party sellers"
+    - "Direct B2C sales of fashion and apparel"
+    - "Offers payment options including deferred payment / buy-now-pay-later"
+    - "Cross-border shipping within EU"
+    - "Uses algorithms for product recommendations and personalization"
+    - "Processes customer data for marketing and operations"
+    - "Sources and ships products from various origins including third countries"
+
+# =============================================================================
+# REGULATORY RELEVANCE (unchanged structure)
+# =============================================================================
+
+regulatory_relevance:
+  
+  high_relevance:
+    - area: "Platform and marketplace regulation"
+      why: "Core business is operating an online marketplace"
+      watch_for:
+        - "Obligations for online platforms and marketplaces"
+        - "Liability for third-party seller content and products"
+        - "Transparency requirements for platforms"
+        - "Enforcement actions against similar platforms"
+      
+    - area: "Consumer protection in e-commerce"
+      why: "B2C sales are core business"
+      watch_for:
+        - "Online consumer rights and returns"
+        - "Pricing transparency and dark patterns"
+        - "Consumer credit and payment regulations"
+        - "Buy-now-pay-later and deferred payment rules"
+        - "Consumer redress and dispute resolution"
+      
+    - area: "Product safety and market surveillance"
+      why: "Liability exposure for products sold through platform"
+      watch_for:
+        - "Product safety requirements for online sales"
+        - "Marketplace liability for unsafe products"
+        - "Import controls and customs for e-commerce"
+        - "Third-country seller compliance"
+        - "CE marking and conformity"
+      
+    - area: "Data protection and privacy"
+      why: "Extensive customer data processing for operations and marketing"
+      watch_for:
+        - "Data protection enforcement trends"
+        - "Cross-border data transfers"
+        - "Marketing and consent requirements"
+        - "Customer profiling and personalization rules"
+        
+    - area: "Payment services regulation"
+      why: "Offers payment options as part of checkout"
+      watch_for:
+        - "Payment service regulations"
+        - "Consumer credit requirements"
+        - "Credit checks and affordability assessments"
+        - "Payment provider obligations"
+
+  medium_relevance:
+    - area: "Competition and antitrust"
+      why: "Market position and platform practices may attract scrutiny"
+      watch_for:
+        - "Platform competition enforcement"
+        - "Self-preferencing and fairness rules"
+        - "Merger and acquisition rules"
+        
+    - area: "Cybersecurity requirements"
+      why: "Digital infrastructure and customer data require security"
+      watch_for:
+        - "Cybersecurity obligations for digital businesses"
+        - "Incident reporting requirements"
+        - "Critical infrastructure designations"
+        
+    - area: "Algorithmic and AI regulation"
+      why: "Uses algorithms for recommendations and decisions"
+      watch_for:
+        - "AI transparency and explainability"
+        - "Algorithmic fairness requirements"
+        - "Automated decision-making rules"
+        
+    - area: "Cross-border trade within EU"
+      why: "Ships across EU member states"
+      watch_for:
+        - "Geoblocking and price discrimination"
+        - "Cross-border consumer protection"
+        - "VAT and customs for e-commerce"
+
+  monitor:
+    - area: "Sustainability and environmental regulation"
+      why: "Fashion industry increasingly subject to sustainability rules"
+      watch_for:
+        - "Textile-specific environmental rules"
+        - "Green claims and greenwashing"
+        - "Circular economy requirements"
+        - "Supply chain due diligence"
+        
+    - area: "Employment and gig economy"
+      why: "Logistics and delivery workforce"
+      watch_for:
+        - "Platform worker classification"
+        - "Gig economy regulation"
+
+# =============================================================================
+# COMPETITIVE CONTEXT (unchanged)
+# =============================================================================
+
+competitive_awareness:
+  principle: "Enforcement against or regulatory treatment of similar platforms may set precedents"
+  
+  similar_businesses:
+    - "Other EU e-commerce platforms and marketplaces"
+    - "Fashion retail platforms"
+    - "Companies offering BNPL/deferred payment"
+    
+  third_country_platforms:
+    relevance: "Regulatory treatment creates competitive context"
+    examples:
+      - "Low-cost platforms shipping from third countries"
+      - "Enforcement for product safety or customs compliance"
+      - "Level playing field measures"
+
+# =============================================================================
+# GEOGRAPHIC SCOPE (unchanged)
+# =============================================================================
+
+markets:
+  primary:
+    - germany
+    - european union
+  secondary:
+    - poland
+    - france
+    - italy
+    - spain
+    - netherlands
+    - austria
+    - belgium
+    - czech republic
+  monitoring_only:
+    - uk
+    - switzerland
+    - sweden
+    - denmark
+    - finland
+    - norway
+
+geographic_priority:
+  principle: "German implementation of EU law is highest priority, followed by EU-level developments, then other member states"
+
+# =============================================================================
+# IMPACT INDICATORS (unchanged)
+# =============================================================================
+
+impact_indicators:
+  
+  high_impact_signals:
+    - "Creates new compliance obligation"
+    - "Enforcement action or penalty"
+    - "Deadline or implementation date"
+    - "Directly mentions platforms, marketplaces, or e-commerce"
+    - "Affects payment services or consumer credit"
+    - "Product safety enforcement"
+    
+  medium_impact_signals:
+    - "Proposal or draft legislation"
+    - "Consultation or public comment period"
+    - "Enforcement against similar business"
+    - "Political statement signaling future action"
+    
+  context_signals:
+    - "Ministry or agency reorganization affecting digital/consumer policy"
+    - "Political priorities or coalition dynamics"
+    - "EU-level negotiations or positions"
+
+# =============================================================================
+# EXCLUSIONS (unchanged structure)
+# =============================================================================
+
+exclusions:
+  principles:
+    - "Regulation of industries with no connection to retail, digital, or consumer markets"
+    - "Pure B2B industrial regulation"
+    - "Sector-specific rules for unrelated industries"
+    
+  industries:
+    - sports
+    - automotive manufacturing
+    - real estate
+    - agriculture
+    - mining
+    - oil and gas
+    - heavy industry
+    - pharmaceuticals (unless related to product sales)
+    - banking (unless related to payment/credit for purchases)
+    - defense and military

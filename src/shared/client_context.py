@@ -5,6 +5,8 @@ understand the client's industry, regulatory focus areas, and markets.
 This enables agents to prioritize relevance and frame responses appropriately.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 from typing import Any
@@ -82,6 +84,18 @@ def get_client_context_for_prompt() -> dict[str, str]:
             "exclusions": "",
         }
 
+    # Extract core_industries using the same logic as schema_helpers
+    # This handles both nested {primary, secondary} and flat list formats
+    core_industries_raw = ctx.get("core_industries", [])
+    if isinstance(core_industries_raw, dict):
+        # Nested format: get primary industry
+        client_industry = core_industries_raw.get("primary", "Unknown Industry")
+    elif isinstance(core_industries_raw, list) and core_industries_raw:
+        # Flat list format: get first industry
+        client_industry = core_industries_raw[0]
+    else:
+        client_industry = "Unknown Industry"
+
     # Format high-relevance regulatory areas
     high_relevance = ctx.get("regulatory_relevance", {}).get("high_relevance", [])
     regulatory_focus = "\n".join([
@@ -98,9 +112,13 @@ def get_client_context_for_prompt() -> dict[str, str]:
     if medium_areas:
         regulatory_focus += f"\n\nAlso monitor:\n{medium_areas}"
 
-    # Format markets
-    markets = ctx.get("markets", {})
-    primary_markets = ", ".join(markets.get("primary", []))
+    # Format markets - support both nested and flat formats
+    markets_nested = ctx.get("markets", {})
+    if isinstance(markets_nested, dict) and markets_nested.get("primary"):
+        primary_markets = ", ".join(markets_nested.get("primary", []))
+    else:
+        # Fallback to flat format
+        primary_markets = ", ".join(ctx.get("primary_markets", []))
 
     # Format key activities
     business_model = ctx.get("business_model", {})
@@ -109,20 +127,81 @@ def get_client_context_for_prompt() -> dict[str, str]:
         for activity in business_model.get("key_activities", [])
     ])
 
-    # Format exclusions
+    # Format exclusions - support both nested and flat formats
     exclusions_config = ctx.get("exclusions", {})
     excluded_industries = exclusions_config.get("industries", [])
+    if not excluded_industries:
+        # Fallback to flat format
+        excluded_industries = ctx.get("exclusion_terms", [])
     exclusions = ", ".join(excluded_industries) if excluded_industries else ""
 
     return {
         "client_name": ctx.get("client_name", "Unknown"),
-        "client_industry": ctx.get("industry", {}).get("primary", "Unknown Industry"),
+        "client_industry": client_industry,
         "client_description": business_model.get("description", ""),
         "regulatory_focus": regulatory_focus,
         "primary_markets": primary_markets,
         "key_activities": key_activities,
         "exclusions": exclusions,
+        "regulatory_context": get_regulatory_context_for_agents(),
     }
+
+
+def get_regulatory_context_for_agents() -> str:
+    """Get formatted regulatory context for agent prompts.
+
+    Extracts regulatory actors and legislative vocabulary from client.yaml
+    to enhance agent awareness of authoritative sources and legislative stages.
+
+    Returns:
+        Formatted markdown string with regulatory actors and legislative vocabulary,
+        or empty string if not configured.
+    """
+    ctx = load_client_context()
+
+    if not ctx:
+        return ""
+
+    # Extract regulatory actors
+    actors_config = ctx.get("regulatory_actors", {})
+    german_actors = actors_config.get("german_federal", [])[:5]  # Top 5
+    eu_actors = actors_config.get("eu_institutions", [])[:5]  # Top 5
+
+    # Extract legislative terms
+    terms_config = ctx.get("legislative_terms", {})
+    german_terms = terms_config.get("german", [])[:5]  # Top 5
+    english_terms = terms_config.get("english", [])[:5]  # Top 5
+
+    # Build regulatory context if we have data
+    if not (german_actors or eu_actors or german_terms or english_terms):
+        return ""
+
+    context_parts = []
+
+    if german_actors or eu_actors:
+        context_parts.append("**Key Regulatory Actors to Monitor:**")
+        if german_actors:
+            context_parts.append(f"- German Federal: {', '.join(german_actors)}")
+        if eu_actors:
+            context_parts.append(f"- EU Institutions: {', '.join(eu_actors)}")
+
+    if german_terms or english_terms:
+        if context_parts:
+            context_parts.append("")  # Blank line
+        context_parts.append("**Legislative Vocabulary:**")
+        if german_terms:
+            context_parts.append(f"- German: {', '.join(german_terms)}")
+        if english_terms:
+            context_parts.append(f"- English: {', '.join(english_terms)}")
+
+    if context_parts:
+        context_parts.append("")  # Blank line
+        context_parts.append(
+            "When analyzing regulatory content, prioritize documents mentioning "
+            "these actors or using this legislative terminology."
+        )
+
+    return "\n".join(context_parts)
 
 
 def get_client_name() -> str:
@@ -138,11 +217,22 @@ def get_client_name() -> str:
 def get_primary_markets() -> list[str]:
     """Get list of primary markets for the client.
 
+    Supports both nested and flat formats:
+    - Nested: markets.primary
+    - Flat: primary_markets
+
     Returns:
         List of primary market names (e.g., ["germany", "european union"])
     """
     ctx = load_client_context()
-    return ctx.get("markets", {}).get("primary", [])
+
+    # Try nested format first
+    markets_nested = ctx.get("markets", {})
+    if isinstance(markets_nested, dict) and markets_nested.get("primary"):
+        return markets_nested.get("primary", [])
+
+    # Fall back to flat format
+    return ctx.get("primary_markets", [])
 
 
 def is_relevant_industry(industry: str) -> bool:

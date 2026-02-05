@@ -1,7 +1,15 @@
 # Client Context for Political Monitoring Agent
-# Version: 2
-# Note: This file is currently for a single client. Future consideration needed 
-# for multi-client architecture (e.g., clients/zalando.yaml, clients/stadtwien.yaml)
+# Version: 4 - Regulatory/Political Focus with Bilingual Terms
+# 
+# HYPOTHESIS: Adding German terms may improve capture from authoritative
+# German legal/political sources (Bundesregierung, Bundestag, ministries)
+#
+# KEY CHANGES from v2:
+# - Removed competitor names (ASOS, Klarna, etc.) - these pull business news
+# - Added regulatory institutions (DE + EU)
+# - Added legislative vocabulary (DE + EN)
+# - topic_patterns now regulatory-focused
+# - company_terms now focused on regulatory context, not market position
 
 # =============================================================================
 # CLIENT IDENTITY
@@ -11,156 +19,412 @@ client_name: zalando
 
 # =============================================================================
 # ETL-REQUIRED FIELDS
-# These fields are required by the ETL pipeline for content collection and scoring
 # =============================================================================
 
-# Company terms for relevance scoring (40% weight in ETL scoring)
-# Includes primary brand, related services, competitors, and marketplace terms
+# Company terms for relevance scoring (40% weight)
+# v3: Focused on regulatory context, NOT competitors
 company_terms:
-  # Primary brand
+  # Primary brand only (for direct mentions)
   - "Zalando"
   - "Zalando SE"
-
-  # Related Zalando brands and services
-  - "Zalando Plus"
-  - "Zalando Lounge"
-  - "Zalando Beauty"
-  - "Zalando Pay"
-
-  # Direct competitors (for competitive intelligence)
-  - "ASOS"
-  - "Boohoo"
-  - "About You"
-  - "Otto"
-  - "H&M online"
-  - "Zara online"
-
-  # Marketplace/platform terms
-  - "online fashion marketplace"
+  
+  # Platform/marketplace regulatory category terms
+  - "Online-Marktplatz"           # DE: online marketplace
+  - "online marketplace"
+  - "Online-Plattform"            # DE: online platform
+  - "online platform"
+  - "E-Commerce-Plattform"        # DE
   - "e-commerce platform"
-  - "fashion retail platform"
+  - "digitaler Marktplatz"        # DE: digital marketplace
   - "digital marketplace"
+  
+  # Regulatory category - what Zalando IS (for regulation matching)
+  - "Vermittlungsdienst"          # DE: intermediary service (DSA term)
+  - "intermediary service"
+  - "hosting service"
+  - "Hosting-Dienst"              # DE
+  - "very large online platform"
+  - "VLOP"
+  - "Online-Händler"              # DE: online retailer
+  - "online retailer"
 
-  # Buy-now-pay-later competitors (relevant to payment services)
-  - "Klarna"
-  - "Afterpay"
-  - "Clearpay"
-
-# Core industries (25% weight in ETL scoring)
-# Nested format: ETL will extract flat list from primary + secondary
+# Core industries (25% weight)
 core_industries:
   primary: "E-commerce / Online Retail"
+  primary_de: "E-Commerce / Online-Handel"
   secondary:
     - fashion retail
     - marketplace operator
     - digital platform
-    - apparel
+    - Modehandel                  # DE: fashion retail
+    - Plattformbetreiber          # DE: platform operator
 
-#=============================================================================
-# data points from old format for ETL compatibility , these sections are MANDATORY
-# =============================================================================
+# Primary markets (used by ETL for geographic filtering)
 primary_markets:
   - european union
   - eu
+  - europäische union             # DE
   - germany
+  - deutschland                   # DE
+  - bundesrepublik
   - poland
+  - polen                         # DE
   - france
+  - frankreich                    # DE
   - italy
+  - italien                       # DE
   - spain
+  - spanien                       # DE
   - belgium
+  - belgien                       # DE
   - netherlands
+  - niederlande                   # DE
   - austria
+  - österreich                    # DE
   - czech republic
+  - tschechien                    # DE
 
 secondary_markets:
   - uk
+  - vereinigtes königreich        # DE
   - switzerland
+  - schweiz                       # DE
   - sweden
+  - schweden                      # DE
   - denmark
+  - dänemark                      # DE
   - finland
+  - finnland                      # DE
   - norway
+  - norwegen                      # DE
+
+# =============================================================================
+# REGULATORY VOCABULARY (v3 new section)
+# Terms that indicate regulatory/policy content vs. business news
+# =============================================================================
+
+regulatory_actors:
+  german_federal:
+    - "Bundesregierung"           # Federal government
+    - "Bundestag"                 # Parliament
+    - "Bundesrat"                 # Federal Council
+    - "Bundeskanzler"             # Chancellor
+    - "Bundesministerium"         # Federal ministry
+    - "BMWK"                      # Ministry for Economic Affairs
+    - "BMJ"                       # Ministry of Justice
+    - "BMUV"                      # Ministry for Environment
+    - "BMAS"                      # Ministry for Labour
+    - "Bundesnetzagentur"         # Federal Network Agency
+    - "Bundeskartellamt"          # Federal Cartel Office
+    - "BaFin"                     # Financial Supervisory Authority
+    - "BSI"                       # Federal Cyber Security Office
+    - "UBA"                       # Federal Environment Agency
+    - "Verbraucherzentrale"       # Consumer protection center
+    
+  eu_institutions:
+    - "European Commission"
+    - "Europäische Kommission"
+    - "European Parliament"
+    - "Europäisches Parlament"
+    - "Council of the EU"
+    - "Rat der EU"
+    - "DG CONNECT"
+    - "DG JUST"
+    - "DG GROW"
+    - "DG COMP"
+    - "ENISA"
+    - "European Data Protection Board"
+    - "EDPB"
+
+legislative_terms:
+  german:
+    - "Gesetzentwurf"             # Draft law
+    - "Gesetzesvorhaben"          # Legislative project
+    - "Verordnung"                # Regulation/ordinance
+    - "Richtlinie"                # Directive
+    - "Umsetzung"                 # Implementation/transposition
+    - "Anhörung"                  # Hearing
+    - "Stellungnahme"             # Position/opinion
+    - "Kabinettsbeschluss"        # Cabinet decision
+    - "Referentenentwurf"         # Ministry draft
+    - "Regierungsentwurf"         # Government draft
+    - "Bundesgesetzblatt"         # Federal Law Gazette
+    - "Inkrafttreten"             # Entry into force
+    - "Übergangsfrist"            # Transition period
+    - "Bußgeld"                   # Fine/penalty
+    - "Ordnungswidrigkeit"        # Administrative offense
+    - "Aufsichtsbehörde"          # Supervisory authority
+    
+  english:
+    - "draft legislation"
+    - "legislative proposal"
+    - "regulation"
+    - "directive"
+    - "transposition"
+    - "implementation"
+    - "public consultation"
+    - "impact assessment"
+    - "delegated act"
+    - "implementing act"
+    - "entry into force"
+    - "transition period"
+    - "enforcement"
+    - "penalty"
+    - "supervisory authority"
+
+# =============================================================================
+# STRATEGIC THEMES (regulatory focus)
+# =============================================================================
 
 strategic_themes:
-  - digital transformation
-  - sustainability
-  - customer experience
-  - data privacy
-  - supply chain
-  - logistics
-  - payment systems
-  - mobile commerce
-  - artificial intelligence
-  - automation
+  # Digital regulation
+  - "Digital Services Act"
+  - "DSA"
+  - "Digitale-Dienste-Gesetz"     # DE: DSA implementation
+  - "Digital Markets Act"
+  - "DMA"
+  - "Gesetz über digitale Märkte" # DE: DMA
+  - "Plattformregulierung"        # DE: platform regulation
+  - "platform regulation"
+  
+  # Consumer protection
+  - "Verbraucherschutz"           # DE: consumer protection
+  - "consumer protection"
+  - "Verbraucherrecht"            # DE: consumer law
+  - "consumer rights"
+  - "Widerrufsrecht"              # DE: right of withdrawal
+  - "Gewährleistung"              # DE: warranty
+  
+  # Data protection
+  - "Datenschutz"                 # DE: data protection
+  - "DSGVO"                       # DE: GDPR
+  - "GDPR"
+  - "data protection"
+  - "privacy"
+  
+  # Product safety
+  - "Produktsicherheit"           # DE: product safety
+  - "product safety"
+  - "Marktüberwachung"            # DE: market surveillance
+  - "market surveillance"
+  - "CE-Kennzeichnung"            # DE: CE marking
+  
+  # Sustainability
+  - "Nachhaltigkeit"              # DE: sustainability
+  - "sustainability"
+  - "Lieferkettengesetz"          # DE: supply chain law
+  - "supply chain due diligence"
+  - "CSDDD"
+  - "Kreislaufwirtschaft"         # DE: circular economy
+  - "circular economy"
+  - "Textilkennzeichnung"         # DE: textile labeling
+  
+  # Competition
+  - "Wettbewerbsrecht"            # DE: competition law
+  - "competition law"
+  - "Kartellrecht"                # DE: antitrust
+  - "antitrust"
+  - "Fusionskontrolle"            # DE: merger control
+  
+  # AI regulation
+  - "KI-Verordnung"               # DE: AI Act
+  - "AI Act"
+  - "künstliche Intelligenz"      # DE: artificial intelligence
+  - "algorithmische Systeme"      # DE: algorithmic systems
+  
+  # Cybersecurity
+  - "Cybersicherheit"             # DE
+  - "cybersecurity"
+  - "NIS2"
+  - "IT-Sicherheit"               # DE: IT security
+  - "Cyber Resilience Act"
+  - "CRA"
+
+# =============================================================================
+# TOPIC PATTERNS (regulatory-focused)
+# =============================================================================
 
 topic_patterns:
+  platform-regulation:
+    - "Digital Services Act"
+    - "DSA"
+    - "Digitale-Dienste-Gesetz"
+    - "Digital Markets Act"
+    - "DMA"
+    - "Plattformregulierung"
+    - "Gatekeeper"
+    - "Torwächter"                # DE: gatekeeper
+    - "very large online platform"
+    - "VLOP"
+    - "online marketplace regulation"
+    - "Marktplatzpflichten"       # DE: marketplace obligations
+    - "trusted flagger"
+    - "content moderation"
+    - "Inhaltemoderation"         # DE
+    
+  consumer-protection:
+    - "Verbraucherschutz"
+    - "consumer protection"
+    - "Verbraucherrecht"
+    - "consumer rights directive"
+    - "Omnibus-Richtlinie"
+    - "Widerrufsrecht"
+    - "right of withdrawal"
+    - "dark patterns"
+    - "Preistransparenz"          # DE: price transparency
+    - "Verbraucherbeschwerde"     # DE: consumer complaint
+    - "ADR"
+    - "ODR"
+    
+  product-safety:
+    - "Produktsicherheit"
+    - "product safety"
+    - "General Product Safety Regulation"
+    - "GPSR"
+    - "Marktüberwachung"
+    - "market surveillance"
+    - "CE marking"
+    - "CE-Kennzeichnung"
+    - "Konformität"               # DE: conformity
+    - "Rückruf"                   # DE: recall
+    - "product recall"
+    - "third country seller"
+    - "Drittlandhändler"          # DE
+    
   data-protection:
-    - gdpr
-    - data privacy
-    - personal information
-    - data protection
-    - privacy policy
-    - data processing
-    - consent management
+    - "DSGVO"
+    - "GDPR"
+    - "Datenschutz"
+    - "data protection"
+    - "Datenschutzaufsicht"       # DE: data protection supervision
+    - "data breach"
+    - "Datenpanne"                # DE: data breach
+    - "Bußgeld"                   # DE: fine
+    - "Einwilligung"              # DE: consent
+    - "consent"
+    - "profiling"
+    - "Profilbildung"             # DE
+    - "data transfer"
+    - "Datenübermittlung"         # DE
     
-  compliance:
-    - regulatory compliance
-    - legal requirement
-    - enforcement action
-    - compliance obligation
-    - regulatory framework
-    - legal framework
+  sustainability-textiles:
+    - "Textilkennzeichnung"
+    - "textile labeling"
+    - "sustainable fashion"
+    - "nachhaltige Mode"          # DE
+    - "Lieferkettengesetz"
+    - "LkSG"
+    - "supply chain"
+    - "Lieferkette"               # DE
+    - "CSDDD"
+    - "due diligence"
+    - "Sorgfaltspflicht"          # DE
+    - "greenwashing"
+    - "Grünfärberei"              # DE
+    - "circular economy"
+    - "Kreislaufwirtschaft"
+    - "textile waste"
+    - "Textilabfall"              # DE
     
-  ecommerce-regulation:
-    - digital services act
-    - dsa
-    - digital markets act
-    - dma
-    - online platform
-    - marketplace regulation
-    - consumer protection
-    
-  sustainability:
-    - esg
-    - environmental
-    - carbon footprint
-    - circular economy
-    - sustainable fashion
-    - green logistics
-    - climate change
+  payment-credit:
+    - "Zahlungsdienste"           # DE: payment services
+    - "payment services"
+    - "PSD2"
+    - "PSD3"
+    - "Verbraucherkredit"         # DE: consumer credit
+    - "consumer credit"
+    - "Buy now pay later"
+    - "BNPL"
+    - "Ratenzahlung"              # DE: installment payment
+    - "Kreditwürdigkeitsprüfung"  # DE: credit assessment
+    - "credit assessment"
     
   competition:
-    - antitrust
-    - competition law
-    - market dominance
-    - monopoly
-    - merger control
+    - "Kartellrecht"
+    - "antitrust"
+    - "Wettbewerbsrecht"
+    - "competition law"
+    - "Bundeskartellamt"
+    - "European Commission competition"
+    - "self-preferencing"
+    - "Selbstbevorzugung"         # DE
+    - "market dominance"
+    - "Marktmacht"                # DE
+    - "abuse of dominance"
+    - "Missbrauch"                # DE: abuse
+
+# =============================================================================
+# DIRECT IMPACT KEYWORDS (bilingual)
+# =============================================================================
 
 direct_impact_keywords:
-  - must comply
-  - required to
-  - obligation
-  - penalty
-  - enforcement
-  - violation
-  - breach
-  - non-compliance
-  - legal action
-  - investigation
+  # English
+  - "must comply"
+  - "required to"
+  - "obligation"
+  - "penalty"
+  - "fine"
+  - "enforcement"
+  - "enforcement action"
+  - "violation"
+  - "breach"
+  - "non-compliance"
+  - "infringement"
+  - "deadline"
+  - "entry into force"
+  - "implementation date"
+  - "investigation"
+  - "proceedings"
+    
+  # German
+  - "Verpflichtung"             # obligation
+  - "Pflicht"                   # duty
+  - "Bußgeld"                   # fine
+  - "Strafe"                    # penalty
+  - "Durchsetzung"              # enforcement
+  - "Verstoß"                   # violation
+  - "Nichteinhaltung"           # non-compliance
+  - "Frist"                     # deadline
+  - "Inkrafttreten"             # entry into force
+  - "Umsetzungsfrist"           # implementation deadline
+  - "Ermittlungen"              # investigation
+  - "Verfahren"                 # proceedings
+  - "Anordnung"                 # order
+  - "Untersagung"               # prohibition
+
+# =============================================================================
+# EXCLUSION TERMS
+# =============================================================================
 
 exclusion_terms:
   - sports
+  - Sport
   - automotive
+  - Automobil
   - real estate
+  - Immobilien
   - agriculture
+  - Landwirtschaft
   - mining
+  - Bergbau
   - oil and gas
+  - Öl und Gas
+  - heavy industry
+  - Schwerindustrie
+  - pharmaceuticals
+  - Pharma
+  - defense
+  - Verteidigung
+  - military
+  - Militär
+
 # =============================================================================
-# BUSINESS MODEL UNDERSTANDING
-# Help the agent understand HOW this client operates (not just keywords)
+# BUSINESS MODEL (unchanged from v2)
 # =============================================================================
 
 business_model:
   description: "Online marketplace connecting consumers with fashion brands, operating B2C sales and enabling third-party sellers across EU markets"
+  description_de: "Online-Marktplatz, der Verbraucher mit Modemarken verbindet, B2C-Verkauf betreibt und Drittanbieter in EU-Märkten ermöglicht"
   
   key_activities:
     - "Operates online marketplace with third-party sellers"
@@ -172,25 +436,24 @@ business_model:
     - "Sources and ships products from various origins including third countries"
 
 # =============================================================================
-# REGULATORY RELEVANCE AREAS
-# Defined by business activity, not specific law names
-# Agent should identify relevant regulations in these areas
+# REGULATORY RELEVANCE (unchanged structure, but could add DE terms)
 # =============================================================================
 
 regulatory_relevance:
   
   high_relevance:
-    # These areas directly affect core business operations
-    
     - area: "Platform and marketplace regulation"
+      area_de: "Plattform- und Marktplatzregulierung"
       why: "Core business is operating an online marketplace"
       watch_for:
         - "Obligations for online platforms and marketplaces"
         - "Liability for third-party seller content and products"
         - "Transparency requirements for platforms"
         - "Enforcement actions against similar platforms"
+        - "DSA implementation in Germany (Digitale-Dienste-Gesetz)"
       
     - area: "Consumer protection in e-commerce"
+      area_de: "Verbraucherschutz im E-Commerce"
       why: "B2C sales are core business"
       watch_for:
         - "Online consumer rights and returns"
@@ -200,6 +463,7 @@ regulatory_relevance:
         - "Consumer redress and dispute resolution"
       
     - area: "Product safety and market surveillance"
+      area_de: "Produktsicherheit und Marktüberwachung"
       why: "Liability exposure for products sold through platform"
       watch_for:
         - "Product safety requirements for online sales"
@@ -207,48 +471,55 @@ regulatory_relevance:
         - "Import controls and customs for e-commerce"
         - "Third-country seller compliance"
         - "CE marking and conformity"
+        - "General Product Safety Regulation (GPSR)"
       
     - area: "Data protection and privacy"
+      area_de: "Datenschutz"
       why: "Extensive customer data processing for operations and marketing"
       watch_for:
         - "Data protection enforcement trends"
         - "Cross-border data transfers"
         - "Marketing and consent requirements"
         - "Customer profiling and personalization rules"
+        - "German DPA enforcement priorities"
         
     - area: "Payment services regulation"
+      area_de: "Zahlungsdiensteregulierung"
       why: "Offers payment options as part of checkout"
       watch_for:
         - "Payment service regulations"
         - "Consumer credit requirements"
         - "Credit checks and affordability assessments"
-        - "Payment provider obligations"
+        - "BNPL regulation"
+        - "PSD3 development"
 
   medium_relevance:
-    # These areas affect operations but less directly
-    
     - area: "Competition and antitrust"
+      area_de: "Wettbewerbs- und Kartellrecht"
       why: "Market position and platform practices may attract scrutiny"
       watch_for:
         - "Platform competition enforcement"
         - "Self-preferencing and fairness rules"
-        - "Merger and acquisition rules"
+        - "Bundeskartellamt platform cases"
         
     - area: "Cybersecurity requirements"
+      area_de: "Cybersicherheitsanforderungen"
       why: "Digital infrastructure and customer data require security"
       watch_for:
-        - "Cybersecurity obligations for digital businesses"
-        - "Incident reporting requirements"
-        - "Critical infrastructure designations"
+        - "NIS2 implementation"
+        - "Cyber Resilience Act"
+        - "BSI requirements"
         
     - area: "Algorithmic and AI regulation"
+      area_de: "Algorithmen- und KI-Regulierung"
       why: "Uses algorithms for recommendations and decisions"
       watch_for:
-        - "AI transparency and explainability"
-        - "Algorithmic fairness requirements"
+        - "AI Act implementation"
+        - "Algorithmic transparency requirements"
         - "Automated decision-making rules"
         
     - area: "Cross-border trade within EU"
+      area_de: "Grenzüberschreitender Handel in der EU"
       why: "Ships across EU member states"
       watch_for:
         - "Geoblocking and price discrimination"
@@ -256,41 +527,44 @@ regulatory_relevance:
         - "VAT and customs for e-commerce"
 
   monitor:
-    # Track for potential future relevance
-    
     - area: "Sustainability and environmental regulation"
+      area_de: "Nachhaltigkeits- und Umweltregulierung"
       why: "Fashion industry increasingly subject to sustainability rules"
       watch_for:
         - "Textile-specific environmental rules"
-        - "Green claims and greenwashing"
+        - "Green claims directive"
+        - "ESPR (Ecodesign)"
         - "Circular economy requirements"
-        - "Supply chain due diligence"
+        - "Supply chain due diligence (LkSG, CSDDD)"
         
     - area: "Employment and gig economy"
+      area_de: "Arbeitsrecht und Plattformarbeit"
       why: "Logistics and delivery workforce"
       watch_for:
         - "Platform worker classification"
-        - "Gig economy regulation"
+        - "Platform work directive"
 
 # =============================================================================
 # COMPETITIVE CONTEXT
-# Not keywords, but principle: actions against similar businesses matter
 # =============================================================================
 
 competitive_awareness:
   principle: "Enforcement against or regulatory treatment of similar platforms may set precedents"
+  principle_de: "Durchsetzungsmaßnahmen gegen ähnliche Plattformen können Präzedenzfälle schaffen"
   
   similar_businesses:
     - "Other EU e-commerce platforms and marketplaces"
     - "Fashion retail platforms"
     - "Companies offering BNPL/deferred payment"
+    - "VLOPs under DSA"
     
-  third_country_platforms:
-    relevance: "Regulatory treatment creates competitive context"
-    examples:
-      - "Low-cost platforms shipping from third countries"
-      - "Enforcement for product safety or customs compliance"
-      - "Level playing field measures"
+  watch_enforcement_against:
+    - "Amazon"
+    - "Otto"
+    - "About You"
+    - "Shein"
+    - "Temu"
+    - "AliExpress"
 
 # =============================================================================
 # GEOGRAPHIC SCOPE
@@ -319,10 +593,10 @@ markets:
 
 geographic_priority:
   principle: "German implementation of EU law is highest priority, followed by EU-level developments, then other member states"
+  principle_de: "Deutsche Umsetzung von EU-Recht hat höchste Priorität, gefolgt von EU-Entwicklungen, dann andere Mitgliedstaaten"
 
 # =============================================================================
-# IMPACT ASSESSMENT
-# Help agent gauge urgency and relevance
+# IMPACT INDICATORS
 # =============================================================================
 
 impact_indicators:
@@ -334,21 +608,27 @@ impact_indicators:
     - "Directly mentions platforms, marketplaces, or e-commerce"
     - "Affects payment services or consumer credit"
     - "Product safety enforcement"
+    - "Bußgeldverfahren"          # DE: fine proceedings
+    - "Gesetz tritt in Kraft"     # DE: law enters into force
     
   medium_impact_signals:
     - "Proposal or draft legislation"
     - "Consultation or public comment period"
     - "Enforcement against similar business"
     - "Political statement signaling future action"
+    - "Gesetzentwurf"             # DE: draft law
+    - "Anhörung"                  # DE: hearing
+    - "Konsultation"              # DE: consultation
     
   context_signals:
     - "Ministry or agency reorganization affecting digital/consumer policy"
     - "Political priorities or coalition dynamics"
     - "EU-level negotiations or positions"
+    - "Koalitionsvertrag"         # DE: coalition agreement
+    - "Regierungserklärung"       # DE: government statement
 
 # =============================================================================
 # EXCLUSIONS
-# Defined by principle, not just keyword lists
 # =============================================================================
 
 exclusions:
@@ -370,11 +650,26 @@ exclusions:
     - defense and military
 
 # =============================================================================
-# NOTES FOR FUTURE
+# v3 TEST NOTES
 # =============================================================================
-
-# TODO: Multi-client architecture
-# - How to name files: client_[name].yaml or [name].yaml in clients/ folder?
-# - How to switch active client context?
-# - Shared vs. client-specific regulatory areas?
-# - Client-specific personas needed?
+# 
+# HYPOTHESIS TO TEST:
+# 1. Will German regulatory terms improve capture from:
+#    - bundesregierung.de
+#    - bundestag.de
+#    - bmwk.de, bmj.de (ministry sites)
+#    - gesetze-im-internet.de
+#    - dejure.org
+#    - beck-online excerpts
+#    - German legal news (LTO, Juve, etc.)
+#
+# 2. Will removing competitor names (ASOS, Klarna, etc.) reduce business noise?
+#
+# 3. Will regulatory institution names help capture enforcement news?
+#
+# COMPARE: Run same queries with v2 and v3, compare:
+# - % of results that are regulatory vs. business news
+# - Coverage of German-language authoritative sources
+# - Relevance scores
+#
+# =============================================================================

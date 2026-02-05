@@ -13,7 +13,12 @@ from typing import Any
 
 import yaml
 
-from .schema_helpers import extract_industries, extract_markets
+from .schema_helpers import (
+    extract_industries,
+    extract_legislative_terms,
+    extract_markets,
+    extract_regulatory_actors,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +77,14 @@ class PolicyQueryGenerator:
         # Add enforcement and compliance queries (limited)
         enforcement_queries = self._generate_enforcement_queries(markets)
         queries.extend(enforcement_queries[:4])  # Max 4 enforcement queries
+
+        # Add regulatory actor queries (v3 new)
+        actor_queries = self._generate_regulatory_actor_queries()
+        queries.extend(actor_queries[:8])  # Max 8 regulatory actor queries
+
+        # Add legislative stage queries (v3 new)
+        stage_queries = self._generate_legislative_stage_queries()
+        queries.extend(stage_queries[:6])  # Max 6 legislative stage queries
 
         logger.info(f"Generated {len(queries)} policy search queries")
         return queries
@@ -232,6 +245,95 @@ class PolicyQueryGenerator:
                     }
                 )
 
+        return queries
+
+    def _generate_regulatory_actor_queries(self) -> list[dict[str, str]]:
+        """Generate queries focused on specific regulatory actors.
+
+        Targets content from key German federal institutions and EU bodies
+        to capture authoritative regulatory documents.
+
+        Returns:
+            List of query dictionaries targeting regulatory actors
+        """
+        queries = []
+        actors_config = self.context_data.get("regulatory_actors", {})
+
+        if not actors_config:
+            return queries
+
+        # Extract industries for query context
+        industries = extract_industries(self.context_data)
+        industry_terms = " OR ".join([f'"{ind}"' for ind in industries[:2]])  # Top 2 industries
+
+        # German federal actors - focus on top 5
+        german_federal = actors_config.get("german_federal", [])
+        for actor in german_federal[:5]:
+            # Query format: "Actor" AND ("industry1" OR "industry2") AND "regulation"
+            query = f'"{actor}" AND ({industry_terms}) AND ("Regulierung" OR "regulation")'
+            queries.append({
+                "query": query,
+                "category": "regulatory-actor-german",
+                "description": f"German regulatory activity from {actor}",
+            })
+
+        # EU institutions - focus on top 3
+        eu_institutions = actors_config.get("eu_institutions", [])
+        for actor in eu_institutions[:3]:
+            query = f'"{actor}" AND ({industry_terms}) AND "policy"'
+            queries.append({
+                "query": query,
+                "category": "regulatory-actor-eu",
+                "description": f"EU regulatory activity from {actor}",
+            })
+
+        logger.info(f"Generated {len(queries)} regulatory actor queries")
+        return queries
+
+    def _generate_legislative_stage_queries(self) -> list[dict[str, str]]:
+        """Generate queries targeting specific legislative stages.
+
+        Focuses on draft legislation and legislative processes to capture
+        early-stage regulatory developments.
+
+        Returns:
+            List of query dictionaries targeting legislative stages
+        """
+        queries = []
+        terms_config = self.context_data.get("legislative_terms", {})
+
+        if not terms_config:
+            return queries
+
+        # Extract German legislative terms
+        german_terms = terms_config.get("german", [])
+        strategic_themes = self.context_data.get("strategic_themes", [])
+
+        # Focus on draft stages (early warning indicators)
+        draft_stages = ["Gesetzentwurf", "Regierungsentwurf", "Referentenentwurf"]
+        matching_draft_terms = [term for term in draft_stages if term in german_terms]
+
+        # Combine draft stages with top strategic themes
+        for stage_term in matching_draft_terms:
+            for theme in strategic_themes[:3]:  # Top 3 themes
+                query = f'"{stage_term}" AND "{theme}"'
+                queries.append({
+                    "query": query,
+                    "category": "legislative-stage-german",
+                    "description": f"German draft legislation on {theme}",
+                })
+
+        # Add implementation stage queries
+        if "Umsetzung" in german_terms or "implementation" in terms_config.get("english", []):
+            for theme in strategic_themes[:2]:  # Top 2 themes
+                query = f'("Umsetzung" OR "implementation") AND "{theme}" AND "Germany"'
+                queries.append({
+                    "query": query,
+                    "category": "legislative-implementation",
+                    "description": f"Implementation of {theme} regulations",
+                })
+
+        logger.info(f"Generated {len(queries)} legislative stage queries")
         return queries
 
     def get_query_summary(self) -> dict[str, int]:

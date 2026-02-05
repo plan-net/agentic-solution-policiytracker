@@ -9,7 +9,7 @@ nested schema format introduced for principle-based regulatory monitoring.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 def extract_industries(config: Dict[str, Any]) -> List[str]:
@@ -167,6 +167,78 @@ def extract_exclusion_terms(config: Dict[str, Any]) -> List[str]:
             return industries
 
     return []
+
+
+def extract_regulatory_actors(config: Dict[str, Any], region: Optional[str] = None) -> List[str]:
+    """
+    Extract regulatory actors from config.
+
+    Args:
+        config: The loaded client.yaml configuration dictionary
+        region: Optional filter for specific region ("german_federal", "eu_institutions")
+
+    Returns:
+        List of regulatory actor names (German and English)
+
+    Examples:
+        >>> config = {"regulatory_actors": {"german_federal": ["Bundestag"], "eu_institutions": ["European Commission"]}}
+        >>> extract_regulatory_actors(config)
+        ['Bundestag', 'European Commission']
+
+        >>> extract_regulatory_actors(config, region="german_federal")
+        ['Bundestag']
+    """
+    actors_config = config.get("regulatory_actors", {})
+    if not isinstance(actors_config, dict):
+        return []
+
+    if region:
+        return actors_config.get(region, [])
+
+    # Return all actors from all regions
+    all_actors = []
+    for region_key in ["german_federal", "eu_institutions"]:
+        region_actors = actors_config.get(region_key, [])
+        if isinstance(region_actors, list):
+            all_actors.extend(region_actors)
+
+    return all_actors
+
+
+def extract_legislative_terms(config: Dict[str, Any], language: Optional[str] = None) -> List[str]:
+    """
+    Extract legislative terms from config.
+
+    Args:
+        config: The loaded client.yaml configuration dictionary
+        language: Optional filter for specific language ("german", "english")
+
+    Returns:
+        List of legislative term strings
+
+    Examples:
+        >>> config = {"legislative_terms": {"german": ["Gesetzentwurf"], "english": ["draft legislation"]}}
+        >>> extract_legislative_terms(config)
+        ['Gesetzentwurf', 'draft legislation']
+
+        >>> extract_legislative_terms(config, language="german")
+        ['Gesetzentwurf']
+    """
+    terms_config = config.get("legislative_terms", {})
+    if not isinstance(terms_config, dict):
+        return []
+
+    if language:
+        return terms_config.get(language, [])
+
+    # Return all terms from all languages
+    all_terms = []
+    for lang_key in ["german", "english"]:
+        lang_terms = terms_config.get(lang_key, [])
+        if isinstance(lang_terms, list):
+            all_terms.extend(lang_terms)
+
+    return all_terms
 
 
 def validate_required_fields(config: Dict[str, Any]) -> Tuple[bool, List[str]]:

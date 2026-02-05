@@ -686,9 +686,142 @@ else:
 
 ---
 
+---
+
+## Regulatory Vocabulary (v3 New Section)
+
+### regulatory_actors
+
+**Purpose**: List of regulatory institutions whose documents should be prioritized for early warning and authoritative regulatory intelligence.
+
+**Structure**:
+```yaml
+regulatory_actors:
+  german_federal:
+    - "Bundesregierung"           # Federal government
+    - "Bundestag"                 # Parliament
+    - "Bundesrat"                 # Federal Council
+    - "BMWK"                      # Ministry for Economic Affairs
+    - "Bundeskartellamt"          # Federal Cartel Office
+
+  eu_institutions:
+    - "European Commission"
+    - "Europäische Kommission"
+    - "European Parliament"
+    - "DG CONNECT"
+    - "EDPB"
+```
+
+**ETL Usage**:
+- **Keyword Scorer**: 20% amplifier boost to `direct_impact_score` when regulatory actors mentioned
+- **Policy Query Generator**: Generates 8 actor-focused queries (5 German + 3 EU)
+- **Scoring Impact**: Articles mentioning "Bundestag" + platform regulation get higher relevance scores
+
+**Agent Usage**:
+- Included in `get_regulatory_context_for_agents()` output
+- Agent prompts list top 5 German federal and top 5 EU actors
+- Helps agents prioritize authoritative sources
+
+**Schema Helpers**:
+```python
+from src.etl.utils.schema_helpers import extract_regulatory_actors
+
+# Get all actors
+all_actors = extract_regulatory_actors(config)
+# ['Bundesregierung', 'Bundestag', ..., 'European Commission', 'EDPB']
+
+# Get only German federal actors
+german_actors = extract_regulatory_actors(config, region="german_federal")
+# ['Bundesregierung', 'Bundestag', 'Bundesrat', ...]
+
+# Get only EU institutions
+eu_actors = extract_regulatory_actors(config, region="eu_institutions")
+# ['European Commission', 'Europäische Kommission', ...]
+```
+
+**Example Queries Generated**:
+```
+"Bundestag" AND ("E-commerce / Online Retail" OR "fashion retail") AND ("Regulierung" OR "regulation")
+"European Commission" AND ("E-commerce / Online Retail" OR "fashion retail") AND "policy"
+```
+
+---
+
+### legislative_terms
+
+**Purpose**: Bilingual vocabulary indicating legislative stages and processes, useful for identifying early-stage regulatory developments and tracking implementation timelines.
+
+**Structure**:
+```yaml
+legislative_terms:
+  german:
+    - "Gesetzentwurf"             # Draft law
+    - "Gesetzesvorhaben"          # Legislative project
+    - "Verordnung"                # Regulation/ordinance
+    - "Richtlinie"                # Directive
+    - "Umsetzung"                 # Implementation/transposition
+    - "Kabinettsbeschluss"        # Cabinet decision
+    - "Regierungsentwurf"         # Government draft
+    - "Inkrafttreten"             # Entry into force
+
+  english:
+    - "draft legislation"
+    - "legislative proposal"
+    - "regulation"
+    - "directive"
+    - "transposition"
+    - "implementation"
+    - "entry into force"
+    - "enforcement"
+```
+
+**ETL Usage**:
+- **Keyword Scorer**: 15% amplifier boost to `direct_impact_score` when legislative terms present
+- **Policy Query Generator**: Generates 6 legislative-stage queries targeting drafts and implementation
+- **Scoring Impact**: Articles using "Gesetzentwurf" + "Digital Services Act" get higher scores
+
+**Agent Usage**:
+- Included in `get_regulatory_context_for_agents()` output
+- Agent prompts list top 5 German and top 5 English legislative terms
+- Helps agents identify legislative stage from document content
+
+**Schema Helpers**:
+```python
+from src.etl.utils.schema_helpers import extract_legislative_terms
+
+# Get all terms (German + English)
+all_terms = extract_legislative_terms(config)
+# ['Gesetzentwurf', 'Verordnung', ..., 'draft legislation', 'regulation']
+
+# Get only German terms
+german_terms = extract_legislative_terms(config, language="german")
+# ['Gesetzentwurf', 'Gesetzesvorhaben', 'Verordnung', ...]
+
+# Get only English terms
+english_terms = extract_legislative_terms(config, language="english")
+# ['draft legislation', 'legislative proposal', 'regulation', ...]
+```
+
+**Example Queries Generated**:
+```
+"Gesetzentwurf" AND "Digital Services Act"
+"Regierungsentwurf" AND "Verbraucherschutz"
+("Umsetzung" OR "implementation") AND "GDPR" AND "Germany"
+```
+
+**Integration Benefits**:
+- 🎯 Better capture from German government sources (Bundesregierung.de, Bundestag.de)
+- 🎯 Improved legislative stage identification (draft → implementation → enforcement)
+- 🎯 Targeted queries for specific regulatory actors and legislative processes
+- 🎯 Agent awareness of authoritative institutions and terminology
+- 🎯 Bilingual support for German and English regulatory content
+
+---
+
 ## Version History
 
-- **Version 2**: Current nested schema format with principle-based regulatory relevance
+- **Version 3**: Added bilingual regulatory vocabulary (`regulatory_actors`, `legislative_terms`)
+- **Version 2**: Nested schema format with principle-based regulatory relevance
 - **Version 1**: Legacy flat list format
 
 All components support both formats for backward compatibility.

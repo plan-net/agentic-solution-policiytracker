@@ -23,7 +23,9 @@ from ..utils.schema_helpers import (
     extract_company_terms,
     extract_exclusion_terms,
     extract_industries,
+    extract_legislative_terms,
     extract_markets,
+    extract_regulatory_actors,
 )
 
 logger = structlog.get_logger()
@@ -182,6 +184,14 @@ class KeywordScorer:
             self.DEFAULT_TEMPORAL_KEYWORDS
         )
 
+        # Regulatory vocabulary (v3 amplifiers)
+        self._regulatory_actors = self._normalize_keywords(
+            extract_regulatory_actors(client_config)
+        )
+        self._legislative_terms = self._normalize_keywords(
+            extract_legislative_terms(client_config)
+        )
+
         # Dimension weights
         self._weights = dimension_weights or {
             "direct_impact": 0.40,
@@ -198,6 +208,8 @@ class KeywordScorer:
             themes=len(self._strategic_themes),
             impact_keywords=len(self._direct_impact_keywords),
             topic_patterns=len(self._topic_patterns),
+            regulatory_actors=len(self._regulatory_actors),
+            legislative_terms=len(self._legislative_terms),
         )
 
     def _normalize_keywords(self, keywords: list[str]) -> list[str]:
@@ -287,11 +299,15 @@ class KeywordScorer:
             breakdown.matched_patterns,
         ) = self._score_strategic(text_lower)
 
+        # Apply regulatory vocabulary amplifiers (v3)
+        amplifiers_applied = self._apply_regulatory_amplifiers(breakdown, text_lower)
+
         logger.debug(
             "Scored content",
             title=title[:50],
             total=breakdown.weighted_total,
             matches=len(breakdown.all_matched_keywords),
+            amplifiers=amplifiers_applied,
         )
 
         return breakdown
@@ -489,6 +505,76 @@ class KeywordScorer:
             score = min(100, score + 20)
 
         return score, theme_matches, pattern_matches
+
+    def _apply_regulatory_amplifiers(
+        self,
+        breakdown: ScoreBreakdown,
+        text: str,
+    ) -> dict[str, bool]:
+        """Apply regulatory vocabulary amplifiers to direct_impact score.
+
+        Amplifiers boost the direct_impact dimension score when regulatory actors
+        or legislative terms are present, indicating authoritative regulatory content.
+
+        Args:
+            breakdown: ScoreBreakdown object to modify
+            text: Full text (lowercase)
+
+        Returns:
+            Dictionary indicating which amplifiers were applied
+        """
+        amplifiers_applied = {
+            "regulatory_actors": False,
+            "legislative_terms": False,
+        }
+
+        # Store original direct_impact score
+        original_score = breakdown.direct_impact
+
+        # Check for regulatory actors (20% boost)
+        actor_matches = []
+        for actor in self._regulatory_actors:
+            if actor in text:
+                actor_matches.append(actor)
+
+        if actor_matches:
+            breakdown.direct_impact = min(100.0, breakdown.direct_impact * 1.20)
+            amplifiers_applied["regulatory_actors"] = True
+            logger.debug(
+                "Applied regulatory_actor amplifier",
+                actors=actor_matches[:3],
+                original=original_score,
+                amplified=breakdown.direct_impact,
+            )
+
+        # Check for legislative terms (15% boost)
+        term_matches = []
+        for term in self._legislative_terms:
+            if term in text:
+                term_matches.append(term)
+
+        if term_matches:
+            breakdown.direct_impact = min(100.0, breakdown.direct_impact * 1.15)
+            amplifiers_applied["legislative_terms"] = True
+            logger.debug(
+                "Applied legislative_terms amplifier",
+                terms=term_matches[:3],
+                amplified=breakdown.direct_impact,
+            )
+
+        # Log combined effect if any amplifiers were applied
+        if original_score != breakdown.direct_impact:
+            boost_pct = ((breakdown.direct_impact - original_score) / original_score * 100) if original_score > 0 else 0
+            logger.info(
+                "Regulatory amplifiers applied",
+                original_direct_impact=original_score,
+                amplified_direct_impact=breakdown.direct_impact,
+                boost_percentage=f"{boost_pct:.1f}%",
+                actors_found=len(actor_matches),
+                terms_found=len(term_matches),
+            )
+
+        return amplifiers_applied
 
     def is_relevant(
         self,

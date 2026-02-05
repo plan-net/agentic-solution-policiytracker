@@ -9,7 +9,9 @@ from src.etl.utils.schema_helpers import (
     extract_company_terms,
     extract_exclusion_terms,
     extract_industries,
+    extract_legislative_terms,
     extract_markets,
+    extract_regulatory_actors,
     validate_required_fields,
 )
 
@@ -183,6 +185,104 @@ class TestExtractExclusionTerms:
         """Test with empty config."""
         config = {}
         result = extract_exclusion_terms(config)
+        assert result == []
+
+
+class TestExtractRegulatoryActors:
+    """Test extract_regulatory_actors function."""
+
+    def test_extract_all_actors(self):
+        """Test extraction of all actors."""
+        config = {
+            "regulatory_actors": {
+                "german_federal": ["Bundestag", "BMWK"],
+                "eu_institutions": ["European Commission", "EDPB"]
+            }
+        }
+        result = extract_regulatory_actors(config)
+        assert result == ["Bundestag", "BMWK", "European Commission", "EDPB"]
+
+    def test_extract_german_actors_only(self):
+        """Test extraction with region filter."""
+        config = {
+            "regulatory_actors": {
+                "german_federal": ["Bundestag", "BMWK"],
+                "eu_institutions": ["European Commission"]
+            }
+        }
+        result = extract_regulatory_actors(config, region="german_federal")
+        assert result == ["Bundestag", "BMWK"]
+
+    def test_extract_eu_actors_only(self):
+        """Test extraction with EU region filter."""
+        config = {
+            "regulatory_actors": {
+                "german_federal": ["Bundestag"],
+                "eu_institutions": ["European Commission", "EDPB"]
+            }
+        }
+        result = extract_regulatory_actors(config, region="eu_institutions")
+        assert result == ["European Commission", "EDPB"]
+
+    def test_empty_config(self):
+        """Test with empty config."""
+        config = {}
+        result = extract_regulatory_actors(config)
+        assert result == []
+
+    def test_invalid_type(self):
+        """Test with invalid type (string instead of dict)."""
+        config = {"regulatory_actors": "Bundestag"}
+        result = extract_regulatory_actors(config)
+        assert result == []
+
+
+class TestExtractLegislativeTerms:
+    """Test extract_legislative_terms function."""
+
+    def test_extract_all_terms(self):
+        """Test extraction of all terms."""
+        config = {
+            "legislative_terms": {
+                "german": ["Gesetzentwurf", "Verordnung"],
+                "english": ["draft legislation", "regulation"]
+            }
+        }
+        result = extract_legislative_terms(config)
+        assert result == ["Gesetzentwurf", "Verordnung", "draft legislation", "regulation"]
+
+    def test_extract_german_terms_only(self):
+        """Test extraction with language filter."""
+        config = {
+            "legislative_terms": {
+                "german": ["Gesetzentwurf"],
+                "english": ["draft legislation"]
+            }
+        }
+        result = extract_legislative_terms(config, language="german")
+        assert result == ["Gesetzentwurf"]
+
+    def test_extract_english_terms_only(self):
+        """Test extraction with English language filter."""
+        config = {
+            "legislative_terms": {
+                "german": ["Gesetzentwurf"],
+                "english": ["draft legislation", "regulation"]
+            }
+        }
+        result = extract_legislative_terms(config, language="english")
+        assert result == ["draft legislation", "regulation"]
+
+    def test_empty_config(self):
+        """Test with empty config."""
+        config = {}
+        result = extract_legislative_terms(config)
+        assert result == []
+
+    def test_invalid_type(self):
+        """Test with invalid type (string instead of dict)."""
+        config = {"legislative_terms": "Gesetzentwurf"}
+        result = extract_legislative_terms(config)
         assert result == []
 
 

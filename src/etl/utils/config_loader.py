@@ -5,7 +5,7 @@ Configuration loader for ETL pipeline.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import structlog
 import yaml
@@ -14,7 +14,9 @@ from .schema_helpers import (
     extract_company_terms,
     extract_exclusion_terms,
     extract_industries,
+    extract_legislative_terms,
     extract_markets,
+    extract_regulatory_actors,
 )
 
 logger = structlog.get_logger()
@@ -104,6 +106,28 @@ class ClientConfigLoader:
             Tuple of (primary_markets, secondary_markets)
         """
         return extract_markets(self.config)
+
+    def get_regulatory_actors(self, region: Optional[str] = None) -> list[str]:
+        """Get regulatory actors, optionally filtered by region.
+
+        Args:
+            region: Optional filter ("german_federal", "eu_institutions")
+
+        Returns:
+            List of regulatory actor names
+        """
+        return extract_regulatory_actors(self.config, region)
+
+    def get_legislative_terms(self, language: Optional[str] = None) -> list[str]:
+        """Get legislative terms, optionally filtered by language.
+
+        Args:
+            language: Optional filter ("german", "english")
+
+        Returns:
+            List of legislative term strings
+        """
+        return extract_legislative_terms(self.config, language)
 
     def should_exclude_article(self, article: dict[str, Any]) -> bool:
         """Check if an article should be excluded based on exclusion terms."""
