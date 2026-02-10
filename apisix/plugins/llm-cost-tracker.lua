@@ -136,12 +136,12 @@ function _M.header_filter(conf, ctx)
     end
 
     -- Check if this is a streaming response
-    local transfer_encoding = ngx.header["Transfer-Encoding"]
+    -- Note: Only treat as streaming if content-type is event-stream
+    -- (chunked transfer encoding is normal for HTTP/1.1 responses)
     local content_type = ngx.header["Content-Type"] or ""
 
     ctx.llm_is_streaming_response = (
-        transfer_encoding == "chunked" or
-        string.find(content_type, "text/event-stream")
+        string.find(content_type, "text/event-stream") ~= nil
     )
 
     -- Capture status code
