@@ -53,6 +53,33 @@ class IngestRequest(BaseModel):
     records: List[CostRecord]
 
 
+class ExternalApiRecord(BaseModel):
+    """External API request record from APISIX plugin."""
+    timestamp: Optional[str] = None
+    api_name: str
+    endpoint: str
+    method: str = "GET"
+    agent_type: Optional[str] = None
+    agent_name: Optional[str] = None
+    flow_name: Optional[str] = None
+    session_id: Optional[str] = None
+    trace_id: Optional[str] = None
+    user_id: Optional[str] = None
+    project_id: Optional[str] = "political_monitoring_v2"
+    latency_ms: Optional[int] = 0
+    status_code: Optional[int] = None
+    error_message: Optional[str] = None
+    request_size_bytes: Optional[int] = None
+    response_size_bytes: Optional[int] = None
+    request_headers: Optional[Dict[str, Any]] = None
+    api_metadata: Optional[Dict[str, Any]] = None
+
+
+class ExternalApiIngestRequest(BaseModel):
+    """Batch of external API records"""
+    records: List[ExternalApiRecord]
+
+
 class IngestResponse(BaseModel):
     """Response from ingest endpoint"""
     success: bool
@@ -150,4 +177,85 @@ async def ingest_costs(request: IngestRequest):
 
     except Exception as e:
         logger.error("Failed to ingest cost records", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to ingest records: {str(e)}")
+
+
+@router.post("/external-api", response_model=IngestResponse)
+async def ingest_external_api(request: ExternalApiIngestRequest):
+    """
+    Receive and store external API request records from APISIX plugin.
+
+    This endpoint is called by the APISIX api-request-tracker plugin
+    to store external API usage data in TimescaleDB.
+    """
+    if not request.records:
+        return IngestResponse(
+            success=True,
+            records_inserted=0,
+            message="No records to insert"
+        )
+
+    try:
+        pool = await get_pool()
+
+        # Build batch insert
+        values = []
+        for record in request.records:
+            headers_json = json.dumps(record.request_headers) if record.request_headers else None
+            metadata_json = json.dumps(record.api_metadata) if record.api_metadata else None
+
+            values.append((
+                datetime.now() if not record.timestamp else datetime.fromisoformat(record.timestamp.replace(' ', 'T')),
+                record.api_name,
+                record.endpoint,
+                record.method,
+                record.agent_type,
+                record.agent_name,
+                record.flow_name,
+                record.session_id,
+                record.trace_id,
+                record.user_id,
+                record.project_id,
+                record.latency_ms or 0,
+                record.status_code,
+                record.error_message,
+                record.request_size_bytes,
+                record.response_size_bytes,
+                headers_json,
+                metadata_json,
+            ))
+
+        async with pool.acquire() as conn:
+            await conn.executemany(
+                """
+                INSERT INTO external_api_requests (
+                    timestamp, api_name, endpoint, method,
+                    agent_type, agent_name, flow_name,
+                    session_id, trace_id, user_id, project_id,
+                    latency_ms, status_code, error_message,
+                    request_size_bytes, response_size_bytes,
+                    request_headers, api_metadata
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                    $11, $12, $13, $14, $15, $16, $17, $18
+                )
+                """,
+                values
+            )
+
+        first_record = request.records[0] if request.records else None
+        logger.info(
+            "Ingested external API records",
+            count=len(request.records),
+            first_api=first_record.api_name if first_record else None,
+            first_agent=first_record.agent_name if first_record else None,
+        )
+
+        return IngestResponse(
+            success=True,
+            records_inserted=len(request.records),
+        )
+
+    except Exception as e:
+        logger.error("Failed to ingest external API records", error=str(e))
         raise HTTPException(status_code=500, detail=f"Failed to ingest records: {str(e)}")

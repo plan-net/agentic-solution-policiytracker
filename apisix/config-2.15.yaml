@@ -39,6 +39,7 @@ plugins:
   - request-id
   - serverless-pre-function
   - llm-cost-tracker
+  - api-request-tracker
 
 # Custom plugin path
 extra_lua_path: "/usr/local/apisix/apisix/plugins/?.lua"
@@ -52,6 +53,12 @@ plugin_attr:
     db_name: "llm_costs"
     db_user: "timescale"
     db_password: "timescale_secure_password"
+    batch_size: 10
+    flush_interval: 5.0
+    log_debug: true
+  api-request-tracker:
+    analytics_host: "cost-analytics"
+    analytics_port: 8000
     batch_size: 10
     flush_interval: 5.0
     log_debug: true
