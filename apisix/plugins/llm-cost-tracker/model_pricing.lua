@@ -4,10 +4,18 @@
 --
 -- Prices are per 1 MILLION tokens (industry standard as of 2024)
 --
+-- Cache Token Pricing (Anthropic):
+-- - cache_creation: 1.25x base input price (25% premium for writing to cache)
+-- - cache_read: 0.10x base input price (90% discount for reading from cache!)
+--
 
 local core = require("apisix.core")
 
 local _M = {}
+
+-- Cache token pricing multipliers (Anthropic prompt caching)
+local CACHE_WRITE_MULTIPLIER = 1.25  -- 25% premium for cache creation
+local CACHE_READ_MULTIPLIER = 0.10   -- 90% discount for cache reads
 
 --
 -- Default pricing table (prices per 1M tokens in USD)
@@ -55,12 +63,21 @@ local DEFAULT_PRICES = {
     ["text-embedding-3-large"] = { input = 0.13, output = 0.0 },
     ["text-embedding-ada-002"] = { input = 0.10, output = 0.0 },
 
-    -- Anthropic Claude Models
+    -- Anthropic Claude 4 Models (2025)
+    ["claude-sonnet-4-20250514"] = { input = 3.00, output = 15.00 },
+    ["claude-sonnet-4-latest"] = { input = 3.00, output = 15.00 },
+    ["claude-opus-4-20250514"] = { input = 15.00, output = 75.00 },
+    ["claude-opus-4-latest"] = { input = 15.00, output = 75.00 },
+    ["claude-haiku-4-20250514"] = { input = 0.80, output = 4.00 },
+    ["claude-haiku-4-latest"] = { input = 0.80, output = 4.00 },
+
+    -- Anthropic Claude 3.5 Models
     ["claude-3-5-sonnet-20241022"] = { input = 3.00, output = 15.00 },
     ["claude-3-5-sonnet-latest"] = { input = 3.00, output = 15.00 },
     ["claude-3-5-haiku-20241022"] = { input = 1.00, output = 5.00 },
     ["claude-3-5-haiku-latest"] = { input = 1.00, output = 5.00 },
 
+    -- Anthropic Claude 3 Models
     ["claude-3-opus-20240229"] = { input = 15.00, output = 75.00 },
     ["claude-3-opus-latest"] = { input = 15.00, output = 75.00 },
     ["claude-3-sonnet-20240229"] = { input = 3.00, output = 15.00 },
@@ -119,8 +136,13 @@ end
 -- Calculate cost for token usage
 --
 -- @param model string The model name
--- @param usage table {prompt_tokens, completion_tokens, total_tokens}
+-- @param usage table {prompt_tokens, completion_tokens, total_tokens,
+--                     cache_creation_tokens, cache_read_tokens}
 -- @return number Cost in USD
+--
+-- Cache Token Pricing:
+-- - cache_creation_tokens: 1.25x base input price
+-- - cache_read_tokens: 0.10x base input price (90% discount!)
 --
 function _M.calculate_cost(model, usage)
     if not usage then
@@ -131,12 +153,28 @@ function _M.calculate_cost(model, usage)
 
     local prompt_tokens = usage.prompt_tokens or 0
     local completion_tokens = usage.completion_tokens or 0
+    local cache_creation_tokens = usage.cache_creation_tokens or 0
+    local cache_read_tokens = usage.cache_read_tokens or 0
 
     -- Calculate cost (prices are per 1M tokens)
     local input_cost = (prompt_tokens / 1000000) * prices.input
     local output_cost = (completion_tokens / 1000000) * prices.output
 
-    return input_cost + output_cost
+    -- Cache token costs (Anthropic prompt caching)
+    local cache_creation_cost = (cache_creation_tokens / 1000000) * prices.input * CACHE_WRITE_MULTIPLIER
+    local cache_read_cost = (cache_read_tokens / 1000000) * prices.input * CACHE_READ_MULTIPLIER
+
+    return input_cost + output_cost + cache_creation_cost + cache_read_cost
+end
+
+--
+-- Get cache pricing multipliers (for debugging/admin purposes)
+--
+function _M.get_cache_multipliers()
+    return {
+        cache_write = CACHE_WRITE_MULTIPLIER,
+        cache_read = CACHE_READ_MULTIPLIER,
+    }
 end
 
 --

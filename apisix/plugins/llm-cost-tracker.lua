@@ -201,7 +201,13 @@ function _M.log(conf, ctx)
     local latency_ms = math.floor((ngx_now() - ctx.llm_start_time) * 1000)
 
     -- Parse token usage from response
-    local usage = { prompt_tokens = 0, completion_tokens = 0, total_tokens = 0 }
+    local usage = {
+        prompt_tokens = 0,
+        completion_tokens = 0,
+        total_tokens = 0,
+        cache_creation_tokens = 0,
+        cache_read_tokens = 0,
+    }
     local model_from_response = nil
 
     if ctx.llm_full_response and #ctx.llm_full_response > 0 then
@@ -239,6 +245,8 @@ function _M.log(conf, ctx)
         prompt_tokens = usage.prompt_tokens,
         completion_tokens = usage.completion_tokens,
         total_tokens = usage.total_tokens,
+        cache_creation_tokens = usage.cache_creation_tokens,
+        cache_read_tokens = usage.cache_read_tokens,
         cost_usd = cost_usd,
 
         -- Performance
@@ -255,10 +263,17 @@ function _M.log(conf, ctx)
     db_writer.enqueue(record, conf)
 
     if conf.log_debug then
+        local cache_info = ""
+        if record.cache_creation_tokens > 0 or record.cache_read_tokens > 0 then
+            cache_info = string.format(", cache_create=%d, cache_read=%d",
+                                       record.cache_creation_tokens,
+                                       record.cache_read_tokens)
+        end
         core.log.info("LLM Cost Tracker [log]: ",
                       "provider=", record.provider,
                       ", model=", record.model,
                       ", tokens=", record.total_tokens,
+                      cache_info,
                       ", cost=$", string.format("%.8f", record.cost_usd),
                       ", latency=", record.latency_ms, "ms",
                       ", agent=", record.agent_name or "unknown")

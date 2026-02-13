@@ -19,6 +19,7 @@ class ExaSearchClient:
     Async HTTP client for Exa.ai search API.
 
     Provides web search and news search capabilities.
+    Supports routing through APISIX gateway when USE_APISIX_FOR_EXA=true.
     """
 
     API_BASE_URL = "https://api.exa.ai"
@@ -36,7 +37,14 @@ class ExaSearchClient:
         }
         self.session: Optional[aiohttp.ClientSession] = None
 
-        logger.info("Initialized ExaSearchClient")
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_EXA", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(f"Initialized ExaSearchClient via APISIX: {self.apisix_url}/exa")
+        else:
+            logger.info("Initialized ExaSearchClient (direct API)")
 
     async def _ensure_session(self):
         """Ensure aiohttp session is initialized."""
@@ -81,9 +89,15 @@ class ExaSearchClient:
         if exclude_domains:
             payload["excludeDomains"] = exclude_domains
 
+        # Determine URL based on APISIX setting
+        if self.use_apisix:
+            url = f"{self.apisix_url}/exa/search"
+        else:
+            url = f"{self.API_BASE_URL}/search"
+
         try:
             async with self.session.post(
-                f"{self.API_BASE_URL}/search",
+                url,
                 headers=self.headers,
                 json=payload
             ) as response:
@@ -138,9 +152,15 @@ class ExaSearchClient:
         if include_domains:
             payload["includeDomains"] = include_domains
 
+        # Determine URL based on APISIX setting
+        if self.use_apisix:
+            url = f"{self.apisix_url}/exa/search"
+        else:
+            url = f"{self.API_BASE_URL}/search"
+
         try:
             async with self.session.post(
-                f"{self.API_BASE_URL}/search",
+                url,
                 headers=self.headers,
                 json=payload
             ) as response:
@@ -175,9 +195,15 @@ class ExaSearchClient:
             "contents": {"text": True},
         }
 
+        # Determine URL based on APISIX setting
+        if self.use_apisix:
+            url = f"{self.apisix_url}/exa/contents"
+        else:
+            url = f"{self.API_BASE_URL}/contents"
+
         try:
             async with self.session.post(
-                f"{self.API_BASE_URL}/contents",
+                url,
                 headers=self.headers,
                 json=payload
             ) as response:

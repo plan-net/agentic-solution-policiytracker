@@ -20,6 +20,7 @@ class DPANewsClient:
     Async HTTP client for DPA-IQ-Retriever API.
 
     Provides German press agency news search capabilities.
+    Supports routing through APISIX gateway when USE_APISIX_FOR_DPA=true.
     """
 
     API_BASE_URL = "https://article-retriever.iq.dpa-ai-hub.de"
@@ -38,7 +39,14 @@ class DPANewsClient:
         }
         self.session: Optional[aiohttp.ClientSession] = None
 
-        logger.info("Initialized DPANewsClient")
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_DPA", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(f"Initialized DPANewsClient via APISIX: {self.apisix_url}/dpa")
+        else:
+            logger.info("Initialized DPANewsClient (direct API)")
 
     async def _ensure_session(self):
         """Ensure aiohttp session is initialized."""
@@ -92,9 +100,15 @@ class DPANewsClient:
             "response_format": "article_objects_markdown",
         }
 
+        # Determine URL based on APISIX setting
+        if self.use_apisix:
+            url = f"{self.apisix_url}/dpa/articles/relevant"
+        else:
+            url = f"{self.API_BASE_URL}/articles/relevant"
+
         try:
             async with self.session.post(
-                f"{self.API_BASE_URL}/articles/relevant",
+                url,
                 headers=self.headers,
                 json=payload
             ) as response:

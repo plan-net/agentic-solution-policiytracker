@@ -41,6 +41,7 @@ from src.chat.observability.langfuse_config import (
 from src.prompts.prompt_manager import prompt_manager
 from src.shared.sdk_hooks import create_langwatch_hooks, create_enhanced_hooks
 from src.shared.client_context import get_client_context_for_prompt
+from src.shared.sdk_cost_tracker import sdk_cost_tracker, SDKCostRecord
 from src.claude_agent.query_decomposition import QueryDecomposer
 
 from .prompts import (
@@ -417,6 +418,20 @@ Begin by searching for legislative and regulatory updates, then proceed through 
 
                 async for message in client.receive_response():
                     if isinstance(message, AssistantMessage):
+                        # DEBUG: Log AssistantMessage for reconciliation
+                        block_types = [type(b).__name__ for b in message.content]
+                        text_len = sum(len(b.text) for b in message.content if isinstance(b, TextBlock))
+                        tool_uses = [b.name for b in message.content if isinstance(b, ToolUseBlock)]
+                        logger.info(
+                            f"[Session {report_session_id}] AssistantMessage: "
+                            f"model={message.model}, "
+                            f"blocks={block_types}, "
+                            f"text_length={text_len}, "
+                            f"tool_uses={tool_uses}, "
+                            f"parent_tool_use_id={message.parent_tool_use_id}, "
+                            f"error={message.error}"
+                        )
+
                         for block in message.content:
                             if isinstance(block, TextBlock):
                                 report_content += block.text
@@ -464,6 +479,37 @@ Begin by searching for legislative and regulatory updates, then proceed through 
                         if not report_content:
                             logger.warning(f"[Session {report_session_id}] ResultMessage received but no report content accumulated")
 
+                        # Capture cost metrics
+                        usage = getattr(message, "usage", None)
+                        total_cost = getattr(message, "total_cost_usd", None)
+                        duration_ms = getattr(message, "duration_ms", 0)
+                        num_turns_sdk = getattr(message, "num_turns", 0)
+
+                        # DEBUG: Log COMPLETE raw ResultMessage for analysis
+                        logger.info(
+                            f"[Session {report_session_id}] RAW ResultMessage: "
+                            f"subtype={message.subtype}, "
+                            f"duration_ms={message.duration_ms}, "
+                            f"duration_api_ms={message.duration_api_ms}, "
+                            f"is_error={message.is_error}, "
+                            f"num_turns={message.num_turns}, "
+                            f"session_id={message.session_id}, "
+                            f"total_cost_usd={message.total_cost_usd}, "
+                            f"usage={message.usage}, "
+                            f"result={message.result[:100] if message.result else None}..., "
+                            f"structured_output={message.structured_output}"
+                        )
+
+                        # DEBUG: Log extracted values for comparison with LangFuse
+                        logger.info(
+                            f"[Session {report_session_id}] SDK ResultMessage cost data: "
+                            f"total_cost_usd={total_cost}, "
+                            f"usage={usage}, "
+                            f"sdk_num_turns={num_turns_sdk}, "
+                            f"our_turn_count={turn_count}, "
+                            f"duration_ms={duration_ms}"
+                        )
+
                         # Capture final metrics
                         langwatch_config.capture_agentic_turn(
                             session_id=report_session_id,
@@ -476,6 +522,40 @@ Begin by searching for legislative and regulatory updates, then proceed through 
                                 "has_content": bool(report_content),
                             }
                         )
+
+                        # Record cost to TimescaleDB (unified tracking with APISIX)
+                        if total_cost is not None or usage:
+                            # Extract all token types from SDK usage
+                            prompt_tokens = usage.get("input_tokens", 0) if usage else 0
+                            completion_tokens = usage.get("output_tokens", 0) if usage else 0
+                            cache_creation = usage.get("cache_creation_input_tokens", 0) if usage else 0
+                            cache_read = usage.get("cache_read_input_tokens", 0) if usage else 0
+
+                            # Extract server tool usage (web search @ $0.01/search, web fetch free)
+                            server_tool_use = usage.get("server_tool_use", {}) if usage else {}
+                            web_searches = server_tool_use.get("web_search_requests", 0)
+                            web_fetches = server_tool_use.get("web_fetch_requests", 0)
+
+                            # Total tokens includes all input types (cached + non-cached) + output
+                            total_tokens = prompt_tokens + completion_tokens + cache_creation + cache_read
+
+                            await sdk_cost_tracker.record_cost(SDKCostRecord(
+                                provider="anthropic",
+                                model=self.model,
+                                agent_type="kodosumi_flow",
+                                agent_name="WeeklyReportSDKAgent",
+                                session_id=report_session_id,
+                                prompt_tokens=prompt_tokens,  # Non-cached input only
+                                completion_tokens=completion_tokens,
+                                total_tokens=total_tokens,  # All tokens combined
+                                cost_usd=total_cost or 0.0,
+                                latency_ms=duration_ms,
+                                flow_name="weekly_report",
+                                cache_creation_tokens=cache_creation,
+                                cache_read_tokens=cache_read,
+                                web_search_requests=web_searches,
+                                web_fetch_requests=web_fetches,
+                            ))
 
                         # Handle different stop reasons
                         if stop_reason == "timeout":

@@ -3,9 +3,11 @@ Bundestag DIP API Client.
 
 Async HTTP client for accessing German Bundestag Document and Information System (DIP) API.
 Implements robust error handling with exponential backoff and rate limiting.
+Supports routing through APISIX gateway when USE_APISIX_FOR_BUNDESTAG=true.
 """
 
 import asyncio
+import os
 from typing import Any, Optional
 
 import aiohttp
@@ -57,9 +59,22 @@ class BundestagAPIClient:
         self.timeout = aiohttp.ClientTimeout(total=timeout)
         self.session: Optional[aiohttp.ClientSession] = None
 
-        logger.info(
-            "Initialized BundestagAPIClient", base_url=self.base_url, max_retries=self.max_retries
-        )
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_BUNDESTAG", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(
+                "Initialized BundestagAPIClient via APISIX",
+                apisix_url=f"{self.apisix_url}/bundestag",
+                max_retries=self.max_retries,
+            )
+        else:
+            logger.info(
+                "Initialized BundestagAPIClient (direct API)",
+                base_url=self.base_url,
+                max_retries=self.max_retries,
+            )
 
     async def __aenter__(self):
         """Async context manager entry."""
@@ -106,10 +121,15 @@ class BundestagAPIClient:
         if "apikey" not in params:
             params["apikey"] = self.api_key
 
-        # Construct full URL (ensure proper slash handling)
-        base = self.base_url.rstrip("/")
+        # Construct full URL based on APISIX setting
         endpoint = endpoint.lstrip("/")
-        url = f"{base}/{endpoint}"
+        if self.use_apisix:
+            # Route through APISIX gateway (e.g., /bundestag/vorgang)
+            url = f"{self.apisix_url}/bundestag/{endpoint}"
+        else:
+            # Direct API call
+            base = self.base_url.rstrip("/")
+            url = f"{base}/{endpoint}"
 
         # Retry loop with exponential backoff
         for attempt in range(self.max_retries):

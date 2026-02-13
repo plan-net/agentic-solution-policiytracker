@@ -45,6 +45,33 @@ local function sql_number(val)
 end
 
 --
+-- Build cache token metadata as JSON for request_headers column
+--
+local function build_cache_metadata(record)
+    local cache_creation = record.cache_creation_tokens or 0
+    local cache_read = record.cache_read_tokens or 0
+
+    if cache_creation == 0 and cache_read == 0 then
+        return "NULL"
+    end
+
+    -- Build JSON object for request_headers JSONB column
+    local metadata = {
+        cache_creation_tokens = cache_creation,
+        cache_read_tokens = cache_read,
+        non_cached_input_tokens = record.prompt_tokens or 0,
+        apisix_source = "llm-cost-tracker"
+    }
+
+    local json_str = cjson.encode(metadata)
+    if not json_str then
+        return "NULL"
+    end
+
+    return sql_escape(json_str)
+end
+
+--
 -- Build INSERT SQL for a batch of records
 --
 local function build_insert_sql(records)
@@ -58,14 +85,14 @@ local function build_insert_sql(records)
         "session_id", "trace_id", "user_id", "project_id",
         "prompt_tokens", "completion_tokens", "total_tokens", "cost_usd",
         "latency_ms", "status_code",
-        "request_size_bytes", "response_size_bytes"
+        "request_size_bytes", "response_size_bytes", "request_headers"
     }
 
     local values_list = {}
 
     for _, record in ipairs(records) do
         local values = string.format(
-            "(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            "(NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             sql_escape(record.provider),
             sql_escape(record.model),
             sql_escape(record.endpoint),
@@ -84,7 +111,8 @@ local function build_insert_sql(records)
             sql_number(record.latency_ms),
             sql_number(record.status_code),
             sql_number(record.request_size_bytes),
-            sql_number(record.response_size_bytes)
+            sql_number(record.response_size_bytes),
+            build_cache_metadata(record)
         )
         table.insert(values_list, values)
     end
@@ -98,6 +126,55 @@ local function build_insert_sql(records)
 end
 
 --
+-- Build HTTP request payload with cache metadata in request_headers
+--
+local function build_http_records(records)
+    local http_records = {}
+
+    for _, record in ipairs(records) do
+        local http_record = {
+            timestamp = record.timestamp,
+            provider = record.provider,
+            model = record.model,
+            endpoint = record.endpoint,
+            agent_type = record.agent_type,
+            agent_name = record.agent_name,
+            flow_name = record.flow_name,
+            chat_agent_name = record.chat_agent_name,
+            session_id = record.session_id,
+            trace_id = record.trace_id,
+            user_id = record.user_id,
+            project_id = record.project_id,
+            prompt_tokens = record.prompt_tokens,
+            completion_tokens = record.completion_tokens,
+            total_tokens = record.total_tokens,
+            cost_usd = record.cost_usd,
+            latency_ms = record.latency_ms,
+            status_code = record.status_code,
+            request_size_bytes = record.request_size_bytes,
+            response_size_bytes = record.response_size_bytes,
+        }
+
+        -- Add cache token metadata to request_headers if present
+        local cache_creation = record.cache_creation_tokens or 0
+        local cache_read = record.cache_read_tokens or 0
+
+        if cache_creation > 0 or cache_read > 0 then
+            http_record.request_headers = {
+                cache_creation_tokens = cache_creation,
+                cache_read_tokens = cache_read,
+                non_cached_input_tokens = record.prompt_tokens or 0,
+                apisix_source = "llm-cost-tracker"
+            }
+        end
+
+        table.insert(http_records, http_record)
+    end
+
+    return http_records
+end
+
+--
 -- Write records to database via HTTP (using the cost-analytics service)
 --
 local function write_via_http(records, conf)
@@ -108,9 +185,10 @@ local function write_via_http(records, conf)
         return true
     end
 
-    -- Prepare the request body
+    -- Prepare the request body with cache metadata
+    local http_records = build_http_records(records)
     local body = cjson.encode({
-        records = records
+        records = http_records
     })
 
     -- Determine the analytics service URL

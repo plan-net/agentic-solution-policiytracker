@@ -1,8 +1,9 @@
 """
-Ingest endpoint for receiving cost records from APISIX plugin
+Ingest endpoint for receiving cost records from APISIX plugin and Claude Agent SDK
 """
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
+import json
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import structlog
@@ -14,7 +15,16 @@ logger = structlog.get_logger()
 
 
 class CostRecord(BaseModel):
-    """Cost record from APISIX plugin"""
+    """Cost record from APISIX plugin or Claude Agent SDK.
+
+    For SDK records, request_headers can contain cache token metadata:
+    {
+        "cache_creation_tokens": int,
+        "cache_read_tokens": int,
+        "non_cached_input_tokens": int,
+        "sdk_source": "claude_agent_sdk"
+    }
+    """
     timestamp: Optional[str] = None
     provider: str
     model: str
@@ -35,6 +45,7 @@ class CostRecord(BaseModel):
     status_code: Optional[int] = None
     request_size_bytes: Optional[int] = None
     response_size_bytes: Optional[int] = None
+    request_headers: Optional[Dict[str, Any]] = None  # JSONB for cache token metadata
 
 
 class IngestRequest(BaseModel):
@@ -70,6 +81,9 @@ async def ingest_costs(request: IngestRequest):
         # Build batch insert
         values = []
         for record in request.records:
+            # Convert request_headers dict to JSON string for JSONB storage
+            headers_json = json.dumps(record.request_headers) if record.request_headers else None
+
             values.append((
                 datetime.now() if not record.timestamp else datetime.fromisoformat(record.timestamp.replace(' ', 'T')),
                 record.provider,
@@ -91,6 +105,7 @@ async def ingest_costs(request: IngestRequest):
                 record.status_code,
                 record.request_size_bytes,
                 record.response_size_bytes,
+                headers_json,
             ))
 
         async with pool.acquire() as conn:
@@ -102,19 +117,30 @@ async def ingest_costs(request: IngestRequest):
                     session_id, trace_id, user_id, project_id,
                     prompt_tokens, completion_tokens, total_tokens, cost_usd,
                     latency_ms, status_code,
-                    request_size_bytes, response_size_bytes
+                    request_size_bytes, response_size_bytes, request_headers
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                    $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
+                    $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
                 )
                 """,
                 values
             )
 
+        # Log with cache token details if present
+        first_record = request.records[0] if request.records else None
+        cache_info = None
+        if first_record and first_record.request_headers:
+            cache_info = {
+                "cache_creation": first_record.request_headers.get("cache_creation_tokens", 0),
+                "cache_read": first_record.request_headers.get("cache_read_tokens", 0),
+            }
+
         logger.info(
             "Ingested cost records",
             count=len(request.records),
-            first_model=request.records[0].model if request.records else None
+            first_model=first_record.model if first_record else None,
+            first_agent=first_record.agent_name if first_record else None,
+            cache_tokens=cache_info,
         )
 
         return IngestResponse(
