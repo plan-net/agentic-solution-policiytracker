@@ -144,6 +144,13 @@ sudo docker exec policiytracker-etcd etcdctl put /apisix/routes/${EXA_SEARCH_ROU
       "key_type": "var",
       "key": "remote_addr",
       "rejected_code": 429
+    },
+    "api-request-tracker": {
+      "enabled": true,
+      "api_name": "exa-search",
+      "analytics_host": "cost-analytics",
+      "analytics_port": 8000,
+      "log_debug": true
     }
   },
   "upstream_id": "'${EXA_UPSTREAM_ID}'",
@@ -176,6 +183,13 @@ sudo docker exec policiytracker-etcd etcdctl put /apisix/routes/${EXA_CONTENTS_R
       "key_type": "var",
       "key": "remote_addr",
       "rejected_code": 429
+    },
+    "api-request-tracker": {
+      "enabled": true,
+      "api_name": "exa-contents",
+      "analytics_host": "cost-analytics",
+      "analytics_port": 8000,
+      "log_debug": true
     }
   },
   "upstream_id": "'${EXA_UPSTREAM_ID}'",
@@ -208,6 +222,13 @@ sudo docker exec policiytracker-etcd etcdctl put /apisix/routes/${DPA_ROUTE_ID} 
       "key_type": "var",
       "key": "remote_addr",
       "rejected_code": 429
+    },
+    "api-request-tracker": {
+      "enabled": true,
+      "api_name": "dpa-articles",
+      "analytics_host": "cost-analytics",
+      "analytics_port": 8000,
+      "log_debug": true
     }
   },
   "upstream_id": "'${DPA_UPSTREAM_ID}'",
@@ -240,6 +261,13 @@ sudo docker exec policiytracker-etcd etcdctl put /apisix/routes/${BUNDESTAG_VORG
       "key_type": "var",
       "key": "remote_addr",
       "rejected_code": 429
+    },
+    "api-request-tracker": {
+      "enabled": true,
+      "api_name": "bundestag-vorgang",
+      "analytics_host": "cost-analytics",
+      "analytics_port": 8000,
+      "log_debug": true
     }
   },
   "upstream_id": "'${BUNDESTAG_UPSTREAM_ID}'",
@@ -272,6 +300,13 @@ sudo docker exec policiytracker-etcd etcdctl put /apisix/routes/${BUNDESTAG_DRUC
       "key_type": "var",
       "key": "remote_addr",
       "rejected_code": 429
+    },
+    "api-request-tracker": {
+      "enabled": true,
+      "api_name": "bundestag-drucksache",
+      "analytics_host": "cost-analytics",
+      "analytics_port": 8000,
+      "log_debug": true
     }
   },
   "upstream_id": "'${BUNDESTAG_UPSTREAM_ID}'",

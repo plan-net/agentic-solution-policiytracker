@@ -1,20 +1,46 @@
 # Apache APISIX API Gateway - LLMOps Implementation
 
-**Version**: 0.2.0
-**Branch**: `policytracker_llmops_apigw`
+**Version**: 2.0.0
+**Last Updated**: February 2026
 
 ## Overview
 
-This directory contains the Apache APISIX API gateway configuration for centralizing LLM provider access with comprehensive agent-level cost tracking and monitoring.
+This directory contains the Apache APISIX API gateway configuration for centralizing LLM provider access and external API routing with comprehensive agent-level cost and request tracking.
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[ROUTING_ARCHITECTURE.md](./ROUTING_ARCHITECTURE.md)** | Complete routing architecture, route tables, plugin details, migration notes |
+| **[JUSTFILE_COMMANDS.md](./JUSTFILE_COMMANDS.md)** | Available justfile commands for APISIX management |
 
 ## Architecture
 
 ```
-Client → Kodosumi Agents → Apache APISIX (port 9080) → LLM Providers
-                ↓
-         Agent Context Headers
-                ↓
-         Cost Tracking Plugin → TimescaleDB → Analytics Dashboard
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              APISIX Gateway                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  LLM Routes (llm-cost-tracker)      External API Routes (api-request)  │
+│  ├─ Anthropic (/v1/messages*)       ├─ EXA (/exa/*)                    │
+│  └─ OpenAI (/v1/chat/*, etc.)       ├─ DPA (/dpa/*)                    │
+│                                      └─ Bundestag (/bundestag/*)        │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          Cost Analytics Service                         │
+│                                                                         │
+│  POST /api/ingest/costs        POST /api/ingest/external-api           │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              TimescaleDB                                │
+│                                                                         │
+│  llm_requests (tokens, costs)    external_api_requests (latency, etc.) │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Components

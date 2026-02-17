@@ -564,10 +564,11 @@ services:
       - ./apisix/apisix.yaml:/usr/local/apisix/conf/apisix.yaml
       - ./apisix/plugins/llm-cost-tracker.lua:/usr/local/apisix/apisix/plugins/llm-cost-tracker.lua:ro
       - ./apisix/plugins/llm-cost-tracker:/usr/local/apisix/apisix/plugins/llm-cost-tracker:ro
+      - ./apisix/plugins/api-request-tracker.lua:/usr/local/apisix/apisix/plugins/api-request-tracker.lua:ro
       - ./apisix/config:/usr/local/apisix/conf/custom:ro
       - apisix_logs:/usr/local/apisix/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9080/apisix/status"]
+      test: ["CMD", "curl", "-f", "http://localhost:9092/v1/healthcheck"]
       interval: 10s
       timeout: 5s
       retries: 5
