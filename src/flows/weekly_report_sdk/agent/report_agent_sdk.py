@@ -289,6 +289,7 @@ class WeeklyReportSDKAgent:
         week_label: str,
         include_events: bool = True,
         tracer=None,
+        session_id: str | None = None,
     ) -> dict[str, Any]:
         """Generate a weekly regulatory intelligence report.
 
@@ -308,6 +309,7 @@ class WeeklyReportSDKAgent:
             week_label: Human-readable week label (e.g., "KW48/2025")
             include_events: Whether to include upcoming events section
             tracer: Optional Kodosumi tracer for progress updates
+            session_id: Optional session ID from UI (uses this for tracking if provided)
 
         Returns:
             Dict containing:
@@ -343,8 +345,8 @@ Begin by searching for legislative and regulatory updates, then proceed through 
             f"estimated_turns: {complexity_analysis.estimated_turns}"
         )
 
-        # Generate a unique session ID for this report generation
-        report_session_id = f"report_{uuid.uuid4().hex[:12]}"
+        # Use provided session_id or generate a new one
+        report_session_id = session_id if session_id else f"report_{uuid.uuid4().hex[:12]}"
 
         # Set thread_id for LangWatch trace grouping
         langwatch_config.set_thread_id(report_session_id)

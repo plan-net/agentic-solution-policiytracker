@@ -534,11 +534,13 @@ class ReportsService:
 
             try:
                 # Generate the report
+                # Pass report_id as session_id for consistent tracking in LangFuse and cost analytics
                 result = await agent.generate_report(
                     week_start=week_start,
                     week_end=week_end,
                     week_label=week_label,
                     include_events=include_events,
+                    session_id=report_id,
                 )
 
                 report_content = result["report_content"]
