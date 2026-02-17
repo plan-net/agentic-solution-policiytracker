@@ -512,15 +512,13 @@ Begin by searching for legislative and regulatory updates, then proceed through 
 
                         # Capture final metrics
                         langwatch_config.capture_agentic_turn(
+                            turn_number=turn_count,
                             session_id=report_session_id,
-                            turn=turn_count,
-                            tool_name="report_generation_complete",
-                            tool_input={"status": "complete"},
-                            tool_output=f"Report generated: {len(report_content)} characters",
-                            reflection={
-                                "stop_reason": stop_reason,
-                                "has_content": bool(report_content),
-                            }
+                            stop_reason=stop_reason or "end_turn",
+                            tool_calls=[],
+                            input_tokens=usage.get("input_tokens", 0) if usage else 0,
+                            output_tokens=usage.get("output_tokens", 0) if usage else 0,
+                            model=self.model,
                         )
 
                         # Record cost to TimescaleDB (unified tracking with APISIX)
