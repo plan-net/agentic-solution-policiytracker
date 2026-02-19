@@ -513,9 +513,9 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
+          "calcs": ["lastNotNull"],
+          "fields": "/^requests$/",
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -531,7 +531,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT api_name, COUNT(*) as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY api_name\nORDER BY requests DESC",
+          "rawSql": "SELECT api_name, COUNT(*)::bigint as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY api_name\nORDER BY requests DESC",
           "refId": "A"
         }
       ],
@@ -576,9 +576,9 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
+          "calcs": ["lastNotNull"],
+          "fields": "/^requests$/",
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -594,7 +594,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(flow_name, 'unknown') as flow,\n  COUNT(*) as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY flow_name\nORDER BY requests DESC\nLIMIT 10",
+          "rawSql": "SELECT\n  COALESCE(flow_name, 'unknown') as flow,\n  COUNT(*)::bigint as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY flow_name\nORDER BY requests DESC\nLIMIT 10",
           "refId": "A"
         }
       ],
@@ -639,9 +639,9 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
+          "calcs": ["lastNotNull"],
+          "fields": "/^requests$/",
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -657,7 +657,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  CASE\n    WHEN status_code >= 200 AND status_code < 300 THEN '2xx Success'\n    WHEN status_code >= 400 AND status_code < 500 THEN '4xx Client Error'\n    WHEN status_code >= 500 THEN '5xx Server Error'\n    ELSE 'Other'\n  END as status,\n  COUNT(*) as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY status\nORDER BY requests DESC",
+          "rawSql": "SELECT\n  CASE\n    WHEN status_code >= 200 AND status_code < 300 THEN '2xx Success'\n    WHEN status_code >= 400 AND status_code < 500 THEN '4xx Client Error'\n    WHEN status_code >= 500 THEN '5xx Server Error'\n    ELSE 'Other'\n  END as status,\n  COUNT(*)::bigint as requests\nFROM external_api_requests\nWHERE timestamp > NOW() - INTERVAL '7 days'\nGROUP BY status\nORDER BY requests DESC",
           "refId": "A"
         }
       ],
