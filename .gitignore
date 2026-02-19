@@ -233,6 +233,9 @@ data/temp/
 *.jsonl
 *.parquet
 
+# Grafana dashboards (allow tracking)
+!grafana/dashboards/*.json
+
 # Document files (except examples)
 data/**/*.pdf
 data/**/*.docx
