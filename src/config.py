@@ -239,6 +239,30 @@ class GraphRAGSettings(BaseSettings):
         default=True, description="Remove links from scraped documents before processing"
     )
 
+    # Chunk Limiting Configuration (v0.2.2)
+    MAX_CHUNKS_PER_DOCUMENT: int = Field(
+        default=0,
+        description="Maximum chunks per document. 0 = unlimited. When exceeded, chunk size is dynamically increased.",
+    )
+    ADAPTIVE_CHUNK_SIZE_ENABLED: bool = Field(
+        default=True,
+        description="Enable adaptive chunk sizing to fit large documents within MAX_CHUNKS_PER_DOCUMENT",
+    )
+    MAX_ADAPTIVE_TOKENS: int = Field(
+        default=8000,
+        description="Maximum token size per chunk when adaptive sizing is applied",
+    )
+    CHUNK_LIMIT_FALLBACK_STRATEGY: str = Field(
+        default="smart_sample",
+        description="Fallback when adaptive sizing still exceeds MAX_CHUNKS: 'smart_sample', 'truncate', 'embed_only' (first N full, rest embed), or 'smart_sample_embed' (smart-selected chunks full, rest embed)",
+    )
+
+    # Prompt Cache Optimization
+    ENABLE_PROMPT_CACHE_OPTIMIZATION: bool = Field(
+        default=True,
+        description="Optimize prompt structure for LLM provider prompt caching (OpenAI automatic / Anthropic explicit cache_control)",
+    )
+
     # Entity Deduplication Configuration (Phase 2)
     ENABLE_FUZZY_MATCHING: bool = Field(
         default=True,

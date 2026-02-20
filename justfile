@@ -273,6 +273,33 @@ process-doc-dry file:
     @echo "👀 Dry run for: {{file}}"
     uv run python scripts/process_single_document.py "{{file}}" --dry-run
 
+# === Prompt Cache Benchmarking ===
+
+# Benchmark prompt cache optimization (all providers, all chunks)
+benchmark-cache file:
+    @echo "🔬 Benchmarking prompt cache optimization: {{file}}"
+    uv run python scripts/benchmark_prompt_cache.py "{{file}}" --verbose --details
+
+# Quick benchmark (3 chunks per test)
+benchmark-cache-quick file:
+    @echo "🔬 Quick prompt cache benchmark (3 chunks): {{file}}"
+    uv run python scripts/benchmark_prompt_cache.py "{{file}}" --max-chunks 3 --verbose --details
+
+# Benchmark Anthropic only
+benchmark-cache-anthropic file:
+    @echo "🔬 Benchmarking Anthropic prompt cache: {{file}}"
+    uv run python scripts/benchmark_prompt_cache.py "{{file}}" --provider anthropic --verbose --details
+
+# Benchmark OpenAI only
+benchmark-cache-openai file:
+    @echo "🔬 Benchmarking OpenAI prompt cache: {{file}}"
+    uv run python scripts/benchmark_prompt_cache.py "{{file}}" --provider openai --verbose --details
+
+# Benchmark with JSON output
+benchmark-cache-json file output="benchmark_results.json":
+    @echo "🔬 Benchmarking prompt cache (saving to {{output}}): {{file}}"
+    uv run python scripts/benchmark_prompt_cache.py "{{file}}" --verbose --details --output {{output}}
+
 # === Data & Analysis ===
 
 # Import sample data to Azurite

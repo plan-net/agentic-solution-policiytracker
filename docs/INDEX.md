@@ -25,6 +25,7 @@
 - **[session-management.md](features/session-management.md)** - Session management guide
 - **[temporal-filtering.md](features/temporal-filtering.md)** - Temporal filtering feature
 - **[temporal-tools-implementation.md](features/temporal-tools-implementation.md)** - Temporal tools implementation
+- **[DATA_INGESTION_COST_REDUCTION_STRATEGIES.md](features/DATA_INGESTION_COST_REDUCTION_STRATEGIES.md)** - Chunk limiting & prompt caching for cost reduction
 
 #### `/features/multilingual/` - Multilingual Support
 - **[MULTILINGUAL_README.md](features/multilingual/MULTILINGUAL_README.md)** - Multilingual overview

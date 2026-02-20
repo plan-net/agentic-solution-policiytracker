@@ -306,7 +306,14 @@ class SingleDocumentProcessor:
             # Chunk the document
             max_tokens = graphrag_settings.MAX_EPISODE_TOKENS
             overlap_ratio = graphrag_settings.CHUNK_OVERLAP_PERCENTAGE / 100
-            chunker = HybridDocumentChunker(max_tokens=max_tokens, overlap_ratio=overlap_ratio)
+            chunker = HybridDocumentChunker(
+                max_tokens=max_tokens,
+                overlap_ratio=overlap_ratio,
+                max_chunks_per_document=graphrag_settings.MAX_CHUNKS_PER_DOCUMENT,
+                adaptive_chunk_size=graphrag_settings.ADAPTIVE_CHUNK_SIZE_ENABLED,
+                max_adaptive_tokens=graphrag_settings.MAX_ADAPTIVE_TOKENS,
+                chunk_limit_fallback=graphrag_settings.CHUNK_LIMIT_FALLBACK_STRATEGY,
+            )
             chunks = chunker.create_chunks(content)
 
             if self.verbose:

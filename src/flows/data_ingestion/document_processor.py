@@ -341,6 +341,45 @@ try:
 
             return normalized
 
+        async def _create_lightweight_episode(
+            self, chunk_text, episode_name, source_description, reference_time, group_id
+        ):
+            """Create an Episodic node without entity/edge extraction (embed-only).
+
+            Saves the episode content and generates a content embedding for semantic search,
+            but skips the expensive LLM-based entity and edge extraction pipeline.
+            """
+            from graphiti_core.nodes import EpisodicNode
+
+            episode = EpisodicNode(
+                name=episode_name,
+                group_id=group_id,
+                source=EpisodeType.text,
+                source_description=source_description,
+                content=chunk_text,
+                valid_at=reference_time,
+                entity_edges=[],
+            )
+
+            # Save to Neo4j via Graphiti's built-in save method
+            await episode.save(self.graphiti_client.driver)
+
+            # Add content embedding for semantic search
+            if self.episode_embedding_manager:
+                try:
+                    await self.episode_embedding_manager.add_content_embedding(
+                        episode_uuid=episode.uuid,
+                        content=chunk_text,
+                    )
+                except Exception as emb_error:
+                    logger.warning(
+                        f"Actor {self.actor_id}: Failed to embed lightweight episode",
+                        episode_uuid=episode.uuid,
+                        error=str(emb_error),
+                    )
+
+            return episode
+
         async def _process_chunked_document(self, doc_path: Path, chunks: list[dict]) -> dict:
             """
             Process a document that has been chunked into multiple parts.
@@ -384,6 +423,40 @@ try:
                     )
                     source_description = f"Political document chunk {chunk_index + 1}/{chunk['total_chunks']}: {doc_path.name}"
                     reference_time = extract_document_date(chunk_text) or datetime.now()
+
+                    # Check processing mode: embed_only chunks skip LLM extraction
+                    processing_mode = chunk.get("processing_mode", "full")
+
+                    if processing_mode == "embed_only":
+                        # Lightweight episode: save content + embedding, skip LLM extraction
+                        episode = await self._create_lightweight_episode(
+                            chunk_text, episode_name, source_description,
+                            reference_time, GROUP_ID,
+                        )
+                        episode_uuid = ensure_json_serializable(episode.uuid)
+                        episode_uuids.append(episode_uuid)
+                        previous_episode_uuid = episode_uuid
+
+                        chunk_results.append({
+                            "chunk_index": chunk_index,
+                            "episode_uuid": episode_uuid,
+                            "processing_mode": "embed_only",
+                            "entities": [],
+                            "entity_uuids": [],
+                            "canonical_uuids": [],
+                            "entity_count": 0,
+                            "relationships": 0,
+                            "tokens": chunk_token_count,
+                            "boundary_type": chunk.get("boundary_type", "unknown"),
+                        })
+
+                        self._update_progress(current_chunk=chunk_index + 1)
+
+                        logger.debug(
+                            f"Actor {self.actor_id}: Saved embed-only chunk {chunk_index + 1}/{len(chunks)}",
+                            tokens=chunk_token_count,
+                        )
+                        continue
 
                     # Chain linking: link to previous chunk if it exists
                     previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
@@ -608,7 +681,14 @@ try:
                 # Initialize chunker from config settings
                 max_tokens = graphrag_settings.MAX_EPISODE_TOKENS
                 overlap_ratio = graphrag_settings.CHUNK_OVERLAP_PERCENTAGE / 100
-                chunker = HybridDocumentChunker(max_tokens=max_tokens, overlap_ratio=overlap_ratio)
+                chunker = HybridDocumentChunker(
+                    max_tokens=max_tokens,
+                    overlap_ratio=overlap_ratio,
+                    max_chunks_per_document=graphrag_settings.MAX_CHUNKS_PER_DOCUMENT,
+                    adaptive_chunk_size=graphrag_settings.ADAPTIVE_CHUNK_SIZE_ENABLED,
+                    max_adaptive_tokens=graphrag_settings.MAX_ADAPTIVE_TOKENS,
+                    chunk_limit_fallback=graphrag_settings.CHUNK_LIMIT_FALLBACK_STRATEGY,
+                )
                 chunks = chunker.create_chunks(content)
 
                 logger.info(
@@ -753,6 +833,52 @@ class SimpleDocumentProcessor:
         # Note: Quality validation should be done in process_document() before calling this method
         return preprocess_document(content, enable_link_removal=True)
 
+    async def _create_lightweight_episode(
+        self, chunk_text, episode_name, source_description, reference_time,
+        group_id, driver,
+    ):
+        """Create an Episodic node without entity/edge extraction (embed-only).
+
+        Saves the episode content and generates a content embedding for semantic search,
+        but skips the expensive LLM-based entity and edge extraction pipeline.
+        """
+        from graphiti_core.nodes import EpisodicNode
+
+        episode = EpisodicNode(
+            name=episode_name,
+            group_id=group_id,
+            source=EpisodeType.text,
+            source_description=source_description,
+            content=chunk_text,
+            valid_at=reference_time,
+            entity_edges=[],
+        )
+
+        # Save to Neo4j via Graphiti's built-in save method
+        await episode.save(driver)
+
+        # Add content embedding for semantic search
+        try:
+            episode_embedding_manager = EpisodeEmbeddingManager(
+                neo4j_uri=NEO4J_URI,
+                neo4j_user=NEO4J_USER,
+                neo4j_password=NEO4J_PASSWORD,
+                neo4j_database=NEO4J_DATABASE,
+            )
+            await episode_embedding_manager.add_content_embedding(
+                episode_uuid=episode.uuid,
+                content=chunk_text,
+            )
+            await episode_embedding_manager.close()
+        except Exception as emb_error:
+            logger.warning(
+                "Failed to embed lightweight episode",
+                episode_uuid=episode.uuid,
+                error=str(emb_error),
+            )
+
+        return episode
+
     async def _process_chunked_document(
         self, doc_path: Path, chunks: list[dict], graphiti_client: Graphiti
     ) -> dict:
@@ -805,6 +931,38 @@ class SimpleDocumentProcessor:
                     chunk_text_length=len(chunk_text),
                     chunk_text_preview=chunk_text[:200] if chunk_text else None,
                 )
+
+                # Check processing mode: embed_only chunks skip LLM extraction
+                processing_mode = chunk.get("processing_mode", "full")
+
+                if processing_mode == "embed_only":
+                    # Lightweight episode: save content + embedding, skip LLM extraction
+                    episode = await self._create_lightweight_episode(
+                        chunk_text, episode_name, source_description,
+                        reference_time, GROUP_ID, graphiti_client.driver,
+                    )
+                    episode_uuid = ensure_json_serializable(episode.uuid)
+                    episode_uuids.append(episode_uuid)
+                    previous_episode_uuid = episode_uuid
+
+                    chunk_results.append({
+                        "chunk_index": chunk_index,
+                        "episode_uuid": episode_uuid,
+                        "processing_mode": "embed_only",
+                        "entities": [],
+                        "entity_uuids": [],
+                        "canonical_uuids": [],
+                        "entity_count": 0,
+                        "relationships": 0,
+                        "tokens": chunk_token_count,
+                        "boundary_type": chunk.get("boundary_type", "unknown"),
+                    })
+
+                    logger.debug(
+                        f"Saved embed-only chunk {chunk_index + 1}/{len(chunks)}",
+                        tokens=chunk_token_count,
+                    )
+                    continue
 
                 # Chain linking: link to previous chunk if it exists
                 previous_episodes = [previous_episode_uuid] if previous_episode_uuid else None
@@ -1097,7 +1255,14 @@ class SimpleDocumentProcessor:
             # Initialize chunker from config settings
             max_tokens = graphrag_settings.MAX_EPISODE_TOKENS
             overlap_ratio = graphrag_settings.CHUNK_OVERLAP_PERCENTAGE / 100
-            chunker = HybridDocumentChunker(max_tokens=max_tokens, overlap_ratio=overlap_ratio)
+            chunker = HybridDocumentChunker(
+                max_tokens=max_tokens,
+                overlap_ratio=overlap_ratio,
+                max_chunks_per_document=graphrag_settings.MAX_CHUNKS_PER_DOCUMENT,
+                adaptive_chunk_size=graphrag_settings.ADAPTIVE_CHUNK_SIZE_ENABLED,
+                max_adaptive_tokens=graphrag_settings.MAX_ADAPTIVE_TOKENS,
+                chunk_limit_fallback=graphrag_settings.CHUNK_LIMIT_FALLBACK_STRATEGY,
+            )
             chunks = chunker.create_chunks(content)
 
             doc_name = doc_path.name if hasattr(doc_path, "name") else Path(doc_path).name

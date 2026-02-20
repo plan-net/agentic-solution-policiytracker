@@ -344,8 +344,13 @@ def create_graphiti_apisix_config(
         max_tokens=max_tokens,  # Increased to handle large entity extraction responses
     )
 
-    # Create OpenAIClient (concrete implementation of LLMClient)
-    llm_client = OpenAIClient(config=config, cache=False)
+    # Create OpenAIClient — use cache-optimized variant if enabled
+    from src.config import graphrag_settings
+    if graphrag_settings.ENABLE_PROMPT_CACHE_OPTIMIZATION:
+        from src.graphrag.cached_openai_client import CacheFriendlyOpenAIClient
+        llm_client = CacheFriendlyOpenAIClient(config=config, cache=False)
+    else:
+        llm_client = OpenAIClient(config=config, cache=False)
 
     note = f"""
     ⚠️  WEEK 1 LIMITATION: Graphiti routing through APISIX without agent headers
@@ -579,8 +584,13 @@ def create_graphiti_anthropic_config(
             max_retries=1,
         )
 
-    # Create Graphiti AnthropicClient with our custom AsyncAnthropic client
-    llm_client = AnthropicClient(config=config, cache=False, client=anthropic_client)
+    # Create Graphiti AnthropicClient — use cache-optimized variant if enabled
+    from src.config import graphrag_settings
+    if graphrag_settings.ENABLE_PROMPT_CACHE_OPTIMIZATION:
+        from src.graphrag.cached_anthropic_client import CachedAnthropicClient
+        llm_client = CachedAnthropicClient(config=config, cache=False, client=anthropic_client)
+    else:
+        llm_client = AnthropicClient(config=config, cache=False, client=anthropic_client)
 
     note = f"Using Anthropic ({model}) via {'APISIX' if use_apisix else 'direct API'}"
     return llm_client, note
