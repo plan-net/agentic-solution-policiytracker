@@ -487,36 +487,28 @@ services:
       timeout: 10s
       retries: 3
 
-  # Open WebUI - Chat interface
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: policiytracker-open-webui
-    ports:
-      - "3000:8080"
-    environment:
-      # Disable authentication for development
-      - WEBUI_AUTH=false
-      # Configure OpenAI-compatible endpoints
-      # Claude Agent is at /claude-agent, Graph Viz is at /graph-viz
-      - OPENAI_API_BASE_URLS=http://host.docker.internal:8001/claude-agent/v1
-      - OPENAI_API_KEYS=dummy-key-not-used
-      # Disable Ollama since we're using custom API
-      - OLLAMA_BASE_URL=""
-      # Set default model (must match model name in claude agent server)
-      - DEFAULT_MODELS=claude-policytracker
-      # UI customization
-      - WEBUI_NAME="PolicyTracker Chat"
-      - WEBUI_URL=http://localhost:3000
-      # Performance and streaming optimizations
-      - ENABLE_REALTIME_CHAT_SAVE=false
-      # Enable streaming
-      - DEFAULT_STREAMING=true
-      - STREAMING_ENABLED=true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - open_webui_data:/app/backend/data
-    restart: unless-stopped
+  # Open WebUI - DISABLED (no longer used)
+  # open-webui:
+  #   image: ghcr.io/open-webui/open-webui:main
+  #   container_name: policiytracker-open-webui
+  #   ports:
+  #     - "3000:8080"
+  #   environment:
+  #     - WEBUI_AUTH=false
+  #     - OPENAI_API_BASE_URLS=http://host.docker.internal:8001/claude-agent/v1
+  #     - OPENAI_API_KEYS=dummy-key-not-used
+  #     - OLLAMA_BASE_URL=""
+  #     - DEFAULT_MODELS=claude-policytracker
+  #     - WEBUI_NAME="PolicyTracker Chat"
+  #     - WEBUI_URL=http://localhost:3000
+  #     - ENABLE_REALTIME_CHAT_SAVE=false
+  #     - DEFAULT_STREAMING=true
+  #     - STREAMING_ENABLED=true
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   volumes:
+  #     - open_webui_data:/app/backend/data
+  #   restart: unless-stopped
 
   # ============================================================================
   # API GATEWAY & COST TRACKING INFRASTRUCTURE
@@ -668,7 +660,7 @@ volumes:
   neo4j_plugins:
   airflow_postgres_data:
   airflow_logs:
-  open_webui_data:
+  # open_webui_data:  # DISABLED - Open WebUI no longer used
   # LangFuse v3 volumes
   langfuse_clickhouse_data:
   langfuse_clickhouse_logs:
