@@ -282,6 +282,12 @@ Add to `.env`:
 ```bash
 # APISIX Gateway
 APISIX_ADMIN_KEY=edd1c9f034335f136f87ad84b625c8f1
+APISIX_GATEWAY_URL=http://localhost:9080
+
+# External API APISIX Routing (set to 'true' to enable tracking)
+USE_APISIX_FOR_EXA=true
+USE_APISIX_FOR_DPA=true
+USE_APISIX_FOR_BUNDESTAG=true
 
 # TimescaleDB
 TIMESCALEDB_PASSWORD=timescale_secure_password
@@ -290,6 +296,8 @@ TIMESCALEDB_PASSWORD=timescale_secure_password
 OPENAI_API_KEY=your-key
 ANTHROPIC_API_KEY=your-key
 ```
+
+When `USE_APISIX_FOR_*` is `true`, application clients (MCP servers, ETL collectors) route external API calls through APISIX for request tracking. See [COST_TRACKING_GUIDE.md](./COST_TRACKING_GUIDE.md#external-api-tracking) for details.
 
 ### Update Application Code
 

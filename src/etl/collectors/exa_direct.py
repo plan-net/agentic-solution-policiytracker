@@ -1,5 +1,6 @@
 """
 Direct HTTP Exa.ai news collector for political monitoring.
+Supports routing through APISIX gateway when USE_APISIX_FOR_EXA=true.
 """
 
 from __future__ import annotations
@@ -28,7 +29,14 @@ class ExaDirectCollector:
 
         self.headers = {"Content-Type": "application/json", "x-api-key": self.api_key}
 
-        logger.info("Initialized ExaDirectCollector")
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_EXA", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(f"Initialized ExaDirectCollector via APISIX: {self.apisix_url}/exa")
+        else:
+            logger.info("Initialized ExaDirectCollector (direct API)")
 
     async def collect_news(
         self,
@@ -68,11 +76,17 @@ class ExaDirectCollector:
                 "contents": {"text": True},
             }
 
+            # Determine URL based on APISIX setting
+            if self.use_apisix:
+                url = f"{self.apisix_url}/exa/search"
+            else:
+                url = f"{self.API_BASE_URL}/search"
+
             # Make HTTP request with timeout
             timeout = aiohttp.ClientTimeout(total=30)
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.post(
-                    f"{self.API_BASE_URL}/search", headers=self.headers, json=payload
+                    url, headers=self.headers, json=payload
                 ) as response:
                     if response.status != 200:
                         error_text = await response.text()

@@ -1,153 +1,206 @@
-# Documentation Index
+# Political Monitoring Agent - Documentation Index
 
-## Directory Structure
+## Overview
 
-### `/getting-started/` - Getting Started
-- **[SETUP.md](getting-started/SETUP.md)** - Installation and configuration guide
-- **[USER_GUIDE.md](getting-started/USER_GUIDE.md)** - Complete user guide
-- **[QUICK_REFERENCE.md](getting-started/QUICK_REFERENCE.md)** - Quick reference commands
-- **[QUICKSTART_CRUD.md](getting-started/QUICKSTART_CRUD.md)** - CRUD operations quickstart
-- **[ESTIMATION_GUIDE.md](getting-started/ESTIMATION_GUIDE.md)** - Project estimation guide
-
-### `/agents/` - Agent Documentation
-- **[AGENT_RUNTIME_FIX.md](agents/AGENT_RUNTIME_FIX.md)** - Agent runtime crash fix documentation
-- **[AGENT_FIX_QUICK_REFERENCE.md](agents/AGENT_FIX_QUICK_REFERENCE.md)** - Quick reference for agent fixes
-- **[AGENT_MAX_TURNS_ANALYSIS.md](agents/AGENT_MAX_TURNS_ANALYSIS.md)** - Analysis of max turns issue
-- **[QUERY_DECOMPOSITION.md](agents/QUERY_DECOMPOSITION.md)** - Query decomposition feature
-- **[WEEKLY_REPORT_AGENT_FIX.md](agents/WEEKLY_REPORT_AGENT_FIX.md)** - Weekly report agent fixes
-
-### `/features/` - Feature Documentation
-- **[SEARCH_FEATURES_GUIDE.md](features/SEARCH_FEATURES_GUIDE.md)** - Search functionality guide
-- **[IMPLEMENTATION_SUMMARY.md](features/IMPLEMENTATION_SUMMARY.md)** - Implementation milestones
-- **[NEW_FEATURES_V0.2.0.md](features/NEW_FEATURES_V0.2.0.md)** - Version 0.2.0 features
-- **[FEEDBACK_FEATURE.md](features/FEEDBACK_FEATURE.md)** - Feedback feature documentation
-- **[AskUserQuestion-Feature.md](features/AskUserQuestion-Feature.md)** - AskUserQuestion feature
-- **[session-management.md](features/session-management.md)** - Session management guide
-- **[temporal-filtering.md](features/temporal-filtering.md)** - Temporal filtering feature
-- **[temporal-tools-implementation.md](features/temporal-tools-implementation.md)** - Temporal tools implementation
-- **[DATA_INGESTION_COST_REDUCTION_STRATEGIES.md](features/DATA_INGESTION_COST_REDUCTION_STRATEGIES.md)** - Chunk limiting & prompt caching for cost reduction
-
-#### `/features/multilingual/` - Multilingual Support
-- **[MULTILINGUAL_README.md](features/multilingual/MULTILINGUAL_README.md)** - Multilingual overview
-- **[MULTILINGUAL_QUICK_START.md](features/multilingual/MULTILINGUAL_QUICK_START.md)** - Quick start guide
-- **[MULTILINGUAL_RETRIEVAL.md](features/multilingual/MULTILINGUAL_RETRIEVAL.md)** - Retrieval documentation
-- **[MULTILINGUAL_EXECUTIVE_SUMMARY.md](features/multilingual/MULTILINGUAL_EXECUTIVE_SUMMARY.md)** - Executive summary
-- **[MULTILINGUAL_TEST_RESULTS.md](features/multilingual/MULTILINGUAL_TEST_RESULTS.md)** - Test results
-- **[ADA002_BREAKTHROUGH.md](features/multilingual/ADA002_BREAKTHROUGH.md)** - ADA002 embedding breakthrough
-- **[EMBEDDING_MODEL_VERIFICATION.md](features/multilingual/EMBEDDING_MODEL_VERIFICATION.md)** - Embedding verification
-
-#### `/features/graph-visualization/` - Graph Visualization
-- **[GRAPH_VIZ_COMPLETE.md](features/graph-visualization/GRAPH_VIZ_COMPLETE.md)** - Feature overview
-- **[GRAPH_VIZ_IMPLEMENTATION.md](features/graph-visualization/GRAPH_VIZ_IMPLEMENTATION.md)** - Implementation details
-- **[GRAPH_VIZ_DEPLOYMENT_READY.md](features/graph-visualization/GRAPH_VIZ_DEPLOYMENT_READY.md)** - Deployment guide
-- **[REDEPLOY_GRAPH_VIZ.md](features/graph-visualization/REDEPLOY_GRAPH_VIZ.md)** - Redeployment instructions
-
-### `/tools/` - Tool Documentation
-- **[SEARCH_TOOL_COMPLETE.md](tools/SEARCH_TOOL_COMPLETE.md)** - Complete search tool docs
-- **[SEARCH_TOOL_IMPROVEMENTS.md](tools/SEARCH_TOOL_IMPROVEMENTS.md)** - Search tool improvements
-- **[SEARCH_TOOL_FIX.md](tools/SEARCH_TOOL_FIX.md)** - Search tool bug fix
-- **[SEARCH_TOOL_FIXES.md](tools/SEARCH_TOOL_FIXES.md)** - Comprehensive search fixes
-- **[ENTITY_TOOL_IMPROVEMENTS.md](tools/ENTITY_TOOL_IMPROVEMENTS.md)** - Entity tool enhancements
-- **[ENTITY_TOOL_TEST_RESULTS.md](tools/ENTITY_TOOL_TEST_RESULTS.md)** - Entity tool test results
-- **[TRAVERSE_TOOL_FIX.md](tools/TRAVERSE_TOOL_FIX.md)** - Traverse tool fix
-- **[TRAVERSE_TOOL_FIX_COMPLETE.md](tools/TRAVERSE_TOOL_FIX_COMPLETE.md)** - Complete traverse fix
-- **[TRAVERSE_TOOL_RELEVANCE_FILTERING.md](tools/TRAVERSE_TOOL_RELEVANCE_FILTERING.md)** - Relevance filtering
-- **[NEIGHBORS_TOOL_FIX_COMPLETE.md](tools/NEIGHBORS_TOOL_FIX_COMPLETE.md)** - Neighbors tool fix
-- **[PATHS_TOOL_FIX_COMPLETE.md](tools/PATHS_TOOL_FIX_COMPLETE.md)** - Paths tool fix
-- **[FIND_SIMILAR_ENTITIES_FIX.md](tools/FIND_SIMILAR_ENTITIES_FIX.md)** - Entity similarity fix
-- **[MISSING_TOOLS_FIX.md](tools/MISSING_TOOLS_FIX.md)** - Missing tools registration fix
-
-### `/observability/` - Observability & Monitoring
-- **[langfuse-claude-sdk-instrumentation.md](observability/langfuse-claude-sdk-instrumentation.md)** - LangFuse SDK instrumentation
-- **[langwatch-observability.md](observability/langwatch-observability.md)** - LangWatch integration
-- **[LANGWATCH_INTEGRATION.md](observability/LANGWATCH_INTEGRATION.md)** - LangWatch integration guide
-- **[llm-cost-tracking.md](observability/llm-cost-tracking.md)** - LLM cost tracking
-- **[COST_ANALYTICS.md](observability/COST_ANALYTICS.md)** - Cost analytics documentation
-
-### `/deduplication/` - Entity Deduplication
-- **[PHASE2_QUICK_REFERENCE.md](deduplication/PHASE2_QUICK_REFERENCE.md)** - Phase 2 quick reference
-- **[phase2_implementation_summary.md](deduplication/phase2_implementation_summary.md)** - Phase 2 implementation guide
-- **[deduplication_phase2_plan.md](deduplication/deduplication_phase2_plan.md)** - Phase 2 architecture plan
-- **[deduplication_strategy.md](deduplication/deduplication_strategy.md)** - Deduplication strategy
-
-### `/architecture/` - System Architecture
-- **[schema-er-diagram.md](architecture/schema-er-diagram.md)** - Database schema and ER diagram
-- **[parallel-crud-architecture.md](architecture/parallel-crud-architecture.md)** - Parallel CRUD architecture
-- **[NEW_CRUD_SYSTEM.md](architecture/NEW_CRUD_SYSTEM.md)** - New CRUD system documentation
-- **[DATABASE_CONFIGURATION_FIX.md](architecture/DATABASE_CONFIGURATION_FIX.md)** - Database configuration fix
-- **[DATABASE_SWITCH_COMPLETE.md](architecture/DATABASE_SWITCH_COMPLETE.md)** - Database migration docs
-
-### `/flows/` - Workflow Documentation
-- **[bundestag_ingestion.md](flows/bundestag_ingestion.md)** - Bundestag ingestion workflow
-- **[bundestag_person.md](flows/bundestag_person.md)** - Person ingestion flow
-- **[bundestag_vorgang.md](flows/bundestag_vorgang.md)** - Vorgang ingestion flow
-- **[bundestag_drucksache.md](flows/bundestag_drucksache.md)** - Drucksache ingestion flow
-- **[bundestag_plenarprotokoll.md](flows/bundestag_plenarprotokoll.md)** - Plenarprotokoll flow
-- **[FLOW_5C_PAGE_NODES.md](flows/FLOW_5C_PAGE_NODES.md)** - Flow 5C page nodes
-- **[PLENARPROTOKOLL_FIXES.md](flows/PLENARPROTOKOLL_FIXES.md)** - Plenarprotokoll fixes
-- **[PHASE4_BUNDESTAG_INGESTION_SETUP.md](flows/PHASE4_BUNDESTAG_INGESTION_SETUP.md)** - Phase 4 ingestion setup
-- **[PHASE4_COMPLETION_SUMMARY.md](flows/PHASE4_COMPLETION_SUMMARY.md)** - Phase 4 completion summary
-
-### `/etl/` - ETL & Data Collection
-- **[DPA_NEWS_COLLECTOR.md](etl/DPA_NEWS_COLLECTOR.md)** - DPA news collector integration
-- **[MULTI_COLLECTOR_DAG.md](etl/MULTI_COLLECTOR_DAG.md)** - Multi-collector DAG (DPA + EXA)
-- **[website-discovery-pipeline.md](etl/website-discovery-pipeline.md)** - Website discovery pipeline
-
-### `/api-reference/` - API Reference
-- **[MCP_TOOLS_REFERENCE.md](api-reference/MCP_TOOLS_REFERENCE.md)** - MCP tools reference
-- **[CLIENT_YAML_SCHEMA.md](api-reference/CLIENT_YAML_SCHEMA.md)** - Client YAML schema
-
-### `/mcp/` - MCP Integration
-- **[neo4j-crud-server.md](mcp/neo4j-crud-server.md)** - Neo4j CRUD MCP server
-- **[GRAPHITI_REGISTRATION_MCP_SERVER.md](mcp/GRAPHITI_REGISTRATION_MCP_SERVER.md)** - Graphiti registration fix
-
-### `/deployment/` - Deployment Guides
-- **[deploying-bundestag-person-manager.md](deployment/deploying-bundestag-person-manager.md)** - Bundestag person manager deployment
-
-### `/skills/` - Skill Documentation
-- **[bundestag-person-manager.md](skills/bundestag-person-manager.md)** - Bundestag person manager skill
-
-### `/subagents/` - Subagent Documentation
-- **[crud-subagent.md](subagents/crud-subagent.md)** - CRUD subagent implementation
-
-### `/testing/` - Test Documentation
-- **[test_questions_graphrag.md](testing/test_questions_graphrag.md)** - GraphRAG test questions
-- **[test_questions_politicalmonitoring.md](testing/test_questions_politicalmonitoring.md)** - Political monitoring tests
-- **[API_KEY_TEST_REPORT.md](testing/API_KEY_TEST_REPORT.md)** - API key test report
-- **[IMPLEMENTATION_SUMMARY.md](testing/IMPLEMENTATION_SUMMARY.md)** - Implementation test summary
-
-### `/changelog/` - Change History
-- **[CHANGELOG_2025-11-14.md](changelog/CHANGELOG_2025-11-14.md)** - November 14, 2025 changes
-- **[CHANGELOG_2025-11-25_PHASE2.md](changelog/CHANGELOG_2025-11-25_PHASE2.md)** - Phase 2 changes
-- **[CHANGELOG_2025-11-27_DEDUP_FIX.md](changelog/CHANGELOG_2025-11-27_DEDUP_FIX.md)** - Dedup fix changes
+This directory contains comprehensive documentation for the Political Monitoring Agent v0.2.0 system.
 
 ---
 
-## Quick Links
+## 📊 Cost Estimation & Budget Planning
 
-### Getting Started
-1. [Setup Guide](getting-started/SETUP.md)
-2. [User Guide](getting-started/USER_GUIDE.md)
-3. [Quick Reference](getting-started/QUICK_REFERENCE.md)
+**New!** Comprehensive cost estimation model for document ingestion pipeline.
 
-### Key Features
-1. [Search Features](features/SEARCH_FEATURES_GUIDE.md)
-2. [Graph Visualization](features/graph-visualization/GRAPH_VIZ_COMPLETE.md)
-3. [Multilingual Support](features/multilingual/MULTILINGUAL_README.md)
+### Cost Estimation Model
+- **[Excel Assembly Guide](cost-estimation/EXCEL_ASSEMBLY_GUIDE.md)** - Complete guide to building the Excel cost estimation workbook
+- **[CSV Templates](cost-estimation/csv-templates/)** - Ready-to-import CSV files for each sheet:
+  - `01_Dashboard.csv` - Executive summary and quick estimator
+  - `02_Input_Parameters.csv` - Configurable variables
+  - `03_Pricing_Reference.csv` - API pricing reference table
+  - `04_Cost_Calculator.csv` - Detailed cost breakdown with formulas
+  - `05_Scenario_Comparison.csv` - Side-by-side scenario analysis
+  - `06_Historical_Validation.csv` - Actual vs estimated cost tracking
 
-### Agent Development
-1. [Agent Runtime Fix](agents/AGENT_RUNTIME_FIX.md)
-2. [Query Decomposition](agents/QUERY_DECOMPOSITION.md)
-
-### Data Quality
-1. [Deduplication Phase 2](deduplication/PHASE2_QUICK_REFERENCE.md)
-2. [Entity Tools](tools/ENTITY_TOOL_IMPROVEMENTS.md)
-
-### Monitoring
-1. [LangFuse Integration](observability/langfuse-claude-sdk-instrumentation.md)
-2. [Cost Analytics](observability/COST_ANALYTICS.md)
+### Features
+- **Budget Planning**: Monthly and annual cost projections
+- **Scenario Analysis**: Compare costs across different configurations
+- **Interactive**: Adjust parameters and see instant cost updates
+- **Validated**: Track actual costs vs estimates for accuracy improvement
+- **Components Covered**:
+  - ETL Collection Costs (Exa.ai, Apify)
+  - LLM Processing Costs (entity extraction via Graphiti)
+  - Embedding Generation Costs (episodes, entities, relationships)
+  - Overhead and retry costs
 
 ---
 
-**Last Updated**: 2026-02-13
-**Project**: Political Monitoring Agent v0.2.0
+## 🎯 Features & Capabilities
+
+### Document Ingestion & Processing
+- **[Data Ingestion Cost Reduction Strategies](features/DATA_INGESTION_COST_REDUCTION_STRATEGIES.md)** - Comprehensive cost optimization techniques
+  - Chunk limiting strategy (39-85% savings)
+  - Prompt caching implementation (50-90% savings)
+  - Benchmark results and quality analysis
+
+### Knowledge Graph
+- **[Graphiti Integration](../agentic-solution-policiytracker/.claude/graphiti-patterns.md)** - Temporal knowledge graph patterns
+- **[Political Schema](../src/graphrag/political_schema_v4.py)** - 28 entity types, 52 relationship types
+- **[Episode Semantic Search](../agentic-solution-policiytracker/.claude/graphiti-patterns.md#episode-semantic-search-v021)** - Hybrid BM25 + vector search
+
+### Multi-Agent Chat System
+- **[Chat Patterns](../agentic-solution-policiytracker/.claude/chat-patterns.md)** - Multi-agent orchestration with LangGraph
+- **[Tool Integration](../agentic-solution-policiytracker/.claude/tool-integration-patterns.md)** - 15 specialized knowledge graph tools
+
+### ETL Pipeline
+- **[ETL Patterns](../agentic-solution-policiytracker/.claude/etl-patterns.md)** - Automated data collection (weekly policy, daily news)
+- **[Policy Landscape Collection](../src/etl/collectors/policy_landscape.py)** - EU regulations and policy changes
+- **[News Collection](../src/etl/collectors/exa_news.py)** - Company-specific news articles
+
+---
+
+## 📈 Observability & Monitoring
+
+### Cost Tracking
+- **[Cost Analytics](observability/COST_ANALYTICS.md)** - APISIX-based LLM cost tracking
+  - TimescaleDB storage
+  - Grafana dashboards
+  - Budget alerts
+  - Cost Analytics API: `http://localhost:8090/api/costs/`
+
+### LLM Operations
+- **[Langfuse Integration](../agentic-solution-policiytracker/.claude/langfuse-prompts.md)** - Prompt management and tracing
+- **[LangWatch](observability/LANGWATCH.md)** - LLM observability platform (if applicable)
+
+### System Monitoring
+- **Ray Dashboard**: `http://localhost:8265` - Service status and resource usage
+- **Grafana**: `http://localhost:3002` - Visual cost trends
+- **Neo4j Browser**: `http://localhost:7474` - Knowledge graph exploration
+
+---
+
+## 🏗️ Architecture & Patterns
+
+### Core Architecture
+- **[Project Architecture](../agentic-solution-policiytracker/.claude/project-architecture.md)** - v0.2.0 architecture overview
+- **[Ray Deployment](../agentic-solution-policiytracker/.claude/ray-deployment-patterns.md)** - Distributed service deployment
+- **[Kodosumi Flows](../agentic-solution-policiytracker/.claude/kodosumi-patterns.md)** - Document processing workflows
+
+### Integration Patterns
+- **[MCP Patterns](../agentic-solution-policiytracker/.claude/mcp-patterns.md)** - Model Context Protocol integration
+- **[Azure Integration](../agentic-solution-policiytracker/.claude/azure-integration.md)** - Cloud storage patterns
+- **[LangGraph Patterns](../agentic-solution-policiytracker/.claude/langgraph-patterns.md)** - Multi-agent workflow orchestration
+
+---
+
+## 🧪 Development & Testing
+
+### Development Workflow
+- **[Development Workflow](../agentic-solution-policiytracker/.claude/development-workflow.md)** - Quick development cycle
+- **[Git Workflow](../agentic-solution-policiytracker/.claude/git-workflow.md)** - Branching and version control
+- **[Testing Patterns](../agentic-solution-policiytracker/.claude/test-patterns.md)** - Testing best practices
+- **[Testing Standards](../agentic-solution-policiytracker/.claude/testing-standards.md)** - Coverage requirements
+
+### Quality Assurance
+- Pre-commit checks: `just format && just typecheck`
+- Test commands: `just test`, `just test-unit`, `just test-integration`
+- Coverage requirement: 90% minimum
+
+---
+
+## 🚀 Operations & Deployment
+
+### Service Management
+- **Start services**: `just start` - Full stack startup
+- **Deploy applications**: `just deploy-all` - Redeploy Ray services
+- **Check status**: `just status` - Health check all services
+- **View logs**: `just ray-logs` - Ray application logs
+
+### Key URLs
+- **Chat Interface**: `http://localhost:3000` - Open WebUI for natural language queries
+- **Kodosumi Admin**: `http://localhost:3370` - Flow management (admin/admin)
+- **Ray Dashboard**: `http://localhost:8265` - Service monitoring
+- **Neo4j Browser**: `http://localhost:7474` - Knowledge graph (neo4j/password123)
+- **Airflow**: `http://localhost:8080` - ETL pipeline monitoring (admin/admin)
+- **Langfuse**: `http://localhost:3001` - LLM tracing
+- **Cost Analytics**: `http://localhost:8090` - Cost tracking API
+
+---
+
+## 📚 Reference Materials
+
+### Configuration Files
+- **[config.yaml](../config.yaml)** - Ray Serve deployment configuration
+- **[pyproject.toml](../pyproject.toml)** - Python dependencies
+- **[.env.template](../.env.template)** - Environment variables template
+- **[llm_pricing.yaml](../apisix/config/llm_pricing.yaml)** - LLM model pricing reference
+
+### Scripts
+- **[calculate_reembedding_cost.py](../calculate_reembedding_cost.py)** - Embedding cost calculator
+- **[backfill_episode_embeddings.py](../scripts/backfill_episode_embeddings.py)** - Episode embedding backfill
+- **[sync_config.py](../scripts/sync_config.py)** - Sync .env to config.yaml
+
+---
+
+## 📖 Getting Started
+
+### New Developers
+1. Read **[Project Architecture](../agentic-solution-policiytracker/.claude/project-architecture.md)**
+2. Follow **[Development Workflow](../agentic-solution-policiytracker/.claude/development-workflow.md)**
+3. Review **[Testing Standards](../agentic-solution-policiytracker/.claude/testing-standards.md)**
+4. Check **[Cost Estimation Model](cost-estimation/EXCEL_ASSEMBLY_GUIDE.md)** for budget planning
+
+### Cost Analysis
+1. Review **[Cost Estimation Model](cost-estimation/EXCEL_ASSEMBLY_GUIDE.md)**
+2. Import **[CSV Templates](cost-estimation/csv-templates/)** into Excel
+3. Update **[Pricing Reference](cost-estimation/csv-templates/03_Pricing_Reference.csv)** with current API costs
+4. Track actual costs in **[Historical Validation](cost-estimation/csv-templates/06_Historical_Validation.csv)**
+
+### Budget Planning
+1. Configure **[Input Parameters](cost-estimation/csv-templates/02_Input_Parameters.csv)** with expected volumes
+2. Review **[Scenario Comparison](cost-estimation/csv-templates/05_Scenario_Comparison.csv)** for different configurations
+3. Monitor monthly costs via **[Dashboard](cost-estimation/csv-templates/01_Dashboard.csv)**
+4. Validate against actual costs from Cost Analytics API: `http://localhost:8090/api/costs/summary`
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+- **Services not starting**: Check `docker compose ps` and restart with `just start`
+- **Ray deployment fails**: Review logs with `just ray-logs`
+- **Cost estimates inaccurate**: Update **Pricing Reference** and validate against actual costs
+- **Neo4j connection issues**: Verify Neo4j is running with `docker ps | grep neo4j`
+
+### Support Resources
+- **Claude Code Help**: `/help` command
+- **GitHub Issues**: Report issues at repository issues page
+- **Cost Analytics API**: `curl http://localhost:8090/api/costs/summary?days=30`
+- **Grafana Dashboards**: `http://localhost:3002` for visual monitoring
+
+---
+
+## 📄 Document History
+
+- **2025-01-XX**: Added comprehensive cost estimation model with Excel templates
+- **2025-01-14**: Added episode semantic search (v0.2.1)
+- **2024-12-XX**: Initial documentation structure (v0.2.0)
+
+---
+
+## 🔗 Quick Links
+
+| Resource | URL | Credentials |
+|----------|-----|-------------|
+| Chat Interface | http://localhost:3000 | - |
+| Kodosumi Admin | http://localhost:3370 | admin/admin |
+| Ray Dashboard | http://localhost:8265 | - |
+| Neo4j Browser | http://localhost:7474 | neo4j/password123 |
+| Airflow | http://localhost:8080 | admin/admin |
+| Langfuse | http://localhost:3001 | - |
+| Cost Analytics API | http://localhost:8090/api/costs/summary | - |
+| Grafana | http://localhost:3002 | - |
+
+---
+
+**Version**: 0.2.1
+**Last Updated**: 2025-01-XX
+**Status**: Production Ready with Cost Estimation Model

@@ -253,44 +253,53 @@ The SDK tracker stores cache tokens and web tool usage in the `request_headers` 
 
 ## External API Tracking
 
-**Status**: Schema and plugin ready, but **not yet integrated** into application flows.
+**Status**: Fully integrated. All external API clients support APISIX gateway routing.
 
 ### Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                    External API Tracking                      │
-└──────────────────────────────────────────────────────────────┘
-                              │
-          ┌───────────────────┼───────────────────┐
-          │                   │                   │
-          ▼                   ▼                   ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│   Exa Search    │  │   DPA Articles  │  │   Bundestag     │
-│   /exa/*        │  │   /dpa/*        │  │   /bundestag/*  │
-└────────┬────────┘  └────────┬────────┘  └────────┬────────┘
-         │                    │                    │
-         └────────────────────┼────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────────┐
-                    │  api-request-tracker│
-                    │  Lua Plugin         │
-                    └─────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────────┐
-                    │  Cost Analytics     │
-                    │  /api/ingest/       │
-                    │  external-api       │
-                    └─────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────────┐
-                    │  TimescaleDB        │
-                    │  external_api_      │
-                    │  requests           │
-                    └─────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          External API Tracking                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                        │
+        ┌───────────────────────────────┼────────────────────────────────┐
+        │                               │                                │
+        ▼                               ▼                                ▼
+┌────────────────────┐   ┌────────────────────┐   ┌────────────────────────┐
+│  Exa Search        │   │  DPA Articles      │   │  Bundestag DIP         │
+│  /exa/*            │   │  /dpa/*            │   │  /bundestag/*          │
+├────────────────────┤   ├────────────────────┤   ├────────────────────────┤
+│ Clients:           │   │ Clients:           │   │ Clients:               │
+│ • ExaSearchClient  │   │ • DPANewsClient    │   │ • BundestagDIPClient   │
+│   (MCP web_search) │   │   (MCP web_search) │   │   (MCP bundestag_dip)  │
+│ • ExaDirectCollect │   │ • DPANewsCollector │   │ • BundestagAPIClient   │
+│   (ETL DAGs)       │   │   (ETL DAGs)       │   │   (flow1b-bulk-auto)   │
+└─────────┬──────────┘   └─────────┬──────────┘   └──────────┬─────────────┘
+          │                        │                          │
+          └────────────────────────┼──────────────────────────┘
+                                   │
+                                   ▼
+                         ┌─────────────────────┐
+                         │  APISIX Gateway      │
+                         │  (Port 9080)         │
+                         │                      │
+                         │  api-request-tracker │
+                         │  Lua Plugin          │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  Cost Analytics      │
+                         │  /api/ingest/        │
+                         │  external-api        │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  TimescaleDB         │
+                         │  external_api_       │
+                         │  requests            │
+                         └─────────────────────┘
 ```
 
 ### APISIX Plugin
@@ -304,54 +313,91 @@ Tracks:
 - Agent attribution
 - No cost calculation (external APIs don't have token-based pricing)
 
-### How to Enable
+### Client-Side APISIX Integration
 
-To track external API calls, add routes in `apisix.yaml`:
+Each external API client checks environment variables to decide whether to route through APISIX:
 
-```yaml
-# Example: Exa Search Route
-- id: exa-search
-  name: "Exa Search API"
-  uri: /exa/search
-  methods:
-    - POST
-  upstream_id: exa-upstream
-  plugins:
-    api-request-tracker:
-      api_name: "exa-search"
-      enabled: true
-      log_debug: true
-```
+| Client | File | Env Var | APISIX Route |
+|--------|------|---------|--------------|
+| `ExaSearchClient` (MCP) | `src/mcp/web_search/exa_client.py` | `USE_APISIX_FOR_EXA` | `/exa/search`, `/exa/contents` |
+| `ExaDirectCollector` (ETL) | `src/etl/collectors/exa_direct.py` | `USE_APISIX_FOR_EXA` | `/exa/search` |
+| `DPANewsClient` (MCP) | `src/mcp/web_search/dpa_client.py` | `USE_APISIX_FOR_DPA` | `/dpa/articles/relevant` |
+| `DPANewsCollector` (ETL) | `src/etl/collectors/dpa_news.py` | `USE_APISIX_FOR_DPA` | `/dpa/articles/relevant` |
+| `BundestagDIPClient` (MCP) | `src/mcp/bundestag_dip/client.py` | `USE_APISIX_FOR_BUNDESTAG` | `/bundestag/{endpoint}` |
+| `BundestagAPIClient` (Flow) | `src/flows/bundestag_common/api_client.py` | `USE_APISIX_FOR_BUNDESTAG` | `/bundestag/{endpoint}` |
 
-### Alternative: Code Instrumentation
+All clients also use `APISIX_GATEWAY_URL` (default: `http://localhost:9080`).
 
-If not routing through APISIX, instrument the code directly:
+**Note**: The `ExaNewsCollector` (`src/etl/collectors/exa_news.py`) uses the `exa_py` Python SDK which does not support custom base URLs, so it **cannot** route through APISIX. Use `exa_direct` collector instead (this is the default).
+
+### How It Works (Client Pattern)
+
+Each client follows the same pattern in `__init__`:
 
 ```python
-import aiohttp
-from datetime import datetime
+# APISIX Gateway support
+self.use_apisix = os.getenv("USE_APISIX_FOR_<API>", "false").lower() == "true"
+self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+```
 
-async def track_external_api_call(api_name, endpoint, method, latency_ms, status_code, **kwargs):
-    payload = {
-        "records": [{
-            "timestamp": datetime.now().isoformat(),
-            "api_name": api_name,
-            "endpoint": endpoint,
-            "method": method,
-            "latency_ms": latency_ms,
-            "status_code": status_code,
-            "agent_type": kwargs.get("agent_type"),
-            "agent_name": kwargs.get("agent_name"),
-            "flow_name": kwargs.get("flow_name"),
-            "session_id": kwargs.get("session_id"),
-        }]
-    }
+And in the request method:
 
-    async with aiohttp.ClientSession() as session:
-        await session.post(
-            "http://localhost:8090/api/ingest/external-api",
-            json=payload
-        )
+```python
+if self.use_apisix:
+    url = f"{self.apisix_url}/<api-prefix>/{endpoint}"
+else:
+    url = f"{self.API_BASE_URL}/{endpoint}"
+```
+
+### Environment Variables
+
+Set these in `.env` to enable APISIX routing:
+
+```bash
+# Enable APISIX routing for external APIs
+USE_APISIX_FOR_EXA=true
+USE_APISIX_FOR_DPA=true
+USE_APISIX_FOR_BUNDESTAG=true
+
+# APISIX gateway URL (no /v1 suffix for external API routes)
+APISIX_GATEWAY_URL=http://localhost:9080
+```
+
+### Docker Services Requiring These Env Vars
+
+| Docker Service | APIs Routed | Env Vars Needed |
+|----------------|-------------|-----------------|
+| `bundestag-dip-mcp` | Bundestag | `USE_APISIX_FOR_BUNDESTAG`, `APISIX_GATEWAY_URL` |
+| `web-search-mcp` | Exa, DPA | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+| `airflow-webserver` | Exa, DPA | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+| `airflow-scheduler` | Exa, DPA | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+
+Ray Serve applications (`claude-agent`, `weekly-report-sdk`, `flow1b-bulk-auto`) get these env vars from `config.yaml` runtime_env.
+
+### APISIX Route Setup
+
+External API routes are created via etcd (not in `apisix.yaml`). Run the setup script:
+
+```bash
+bash apisix/configure-external-api-routes.sh
+```
+
+This creates routes with the `api-request-tracker` plugin for:
+
+```yaml
+# Exa
+POST /exa/search       → api.exa.ai/search
+POST /exa/contents     → api.exa.ai/contents
+
+# DPA
+POST /dpa/articles/*   → article-retriever.iq.dpa-ai-hub.de/articles/*
+
+# Bundestag
+GET /bundestag/vorgang*         → search.dip.bundestag.de/api/v1/vorgang*
+GET /bundestag/drucksache*      → search.dip.bundestag.de/api/v1/drucksache*
+GET /bundestag/person*          → search.dip.bundestag.de/api/v1/person*
+GET /bundestag/plenarprotokoll* → search.dip.bundestag.de/api/v1/plenarprotokoll*
+GET /bundestag/aktivitaet*      → search.dip.bundestag.de/api/v1/aktivitaet*
 ```
 
 ---
@@ -547,13 +593,25 @@ result = await agent.generate_report(
 
 **Symptoms**: External API Usage dashboard shows all zeros
 
-**Cause**: External API tracking not yet integrated into application code
+**Possible Causes**:
 
-**Status**: The database schema and APISIX plugin are ready, but application flows (Exa, DPA, Bundestag) don't yet route through APISIX or call the tracking endpoint.
+1. **APISIX routing not enabled**: Check that `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `USE_APISIX_FOR_BUNDESTAG` are set to `true` in the relevant services.
 
-**Fix**: Either:
-1. Route external API calls through APISIX with `api-request-tracker` plugin
-2. Add code instrumentation to track calls directly
+2. **APISIX routes not configured**: Run `bash apisix/configure-external-api-routes.sh` to create external API routes in etcd.
+
+3. **Continuous aggregates not refreshing**: See [Dashboard Shows 0 for Today's Values](#3-dashboard-shows-0-for-todays-values).
+
+4. **Wrong APISIX_GATEWAY_URL**: External API routes use `http://localhost:9080` (no `/v1` suffix). Check that `APISIX_GATEWAY_URL` is set correctly.
+
+**Verification**:
+```bash
+# Check if requests are flowing through APISIX
+docker logs policiytracker-apisix --tail 50 | grep -E "exa|dpa|bundestag"
+
+# Check external_api_requests table
+docker exec policiytracker-timescaledb psql -U timescale -d llm_costs -c \
+  "SELECT api_name, COUNT(*) FROM external_api_requests WHERE timestamp >= CURRENT_DATE GROUP BY api_name;"
+```
 
 ### 5. Cost Analytics Service Not Running
 

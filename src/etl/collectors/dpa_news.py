@@ -1,6 +1,7 @@
 """
 DPA News collector for political monitoring.
 Collects news articles from dpa-IQ-Retriever API.
+Supports routing through APISIX gateway when USE_APISIX_FOR_DPA=true.
 """
 
 from __future__ import annotations
@@ -31,7 +32,14 @@ class DPANewsCollector:
 
         self.headers = {"X-API-Key": self.api_key, "Content-Type": "application/json"}
 
-        logger.info("Initialized DPANewsCollector")
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_DPA", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(f"Initialized DPANewsCollector via APISIX: {self.apisix_url}/dpa")
+        else:
+            logger.info("Initialized DPANewsCollector (direct API)")
 
     async def collect_news(
         self,
@@ -120,8 +128,14 @@ class DPANewsCollector:
 
                     logger.info(f"Batch {batch_num + 1}/{num_batches}: requesting {batch_limit} items")
 
+                    # Determine URL based on APISIX setting
+                    if self.use_apisix:
+                        api_url = f"{self.apisix_url}/dpa/articles/relevant"
+                    else:
+                        api_url = f"{self.API_BASE_URL}/articles/relevant"
+
                     async with session.post(
-                        f"{self.API_BASE_URL}/articles/relevant",
+                        api_url,
                         headers=self.headers,
                         json=payload,
                     ) as response:

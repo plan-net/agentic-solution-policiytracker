@@ -6,6 +6,57 @@ This module implements the four-stage context retrieval pipeline:
 2. Tool Planning - Select and sequence retrieval tools
 3. MCP Execution - Execute tools via Graphiti/Neo4j
 4. Context Building - Structure results for response synthesis
+
+DUAL LANGUAGE SEARCH FEATURE
+=============================
+
+Overview:
+---------
+The retriever supports multilingual search for German and English queries,
+automatically detecting the query language, translating it, and searching
+in both languages simultaneously. This ensures comprehensive retrieval
+regardless of which language the knowledge graph data was originally
+indexed in.
+
+How It Works:
+-------------
+1. Language Detection:
+   - Uses stopword-based heuristics to detect if query is German or English
+   - Compares query words against German and English stopword sets
+   - Returns 'de' for German-dominant queries, 'en' otherwise
+
+2. Query Translation:
+   - Translates the query to the opposite language using Claude 3.5 Haiku
+   - Preserves entity names, acronyms (GDPR, DSA, AI Act), and technical terms
+   - Fast and cost-effective translation optimized for short queries
+
+3. Parallel Search Execution:
+   - Generates embeddings for both original and translated queries
+   - Executes hybrid searches (keyword + vector) in both languages simultaneously
+   - Uses asyncio.gather() for parallel execution
+
+4. Result Merging:
+   - Deduplicates results by UUID (nodes, edges, episodes)
+   - Keeps the highest relevance score for each unique item
+   - Sorts merged results by score descending
+
+Benefits:
+---------
+- Language-agnostic retrieval: Users can query in either German or English
+- Improved recall: Finds relevant content regardless of indexing language
+- Cross-lingual knowledge discovery: Connects German and English documents
+- Preserves relevance ranking through score-based deduplication
+
+Configuration:
+--------------
+Enable/disable via graphrag_settings.ENABLE_MULTILINGUAL_SEARCH (default: True)
+Can be overridden per-query via params['multilingual'] parameter
+
+Performance:
+------------
+- Translation latency: ~200-500ms (Claude Haiku)
+- Parallel search: Both searches run concurrently (no sequential delay)
+- Total overhead: Minimal due to parallel execution
 """
 
 import asyncio
@@ -450,7 +501,46 @@ class MCPExecutor:
         return self.driver.session(database=self.config.database)
 
     # =========================================================================
-    # Multilingual Search Support
+    # Multilingual Search Support (Dual Language Search)
+    # =========================================================================
+    #
+    # This section implements the dual language search feature, which enables
+    # automatic cross-lingual retrieval for German-English knowledge graphs.
+    #
+    # Architecture:
+    # -------------
+    # 1. _detect_language()       : Heuristic language detection (DE/EN)
+    # 2. _translate_query()       : Claude Haiku-based translation
+    # 3. _search_single_language(): Core search logic (reusable)
+    # 4. _merge_multilingual_results(): UUID-based deduplication & scoring
+    # 5. _search()                : Main entry point with multilingual orchestration
+    #
+    # Data Flow:
+    # ----------
+    #   User Query
+    #       ↓
+    #   _detect_language() → "en" or "de"
+    #       ↓
+    #   _translate_query() → Translated query
+    #       ↓
+    #   Generate embeddings for both queries (parallel)
+    #       ↓
+    #   asyncio.gather(
+    #       _search_single_language(original_query),
+    #       _search_single_language(translated_query)
+    #   )
+    #       ↓
+    #   _merge_multilingual_results() → Deduplicated, scored results
+    #
+    # Example:
+    # --------
+    # Query: "What is the GDPR regulation about?"
+    # 1. Detected language: "en"
+    # 2. Translation: "Was ist die DSGVO-Verordnung?"
+    # 3. Search both: EN keywords + DE keywords + vector similarity
+    # 4. Merge: Keep highest-scoring duplicates by UUID
+    # 5. Result: Combined nodes/edges/episodes from both searches
+    #
     # =========================================================================
 
     def _detect_language(self, text: str) -> str:
@@ -605,6 +695,23 @@ Text: {query}"""
         translated to the opposite language (EN↔DE) and both searches are
         executed in parallel, with results merged and deduplicated.
 
+        Dual Language Search Flow:
+        ---------------------------
+        1. Generate embedding for original query (e.g., "GDPR compliance")
+        2. Detect language → "en"
+        3. Translate to opposite language → "DSGVO-Konformität"
+        4. Generate embedding for translated query
+        5. Execute both searches in parallel:
+           - Search A: "GDPR compliance" (keyword + vector)
+           - Search B: "DSGVO-Konformität" (keyword + vector)
+        6. Merge results by UUID, keeping highest scores
+        7. Return combined, deduplicated results
+
+        This ensures that:
+        - English queries find German-indexed content (and vice versa)
+        - Multilingual documents are retrieved regardless of query language
+        - Entity names (GDPR, DSA, etc.) are preserved across translations
+
         Args:
             params: Dict with:
                 - 'query' (str): The search query
@@ -613,6 +720,23 @@ Text: {query}"""
 
         Returns:
             Dict with 'nodes' (entities), 'edges' (relationships), 'episodes'
+
+        Example Usage:
+            # Enable multilingual search (default)
+            results = await executor._search({
+                "query": "What is the Digital Services Act?",
+                "limit": 10,
+                "multilingual": True
+            })
+            # Returns nodes/edges in both English and German
+
+            # Disable multilingual search (single language only)
+            results = await executor._search({
+                "query": "What is the Digital Services Act?",
+                "limit": 10,
+                "multilingual": False
+            })
+            # Returns only English results
         """
         from src.config import graphrag_settings
 

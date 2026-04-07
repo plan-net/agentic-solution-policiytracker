@@ -335,6 +335,9 @@ services:
     environment:
       # Bundestag DIP API (optional - has public default key)
       BUNDESTAG_DIP_API_KEY: ${BUNDESTAG_DIP_API_KEY:-}
+      # APISIX Gateway routing for external API tracking
+      USE_APISIX_FOR_BUNDESTAG: ${USE_APISIX_FOR_BUNDESTAG:-false}
+      APISIX_GATEWAY_URL: http://apisix:9080
       # Server config
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8004
@@ -359,6 +362,10 @@ services:
       EXA_API_KEY: ${EXA_API_KEY}
       # DPA API (optional - for German press agency news)
       DPA_API_KEY: ${DPA_API_KEY:-}
+      # APISIX Gateway routing for external API tracking
+      USE_APISIX_FOR_EXA: ${USE_APISIX_FOR_EXA:-false}
+      USE_APISIX_FOR_DPA: ${USE_APISIX_FOR_DPA:-false}
+      APISIX_GATEWAY_URL: http://apisix:9080
       # Server config
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8005
@@ -429,6 +436,10 @@ services:
       - DPA_API_KEY=${DPA_API_KEY}
       - NEWS_COLLECTOR=${NEWS_COLLECTOR:-exa_direct}
       - NEWS_COLLECTORS=${NEWS_COLLECTORS:-}
+      # APISIX Gateway routing for external API tracking
+      - USE_APISIX_FOR_EXA=${USE_APISIX_FOR_EXA:-false}
+      - USE_APISIX_FOR_DPA=${USE_APISIX_FOR_DPA:-false}
+      - APISIX_GATEWAY_URL=http://apisix:9080
       # ETL Collection Settings
       - ETL_INITIALIZATION_DAYS=${ETL_INITIALIZATION_DAYS:-30}
       - ETL_DAILY_COLLECTION_DAYS=${ETL_DAILY_COLLECTION_DAYS:-1}
@@ -468,6 +479,10 @@ services:
       - DPA_API_KEY=${DPA_API_KEY}
       - NEWS_COLLECTOR=${NEWS_COLLECTOR:-exa_direct}
       - NEWS_COLLECTORS=${NEWS_COLLECTORS:-}
+      # APISIX Gateway routing for external API tracking
+      - USE_APISIX_FOR_EXA=${USE_APISIX_FOR_EXA:-false}
+      - USE_APISIX_FOR_DPA=${USE_APISIX_FOR_DPA:-false}
+      - APISIX_GATEWAY_URL=http://apisix:9080
       # ETL Collection Settings
       - ETL_INITIALIZATION_DAYS=${ETL_INITIALIZATION_DAYS:-30}
       - ETL_DAILY_COLLECTION_DAYS=${ETL_DAILY_COLLECTION_DAYS:-1}

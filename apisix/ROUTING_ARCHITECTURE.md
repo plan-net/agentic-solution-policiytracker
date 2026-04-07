@@ -355,6 +355,64 @@ Simple path rewriting:
 
 ---
 
+## Client-Side APISIX Routing
+
+Application code uses environment variables to optionally route external API calls through APISIX. When enabled, clients send requests to APISIX instead of the external API directly, allowing the `api-request-tracker` plugin to capture metrics.
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `USE_APISIX_FOR_EXA` | `false` | Route Exa.ai calls through APISIX |
+| `USE_APISIX_FOR_DPA` | `false` | Route DPA calls through APISIX |
+| `USE_APISIX_FOR_BUNDESTAG` | `false` | Route Bundestag DIP calls through APISIX |
+| `APISIX_GATEWAY_URL` | `http://localhost:9080` | APISIX gateway base URL (no `/v1` suffix) |
+
+### Integrated Clients
+
+| Client Class | Location | API | Consumer |
+|-------------|----------|-----|----------|
+| `ExaSearchClient` | `src/mcp/web_search/exa_client.py` | Exa | MCP server (claude-agent, weekly-report) |
+| `ExaDirectCollector` | `src/etl/collectors/exa_direct.py` | Exa | Airflow DAGs (news/policy collection) |
+| `DPANewsClient` | `src/mcp/web_search/dpa_client.py` | DPA | MCP server (claude-agent, weekly-report) |
+| `DPANewsCollector` | `src/etl/collectors/dpa_news.py` | DPA | Airflow DAGs (news/policy collection) |
+| `BundestagDIPClient` | `src/mcp/bundestag_dip/client.py` | Bundestag | MCP server (claude-agent, weekly-report) |
+| `BundestagAPIClient` | `src/flows/bundestag_common/api_client.py` | Bundestag | Ray Serve flow (flow1b-bulk-auto) |
+
+### Docker Services With APISIX Env Vars
+
+These services in `docker-compose.yml` have the APISIX env vars configured:
+
+| Service | Env Vars |
+|---------|----------|
+| `bundestag-dip-mcp` | `USE_APISIX_FOR_BUNDESTAG`, `APISIX_GATEWAY_URL` |
+| `web-search-mcp` | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+| `airflow-webserver` | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+| `airflow-scheduler` | `USE_APISIX_FOR_EXA`, `USE_APISIX_FOR_DPA`, `APISIX_GATEWAY_URL` |
+
+Ray Serve applications (`claude-agent`, `weekly-report-sdk`, `flow1b-bulk-auto`) receive these via `config.yaml` `runtime_env.env_vars`.
+
+### URL Mapping (Client → APISIX → Upstream)
+
+```
+ExaDirectCollector                          APISIX                    Upstream
+POST {apisix_url}/exa/search       →  proxy-rewrite →  POST api.exa.ai/search
+POST {apisix_url}/exa/contents     →  proxy-rewrite →  POST api.exa.ai/contents
+
+DPANewsCollector
+POST {apisix_url}/dpa/articles/relevant →  regex_uri →  POST article-retriever.iq.dpa-ai-hub.de/articles/relevant
+
+BundestagDIPClient
+GET  {apisix_url}/bundestag/vorgang     →  regex_uri →  GET  search.dip.bundestag.de/api/v1/vorgang
+GET  {apisix_url}/bundestag/drucksache  →  regex_uri →  GET  search.dip.bundestag.de/api/v1/drucksache
+```
+
+### Note on `ExaNewsCollector`
+
+The `ExaNewsCollector` (`src/etl/collectors/exa_news.py`) uses the `exa_py` Python SDK, which does not support custom base URLs and **cannot** be routed through APISIX. Use the `exa_direct` collector instead (this is the default when `NEWS_COLLECTOR=exa_direct`).
+
+---
+
 ## Rate Limiting
 
 All routes include rate limiting to protect upstream APIs:

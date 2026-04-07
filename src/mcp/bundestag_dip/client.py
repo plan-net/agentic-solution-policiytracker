@@ -3,6 +3,7 @@ Bundestag DIP API Client for MCP Server.
 
 Async HTTP client for accessing German Bundestag Document and Information System (DIP) API.
 Wraps the existing BundestagAPIClient with MCP-specific methods.
+Supports routing through APISIX gateway when USE_APISIX_FOR_BUNDESTAG=true.
 """
 
 import asyncio
@@ -42,7 +43,14 @@ class BundestagDIPClient:
         self.timeout = aiohttp.ClientTimeout(total=timeout)
         self.session: Optional[aiohttp.ClientSession] = None
 
-        logger.info(f"Initialized BundestagDIPClient (base_url={self.base_url})")
+        # APISIX Gateway support
+        self.use_apisix = os.getenv("USE_APISIX_FOR_BUNDESTAG", "false").lower() == "true"
+        self.apisix_url = os.getenv("APISIX_GATEWAY_URL", "http://localhost:9080")
+
+        if self.use_apisix:
+            logger.info(f"Initialized BundestagDIPClient via APISIX: {self.apisix_url}/bundestag")
+        else:
+            logger.info(f"Initialized BundestagDIPClient (direct API, base_url={self.base_url})")
 
     async def _ensure_session(self):
         """Ensure aiohttp session is initialized."""
@@ -64,7 +72,12 @@ class BundestagDIPClient:
         if "apikey" not in params:
             params["apikey"] = self.api_key
 
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
+        # Construct URL based on APISIX setting
+        endpoint = endpoint.lstrip("/")
+        if self.use_apisix:
+            url = f"{self.apisix_url}/bundestag/{endpoint}"
+        else:
+            url = f"{self.base_url}/{endpoint}"
 
         for attempt in range(self.max_retries):
             try:
